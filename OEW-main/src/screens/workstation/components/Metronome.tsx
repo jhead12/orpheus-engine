@@ -8,14 +8,25 @@ import metronomeTickAccentuated from "@/assets/audio/metronome-tick-accentuated.
 const accentuatedTickAudio = new Audio(metronomeTickAccentuated);
 const tickAudio = new Audio(metronomeTick);
 
+export function triggerMetronomeTick(isAccentuated: boolean) {
+  if (isAccentuated) {
+    accentuatedTickAudio.currentTime = 0;
+    accentuatedTickAudio.play();
+  } else {
+    tickAudio.currentTime = 0;
+    tickAudio.play();
+  }
+}
+
 export default function Metronome() {
-  const { isPlaying, metronome, setMetronome, timelineSettings } = useContext(WorkstationContext)!;
+  const { isPlaying, metronome, setMetronome, timelineSettings } =
+    useContext(WorkstationContext)!;
 
   const playStartTime = useRef(-1);
   const speed = useRef(-1);
   const tickCount = useRef(0);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   useEffect(() => {
     if (metronome && isPlaying) {
       if (playStartTime.current === -1) {
@@ -27,21 +38,21 @@ export default function Metronome() {
       tickCount.current = 0;
       playStartTime.current = -1;
     }
-  }, [metronome, isPlaying])
+  }, [metronome, isPlaying]);
 
   useEffect(() => {
     const { timeSignature, tempo } = timelineSettings;
-    speed.current = 60 / tempo * (4 / timeSignature.noteValue) * 1000;
+    speed.current = (60 / tempo) * (4 / timeSignature.noteValue) * 1000;
 
     if (metronome && isPlaying) {
       stopTick();
-      
+
       const elapsed = new Date().getTime() - playStartTime.current;
       const nextTickTime = Math.ceil(elapsed / speed.current) * speed.current;
 
       playTick(nextTickTime - elapsed);
     }
-  }, [timelineSettings.timeSignature, timelineSettings.tempo])
+  }, [timelineSettings.timeSignature, timelineSettings.tempo]);
 
   function playTick(delay: number) {
     timeout.current = setTimeout(() => {
@@ -53,8 +64,7 @@ export default function Metronome() {
         tickAudio.play();
       }
 
-      if (timeout.current !== null)
-        playTick(speed.current);
+      if (timeout.current !== null) playTick(speed.current);
     }, delay);
   }
 
@@ -66,13 +76,20 @@ export default function Metronome() {
   }
 
   return (
-    <IconButton 
+    <IconButton
       className={`p-0 btn-1 mx-1 ${metronome ? "no-borders" : "hover-1"}`}
-      onClick={() => setMetronome(!metronome)} 
-      style={{ backgroundColor: metronome ? "var(--color1)" : "#0000", width: 24, height: 24 }}
+      onClick={() => setMetronome(!metronome)}
+      style={{
+        backgroundColor: metronome ? "var(--color1)" : "#0000",
+        width: 24,
+        height: 24,
+      }}
       title="Toggle Metronome [T]"
     >
-      <MetronomeIcon size={14} style={{ color: metronome ? "var(--bg6)" : "var(--border6)" }} />
+      <MetronomeIcon
+        size={14}
+        style={{ color: metronome ? "var(--bg6)" : "var(--border6)" }}
+      />
     </IconButton>
-  )
+  );
 }
