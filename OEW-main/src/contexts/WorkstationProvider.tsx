@@ -211,27 +211,54 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   }, [selectedTrackId, allTracks]);
 
   const playbackInterval = useRef<NodeJS.Timeout | null>(null);
+  const playbackStartTime = useRef<number | null>(null);
+  const playbackInitialPos = useRef<TimelinePosition | null>(null);
 
   useEffect(() => {
     if (isPlaying) {
-      const start = Date.now();
-      const initialPos = playheadPos.copy();
+      playbackStartTime.current = Date.now();
+      playbackInitialPos.current = playheadPos.copy();
 
       function tick() {
-        // Calculate elapsed time in seconds
+        if (!isPlaying) return;
+        const start = playbackStartTime.current!;
+        const initialPos = playbackInitialPos.current!;
         const elapsed = (Date.now() - start) / 1000;
-        // Calculate new position based on tempo
         const tempo = timelineSettings.tempo;
         const beatsPerSecond = tempo / 60;
         const beatsElapsed = elapsed * beatsPerSecond;
-        // Convert beatsElapsed to a TimelinePosition
-        const newPos = initialPos.add(0, beatsElapsed, 0, false);
-        setPlayheadPos(TimelinePosition.min(newPos, maxPos));
-        // Stop if at end
-        if (newPos.compareTo(maxPos) < 0 && isPlaying) {
-          playbackInterval.current = setTimeout(tick, 20);
+        let newPos = initialPos.add(0, beatsElapsed, 0, false);
+
+        if (isLooping && songRegion) {
+          if (newPos.compareTo(songRegion.end) >= 0) {
+            // Calculate overshoot and add to start
+            const overshoot = newPos.diff(songRegion.end);
+            newPos = songRegion.start
+              .copy()
+              .add(
+                overshoot.measures,
+                overshoot.beats,
+                overshoot.fraction,
+                false
+              );
+            setPlayheadPos(newPos);
+            // Reset timer and position for next loop
+            playbackStartTime.current = Date.now();
+            playbackInitialPos.current = songRegion.start.copy();
+            playbackInterval.current = setTimeout(tick, 20);
+            return;
+          } else {
+            setPlayheadPos(newPos);
+            playbackInterval.current = setTimeout(tick, 20);
+            return;
+          }
         } else {
-          setIsPlaying(false);
+          setPlayheadPos(TimelinePosition.min(newPos, maxPos));
+          if (newPos.compareTo(maxPos) < 0 && isPlaying) {
+            playbackInterval.current = setTimeout(tick, 20);
+          } else {
+            setIsPlaying(false);
+          }
         }
       }
       tick();
