@@ -1,0 +1,23 @@
+# use local genai image and this requirements file to run the demo without any problem 
+
+pypdf==5.3.0
+torch
+huggingface-hub
+ langchain_community
+ sentence_transformers
+ chromadb
+Plotly
+scikit-image
+Seaborn
+Altair
+Bokeh
+Bottleneck
+Bill
+h5py
+Ipympl
+Numba
+Statsmodels
+mlflow
+llama-cpp-python
+librosa
+espeakng

@@ -1,5 +1,8 @@
 {
     "nrf-connect.applications": [
         "${workspaceFolder}\\omi\\omi\\firmware\\devkit"
-    ]
+    ],
+    "files.associations": {
+        "utility": "cpp"
+    }
 }
