@@ -21,3 +21,6 @@ mlflow
 llama-cpp-python
 librosa
 espeakng
+llama-cpp-python
+huggingface_hub
+openai-whisper
