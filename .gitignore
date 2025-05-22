@@ -5,3 +5,4 @@ chroma_db
 audio_clips
 __pycache__
 *.pyc
+model
