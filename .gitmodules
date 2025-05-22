@@ -1,10 +1,11 @@
+
 [submodule "omi"]
 	path = omi
-	url = https://github.com/jhead12/omi
+	url = https://github.com/jhead12/omi.git
 
 [submodule "sonobus"]
 	path = sonobus
-	url = https://github.com/jhead12/sonobus
+	url = https://github.com/jhead12/sonobus.git
 
 [submodule "ffmpeg"]
 	path = ffmpeg
