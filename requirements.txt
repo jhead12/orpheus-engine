@@ -24,3 +24,6 @@ espeakng
 llama-cpp-python
 huggingface_hub
 openai-whisper
+torchaudio
+panns-inference
+chromadb
