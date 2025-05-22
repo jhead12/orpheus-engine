@@ -10,6 +10,3 @@
 	path = ffmpeg
 	url =https://git.ffmpeg.org/ffmpeg.git
 
-[submodule "gpuaudio-sdk"]
-	path = gpuaudio-sdk
-	url = https://github.com/gpuaudio/gpuaudio-sdk
