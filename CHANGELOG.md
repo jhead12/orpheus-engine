@@ -1,3 +1,45 @@
+## 1.0.17 (2025-06-02)
+
+
+### Bug Fixes
+
+* resolve merge conflicts in App.tsx ([7b01ffd](https://github.com/jhead12/orpheus-engine/commit/7b01ffdf785e00953d31de4b61fca576fe14a4ce))
+* resolve merge conflicts in types.ts and improve TimelinePosition class ([edfeaf8](https://github.com/jhead12/orpheus-engine/commit/edfeaf8c4a43e358576023c525cca344977c6ced))
+* resolve tokenizers compilation issues for Python 3.12 ([6593aba](https://github.com/jhead12/orpheus-engine/commit/6593abae54c38dcd2a04bea4a2df50dff81d3a71))
+* restore orpheus-engine-workstation submodule and remove invalid ffmpeg submodule reference ([77d267d](https://github.com/jhead12/orpheus-engine/commit/77d267d3c15948adb1c1722f30cdb73e3d360bf1))
+* update workspace paths from orpheus-engine-workstation to workstation ([7367f10](https://github.com/jhead12/orpheus-engine/commit/7367f1075cbfb5a844aa795173fe4ba57a771515))
+
+
+### Features
+
+* **audio:** implement audio exporting and recording features ([6e4e4d1](https://github.com/jhead12/orpheus-engine/commit/6e4e4d1195113c3dc2fa2a379c76b15d92a42496))
+* implement complete Electron integration ([1212fd3](https://github.com/jhead12/orpheus-engine/commit/1212fd3ec43f5f913f3ca33001e8d8994a413092))
+* implement complete Electron integration ([29cf709](https://github.com/jhead12/orpheus-engine/commit/29cf7097aecb2556491fe6e35a92c5c2c5c534cb))
+* Initial commit with orpheus-engine-workstation v1.0.5 ([144d012](https://github.com/jhead12/orpheus-engine/commit/144d012c9ea8fddf33eba5727af9aec44de98843))
+
+
+
+## 1.0.16 (2025-06-02)
+
+
+### Bug Fixes
+
+* resolve merge conflicts in App.tsx ([7b01ffd](https://github.com/jhead12/orpheus-engine/commit/7b01ffdf785e00953d31de4b61fca576fe14a4ce))
+* resolve merge conflicts in types.ts and improve TimelinePosition class ([edfeaf8](https://github.com/jhead12/orpheus-engine/commit/edfeaf8c4a43e358576023c525cca344977c6ced))
+* resolve tokenizers compilation issues for Python 3.12 ([6593aba](https://github.com/jhead12/orpheus-engine/commit/6593abae54c38dcd2a04bea4a2df50dff81d3a71))
+* restore orpheus-engine-workstation submodule and remove invalid ffmpeg submodule reference ([77d267d](https://github.com/jhead12/orpheus-engine/commit/77d267d3c15948adb1c1722f30cdb73e3d360bf1))
+* update workspace paths from orpheus-engine-workstation to workstation ([7367f10](https://github.com/jhead12/orpheus-engine/commit/7367f1075cbfb5a844aa795173fe4ba57a771515))
+
+
+### Features
+
+* **audio:** implement audio exporting and recording features ([6e4e4d1](https://github.com/jhead12/orpheus-engine/commit/6e4e4d1195113c3dc2fa2a379c76b15d92a42496))
+* implement complete Electron integration ([1212fd3](https://github.com/jhead12/orpheus-engine/commit/1212fd3ec43f5f913f3ca33001e8d8994a413092))
+* implement complete Electron integration ([29cf709](https://github.com/jhead12/orpheus-engine/commit/29cf7097aecb2556491fe6e35a92c5c2c5c534cb))
+* Initial commit with orpheus-engine-workstation v1.0.5 ([144d012](https://github.com/jhead12/orpheus-engine/commit/144d012c9ea8fddf33eba5727af9aec44de98843))
+
+
+
 ## [1.0.15](https://github.com/jhead12/orpheus-engine/compare/v1.0.11...v1.0.15) (2025-06-01)
 
 
