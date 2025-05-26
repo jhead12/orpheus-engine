@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import MenuBuilder from './menu';
+import { setupAudioAnalysisHandlers } from './audioAnalysis';
 import ContextMenuBuilder from './contextMenu';
 import buildHandlers from './handlers';
 
