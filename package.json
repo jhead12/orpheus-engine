@@ -16,7 +16,7 @@
     "start:frontend": "cd orpheus-engine-workstation/OEW-main && npm run dev",
     "build": "cd orpheus-engine-workstation/OEW-main && npm run build",
     "test": "npm run test:backend",
-    "test:backend": "cd orpheus-engine-workstation/backend && npm run test:all",
+    "test:backend": "cd orpheus-engine-workstation/frontend && npm run test",
     "lint": "npm run lint:backend",
     "lint:backend": "cd orpheus-engine-workstation/backend && npm run lint",
     "validate": "npm run test && npm run lint",
