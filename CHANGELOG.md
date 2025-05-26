@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2025-05-26
+
+### Added
+- Enhanced release management scripts
+- Improved version synchronization across workspaces
+- Release branch automation in package.json scripts
+- Better dependency management with resolution declarations
+
+### Changed
+- Updated package.json with improved release workflow
+- Enhanced sync-versions script with patch increment logic
+- Streamlined build and development processes
+- Improved workspace configuration
+
+### Fixed
+- Package version consistency across frontend and backend
+- Release branch creation automation
+- Development environment stability
+
 ## [1.0.5] - 2025-05-26
 
 ### Added
