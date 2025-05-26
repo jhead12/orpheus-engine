@@ -1,0 +1,49 @@
+# Node
+node_modules/
+yarn.lock
+package-lock.json
+dist/
+build/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env/
+.venv/
+pip-log.txt
+.coverage
+coverage.xml
+*.cover
+.pytest_cache/
+.ipynb_checkpoints/
+
+# IDE and OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Project specific
+chroma_db/
+processed_audio/
+model/
+audio_clips/
+data/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*

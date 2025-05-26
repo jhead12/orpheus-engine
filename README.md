@@ -24,22 +24,46 @@ Orpheus Engine integrates the Omi device with AI to streamline music creation in
 
 ### Installation and Setup
 
-1. Install dependencies:
+1. Install all dependencies with a single command:
 ```bash
-# Install backend dependencies
-cd orpheus-engine-workstation/backend
-python3 -m pip install -r agentic_rag/requirements.txt
-
-# Install frontend dependencies
-cd ../frontend
-npm install
+npm run install-all
 ```
 
-2. Make the start script executable:
+This will install:
+- Root project dependencies
+- Frontend dependencies
+- Backend dependencies
+- Python dependencies
+
+2. Make all shell scripts executable:
 ```bash
-cd ..  # Back to orpheus-engine-workstation
-chmod +x start-dev.sh
+npm run permissions
 ```
+
+### Available Commands
+
+#### Development
+- `npm run install-all` - Install all dependencies across the monorepo
+- `npm run permissions` - Make all shell scripts executable
+- `npm run build` - Build the frontend application
+- `npm run test` - Run all tests (frontend and backend)
+- `npm run lint` - Run linting on all code
+
+#### Version Management
+- `npm run version:major` - Bump major version (1.0.0 -> 2.0.0)
+- `npm run version:minor` - Bump minor version (1.0.0 -> 1.1.0)
+- `npm run version:patch` - Bump patch version (1.0.0 -> 1.0.1)
+
+#### Release Management
+- `npm run release:prepare` - Prepare for a release (merge develop into main)
+- `npm run release:major` - Prepare and release major version
+- `npm run release:minor` - Prepare and release minor version
+- `npm run release:patch` - Prepare and release patch version
+
+#### Branch Management
+- `npm run branch:feature --name=feature-name` - Create a new feature branch
+- `npm run branch:hotfix --name=hotfix-name` - Create a new hotfix branch
+- `npm run branch:cleanup` - Clean up merged branches
 
 ### Running the App
 ```bash
