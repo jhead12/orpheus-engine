@@ -1,5 +1,7 @@
 {
-  "name": "orpheus-engine",
+  "name": "    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py FLASK_ENV=development python -m flask run --port 5000",
+    "start:frontend": "cd orpheus-engine-workstation/OEW-main && npm run dev",heus-engine",
   "version": "1.0.5",
   "private": true,
   "workspaces": [
@@ -12,7 +14,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && python -m flask run --port 5000",
+    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py python -m flask run --port 5000",
     "start:frontend": "cd orpheus-engine-workstation/OEW-main && npm run dev",
     "build": "cd orpheus-engine-workstation/OEW-main && npm run build",
     "test": "npm run test:backend && npm run test:frontend",

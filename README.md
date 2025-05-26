@@ -98,7 +98,136 @@ The app will be available at:
 - Frontend (Vite dev server): http://localhost:5173
 - Python RAG Backend: http://localhost:5000
 
-### Directory Structure
+## Quick Start
+
+1. **Clone the repository**:
+```bash
+git clone https://github.com/creativeplatform/orpheus-engine.git
+cd orpheus-engine
+```
+
+2. **Install Dependencies**:
+```bash
+# Install all project dependencies (Node.js and Python)
+npm run install-all
+
+# Make shell scripts executable
+npm run permissions
+```
+
+3. **Start the Application**:
+```bash
+# Start both frontend and backend
+npm start
+```
+
+The application components will be available at:
+- **Frontend UI**: http://localhost:5173
+- **RAG Backend API**: http://localhost:5000
+- **Audio Processing Service**: http://localhost:7008
+
+### Component Overview
+
+The application consists of three main parts:
+1. **Frontend (OEW-Main)**: Electron/React application for the DAW interface
+2. **Python RAG Backend**: AI-powered audio analysis and processing
+3. **TypeScript Backend**: Audio file management and real-time processing
+
+### Development Mode
+
+To run components individually:
+
+```bash
+# Frontend only (Electron + Vite)
+npm run start:frontend
+
+# Python RAG Backend only
+npm run start:backend
+
+# Build the application
+npm run build
+```
+
+### Troubleshooting
+
+1. **Missing ffmpeg**:
+   If you see errors about ffmpeg, ensure it's installed:
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get install ffmpeg
+
+   # MacOS
+   brew install ffmpeg
+   ```
+
+2. **Python Dependencies**:
+   If you encounter Python module errors:
+   ```bash
+   cd orpheus-engine-workstation/backend/agentic_rag
+   pip install -r requirements.txt
+   ```
+
+3. **Port Conflicts**:
+   The application uses ports 5000 (RAG), 5173 (Vite), and 7008 (Audio). Ensure these ports are available.
+
+## Development Workflow
+
+### Code Organization
+
+```
+orpheus-engine-workstation/
+├── OEW-main/           # Frontend Electron/React application
+├── backend/            # TypeScript and Python backends
+│   ├── src/           # TypeScript backend source
+│   └── agentic_rag/   # Python RAG backend
+├── data/              # Audio files and test data
+└── chroma_db/         # Vector database for audio analysis
+```
+
+### Hot Reloading
+
+- Frontend: Vite provides hot module replacement (HMR)
+- Backend: Nodemon watches for TypeScript changes
+- RAG: Flask debug mode auto-reloads on changes
+
+### Building for Production
+
+1. **Build the application**:
+```bash
+npm run build
+```
+
+2. **Run tests and linting**:
+```bash
+npm run validate
+```
+
+3. **Create a release**:
+```bash
+npm run release:patch  # For patch release
+npm run release:minor  # For minor release
+npm run release:major  # For major release
+```
+
+### Architecture Notes
+
+1. **Frontend**:
+   - Electron for native desktop features
+   - React for UI components
+   - TypeScript for type safety
+   - Vite for fast development
+
+2. **Audio Processing**:
+   - Real-time audio processing with Web Audio API
+   - FFmpeg for audio file manipulation
+   - ChromaDB for audio feature vectorization
+
+3. **AI Integration**:
+   - RAG (Retrieval Augmented Generation) for audio analysis
+   - Python backend for ML tasks
+   - Real-time audio feature extraction
+
+## Project Structure
 - `orpheus-engine-workstation/` – Main project directory
   - `OEW-main/` – Electron/Vite frontend app
   - `backend/` – TypeScript and Python backends
