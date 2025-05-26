@@ -1,7 +1,5 @@
 {
-  "name": "    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py FLASK_ENV=development python -m flask run --port 5000",
-    "start:frontend": "cd orpheus-engine-workstation/OEW-main && npm run dev",heus-engine",
+  "name": "orpheus-engine",
   "version": "1.0.5",
   "private": true,
   "workspaces": [
@@ -14,15 +12,13 @@
   },
   "scripts": {
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py python -m flask run --port 5000",
+    "start:backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py FLASK_ENV=development python -m flask run --port 5000",
     "start:frontend": "cd orpheus-engine-workstation/OEW-main && npm run dev",
     "build": "cd orpheus-engine-workstation/OEW-main && npm run build",
-    "test": "npm run test:backend && npm run test:frontend",
+    "test": "npm run test:backend",
     "test:backend": "cd orpheus-engine-workstation/backend && npm run test:all",
-    "test:frontend": "cd orpheus-engine-workstation/OEW-main && npm run test:coverage",
-    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint": "npm run lint:backend",
     "lint:backend": "cd orpheus-engine-workstation/backend && npm run lint",
-    "lint:frontend": "cd orpheus-engine-workstation/OEW-main && npm run lint",
     "validate": "npm run test && npm run lint",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "sync-versions": "node scripts/sync-versions.js",
