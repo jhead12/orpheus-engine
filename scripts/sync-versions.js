@@ -48,5 +48,26 @@ workspaces.forEach(workspace => {
     }
 });
 
-// Log completion
+// Also update the workstation root package.json
+try {
+    const workstationPath = path.join(__dirname, '..', 'orpheus-engine-workstation', 'package.json');
+    if (fs.existsSync(workstationPath)) {
+        console.log('Updating orpheus-engine-workstation/package.json...');
+        const packageContent = fs.readFileSync(workstationPath, 'utf8');
+        
+        try {
+            const workstationPackage = JSON.parse(packageContent);
+            workstationPackage.version = rootVersion;
+            fs.writeFileSync(workstationPath, JSON.stringify(workstationPackage, null, 2) + '\n');
+            console.log(`✅ Updated orpheus-engine-workstation/package.json to version ${rootVersion}`);
+        } catch (parseError) {
+            console.error(`❌ Error parsing orpheus-engine-workstation/package.json:`, parseError.message);
+            console.log('File content:', packageContent);
+        }
+    } else {
+        console.log('⚠️ Workstation package.json not found');
+    }
+} catch (error) {
+    console.error(`❌ Error processing orpheus-engine-workstation/package.json:`, error.message);
+}
 console.log('✨ Version sync complete!');
