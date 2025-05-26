@@ -10,11 +10,20 @@ Orpheus Engine integrates the Omi device with AI to streamline music creation in
 - **Extensible Architecture**: Modular codebase for easy feature expansion.
 
 ## Technologies Used
-- **React** (TypeScript)
-- **Electron**
-- **Vite**
-- **Node.js**
-- **Omi SDK**
+- **Frontend**:
+  - React (TypeScript)
+  - Electron
+  - Vite
+- **Backend**:
+  - Node.js/TypeScript
+  - Python (RAG Backend)
+  - Flask
+- **AI/ML**:
+  - ChromaDB
+  - RAG (Retrieval Augmented Generation)
+- **SDKs**:
+  - Omi SDK
+  - GPU Audio SDK
 
 ## Getting Started
 
@@ -66,21 +75,41 @@ npm run permissions
 - `npm run branch:cleanup` - Clean up merged branches
 
 ### Running the App
+
+Run the complete application (frontend and backend) with:
 ```bash
-# From the orpheus-engine-workstation directory
-./start-dev.sh
+npm start
+```
+
+This will concurrently start:
+- The Python RAG backend on port 5000
+- The Vite/Electron frontend application
+
+You can also run components separately:
+```bash
+# Run only the frontend
+npm run start:frontend
+
+# Run only the backend
+npm run start:backend
 ```
 
 The app will be available at:
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:8000
+- Frontend (Vite dev server): http://localhost:5173
+- Python RAG Backend: http://localhost:5000
 
 ### Directory Structure
-- `src/` – Main React app source code
-- `OEW-main/` – Electron app and build config
+- `orpheus-engine-workstation/` – Main project directory
+  - `OEW-main/` – Electron/Vite frontend app
+  - `backend/` – TypeScript and Python backends
+    - `src/` – TypeScript backend source
+    - `agentic_rag/` – Python RAG backend
+  - `data/` – Audio files and data
+  - `chroma_db/` – ChromaDB vector database
+  - `ffmpeg/` – Local ffmpeg binaries
 - `gpuaudio-sdk/` – Omi device SDK integration
-- `data/` – Example audio files
-- `assets/` – UI assets (audio, fonts, images)
+- `scripts/` – Project management scripts
+- `utils/` – Shared utilities
 
 ## Troubleshooting: Using a Local ffmpeg Binary
 

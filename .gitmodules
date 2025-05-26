@@ -1,0 +1,4 @@
+[submodule "orpheus-engine-workstation"]
+	path = orpheus-engine-workstation
+	url = https://github.com/jhead12/orpheus-engine
+	branch = daw-init
