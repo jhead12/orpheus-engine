@@ -12,6 +12,8 @@
     "web3.db-fileconnector": "^1.7.0"
   },
   "scripts": {
+    "setup-python": "node scripts/setup-python.js",
+  "postinstall": "npm run setup-python",
     "install-all": "node scripts/install-all.js",
     "start": "concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:daw\"",
     "dev": "concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:daw\"",
@@ -33,7 +35,7 @@
     "release:minor": "npm run release:prepare && npm run version:minor && npm run branch:release",
     "release:major": "npm run release:prepare && npm run version:major && npm run branch:release",
     "release:prepare": "git checkout main && git pull origin main && git merge develop",
-    "version:patch": "npm run validate && npm run changelog && npm version 1.1.0 --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
+    "version:patch": "npm run validate && npm run changelog && npm version patch --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
     "version:minor": "npm run validate && npm run changelog && npm version 1.1.0 --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
     "version:major": "npm run validate && npm run changelog && npm version major -m 'chore(release): %s' && git push && git push --tags",
     "sync-versions": "node scripts/sync-versions.js",

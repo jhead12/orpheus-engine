@@ -29,7 +29,6 @@ import {
   ClipboardItemType,
   PreferencesContext,
   ScrollToItem,
-  WorkstationContext,
 } from "@/contexts";
 import { v4 } from "uuid";
 import {
@@ -69,6 +68,10 @@ import {
   ADD_TRACK,
   OPEN_PREFERENCES,
 } from "@/services/electron/channels";
+
+import { createContext } from "react";
+
+export const WorkstationContext = createContext<any>(null);
 
 export function WorkstationProvider({ children }: PropsWithChildren) {
   const { clipboardItem, copy } = useContext(ClipboardContext)!;
