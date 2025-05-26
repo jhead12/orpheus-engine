@@ -7,6 +7,7 @@ Orpheus Engine integrates the Omi device with AI to streamline music creation in
 - **AI-Assisted Workflow**: AI helps manage DAW projects, files, and creative tasks.
 - **Audio Streaming**: Stream audio from Omi to your DAW for real-time track addition.
 - **Modern UI**: Built with React (TypeScript) and Electron for a cross-platform desktop experience.
+- **Desktop Application**: Native desktop app with Electron v36.3.1 integration ✅
 - **Extensible Architecture**: Modular codebase for easy feature expansion.
 
 ## Technologies Used
@@ -92,6 +93,19 @@ npm run start:frontend
 
 # Run only the backend
 npm run start:backend
+```
+
+**Desktop Application (Electron)**:
+```bash
+# Development mode - React + Electron together
+cd orpheus-engine-workstation/frontend
+npm run electron-dev
+
+# Production mode - build and run
+npm run electron-build
+
+# Create distributable packages
+npm run dist
 ```
 
 The app will be available at:
