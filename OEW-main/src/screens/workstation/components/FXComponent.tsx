@@ -1,7 +1,7 @@
 import React, { CSSProperties, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Tune, Add, PowerSettingsNew, Delete, ArrowDropUp, ArrowDropDown, Check, Close, MoreHoriz, Save } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { ContextMenuType, Effect, FXChainPreset, Track } from "../../../services/types/types";
+import { BaseEffect, ContextMenuType, Effect, FXChainPreset, Track } from "../../../services/types/types";
 import { v4 } from "uuid";
 import { WorkstationContext } from "../../../contexts";
 import { SelectSpinBox } from "../../../components/widgets";
@@ -92,8 +92,9 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
         id: v4(), 
         name: `Effect ${(track.fx.effects.length + 1)}`, 
         enabled: true,
-        type: "native" // Default to native type
-      }
+        type: "native",
+        parameters: {} // Full Effect with parameters
+      } as Effect
     ];
 
     setTrack({ ...track, fx: { ...track.fx, effects, selectedEffectIndex: effects.length - 1 } });
@@ -208,12 +209,18 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
 
   function changeEffectType(type: "native" | "juce" | "python") {
     const effects = track.fx.effects.slice();
-    effects[effectIndex] = { 
-      ...effects[effectIndex], 
+    // Ensure we preserve the name when changing type
+    const effectName = effects[effectIndex].name || `Effect ${effectIndex + 1}`;
+    
+    const updatedEffect: Effect = { 
+      id: effects[effectIndex].id,
+      name: effectName,
+      enabled: effects[effectIndex].enabled,
       type,
-      // Reset parameters when changing type
-      parameters: {}
+      parameters: {} // Ensure parameters exists
     };
+    
+    effects[effectIndex] = updatedEffect;
     setTrack({ ...track, fx: { ...track.fx, effects } });
   }
 
@@ -228,11 +235,19 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) {
           const effects = track.fx.effects.slice();
-          effects[effectIndex] = { 
-            ...effects[effectIndex], 
-            source: file.name, // Use file.name instead of file.path
-            name: file.name.replace(/\.[^/.]+$/, "") // Remove extension for display
+          const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+          
+          // Create a fully-typed Effect object with parameters
+          const updatedEffect: Effect = {
+            id: effects[effectIndex].id,
+            name: fileName || `${effect.type} Effect`,
+            enabled: effects[effectIndex].enabled,
+            type: effects[effectIndex].type,
+            source: file.name,
+            parameters: {} // Add parameters property
           };
+          
+          effects[effectIndex] = updatedEffect;
           setTrack({ ...track, fx: { ...track.fx, effects } });
         }
       };
@@ -245,7 +260,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
 
   const style = {
     container: {
-      flexDirection: compact ? "row" : "column",
+      flexDirection: compact ? "row" : "column", 
       border: "1px solid #0009", 
       backgroundColor: "#fff6", 
       overflow: "hidden",
@@ -300,7 +315,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
         ...rest.style?.effect?.actionsContainer
       }
     },
-    enableIcon: (effect: Effect) => ({ 
+    enableIcon: (effect: BaseEffect) => ({ 
       fontSize: 13, 
       opacity: effect.enabled ? 100 : 50, 
       padding: 0,
@@ -340,7 +355,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
               />
               <div 
                 className={"d-flex h-100 " + classes?.presetNameFormButtons} 
-                style={rest.style.presetNameFormButtons}
+                style={rest.style?.presetNameFormButtons}
               >
                 <IconButton className="p-0" onClick={() => setNamePreset(false)}>
                   <Close style={{ fontSize: 13, ...rest.style?.icon }} />
@@ -371,7 +386,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
               />
               <div 
                 className={"d-flex align-items-center " + classes?.presetButtons} 
-                style={{ marginRight: 1, ...rest.style.presetButtons }}
+                style={{ marginRight: 1, ...rest.style?.presetButtons }}
               >
                 <IconButton className={`p-0 ${disableSave ? "disabled" : ""}`} onClick={save} title="Save">
                   <Save style={{ fontSize: 13, ...rest.style?.icon }} />
@@ -496,5 +511,5 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
         </div>
       )}
     </div>
-  )
+  );
 }

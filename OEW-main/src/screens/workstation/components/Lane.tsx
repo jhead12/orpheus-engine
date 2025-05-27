@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useContext, useEffect, useMemo, useRef, useState, forwardRef } from "react";
 import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../../contexts";
 import { AutomationLane, Clip, ContextMenuType, TimelinePosition, Track, TrackType, WorkstationAudioInputFile } from "../../../services/types/types";
 import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
@@ -7,14 +7,18 @@ import { electronAPI, openContextMenu } from "../../../services/electron/utils";
 import { TRACK_FILE_UPLOAD } from "../../../services/electron/channels";
 import { getCSSVarValue, normalizeHex } from "../../../services/utils/general";
 
-interface IProps {
+
+// Export the props interface to make it available for consumers
+export interface LaneComponentProps {
   className?: string;
   dragDataTarget: { track: Track | null, incompatible?: boolean } | null;
-  style?: React.CSSProperties; // Explicitly set as React.CSSProperties
+  style?: React.CSSProperties;
   track: Track;
 }
 
-function Lane({ className, dragDataTarget, style, track }: IProps) {
+// Define component as a named function expression and wrap with forwardRef
+const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
+  const { className, dragDataTarget, style, track } = props;
   const { clipboardItem } = useContext(ClipboardContext)!;
   const { 
     adjustNumMeasures,
@@ -37,9 +41,19 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
   } = useContext(WorkstationContext)!
 
   const [dragIndicatorMargin, setDragIndicatorMargin] = useState(-5);
-  
   const prevMargin = useRef<number | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  // Create our own internal ref that we'll always use
+  const internalRef = useRef<HTMLDivElement>(null);
+
+  // Synchronize forwarded ref with internal ref
+  useEffect(() => {
+    if (!ref) return;
+    if (typeof ref === 'function') {
+      ref(internalRef.current);
+    } else {
+      (ref as React.MutableRefObject<HTMLDivElement | null>).current = internalRef.current;
+    }
+  }, [ref]);
 
   const isDragTarget = useMemo(() => {
     if (track.id === "placeholder")
@@ -59,8 +73,9 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
     function handleDragOver(e: DragEvent) {
       e.preventDefault();
 
-      if (ref.current) {
-        let margin = e.clientX - ref.current.getBoundingClientRect().left;
+      // Only use internalRef.current
+      if (internalRef.current) {
+        let margin = e.clientX - internalRef.current.getBoundingClientRect().left;
 
         if (margin < timelineEditorWindow.scrollLeft)
           margin = timelineEditorWindow.scrollLeft;
@@ -225,7 +240,7 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
         className={"lane position-relative " + className}
         data-track={track.id}
         onMouseDown={() => setSelectedTrackId(track.id)}
-        ref={ref}
+        ref={internalRef}
         style={style}
       >
         <div className="position-relative" onContextMenu={onLaneContextMenu} style={styles.innerContainer}>
@@ -265,6 +280,9 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
   }
 
   return null;
-}
+});
+
+// Add displayName to help with debugging
+Lane.displayName = 'Lane';
 
 export default memo(Lane);

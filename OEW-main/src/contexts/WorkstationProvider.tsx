@@ -1,10 +1,11 @@
-import {
+import React, {
   PropsWithChildren,
   useContext,
   useEffect,
   useMemo,
   useState,
   useRef,
+  createContext,
 } from "react";
 import {
   AutomationLane,
@@ -22,14 +23,14 @@ import {
   Track,
   TrackType,
   WorkstationAudioInputFile,
-} from "@/services/types/types";
-import data from "@/tempData";
+} from "../services/types/types";
+import data from "../tempData";
 import {
   ClipboardContext,
   ClipboardItemType,
   PreferencesContext,
   ScrollToItem,
-} from "@/contexts";
+} from ".";
 import { v4 } from "uuid";
 import {
   clipAtPos,
@@ -48,34 +49,121 @@ import {
   copyClip,
   automatedValueAtPos,
   GRID_MIN_INTERVAL_WIDTH,
-} from "@/services/utils/utils";
+} from "../services/utils/utils";
 import {
   audioBufferToBuffer,
   audioContext,
   concatAudioBuffer,
-} from "@/services/utils/audio";
-import { electronAPI, openContextMenu } from "@/services/electron/utils";
+} from "../services/utils/audio";
+import { electronAPI, openContextMenu } from "../services/electron/utils";
 import {
   clamp,
   cmdOrCtrl,
   inverseLerp,
   isMacOS,
   lerp,
-} from "@/services/utils/general";
+} from "../services/utils/general";
 import {
   TOGGLE_MASTER_TRACK,
   TOGGLE_MIXER,
   ADD_TRACK,
   OPEN_PREFERENCES,
-} from "@/services/electron/channels";
+} from "../services/electron/channels";
 
-import { createContext } from "react";
+// Define interface for ClipboardContext
+interface ClipboardContextType {
+  clipboardItem: any;
+  copy: (item: any) => void;
+}
 
-export const WorkstationContext = createContext<any>(null);
+// Define interface for PreferencesContext
+interface PreferencesContextType {
+  setShowPreferences: (show: boolean) => void;
+}
+
+// Define WorkstationContextType interface
+interface WorkstationContextType {
+  addNode: (track: Track, lane: AutomationLane, node: AutomationNode) => void;
+  addTrack: (type: TrackType) => void;
+  adjustNumMeasures: (pos?: TimelinePosition) => void;
+  allowMenuAndShortcuts: boolean;
+  autoGridSize: { measures: number; beats: number; fraction: number };
+  consolidateClip: (clip: Clip) => void;
+  createAudioClip: (file: WorkstationAudioInputFile, pos: TimelinePosition) => Promise<Clip | null>;
+  createClipFromTrackRegion: () => void;
+  deleteClip: (clip: Clip) => void;
+  deleteNode: (node: AutomationNode) => void;
+  deleteTrack: (track: Track) => void;
+  duplicateClip: (clip: Clip) => void;
+  duplicateTrack: (track: Track) => void;
+  fxChainPresets: FXChainPreset[];
+  getTrackCurrentValue: (track: Track, lane: AutomationLane | undefined) => { isAutomated: boolean; value: any };
+  insertClips: (newClips: Clip[], track: Track) => void;
+  isLooping: boolean;
+  isPlaying: boolean;
+  isRecording: boolean;
+  masterTrack: Track;
+  maxPos: TimelinePosition;
+  metronome: boolean;
+  mixerHeight: number;
+  numMeasures: number;
+  pasteClip: (pos: TimelinePosition, targetTrack?: Track) => void;
+  pasteNode: (pos: TimelinePosition, targetLane?: AutomationLane) => void;
+  playheadPos: TimelinePosition;
+  scrollToItem: ScrollToItem | null;
+  selectedClipId: string | null;
+  selectedNodeId: string | null;
+  selectedTrackId: string | null;
+  setAllowMenuAndShortcuts: React.Dispatch<React.SetStateAction<boolean>>;
+  setFXChainPresets: React.Dispatch<React.SetStateAction<FXChainPreset[]>>;
+  setIsLooping: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
+  setLane: (track: Track, lane: AutomationLane) => void;
+  setMetronome: React.Dispatch<React.SetStateAction<boolean>>;
+  setMixerHeight: React.Dispatch<React.SetStateAction<number>>;
+  setNumMeasures: React.Dispatch<React.SetStateAction<number>>;
+  setPlayheadPos: React.Dispatch<React.SetStateAction<TimelinePosition>>;
+  setScrollToItem: React.Dispatch<React.SetStateAction<ScrollToItem | null>>;
+  setSelectedClipId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedNodeId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedTrackId: React.Dispatch<React.SetStateAction<string | null>>;
+  setShowMaster: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowMixer: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowTimeRuler: React.Dispatch<React.SetStateAction<boolean>>;
+  setSnapGridSize: React.Dispatch<React.SetStateAction<{ measures: number; beats: number; fraction: number }>>;
+  setSnapGridSizeOption: React.Dispatch<React.SetStateAction<SnapGridSizeOption>>;
+  setSongRegion: React.Dispatch<React.SetStateAction<Region | null>>;
+  setStretchAudio: React.Dispatch<React.SetStateAction<boolean>>;
+  setTimeSignature: (timeSignature: TimeSignature) => void;
+  setTrack: (track: Track) => void;
+  setTrackRegion: React.Dispatch<React.SetStateAction<{ region: Region; trackId: string } | null>>;
+  setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
+  setVerticalScale: React.Dispatch<React.SetStateAction<number>>;
+  showMaster: boolean;
+  showMixer: boolean;
+  showTimeRuler: boolean;
+  skipToEnd: () => void;
+  skipToStart: () => void;
+  snapGridSize: { measures: number; beats: number; fraction: number };
+  snapGridSizeOption: SnapGridSizeOption;
+  songRegion: Region | null;
+  splitClip: (clip: Clip, pos: TimelinePosition) => void;
+  stretchAudio: boolean;
+  trackRegion: { region: Region; trackId: string } | null;
+  timelineSettings: TimelineSettings;
+  toggleMuteClip: (clip: Clip) => void;
+  tracks: Track[];
+  updateTimelineSettings: (settings: TimelineSettings | ((prev: TimelineSettings) => TimelineSettings)) => void;
+  verticalScale: number;
+}
+
+// Update the context creation with explicit React namespace to avoid type conflicts
+export const WorkstationContext = React.createContext<WorkstationContextType>({} as WorkstationContextType);
 
 export function WorkstationProvider({ children }: PropsWithChildren) {
-  const { clipboardItem, copy } = useContext(ClipboardContext)!;
-  const { setShowPreferences } = useContext(PreferencesContext)!;
+  const { clipboardItem, copy } = useContext(ClipboardContext as React.Context<ClipboardContextType>)!;
+  const { setShowPreferences } = useContext(PreferencesContext as React.Context<PreferencesContextType>)!;
 
   const [allowMenuAndShortcuts, setAllowMenuAndShortcuts] = useState(true);
   const [fxChainPresets, setFXChainPresets] = useState<FXChainPreset[]>(
@@ -197,20 +285,20 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
   const selectedClip = useMemo(() => {
     return tracks
-      .map((track) => track.clips)
+      .map((track: Track) => track.clips)
       .flat()
-      .find((clip) => clip.id === selectedClipId);
+      .find((clip: Clip) => clip.id === selectedClipId);
   }, [selectedClipId, tracks]);
 
   const selectedNode = useMemo(() => {
     return allTracks
-      .map((track) => track.automationLanes.map((lane) => lane.nodes).flat())
+      .map((track: Track) => track.automationLanes.map((lane: AutomationLane) => lane.nodes).flat())
       .flat()
-      .find((node) => node.id === selectedNodeId);
+      .find((node: AutomationNode) => node.id === selectedNodeId);
   }, [selectedNodeId, allTracks]);
 
   const selectedTrack = useMemo(() => {
-    return allTracks.find((track) => track.id === selectedTrackId);
+    return allTracks.find((track: Track) => track.id === selectedTrackId);
   }, [selectedTrackId, allTracks]);
 
   const playbackInterval = useRef<NodeJS.Timeout | null>(null);
@@ -285,10 +373,10 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
           copy({ item: selectedClip, type: ClipboardItemType.Clip });
         } else if (selectedNode) {
           const lane = allTracks
-            .map((track) => track.automationLanes)
+            .map((track: Track) => track.automationLanes)
             .flat()
-            .find((lane) =>
-              lane.nodes.map((node) => node.id).includes(selectedNode.id)
+            .find((lane: AutomationLane) =>
+              lane.nodes.map((node: AutomationNode) => node.id).includes(selectedNode.id)
             );
           if (lane)
             copy({
@@ -630,7 +718,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   }
 
   function consolidateClip(clip: Clip) {
-    const track = tracks.find((t) =>
+    const track = tracks.find((t: Track) =>
       t.clips.find((c: Clip) => c.id === clip.id)
     );
 
@@ -783,7 +871,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
   function createClipFromTrackRegion() {
     if (trackRegion) {
-      const track = tracks.find((track) => track.id === trackRegion.trackId);
+      const track = tracks.find((track: Track) => track.id === trackRegion.trackId);
 
       if (track) {
         const newClip = {
@@ -806,7 +894,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   }
 
   function deleteClip(clip: Clip) {
-    const track = tracks.find((t) =>
+    const track = tracks.find((t: Track) =>
       t.clips.find((c: Clip) => c.id === clip.id)
     );
 
@@ -819,21 +907,21 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   }
 
   function deleteNode(node: AutomationNode) {
-    const track = allTracks.find((t) =>
+    const track = allTracks.find((t: Track) =>
       t.automationLanes.find((l: AutomationLane) =>
-        l.nodes.find((n) => n.id === node.id)
+        l.nodes.find((n: AutomationNode) => n.id === node.id)
       )
     );
 
     if (track) {
       const automationLanes = track.automationLanes.slice();
-      const laneIndex = automationLanes.findIndex((lane) =>
-        lane.nodes.find((n) => n.id === node.id)
+      const laneIndex = automationLanes.findIndex((lane: AutomationLane) =>
+        lane.nodes.find((n: AutomationNode) => n.id === node.id)
       );
 
       if (laneIndex > -1) {
         const nodes = automationLanes[laneIndex].nodes.filter(
-          (n) => n.id !== node.id
+          (n: AutomationNode) => n.id !== node.id
         );
         automationLanes[laneIndex] = { ...automationLanes[laneIndex], nodes };
         setTrack({ ...track, automationLanes });
@@ -845,13 +933,13 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
   function deleteTrack(track: Track) {
     if (track.id !== masterTrack.id) {
-      setTracks(tracks.filter((t) => t.id !== track.id));
+      setTracks(tracks.filter((t: Track) => t.id !== track.id));
       if (selectedTrackId === track.id) setSelectedTrackId(null);
     }
   }
 
   function duplicateClip(clip: Clip) {
-    const track = tracks.find((t) =>
+    const track = tracks.find((t: Track) =>
       t.clips.find((c: Clip) => c.id === clip.id)
     );
 
@@ -867,14 +955,14 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
       const duplicate = { ...track, id: v4(), name: `${track.name} (Copy)` };
 
       duplicate.color = getRandomTrackColor();
-      duplicate.clips = duplicate.clips.map((clip) => copyClip(clip));
-      duplicate.fx.effects = duplicate.fx.effects.map((effect) => {
+      duplicate.clips = duplicate.clips.map((clip: Clip) => copyClip(clip));
+      duplicate.fx.effects = duplicate.fx.effects.map((effect: any) => {
         return { ...effect, id: v4() };
       });
-      duplicate.automationLanes = duplicate.automationLanes.map((lane) => ({
+      duplicate.automationLanes = duplicate.automationLanes.map((lane: AutomationLane) => ({
         ...lane,
         id: v4(),
-        nodes: lane.nodes.map((node) => ({
+        nodes: lane.nodes.map((node: AutomationNode) => ({
           ...node,
           id: v4(),
           pos: node.pos.copy(),
@@ -971,10 +1059,10 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
         const lane =
           targetLane ||
           selectedTrack?.automationLanes.find(
-            (lane) => lane.envelope === item.lane.envelope
+            (lane: AutomationLane) => lane.envelope === item.lane.envelope
           );
-        const track = allTracks.find((track) =>
-          track.automationLanes.find((l) => l.id === lane?.id)
+        const track = allTracks.find((track: Track) =>
+          track.automationLanes.find((l: AutomationLane) => l.id === lane?.id)
         );
 
         if (track && lane) {
@@ -1001,7 +1089,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
   function setLane(track: Track, lane: AutomationLane) {
     const automationLanes = track.automationLanes.slice();
-    const index = automationLanes.findIndex((l) => l.id === lane.id);
+    const index = automationLanes.findIndex((l: AutomationLane) => l.id === lane.id);
 
     if (index > -1) {
       automationLanes[index] = lane;
@@ -1014,7 +1102,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
     setMasterTrack(preserveTrackMargins(masterTrack, newTimelineSettings));
     setTracks(
-      tracks.map((track) => preserveTrackMargins(track, newTimelineSettings))
+      tracks.map((track: Track) => preserveTrackMargins(track, newTimelineSettings))
     );
     setPlayheadPos(preservePosMargin(playheadPos, newTimelineSettings));
 
@@ -1069,7 +1157,7 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
 
   function setTrack(track: Track) {
     if (track.id === masterTrack.id) setMasterTrack(track);
-    else setTracks(tracks.map((t) => (t.id === track.id ? track : t)));
+    else setTracks(tracks.map((t: Track) => (t.id === track.id ? track : t)));
   }
 
   function skipToEnd() {
@@ -1091,25 +1179,25 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   }
 
   function splitClip(clip: Clip, pos: TimelinePosition) {
-    const track = tracks.find((t) => t.clips.find((c) => c.id === clip.id));
+    const track = tracks.find((t: Track) => t.clips.find((c: Clip) => c.id === clip.id));
 
     if (track && pos.compareTo(clip.start) > 0) {
       const clipSlices = sliceClip(clip, pos);
       setTrack({
         ...track,
-        clips: track.clips.filter((c) => c.id !== clip.id).concat(clipSlices),
+        clips: track.clips.filter((c: Clip) => c.id !== clip.id).concat(clipSlices),
       });
     }
   }
 
   function toggleMuteClip(clip: Clip) {
-    const track = tracks.find((t) => t.clips.find((c) => c.id === clip.id));
+    const track = tracks.find((t: Track) => t.clips.find((c: Clip) => c.id === clip.id));
 
     if (track) {
       const newClip = { ...clip, muted: !clip.muted };
       setTrack({
         ...track,
-        clips: track.clips.map((c) => (c.id === clip.id ? newClip : c)),
+        clips: track.clips.map((c: Clip) => (c.id === clip.id ? newClip : c)),
       });
     }
   }
@@ -1117,92 +1205,94 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
   function updateTimelineSettings(
     settings: TimelineSettings | ((prev: TimelineSettings) => TimelineSettings)
   ) {
-    setTimelineSettings((prev) => {
+    setTimelineSettings((prev: TimelineSettings) => {
       TimelinePosition.timelineSettings =
         typeof settings === "function" ? settings(prev) : settings;
       return TimelinePosition.timelineSettings;
     });
   }
 
-  return (
-    <WorkstationContext.Provider
-      value={{
-        addNode,
-        addTrack,
-        adjustNumMeasures,
-        allowMenuAndShortcuts,
-        autoGridSize,
-        consolidateClip,
-        createAudioClip,
-        createClipFromTrackRegion,
-        deleteClip,
-        deleteNode,
-        deleteTrack,
-        duplicateClip,
-        duplicateTrack,
-        fxChainPresets,
-        getTrackCurrentValue,
-        insertClips,
-        isLooping,
-        isPlaying,
-        isRecording,
-        masterTrack,
-        maxPos,
-        metronome,
-        mixerHeight,
-        numMeasures,
-        pasteClip,
-        pasteNode,
-        playheadPos,
-        scrollToItem,
-        selectedClipId,
-        selectedNodeId,
-        selectedTrackId,
-        setAllowMenuAndShortcuts,
-        setFXChainPresets,
-        setIsLooping,
-        setIsPlaying,
-        setIsRecording,
-        setLane,
-        setMetronome,
-        setMixerHeight,
-        setNumMeasures,
-        setPlayheadPos,
-        setScrollToItem,
-        setSelectedClipId,
-        setSelectedNodeId,
-        setSelectedTrackId,
-        setShowMaster,
-        setShowMixer,
-        setShowTimeRuler,
-        setSnapGridSize,
-        setSnapGridSizeOption,
-        setSongRegion,
-        setStretchAudio,
-        setTimeSignature,
-        setTrack,
-        setTrackRegion,
-        setTracks,
-        setVerticalScale,
-        showMaster,
-        showMixer,
-        showTimeRuler,
-        skipToEnd,
-        skipToStart,
-        snapGridSize,
-        snapGridSizeOption,
-        songRegion,
-        splitClip,
-        stretchAudio,
-        trackRegion,
-        timelineSettings,
-        toggleMuteClip,
-        tracks,
-        updateTimelineSettings,
-        verticalScale,
-      }}
-    >
-      {children}
-    </WorkstationContext.Provider>
+  // Create value object
+  const contextValue: WorkstationContextType = {
+    addNode,
+    addTrack,
+    adjustNumMeasures,
+    allowMenuAndShortcuts,
+    autoGridSize,
+    consolidateClip,
+    createAudioClip,
+    createClipFromTrackRegion,
+    deleteClip,
+    deleteNode,
+    deleteTrack,
+    duplicateClip,
+    duplicateTrack,
+    fxChainPresets,
+    getTrackCurrentValue,
+    insertClips,
+    isLooping,
+    isPlaying,
+    isRecording,
+    masterTrack,
+    maxPos,
+    metronome,
+    mixerHeight,
+    numMeasures,
+    pasteClip,
+    pasteNode,
+    playheadPos,
+    scrollToItem,
+    selectedClipId,
+    selectedNodeId,
+    selectedTrackId,
+    setAllowMenuAndShortcuts,
+    setFXChainPresets,
+    setIsLooping,
+    setIsPlaying,
+    setIsRecording,
+    setLane,
+    setMetronome,
+    setMixerHeight,
+    setNumMeasures,
+    setPlayheadPos,
+    setScrollToItem,
+    setSelectedClipId,
+    setSelectedNodeId,
+    setSelectedTrackId,
+    setShowMaster,
+    setShowMixer,
+    setShowTimeRuler,
+    setSnapGridSize,
+    setSnapGridSizeOption,
+    setSongRegion,
+    setStretchAudio,
+    setTimeSignature,
+    setTrack,
+    setTrackRegion,
+    setTracks,
+    setVerticalScale,
+    showMaster,
+    showMixer,
+    showTimeRuler,
+    skipToEnd,
+    skipToStart,
+    snapGridSize,
+    snapGridSizeOption,
+    songRegion,
+    splitClip,
+    stretchAudio,
+    trackRegion,
+    timelineSettings,
+    toggleMuteClip,
+    tracks,
+    updateTimelineSettings,
+    verticalScale,
+  };
+
+  // Use React.createElement instead of JSX to avoid UMD global error
+  return React.createElement(
+    WorkstationContext.Provider,
+    { value: contextValue },
+    children
   );
 }

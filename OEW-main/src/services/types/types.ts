@@ -362,15 +362,20 @@ export class TimelinePosition {
 }
 
 /**
- * Represents an audio effect in the FX chain
+ * Base interface for audio effects with core required properties
  */
-export interface Effect {
+export interface BaseEffect {
   id: string;
   name: string;
   enabled: boolean;
-  // Add these new properties for external effect integration
-  type?: "native" | "juce" | "python";
-  source?: string; // Path to plugin/script
+  type: "native" | "juce" | "python";
+  source?: string; // Path to plugin/script remains optional
+}
+
+/**
+ * Full effect interface with parameters
+ */
+export interface Effect extends BaseEffect {
   parameters?: Record<string, any>;
 }
 
@@ -380,7 +385,7 @@ export interface Effect {
 export interface FXChainPreset {
   id: string;
   name: string;
-  effects: Effect[];
+  effects: BaseEffect[];
 }
 
 /**
@@ -390,14 +395,14 @@ export interface Track {
   id: string;
   name: string;
   type: TrackType;
-  color: string; // Make required instead of optional
+  color: string;
   clips: Clip[];
   fx: {
     preset: string | null;
-    effects: Effect[];
+    effects: BaseEffect[]; // Use the base interface to allow missing parameters
     selectedEffectIndex: number;
   };
-  automationLanes: AutomationLane[]; // Make required with specific type
+  automationLanes: AutomationLane[];
   
   // Add other properties
   mute: boolean;
@@ -407,6 +412,7 @@ export interface Track {
   pan: number;
   automation?: boolean;
   automationMode?: AutomationMode;
+  expanded?: boolean; // Add this property which might be expected but missing
 }
 
 export enum TrackType {

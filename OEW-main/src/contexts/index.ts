@@ -1,7 +1,8 @@
-import { createContext } from 'react';
-import { AnalysisContextType } from '../services/types/types';
+import { createContext, Dispatch, SetStateAction } from 'react';
 
+// Imports from services/types/types - fix path and remove duplicates
 import { 
+  AnalysisContextType,
   AutomationLane, 
   AutomationNode, 
   Clip, 
@@ -16,9 +17,8 @@ import {
   Track, 
   TrackType, 
   WorkstationAudioInputFile,
-  AudioAnalysisType, 
-  AnalysisContextType 
-} from "@/services/types/types";
+  AudioAnalysisType
+} from "../services/types/types";
 
 export enum ClipboardItemType {
   Clip, 

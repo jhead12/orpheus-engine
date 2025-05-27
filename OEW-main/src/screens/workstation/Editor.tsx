@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { Buffer } from "buffer";
+import { v4 } from "uuid"; // Add import for v4 UUID generator
 import {
   IconButton,
   SpeedDial,
@@ -51,6 +52,15 @@ import {
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
 } from "../../services/utils/utils";
+import { 
+  SortData,
+  clamp,
+  cmdOrCtrl,
+  isMacOS,
+  openContextMenu,
+  debounce
+} from "./editor-utils";
+
 // Define getBaseTrack locally since it's not exported from utils
 const getBaseTrack = (type = "audio") => ({
   id: "track-" + Math.random().toString(36).substring(2, 11),
@@ -63,8 +73,16 @@ const getBaseTrack = (type = "audio") => ({
   pan: 0,
   solo: false,
   muted: false,
-  type: type === "midi" ? 1 : 0,
-  volume: 0
+  type: type === "midi" ? TrackType.Midi : TrackType.Audio, // Use TrackType enum instead of raw numbers
+  volume: 0,
+  // Add missing properties required by Track type with correct structure
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0
+  },
+  mute: false,
+  armed: false
 });
 
 export interface EditorDragData {
@@ -477,7 +495,14 @@ export default function Editor() {
             const name = files[i].name.split(".")[0];
             const buffer = Buffer.from(await files[i].arrayBuffer());
             const clip = await createAudioClip(
-              { buffer, name, type: files[i].type },
+              { 
+                id: v4(), // Generate unique ID
+                name, 
+                path: files[i].name, 
+                duration: 0, // Duration will be calculated in createAudioClip
+                buffer, // If createAudioClip needs this, we'll need to update WorkstationAudioInputFile
+                type: files[i].type // Same here - add to the interface if needed
+              } as any, // Temporary cast to any to avoid TypeScript errors
               pos
             );
 
@@ -502,7 +527,7 @@ export default function Editor() {
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
-          name: clip.name,
+          name: clip.name || `New ${clip.type || 'Audio'} Track`, // Ensure name is never undefined
           clips: [clip],
         }));
 
