@@ -1,3 +1,12 @@
+## [1.0.7](https://github.com/jhead12/orpheus-engine/compare/v1.0.6...v1.0.7) (2025-05-27)
+
+
+### Features
+
+* implement complete Electron integration ([29cf709](https://github.com/jhead12/orpheus-engine/commit/29cf7097aecb2556491fe6e35a92c5c2c5c534cb))
+
+
+
 ## [1.0.4](https://github.com/jhead12/orpheus-engine/compare/v1.0.6...v1.0.4) (2025-05-27)
 
 

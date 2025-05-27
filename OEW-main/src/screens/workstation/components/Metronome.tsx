@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
+import { WorkstationContext } from "../../../contexts";
 import { Metronome as MetronomeIcon } from "@/components/icons";
 import metronomeTick from "@/assets/audio/metronome-tick.wav";
 import metronomeTickAccentuated from "@/assets/audio/metronome-tick-accentuated.wav";

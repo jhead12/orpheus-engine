@@ -1,8 +1,8 @@
 import { useContext, useLayoutEffect, useRef, useState } from "react";
-import { PreferencesContext, WorkstationContext } from "@/contexts";
-import { TimelinePosition, SnapGridSizeOption } from "@/services/types/types";
-import { formatDuration, measureSeconds } from "@/services/utils/general";
-import { BASE_BEAT_WIDTH, GRID_MIN_INTERVAL_WIDTH } from "@/services/utils/utils";
+import { PreferencesContext, WorkstationContext } from "../../../contexts";
+import { TimelinePosition, SnapGridSizeOption } from "../../../services/types/types";
+import { formatDuration, measureSeconds } from "../../../services/utils/general";
+import { BASE_BEAT_WIDTH, GRID_MIN_INTERVAL_WIDTH } from "../../../services/utils/utils";
 
 const TIME_MIN_INTERVAL_WIDTH = 68;
 const POS_MIN_INTERVAL_WIDTH = 34;
@@ -307,4 +307,4 @@ export default function TimelineRulerGrid() {
       />
     </div>
   )
-} 
+}

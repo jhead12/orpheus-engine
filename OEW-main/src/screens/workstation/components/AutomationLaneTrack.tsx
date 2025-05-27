@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState } from "react"
 import { IconButton, Popover } from "@mui/material"
-import { WorkstationContext } from "@/contexts"
-import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from "@/services/types/types"
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from "../../../services/types/types"
 import { Add, ExpandLess, ExpandMore, Remove } from "@mui/icons-material"
 import { clamp, inverseLerp, lerp } from "@/services/utils/general"
 import { v4 } from "uuid"

@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { Popover } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
-import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from "@/services/types/types";
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from "../../../services/types/types";
 import { clamp } from "@/services/utils/general";
 import { formatPanning, formatVolume, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "@/services/utils/utils";
 import { Tooltip } from "@/components/widgets";
