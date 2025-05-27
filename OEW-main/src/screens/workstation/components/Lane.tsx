@@ -10,7 +10,7 @@ import { getCSSVarValue, normalizeHex } from "../../../services/utils/general";
 interface IProps {
   className?: string;
   dragDataTarget: { track: Track | null, incompatible?: boolean } | null;
-  style?: CSSProperties;
+  style?: React.CSSProperties; // Explicitly set as React.CSSProperties
   track: Track;
 }
 

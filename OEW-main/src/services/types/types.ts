@@ -522,3 +522,18 @@ export enum AutomationMode {
   Trim = "trim",
   Latch = "latch"
 }
+
+export enum AudioAnalysisType {
+  Spectral = 'spectral',
+  Waveform = 'waveform',
+  Features = 'features'
+}
+
+export interface AnalysisContextType {
+  analysisType: AudioAnalysisType;
+  setAnalysisType: (type: AudioAnalysisType) => void;
+  selectedClip: Clip | null;
+  setSelectedClip: (clip: Clip | null) => void;
+  analysisResults: any;
+  runAudioAnalysis: (audioBuffer: AudioBuffer, type: AudioAnalysisType) => Promise<any>;
+}

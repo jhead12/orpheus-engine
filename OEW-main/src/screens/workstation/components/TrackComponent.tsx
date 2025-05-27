@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { WorkstationContext } from "../../../contexts";
 import { AutomationLaneEnvelope, ContextMenuType, Track } from "../../../services/types/types"
 import { Knob, HueInput, Dialog, Meter } from "../../../components/widgets"
@@ -23,7 +23,7 @@ interface IProps {
   className?: string;
   colorless?: boolean;
   order?: number;
-  style?: CSSProperties;
+  style?: React.CSSProperties; // Changed from CSSProperties to React.CSSProperties
   track: Track;
 }
 
