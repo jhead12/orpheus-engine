@@ -1,12 +1,12 @@
 import React, { memo, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
-import DNR, { DNRData, ResizeDNRData } from "@/components/DNR";
+import DNR, { DNRData, ResizeDNRData } from "../../../components/DNR";
 import { WorkstationContext } from "../../../contexts";
-import { openContextMenu } from "@/services/electron/utils";
+import { openContextMenu } from "../../../services/electron/utils";
 import { AutomationLane, BaseClipComponentProps, ContextMenuType, TimelinePosition, Track } from "../../../services/types/types";
-import { shadeColor } from "@/services/utils/general";
-import { BASE_HEIGHT, clipAtPos, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "@/services/utils/utils";
-import useClickAway from "@/services/hooks/useClickAway";
+import { shadeColor } from "../../../services/utils/general";
+import { BASE_HEIGHT, clipAtPos, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "../../../services/utils/utils";
+import useClickAway from "../../../services/hooks/useClickAway";
 
 interface IProps extends BaseClipComponentProps {
   automationSprite?: (height: number) => React.ReactNode;
@@ -298,7 +298,7 @@ function ClipComponent({ clip, listeners, onChangeLane, onSetClip, track, ...res
 
     onSetClip({
       ...clip,
-      loopEnd: loopWidth > 0 ? TimelinePosition.fromMargin(coords.endX + loopWidth) : null
+      loopEnd: loopWidth > 0 ? TimelinePosition.fromMargin(coords.endX + loopWidth) : undefined
     });
     setAllowMenuAndShortcuts(true);
     rest.onLoopStop?.(e, data);
@@ -342,7 +342,7 @@ function ClipComponent({ clip, listeners, onChangeLane, onSetClip, track, ...res
         ...clip,
         start: TimelinePosition.fromMargin(coords.startX),
         end: TimelinePosition.fromMargin(coords.endX),
-        loopEnd: loopWidth > 0 ? TimelinePosition.fromMargin(coords.endX + loopWidth) : null
+        loopEnd: loopWidth > 0 ? TimelinePosition.fromMargin(coords.endX + loopWidth) : undefined
       });
 
     setAllowMenuAndShortcuts(true);
@@ -480,7 +480,7 @@ function ClipComponent({ clip, listeners, onChangeLane, onSetClip, track, ...res
         </div>
         {loopWidth > 5 && <div className="position-absolute h-100" style={style.loopOverlay} />}
         <div className="position-absolute pe-none" style={style.automationContainer}>
-          {automationTrack.automation && automationLanes.map((lane, idx) => {
+          {automationTrack.automation && automationLanes.map((lane: AutomationLane, idx: number) => {
             const color = selected ? "#fff" : lane.enabled === false ? "var(--bg12)" : track.color;
             const sprite = rest.automationSprite?.(lane.expanded ? BASE_HEIGHT * verticalScale : 22);
 

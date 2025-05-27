@@ -4,13 +4,18 @@ import {
   Clip,
   TimelinePosition, 
   TimelineSettings, 
-  TimeSignature, 
   Track, 
   TrackType,
   AutomationNode
 } from "../types/types";
 import { v4 } from "uuid";
 import { clamp, hslToHex, inverseLerp, lerp, shadeColor } from "./general";
+
+// Define TimeSignature locally since it's not exported from types
+interface TimeSignature {
+  beats: number;
+  noteValue: number;
+}
 
 // Basic constants
 export const BASE_MAX_MEASURES = 1600; // Maximum number of measures at time signature 4/4
@@ -26,7 +31,7 @@ export function automatedValueAtPos(pos: TimelinePosition, lane: AutomationLane)
   if (lane.nodes.length === 0)
     return null;
     
-  const positions = [...lane.nodes.map(node => node.position), pos].sort((a, b) => a.compareTo(b));
+  const positions = [...lane.nodes.map(node => node.pos), pos].sort((a, b) => a.compareTo(b));
   const idx = positions.indexOf(pos);
 
   if (idx === 0) {
@@ -34,14 +39,14 @@ export function automatedValueAtPos(pos: TimelinePosition, lane: AutomationLane)
   } else if (idx === positions.length - 1) {
     return lane.nodes[lane.nodes.length - 1].value;
   } else {
-    const prev = lane.nodes.find(node => node.position === positions[idx - 1])!;
-    const next = lane.nodes.find(node => node.position === positions[idx + 1])!;
+    const prev = lane.nodes.find(node => node.pos === positions[idx - 1])!;
+    const next = lane.nodes.find(node => node.pos === positions[idx + 1])!;
 
     const x = pos.toMargin();
-    const x1 = prev.position.toMargin();
+    const x1 = prev.pos.toMargin();
     const y1 = lane.envelope === AutomationLaneEnvelope.Volume ? volumeToNormalized(prev.value) :
       inverseLerp(prev.value, lane.minValue!, lane.maxValue!);
-    const x2 = next.position.toMargin();
+    const x2 = next.pos.toMargin();
     const y2 = lane.envelope === AutomationLaneEnvelope.Volume ? volumeToNormalized(next.value) :
       inverseLerp(next.value, lane.minValue!, lane.maxValue!);
 
@@ -198,7 +203,7 @@ export function preserveTrackMargins(track: Track, settings: TimelineSettings) {
     automationLanes: track.automationLanes ? track.automationLanes.map(lane => {
       return {
         ...lane, 
-        nodes: lane.nodes ? lane.nodes.map((node: AutomationNode) => ({...node, position: preservePosMargin(node.position, settings)})) : []
+        nodes: lane.nodes ? lane.nodes.map((node: AutomationNode) => ({...node, pos: preservePosMargin(node.pos, settings)})) : []
       };
     }) : []
   };

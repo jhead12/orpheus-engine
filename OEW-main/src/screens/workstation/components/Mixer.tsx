@@ -166,18 +166,18 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
           />
           <SelectSpinBox
             classes={{ container: "hover-2 stop-reorder col-11" }}
-            onChange={(val: any) => setTrack({...track, automationMode: val as AutomationMode})}
+            onChange={(val: AutomationMode) => setTrack({...track, automationMode: val})}
             options={[
               { label: "Read", value: AutomationMode.Read },
               { label: "Write", value: AutomationMode.Write },
-              { label: "Touch", value: (AutomationMode as any).Touch },
-              { label: "Trim", value: (AutomationMode as any).Trim },
-              { label: "Latch", value: (AutomationMode as any).Latch }
+              { label: "Touch", value: AutomationMode.Touch },
+              { label: "Trim", value: AutomationMode.Trim },
+              { label: "Latch", value: AutomationMode.Latch }
             ]}
             optionsPopover={{ marginThreshold: 0 }}
             style={style.automationModeSpinBox}
-            title={`Automation Mode: ${(track as any).automationMode}`}
-            value={(track as any).automationMode}
+            title={`Automation Mode: ${track.automationMode || AutomationMode.Read}`}
+            value={track.automationMode || AutomationMode.Read}
           />
           <div style={{flex: 1, width: "100%", display: "flex", position: "relative"}}>
             <div className="position-relative d-flex" style={{ marginLeft: 6, padding: "9px 0 10px" }}>

@@ -230,7 +230,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
           const effects = track.fx.effects.slice();
           effects[effectIndex] = { 
             ...effects[effectIndex], 
-            source: file.path,
+            source: file.name, // Use file.name instead of file.path
             name: file.name.replace(/\.[^/.]+$/, "") // Remove extension for display
           };
           setTrack({ ...track, fx: { ...track.fx, effects } });
