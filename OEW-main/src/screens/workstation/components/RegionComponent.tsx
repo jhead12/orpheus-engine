@@ -1,7 +1,7 @@
 import React, { Component, ContextType, RefObject, createRef } from "react";
 import { WorkstationContext } from "../../../contexts";
 import { Region, TimelinePosition, TimelineSettings } from "../../../services/types/types";
-import WindowAutoScroll, { default as WindowAutoScrollProps } from "@/components/WindowAutoScroll";
+import WindowAutoScroll, { default as WindowAutoScrollProps } from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
 
 interface IProps {
@@ -138,7 +138,7 @@ export default class RegionComponent extends Component<IProps, IState> {
     this.resize(e.movementX, this.state.resizeEdge);
   }
 
-  handleResizeStart(_e: React.MouseEvent, edge: "start" | "end") {
+  handleResizeStart(e: React.MouseEvent, edge: "start" | "end") {
     document.addEventListener("mousemove", this.handleResize);
     document.addEventListener("mouseup", this.handleResizeStop);
     document.body.style.cursor = "ew-resize";
@@ -216,6 +216,7 @@ export default class RegionComponent extends Component<IProps, IState> {
         <WindowAutoScroll
           {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
+          direction="horizontal"
           onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
         />
         <div

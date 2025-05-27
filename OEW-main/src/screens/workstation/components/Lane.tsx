@@ -90,13 +90,13 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
 
   function changeLane(clip: Clip, newTrack: Track) {
     const newTracks = tracks.slice();
-    const trackIdx = newTracks.findIndex(track => track.clips.find(c => c.id === clip.id));
+    const trackIdx = newTracks.findIndex(track => track.clips.find((c: Clip) => c.id === clip.id));
     const newTrackIdx = newTracks.findIndex(track => track.id === newTrack.id);
 
     if (trackIdx > -1 && newTrackIdx > -1) {
       newTracks[trackIdx] = { 
         ...newTracks[trackIdx], 
-        clips: newTracks[trackIdx].clips.filter(c => c.id !== clip.id) 
+        clips: newTracks[trackIdx].clips.filter((c: Clip) => c.id !== clip.id) 
       };
 
       newTracks[newTrackIdx] = {
@@ -113,7 +113,7 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
     const targetEl = e.currentTarget;
     const disablePaste = clipboardItem?.type !== ClipboardItemType.Clip || clipboardItem.item.type !== track.type;
 
-    openContextMenu(ContextMenuType.Lane, { track, disablePaste }, params => {
+    openContextMenu(ContextMenuType.Lane, { track, disablePaste }, (params: any) => {
       switch (params.action) {
         case 0:
           electronAPI.ipcRenderer.invoke(TRACK_FILE_UPLOAD, track.type)
@@ -153,7 +153,7 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
   function onTrackRegionContextMenu(e: MouseEvent) {
     e.stopPropagation();
   
-    openContextMenu(ContextMenuType.Region, { trackRegion: true }, params => {
+    openContextMenu(ContextMenuType.Region, { trackRegion: true }, (params: any) => {
       switch (params.action) {
         case 0:
           createClipFromTrackRegion();
@@ -178,9 +178,9 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
   const height = BASE_HEIGHT * verticalScale;
   const isMaster = track.id === masterTrack.id;
   
-  const visibleLanes = track.automationLanes.filter(lane => lane.show);
+  const visibleLanes = track.automationLanes?.filter(lane => lane.show) || [];
   const automationColor: string = isMaster ? normalizeHex(getCSSVarValue("--border6")) : (track.color ?? '#808080');
-  const addExtraHeight = !isMaster && height < 80 && track.automation;
+  const addExtraHeight = !isMaster && height < 80 && (track as any).automation;
   const laneHeight = Math.max(height, addExtraHeight ? 76 : 0);
   const showRegion = trackRegion && trackRegion.trackId === track.id;
 
@@ -233,7 +233,7 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
             <RegionComponent 
               autoScroll={{ thresholds: timelineEditorWindowScrollThresholds }}
               onContextMenu={onTrackRegionContextMenu}
-              onSetRegion={region => setTrackRegion(region ? { region, trackId: track.id } : null)}
+              onSetRegion={(region: any) => setTrackRegion(region ? { region, trackId: track.id } : null)}
               region={showRegion ? trackRegion!.region : null}
               style={styles.regionStyle}
             />
@@ -246,11 +246,11 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
           })}
         </div>
         <div>
-          {track.automation && track.automationLanes.map((lane, idx) => {
+          {(track as any).automation && track.automationLanes?.map((lane, idx) => {
             if (lane.show)
               return (
                 <AutomationLaneComponent
-                  color={getLaneColor(track.automationLanes, idx, automationColor)}
+                  color={getLaneColor(track.automationLanes || [], idx, automationColor) || "var(--border6)"}
                   key={lane.id}
                   lane={lane}
                   style={styles.automationLaneStyle(lane)}

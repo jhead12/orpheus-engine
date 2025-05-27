@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
 import { WorkstationContext } from "../../../contexts";
 import { Metronome as MetronomeIcon } from "@/components/icons";

@@ -143,7 +143,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
   const noHiddenLanes = !(track as any).automationLanes?.find((lane: any) => !lane.show);
   const mutedByMaster = (masterTrack as any)?.mute && !isMaster;
   
-  const automationColor = colorless ? normalizeHex(getCSSVarValue("--border6")) : track.color;
+  const automationColor = colorless ? normalizeHex(getCSSVarValue("--border6")) : (track.color || "#808080");
   const borderColor = colorless ? "var(--border6)" : "#444";
 
   const height = BASE_HEIGHT * verticalScale;
@@ -387,7 +387,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                 if (lane.show)
                   return (
                     <AutomationLaneTrack
-                      color={getLaneColor((track as any).automationLanes || [], idx, automationColor) || "var(--border6)"}
+                      color={getLaneColor((track as any).automationLanes || [], idx, automationColor)}
                       key={lane.id}
                       lane={lane}
                       track={track}
