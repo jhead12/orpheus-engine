@@ -1,6 +1,6 @@
 import React, { Component, ContextType, RefObject, createRef } from "react";
-import { WorkstationContext } from "@/contexts";
-import { Region, TimelinePosition, TimelineSettings } from "@/services/types/types";
+import { WorkstationContext } from "../../../contexts";
+import { Region, TimelinePosition, TimelineSettings } from "../../../services/types/types";
 import WindowAutoScroll, { WindowAutoScrollProps } from "@/components/WindowAutoScroll";
 import { flushSync } from "react-dom";
 

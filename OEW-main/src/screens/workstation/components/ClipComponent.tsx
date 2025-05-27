@@ -1,9 +1,9 @@
 import React, { memo, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import DNR, { DNRData, ResizeDNRData } from "@/components/DNR";
-import { WorkstationContext } from "@/contexts";
+import { WorkstationContext } from "../../../contexts";
 import { openContextMenu } from "@/services/electron/utils";
-import { AutomationLane, BaseClipComponentProps, ContextMenuType, TimelinePosition, Track } from "@/services/types/types";
+import { AutomationLane, BaseClipComponentProps, ContextMenuType, TimelinePosition, Track } from "../../../services/types/types";
 import { shadeColor } from "@/services/utils/general";
 import { BASE_HEIGHT, clipAtPos, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "@/services/utils/utils";
 import useClickAway from "@/services/hooks/useClickAway";

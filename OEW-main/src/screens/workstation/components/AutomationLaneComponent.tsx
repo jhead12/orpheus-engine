@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { ClipboardContext, ClipboardItemType, WorkstationContext } from "@/contexts";
+import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../../contexts";
 import { clamp, inverseLerp, lerp } from "@/services/utils/general";
 import { AutomationNodeComponent } from "@/screens/workstation/components";
 import { v4 } from "uuid";
 import { BASE_HEIGHT, normalizedToVolume, volumeToNormalized } from "@/services/utils/utils";
-import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from "@/services/types/types";
+import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from "../../../services/types/types";
 import { openContextMenu } from "@/services/electron/utils";
 
 interface IProps {

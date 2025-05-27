@@ -1,6 +1,6 @@
 import React, { CSSProperties, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { WorkstationContext } from "@/contexts"
-import { AutomationLaneEnvelope, ContextMenuType, Track } from "@/services/types/types"
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLaneEnvelope, ContextMenuType, Track } from "../../../services/types/types"
 import { Knob, HueInput, Dialog, Meter } from "@/components/widgets"
 import { IconButton, DialogContent } from "@mui/material"
 import { Add, Check, FiberManualRecord } from "@mui/icons-material"

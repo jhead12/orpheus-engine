@@ -1,6 +1,6 @@
 import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { WorkstationContext } from "@/contexts";
-import { BaseClipComponentProps, TimelinePosition } from "@/services/types/types";
+import { WorkstationContext } from "../../../contexts";
+import { BaseClipComponentProps, TimelinePosition } from "../../../services/types/types";
 import { ClipComponent, Waveform } from "@/screens/workstation/components";
 import { audioBufferToBuffer, audioContext, reverseAudio } from "@/services/utils/audio";
 import { CHUNK_SIZE as WAVEFORM_CHUNK_SIZE, WaveformProps } from "./Waveform";

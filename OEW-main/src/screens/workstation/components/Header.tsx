@@ -12,14 +12,14 @@ import {
   Undo,
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
+import { WorkstationContext } from "../../../contexts";
 import { Meter, NumberInput, SelectSpinBox } from "@/components/widgets";
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
   SnapGridSizeOption,
   TrackType,
-} from "@/services/types/types";
+} from "../../../services/types/types";
 import { FaMagnet } from "react-icons/fa";
 import {
   getVolumeGradient,

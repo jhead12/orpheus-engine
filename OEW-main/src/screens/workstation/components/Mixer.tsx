@@ -1,8 +1,8 @@
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
-import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from "@/services/types/types";
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from "../../../services/types/types";
 import { hslToHex, hueFromHex } from "@/services/utils/general";
 import { formatPanning, getVolumeGradient, volumeToNormalized } from "@/services/utils/utils";
 import { FXComponent, TrackVolumeSlider } from "@/screens/workstation/components";
