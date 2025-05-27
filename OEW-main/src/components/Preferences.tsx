@@ -1,7 +1,7 @@
-import { CSSProperties, useContext, useEffect, useState } from "react";
+import React, { CSSProperties, useContext, useEffect, useState } from "react";
 import { Settings } from "@mui/icons-material";
 import { DialogActions, DialogContent, FormControlLabel, Radio as MuiRadio, RadioGroup, RadioProps as MuiRadioProps, Snackbar } from "@mui/material";
-import { PreferencesContext } from "../contexts/PreferencesProvider"; // Update import to use the exported context
+import { PreferencesContext } from "../contexts"; 
 import { Dialog } from "./widgets";
 import styled from "styled-components";
 
@@ -57,25 +57,17 @@ const Radio = ({ className, label, radioProps, style, value }: RadioProps) => (
 const tabs = ["Appearance", "Audio", "General", "Media", "MIDI", "Project", "Recording", "VST & Plug-ins"];
 
 export default function Preferences() {
-  const context = useContext(PreferencesContext);
-  
-  if (!context) {
-    return null; // Return early if context is not available
-  }
-  
-  const { 
-    preferences, 
-    savePreferences, 
+  const {
+    preferences,
+    savePreferences,
     savedPreferences,
-    setShowPreferences, 
+    setShowPreferences,
     showPreferences,
     updatePreferences
-  } = context;
+  } = useContext(PreferencesContext)!;
 
   const [saved, setSaved] = useState(false);
   const [tabIdx, setTabIdx] = useState(0);
-  // Track color separately since it's not in the Preferences interface
-  const [selectedColor, setSelectedColor] = useState("azure");
 
   useEffect(() => cancel(), [])
 
@@ -90,11 +82,12 @@ export default function Preferences() {
   }
 
   function changeColor(e: React.ChangeEvent<HTMLInputElement>) {
-    // Just update the local color state - don't try to add it to Preferences
-    setSelectedColor(e.target.value);
+    const updatedPreferences = {
+      ...preferences,
+      color: e.target.value
+    };
     
-    // If you need to change something in the actual preferences based on color,
-    // you can do so here without modifying the Preferences type
+    updatePreferences(updatedPreferences as any);
   }
 
   function changeTheme(e: React.ChangeEvent<HTMLInputElement>) {
@@ -161,7 +154,7 @@ export default function Preferences() {
                         </PreferencesRow>
                         <PreferencesRow>
                           <label>Color</label>
-                          <RadioGroup name="color" onChange={changeColor} row value={selectedColor}>
+                          <RadioGroup name="color" onChange={changeColor} row value={preferences.color}>
                             <table style={{textAlign: "left", columnWidth: 90}}>
                               <tbody>
                                 <tr>
@@ -218,5 +211,5 @@ export default function Preferences() {
         </div>
       </Snackbar>
     </>
-  )
+  );
 }

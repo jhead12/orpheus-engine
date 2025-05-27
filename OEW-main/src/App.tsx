@@ -23,7 +23,7 @@ function App() {
 
     document.addEventListener("focusout", handleFocusOut, { capture: true });
     return () => document.removeEventListener("focusout", handleFocusOut, { capture: true });
-  }, [])
+  }, []);
 
   return (
     <PreferencesProvider>

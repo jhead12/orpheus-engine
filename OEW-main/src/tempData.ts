@@ -1,5 +1,5 @@
 import {v4 as uuidv4} from 'uuid';
-import TimelinePosition from "./services/types/TimelinePosition";
+import { TimelinePosition } from '@/services/types/types';
 import { AutomationLaneEnvelope, AutomationMode, Track, TrackType } from "./services/types/types";
 
 const data : Track[] = [
