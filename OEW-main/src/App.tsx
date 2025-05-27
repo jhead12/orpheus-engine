@@ -5,6 +5,7 @@ import PreferencesProvider from "./contexts/PreferencesProvider";
 import { WorkstationProvider } from "./contexts/WorkstationProvider";
 import Preferences from "./components/Preferences";
 import Workstation from "./screens/workstation/Workstation";
+import SettingsProvider from "./components/settings/SettingsManager";
 import "./styles/App.css";
 
 function App() {
@@ -26,23 +27,25 @@ function App() {
   }, []);
 
   return (
-    <PreferencesProvider>
-      <Router>
-        <Routes>
-          <Route 
-            path="/" 
-            element={
-              <ClipboardProvider>
-                <WorkstationProvider>
-                  <Workstation />
-                </WorkstationProvider>
-              </ClipboardProvider>
-            } 
-          />
-        </Routes>
-      </Router>
-      <Preferences />
-    </PreferencesProvider>
+    <SettingsProvider>
+      <PreferencesProvider>
+        <Router>
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <ClipboardProvider>
+                  <WorkstationProvider>
+                    <Workstation />
+                  </WorkstationProvider>
+                </ClipboardProvider>
+              } 
+            />
+          </Routes>
+        </Router>
+        <Preferences />
+      </PreferencesProvider>
+    </SettingsProvider>
   );
 }
 

@@ -11,10 +11,11 @@ interface WindowAutoScrollProps {
     medium: number;
     slow: number;
   };
+  onScroll?: (by: number) => void;
 }
 
 const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
-  const { active, eventType, thresholds, withinBounds } = props;
+  const { active, eventType, thresholds, withinBounds, onScroll } = props;
 
   const [windows, setWindows] = useState<{ horizontal: HTMLElement | null; vertical: HTMLElement | null; }>({
     horizontal: null,
@@ -148,10 +149,13 @@ const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
 
       if (scrollMargin + by <= 0 || scrollMargin + by >= scrollLength - clientLength)
         clearInterval(vertical ? vInterval.current : hInterval.current);
-      
       by = Math.max(-scrollMargin, Math.min(by, scrollLength - clientLength - scrollMargin));
       el.scrollBy(vertical ? 0 : by, vertical ? -by : 0);
+      if (onScroll) {
+        onScroll(by);
+      }
     }
+  
   
     if (vertical)
       vInterval.current = setInterval(callback, 25);
