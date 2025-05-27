@@ -10,16 +10,6 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"],
-      "@orpheus-engine/oew-main/*": ["./OEW-main/*"],
-      "@orpheus-engine/components": ["./packages/components/src"],
-      "@orpheus-engine/components/*": ["./packages/components/src/*"],
-      "@orpheus-engine/components-icons": ["./packages/components/icons/src"],
-      "@orpheus-engine/components-icons/*": ["./packages/components/icons/src/*"],
-      "@orpheus-engine/contexts": ["./packages/contexts/src"],
-      "@orpheus-engine/contexts/*": ["./packages/contexts/src/*"],
-      "@orpheus-engine/services/*": ["./packages/services/src/*"],
-      "@orpheus/*": ["./OEW-main/*"],
       "@/*": ["./OEW-main/*"]
     },
     "noImplicitAny": true,
