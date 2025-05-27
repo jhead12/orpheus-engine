@@ -1,8 +1,7 @@
-import { 
-  AutomationLane, 
-  AutomationLaneEnvelope, 
-  AutomationMode, 
-  Clip, 
+import {
+  AutomationLane,
+  AutomationLaneEnvelope,
+  Clip,
   TimelinePosition, 
   TimelineSettings, 
   TimeSignature, 
@@ -122,40 +121,6 @@ export function formatPanning(val: number, short = false) {
 
 export function formatVolume(val: number) {
   return `${val === -Infinity ? "-∞" : +val.toFixed(1)} dB`;
-}
-
-function getBaseTrack(id = v4()) : Track {
-  return {
-    id, 
-    name: `Track`, 
-    type: TrackType.Audio,
-    color: getRandomTrackColor(), 
-    clips: [],
-    automationLanes: []
-  };
-}
-
-function getBaseMasterTrack() : Track {
-  const baseTrack = getBaseTrack()
-
-  return {
-    ...baseTrack, 
-    name: "Master", 
-    type: TrackType.Master,
-    color: "var(--border6)", 
-    automationLanes: [
-      {
-        id: v4(), 
-        label: "Tempo", 
-        envelope: AutomationLaneEnvelope.Volume,
-        nodes: [],
-        minValue: 20,
-        maxValue: 320,
-        show: false, 
-        expanded: true
-      }
-    ]
-  }
 }
 
 export function getLaneColor(lanes: AutomationLane[], idx: number, baseColor: string) : string {

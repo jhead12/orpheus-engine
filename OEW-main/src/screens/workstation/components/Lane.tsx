@@ -179,7 +179,7 @@ function Lane({ className, dragDataTarget, style, track }: IProps) {
   const isMaster = track.id === masterTrack.id;
   
   const visibleLanes = track.automationLanes.filter(lane => lane.show);
-  const automationColor = isMaster ? normalizeHex(getCSSVarValue("--border6")) : track.color;
+  const automationColor: string = isMaster ? normalizeHex(getCSSVarValue("--border6")) : (track.color ?? '#808080');
   const addExtraHeight = !isMaster && height < 80 && track.automation;
   const laneHeight = Math.max(height, addExtraHeight ? 76 : 0);
   const showRegion = trackRegion && trackRegion.trackId === track.id;
