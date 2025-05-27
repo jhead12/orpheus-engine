@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import MenuBuilder from './menu';
 import { setupAudioAnalysisHandlers } from './audioAnalysis';
@@ -30,6 +30,15 @@ function createWindow () {
   contextMenuBuilder.buildContextMenus();
   buildHandlers(mainWindow);
 }
+
+// Add these handlers for the preload script
+ipcMain.handle('app:getVersion', () => {
+  return app.getVersion();
+});
+
+ipcMain.handle('app:getUserDataPath', (_, subFolder) => {
+  return path.join(app.getPath('userData'), subFolder);
+});
 
 app.whenReady().then(() => {
   createWindow()

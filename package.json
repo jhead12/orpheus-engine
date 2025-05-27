@@ -44,7 +44,12 @@
     "branch:feature": "git checkout develop && git checkout -b feature/$npm_config_name",
     "branch:hotfix": "git checkout main && git checkout -b hotfix/$npm_config_name",
     "branch:cleanup": "git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -r git branch -d",
-    "branch:release": "git checkout -b release/v$npm_package_version"
+    "branch:release": "git checkout -b release/v$npm_package_version",
+    "typecheck": "tsc --noEmit",
+    "prestart": "npm run typecheck",
+    "setup-symlinks": "node scripts/setup-symlinks.js",
+    "presync-versions": "npm run setup-symlinks",
+    "prebuild": "npm run setup-symlinks"
   },
   "devDependencies": {
     "conventional-changelog-cli": "^4.1.0"
