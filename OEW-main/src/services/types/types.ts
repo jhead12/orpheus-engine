@@ -1,186 +1,468 @@
-import { Buffer } from "buffer";
-import TimelinePosition from "./TimelinePosition";
+import { formatDuration, measureSeconds, truncate } from "../utils/general";
+import { BASE_BEAT_WIDTH } from "../utils/utils";
 
-export interface AutomationLane {
-  enabled: boolean;
-  envelope: string;
-  expanded: boolean;
-  id: string;
-  label: string;
-  maxValue: number;
-  minValue: number;
-  nodes: AutomationNode[];
-  show: boolean;
+export interface TimelineSettings {
+  horizontalScale: number;
+  timeSignature: TimeSignature;
+  tempo: number;
 }
 
-export enum AutomationLaneEnvelope {
-  Volume = "volume",
-  Pan = "pan",
-  Tempo = "tempo"
+export interface TimelineSpan {
+  measures: number;
+  beats: number;
+  fraction: number;
 }
 
-export enum AutomationMode {
-  Read = "Read", 
-  Write = "Write", 
-  Touch = "Touch", 
-  Trim = "Trim", 
-  Latch = "Latch"
-};
-
-export interface AutomationNode {
-  id: string
-  pos: TimelinePosition
-  value: number
+export interface DirectionalTimelineSpan extends TimelineSpan {
+  sign: number;
 }
 
-export interface BaseClipComponentProps {
-  clip: Clip;
-  height: number;
-  onChangeLane: (clip: Clip, newTrack: Track) => void;
-  onSetClip: (clip: Clip) => void;
-  track: Track;
+export class TimelinePosition {
+  static start: TimelinePosition = new TimelinePosition(1, 1, 0);
+  static timelineSettings: TimelineSettings = {
+    horizontalScale: 1,
+    timeSignature: { beats: 4, noteValue: 4 },
+    tempo: 120,
+  };
+
+  measure: number;
+  beat: number;
+  fraction: number;
+
+  constructor(measure: number, beat: number, fraction: number) {
+    this.measure = measure;
+    this.beat = beat;
+    this.fraction = fraction;
+  }
+
+  add(
+    measures: number,
+    beats: number,
+    fraction: number,
+    mutate: boolean = true
+  ): TimelinePosition {
+    let pos = mutate ? this : this.copy();
+
+    pos.addMeasures(measures);
+    pos.addBeats(beats);
+    pos.addFraction(fraction);
+
+    return pos;
+  }
+
+  private addBeats(beats: number) {
+    let numBeatsPastMeasureStart = this.beat - 1 + beats;
+
+    const measures = Math.floor(
+      numBeatsPastMeasureStart /
+        TimelinePosition.timelineSettings.timeSignature.beats
+    );
+    this.addMeasures(measures);
+    numBeatsPastMeasureStart -=
+      measures * TimelinePosition.timelineSettings.timeSignature.beats;
+
+    this.beat = numBeatsPastMeasureStart + 1;
+  }
+
+  private addFraction(fraction: number) {
+    this.fraction += fraction;
+
+    const beats = Math.floor(this.fraction / 1000);
+    this.addBeats(beats);
+    this.fraction -= beats * 1000;
+  }
+
+  private addMeasures(measures: number) {
+    this.measure += measures;
+  }
+
+  compareTo(other: TimelinePosition): number {
+    const fraction = this.toFraction();
+    const otherFraction = other.toFraction();
+
+    if (fraction > otherFraction) return 1;
+    else if (fraction < otherFraction) return -1;
+    return 0;
+  }
+
+  copy(): TimelinePosition {
+    return new TimelinePosition(this.measure, this.beat, this.fraction);
+  }
+
+  diff(other: TimelinePosition): DirectionalTimelineSpan {
+    const fractionDiff = this.toFraction() - other.toFraction();
+    const { measures, beats, fraction } =
+      TimelinePosition.fractionToSpan(fractionDiff);
+    return { measures, beats, fraction, sign: fractionDiff < 0 ? -1 : 1 };
+  }
+
+  diffInMargin(other: TimelinePosition) {
+    return this.toMargin() - other.toMargin();
+  }
+
+  static durationToSpan(duration: number): TimelineSpan {
+    const settings = TimelinePosition.timelineSettings;
+    const beatsPerSecond = settings.tempo / 60;
+    let remainingBeats =
+      (beatsPerSecond * duration) / (4 / settings.timeSignature.noteValue);
+
+    const measures = Math.floor(remainingBeats / settings.timeSignature.beats);
+    remainingBeats -= measures * settings.timeSignature.beats;
+    const beats = Math.floor(remainingBeats);
+    remainingBeats -= beats;
+
+    return { measures, beats, fraction: remainingBeats * 1000 };
+  }
+
+  equals(other: TimelinePosition): boolean {
+    return this.compareTo(other) === 0;
+  }
+
+  static fractionToSpan(fraction: number): DirectionalTimelineSpan {
+    const sign = fraction < 0 ? -1 : 1;
+
+    fraction = Math.abs(fraction);
+    const measures = Math.floor(
+      fraction / (1000 * TimelinePosition.timelineSettings.timeSignature.beats)
+    );
+    fraction -=
+      measures * 1000 * TimelinePosition.timelineSettings.timeSignature.beats;
+    const beats = Math.floor(fraction / 1000);
+    fraction -= beats * 1000;
+
+    return { measures, beats, fraction, sign };
+  }
+
+  static fromMargin(margin: number): TimelinePosition {
+    return TimelinePosition.fromSpan(TimelinePosition.measureMargin(margin));
+  }
+
+  static fromSpan(span: TimelineSpan) {
+    const pos = TimelinePosition.start.copy();
+
+    if (
+      (span as DirectionalTimelineSpan).sign &&
+      (span as DirectionalTimelineSpan).sign < 0
+    )
+      pos.subtract(span.measures, span.beats, span.fraction);
+    else pos.add(span.measures, span.beats, span.fraction);
+
+    return pos;
+  }
+
+  static max(...positions: TimelinePosition[]): TimelinePosition {
+    return positions.reduce((a, b) => (a.compareTo(b) > 0 ? a : b));
+  }
+
+  static measureMargin(margin: number): DirectionalTimelineSpan {
+    const { horizontalScale, timeSignature } =
+      TimelinePosition.timelineSettings;
+    const beatWidth =
+      BASE_BEAT_WIDTH * horizontalScale * (4 / timeSignature.noteValue);
+    const measureWidth = beatWidth * timeSignature.beats;
+    const sign = margin < 0 ? -1 : 1;
+
+    margin = Math.abs(margin);
+    const measures = Math.floor(
+      Math.round((margin / measureWidth) * 1e9) / 1e9
+    );
+    const beats =
+      Math.floor(Math.round((margin / beatWidth) * 1e9) / 1e9) %
+      timeSignature.beats;
+    const fraction =
+      ((Math.round((margin / beatWidth) * 1e9) / 1e9) % 1) * 1000;
+
+    return { measures, beats, fraction, sign };
+  }
+
+  static min(...positions: TimelinePosition[]): TimelinePosition {
+    return positions.reduce((a, b) => (a.compareTo(b) < 0 ? a : b));
+  }
+
+  normalize(): TimelinePosition {
+    if (this.beat < 1) this.beat = 1;
+
+    if (this.fraction < 0) this.fraction = 0;
+
+    this.set(TimelinePosition.fromSpan(this.toSpan()));
+
+    return this;
+  }
+
+  static parseFromString(str: string) {
+    const posArr = [1, 1, 0];
+    const parts = str.split(".");
+
+    if (!str || parts.length > 4) return null;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (!parts[i].trim() && i < parts.length - 1) return null;
+
+      if (i < 3) {
+        const part = (i === 2 ? parts.slice(i).join(".") : parts[i]).trim();
+
+        if (isNaN(Number(part)) || !Number.isFinite(Number(part))) return null;
+        if (part) posArr[i] = Number(part);
+      }
+    }
+
+    return new TimelinePosition(posArr[0], posArr[1], posArr[2]).normalize();
+  }
+
+  set(pos: TimelinePosition) {
+    this.measure = pos.measure;
+    this.beat = pos.beat;
+    this.fraction = pos.fraction;
+  }
+
+  snap(
+    snapGridSize: TimelineSpan,
+    mode: "round" | "floor" | "ceil" = "round"
+  ): TimelinePosition {
+    let snapSizeFraction = TimelinePosition.fromSpan(snapGridSize).toFraction();
+
+    if (snapSizeFraction > 0) {
+      let newFraction;
+
+      switch (mode) {
+        case "floor":
+          newFraction =
+            snapSizeFraction * Math.floor(this.toFraction() / snapSizeFraction);
+          break;
+        case "ceil":
+          newFraction =
+            snapSizeFraction * Math.ceil(this.toFraction() / snapSizeFraction);
+          break;
+        default:
+          newFraction =
+            snapSizeFraction * Math.round(this.toFraction() / snapSizeFraction);
+      }
+
+      this.set(
+        TimelinePosition.fromSpan(TimelinePosition.fractionToSpan(newFraction))
+      );
+    }
+
+    return this;
+  }
+
+  subtract(
+    measures: number,
+    beats: number,
+    fraction: number,
+    mutate: boolean = true
+  ): TimelinePosition {
+    let pos = mutate ? this : this.copy();
+
+    pos.subtractMeasures(measures);
+    pos.subtractBeats(beats);
+    pos.subtractFraction(fraction);
+
+    return pos;
+  }
+
+  private subtractBeats(beats: number) {
+    let numBeatsPastMeasureStart = this.beat - 1 - beats;
+
+    const measures = Math.ceil(
+      numBeatsPastMeasureStart /
+        -TimelinePosition.timelineSettings.timeSignature.beats
+    );
+    this.subtractMeasures(measures);
+    numBeatsPastMeasureStart +=
+      measures * TimelinePosition.timelineSettings.timeSignature.beats;
+
+    this.beat = numBeatsPastMeasureStart + 1;
+  }
+
+  private subtractFraction(fraction: number) {
+    this.fraction -= fraction;
+
+    const beats = Math.ceil(this.fraction / -1000);
+    this.subtractBeats(beats);
+    this.fraction += beats * 1000;
+  }
+
+  private subtractMeasures(measures: number) {
+    this.measure -= measures;
+  }
+
+  toFraction() {
+    const numBeatsInMeasure =
+      TimelinePosition.timelineSettings.timeSignature.beats;
+    return (
+      numBeatsInMeasure * 1000 * (this.measure - 1) +
+      (this.beat - 1) * 1000 +
+      this.fraction
+    );
+  }
+
+  toMargin() {
+    const { horizontalScale, timeSignature } =
+      TimelinePosition.timelineSettings;
+    const beatWidth =
+      BASE_BEAT_WIDTH * horizontalScale * (4 / timeSignature.noteValue);
+    const { measures, beats, fraction, sign } = this.toSpan();
+
+    const measureMargin = measures * timeSignature.beats * beatWidth;
+    const beatMargin = beats * beatWidth;
+    const fractionMargin = beatWidth * (fraction / 1000);
+
+    return (measureMargin + beatMargin + fractionMargin) * sign;
+  }
+
+  toSeconds() {
+    const settings = TimelinePosition.timelineSettings;
+    const beatsPerSecond = settings.tempo / 60;
+    const { measures, beats, fraction, sign } = this.toSpan();
+    const totalBeats =
+      (measures * settings.timeSignature.beats + beats + fraction / 1000) *
+      sign;
+
+    return (
+      (totalBeats / beatsPerSecond) * (4 / settings.timeSignature.noteValue)
+    );
+  }
+
+  toSpan() {
+    return TimelinePosition.fractionToSpan(this.toFraction());
+  }
+
+  toString(fractionDigits?: number) {
+    return `${this.measure}.${this.beat}.${truncate(
+      this.fraction,
+      fractionDigits ?? 0
+    )}`;
+  }
+
+  toTime() {
+    const seconds = this.toSeconds();
+    return { ...measureSeconds(Math.abs(seconds)), sign: seconds < 0 ? -1 : 1 };
+  }
+
+  toTimeString() {
+    const time = this.toTime();
+    return `${time.sign < 0 ? "-" : ""}${formatDuration(time, true)}`;
+  }
+
+  translate(by: DirectionalTimelineSpan, mutate = true) {
+    const { measures, beats, fraction, sign } = by;
+
+    if (sign < 0) return this.subtract(measures, beats, fraction, mutate);
+    else return this.add(measures, beats, fraction, mutate);
+  }
 }
 
-export interface Clip extends Region {
-  audio?: ClipAudio;
-  end: TimelinePosition;
-  endLimit: TimelinePosition | null;
-  id: string;
-  loopEnd: TimelinePosition | null;
-  muted: boolean;
-  name: string;
-  start: TimelinePosition;
-  startLimit: TimelinePosition | null;
-  type: TrackType;
-}
-
-export interface ClipAudio extends Region {
-  audioBuffer: AudioBuffer | null;
-  buffer: Buffer;
-  sourceDuration: number;
-  type: string;
+// Enums
+export enum TrackType {
+  Audio = 'Audio',
+  Midi = 'Midi',
+  Sequencer = 'Sequencer',
+  Master = 'Master'
 }
 
 export enum ContextMenuType {
-  AddAutomationLane,
-  Automation,
-  AutomationMode,
-  Clip,
-  FXChainPreset,
-  Lane,
-  Node,
-  Region,
-  Text,
-  Track
-}
-
-export interface Effect {
-  id : string
-  name : string
-  enabled : boolean
-}
-
-export interface FX {
-  effects: Effect[];
-  preset?: string | null;
-  selectedEffectIndex: number;
+  Region = 'Region',
+  Track = 'Track',
+  Clip = 'Clip',
+  Automation = 'Automation',
+  AddAutomationLane = 'AddAutomationLane',
+  FXChainPreset = 'FXChainPreset',
+  Lane = 'Lane',
+  Node = 'Node',
+  Text = 'Text'
 }
 
 export interface FXChainPreset {
-  id: string;
   name: string;
-  effects: Effect[];
-}
-
-export interface MidiClip extends Clip {
-  notes: MidiNote[];
-}
-
-export interface MidiNote extends Region {
-  note: MusicalNote;
-  velocity: number;
-}
-
-enum MusicalNote {
-  C0, Cs0, D0, Ds0, E0, F0, Fs0, G0, Gs0, A0, As0, B0,
-  C1, Cs1, D1, Ds1, E1, F1, Fs1, G1, Gs1, A1, As1, B1,
-  C2, Cs2, D2, Ds2, E2, F2, Fs2, G2, Gs2, A2, As2, B2,
-  C3, Cs3, D3, Ds3, E3, F3, Fs3, G3, Gs3, A3, As3, B3,
-  C4, Cs4, D4, Ds4, E4, F4, Fs4, G4, Gs4, A4, As4, B4, 
-  C5, Cs5, D5, Ds5, E5, F5, Fs5, G5, Gs5, A5, As5, B5,
-  C6, Cs6, D6, Ds6, E6, F6, Fs6, G6, Gs6, A6, As6, B6,
-  C7, Cs7, D7, Ds7, E7, F7, Fs7, G7, Gs7, A7, As7, B7,
-  C8, Cs8, D8, Ds8, E8, F8, Fs8, G8, Gs8, A8, As8, B8,
-  C9, Cs9, D9, Ds9, E9, F9, Fs9, G9, Gs9, A9, As9, B9
-}
-
-export interface Preferences {
-  color: string;
-  theme: string;
-}
-
-export interface Region {
-  start : TimelinePosition
-  end : TimelinePosition
-}
-
-export enum SnapGridSizeOption {
-  None,
-  Auto,
-  EightMeasures,
-  FourMeasures,
-  TwoMeasures,
-  Measure,
-  Beat,
-  HalfBeat,
-  QuarterBeat,
-  EighthBeat,
-  SixteenthBeat,
-  ThirtySecondBeat,
-  SixtyFourthBeat,
-  HundredTwentyEighthBeat
-}
-
-export type { TimelineSettings, TimelineSpan } from "./TimelinePosition";
-
-export { default as TimelinePosition } from "./TimelinePosition";
-
-export interface TimeSignature {
-  beats : number
-  noteValue : number
+  id: string;
 }
 
 export interface Track {
-  armed: boolean;
-  automation: boolean;
-  automationLanes: AutomationLane[];
-  automationMode: AutomationMode;
-  clips: Clip[];
-  color: string;
-  fx: FX;
   id: string;
-  mute: boolean;
   name: string;
-  pan: number;
-  solo: boolean;
   type: TrackType;
-  volume : number;
-};
+  clips: Clip[];
+  color?: string;
+  automationLanes?: any[];
+}
 
-export enum TrackType { 
-  Audio = "Audio", 
-  Midi = "MIDI", 
-  Sequencer = "Step Sequencer", 
-  Master = "Master" 
-};
+export interface Clip {
+  id: string;
+  name?: string;
+  start: TimelinePosition;
+  end: TimelinePosition;
+  color?: string;
+  muted?: boolean;
+  type?: TrackType;
+  audio?: any;
+  startLimit?: TimelinePosition;
+  endLimit?: TimelinePosition;
+  loopEnd?: TimelinePosition;
+}
 
-export interface ValidatedInput {
-  value: string;
-  valid: boolean;
+export interface Preferences {
+  theme: string;
+  snapGridSize: SnapGridSizeOption;
+}
+
+export enum SnapGridSizeOption {
+  None = 0,
+  Auto = 1,
+  EightMeasures = 2,
+  FourMeasures = 3,
+  TwoMeasures = 4,
+  Measure = 5,
+  Beat = 6,
+  HalfBeat = 7,
+  QuarterBeat = 8,
+  EighthBeat = 9,
+  SixteenthBeat = 10,
+  ThirtySecondBeat = 11,
+  SixtyFourthBeat = 12,
+  HundredTwentyEighthBeat = 13,
+}
+
+export interface Region {
+  start: TimelinePosition;
+  end: TimelinePosition;
+}
+
+export enum AutomationLaneEnvelope {
+  Volume = 'Volume',
+  Pan = 'Pan'
+}
+
+export interface AutomationLane {
+  id: string;
+  envelope: AutomationLaneEnvelope;
+  show?: boolean;
+  label?: string;
+  nodes?: AutomationNode[];
+  minValue?: number;
+  maxValue?: number;
+}
+
+export interface AutomationNode {
+  id: string;
+  position: TimelinePosition;
+  value: number;
+}
+
+export enum AutomationMode {
+  Off = "Off",
+  Read = "Read",
+  Write = "Write",
+}
+
+export interface TimeSignature {
+  beats: number;
+  noteValue: number;
 }
 
 export interface WorkstationAudioInputFile {
-  buffer: Buffer; 
+  id: string;
   name: string;
-  type: string;
+  path: string;
+  duration: number;
 }

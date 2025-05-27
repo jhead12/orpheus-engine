@@ -12,7 +12,13 @@
     "paths": {
       "*": ["node_modules/*"],
       "@orpheus-engine/oew-main/*": ["./OEW-main/*"],
-      "@orpheus-engine/workstation-frontend/*": ["./orpheus-engine-workstation/frontend/src/*"]
+      "@orpheus-engine/components": ["./packages/components/src"],
+      "@orpheus-engine/components/*": ["./packages/components/src/*"],
+      "@orpheus-engine/components-icons": ["./packages/components/icons/src"],
+      "@orpheus-engine/components-icons/*": ["./packages/components/icons/src/*"],
+      "@orpheus-engine/contexts": ["./packages/contexts/src"],
+      "@orpheus-engine/contexts/*": ["./packages/contexts/src/*"],
+      "@orpheus-engine/services/*": ["./packages/services/src/*"]
     },
     "noImplicitAny": true,
     "sourceMap": true,

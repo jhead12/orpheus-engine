@@ -7,27 +7,27 @@ import {
   TimelineSettings, 
   TimeSignature, 
   Track, 
-  TrackType
+  TrackType,
+  AutomationNode
 } from "../types/types";
 import { v4 } from "uuid";
 import { clamp, hslToHex, inverseLerp, lerp, shadeColor } from "./general";
 
+// Basic constants
 export const BASE_MAX_MEASURES = 1600; // Maximum number of measures at time signature 4/4
-export const BASE_BEAT_WIDTH = 50;
-export const BASE_HEIGHT = 80;
+export const BASE_BEAT_WIDTH = 100;
+export const BASE_HEIGHT = 50;
 
 export const GRID_MIN_INTERVAL_WIDTH = 8.5;
 
-export const timelineEditorWindowScrollThresholds = { 
-  top: { slow: 53, medium: 44, fast: 36 }, 
-  right: { slow: 35, medium: 28, fast: 20 } 
-};
+export const timelineEditorWindowScrollThresholds = [0.2, 0.8];
 
 export function automatedValueAtPos(pos: TimelinePosition, lane: AutomationLane) {
+  if (!lane.nodes) return null;
   if (lane.nodes.length === 0)
     return null;
     
-  const positions = [...lane.nodes.map(node => node.pos), pos].sort((a, b) => a.compareTo(b));
+  const positions = [...lane.nodes.map(node => node.position), pos].sort((a, b) => a.compareTo(b));
   const idx = positions.indexOf(pos);
 
   if (idx === 0) {
@@ -35,23 +35,23 @@ export function automatedValueAtPos(pos: TimelinePosition, lane: AutomationLane)
   } else if (idx === positions.length - 1) {
     return lane.nodes[lane.nodes.length - 1].value;
   } else {
-    const prev = lane.nodes.find(node => node.pos === positions[idx - 1])!;
-    const next = lane.nodes.find(node => node.pos === positions[idx + 1])!;
+    const prev = lane.nodes.find(node => node.position === positions[idx - 1])!;
+    const next = lane.nodes.find(node => node.position === positions[idx + 1])!;
 
     const x = pos.toMargin();
-    const x1 = prev.pos.toMargin();
+    const x1 = prev.position.toMargin();
     const y1 = lane.envelope === AutomationLaneEnvelope.Volume ? volumeToNormalized(prev.value) :
-      inverseLerp(prev.value, lane.minValue, lane.maxValue);
-    const x2 = next.pos.toMargin();
+      inverseLerp(prev.value, lane.minValue!, lane.maxValue!);
+    const x2 = next.position.toMargin();
     const y2 = lane.envelope === AutomationLaneEnvelope.Volume ? volumeToNormalized(next.value) :
-      inverseLerp(next.value, lane.minValue, lane.maxValue);
+      inverseLerp(next.value, lane.minValue!, lane.maxValue!);
 
     if (x2 === x1)
       return next.value;
 
     const y = clamp(y1 + (x - x1) * ((y2 - y1) / (x2 - x1)), 0, 1);
     return lane.envelope === AutomationLaneEnvelope.Volume ? 
-      normalizedToVolume(y) : lerp(y, lane.minValue, lane.maxValue);
+      normalizedToVolume(y) : lerp(y, lane.minValue!, lane.maxValue!);
   }
 }
 
@@ -62,14 +62,14 @@ export function clipAtPos(to: TimelinePosition, clip: Clip) : Clip {
   newClip.start = newClip.start.translate({ measures, beats, fraction, sign }, false);
   newClip.end = newClip.end.translate({ measures, beats, fraction, sign }, false);
 
-  if (newClip.startLimit)
-    newClip.startLimit = newClip.startLimit.translate({ measures, beats, fraction, sign }, false);
+  if (clip.startLimit)
+    newClip.startLimit = clip.startLimit.translate({ measures, beats, fraction, sign }, false);
 
-  if (newClip.endLimit)
-    newClip.endLimit = newClip.endLimit.translate({ measures, beats, fraction, sign }, false);
+  if (clip.endLimit)
+    newClip.endLimit = clip.endLimit.translate({ measures, beats, fraction, sign }, false);
 
-  if (newClip.loopEnd)
-    newClip.loopEnd = newClip.loopEnd.translate({ measures, beats, fraction, sign }, false);
+  if (clip.loopEnd)
+    newClip.loopEnd = clip.loopEnd.translate({ measures, beats, fraction, sign }, false);
 
   if (newClip.type === TrackType.Audio && newClip.audio) {
     newClip.audio = {
@@ -88,9 +88,9 @@ export function copyClip(clip: Clip): Clip {
     id: v4(),
     start: clip.start.copy(),
     end: clip.end.copy(),
-    loopEnd: clip.loopEnd ? clip.loopEnd.copy() : null,
-    startLimit: clip.startLimit ? clip.startLimit.copy() : null,
-    endLimit: clip.endLimit ? clip.endLimit.copy() : null
+    loopEnd: clip.loopEnd ? clip.loopEnd.copy() : undefined,
+    startLimit: clip.startLimit ? clip.startLimit.copy() : undefined,
+    endLimit: clip.endLimit ? clip.endLimit.copy() : undefined
   }
 
   if (newClip.type === TrackType.Audio && newClip.audio) {
@@ -124,49 +124,18 @@ export function formatVolume(val: number) {
   return `${val === -Infinity ? "-∞" : +val.toFixed(1)} dB`;
 }
 
-export function getBaseTrack(id = v4()) : Track {
+function getBaseTrack(id = v4()) : Track {
   return {
     id, 
     name: `Track`, 
     type: TrackType.Audio,
     color: getRandomTrackColor(), 
     clips: [],
-    fx: { effects: [], selectedEffectIndex: 0 },
-    mute: false,
-    solo: false,
-    armed: false,
-    automation: false,
-    volume: 0,
-    pan: 0,
-    automationLanes: [
-      {
-        id: v4(), 
-        label: "Volume", 
-        envelope: AutomationLaneEnvelope.Volume,
-        enabled: true, 
-        minValue: -Infinity, 
-        maxValue: 6, 
-        nodes: [], 
-        show: false, 
-        expanded: true, 
-      },
-      {
-        id: v4(), 
-        label: "Pan", 
-        envelope: AutomationLaneEnvelope.Pan,
-        enabled: true,
-        minValue: -100, 
-        maxValue: 100, 
-        nodes: [], 
-        show: false, 
-        expanded: true, 
-      }
-    ],
-    automationMode: AutomationMode.Read
-  }
+    automationLanes: []
+  };
 }
 
-export function getBaseMasterTrack() : Track {
+function getBaseMasterTrack() : Track {
   const baseTrack = getBaseTrack()
 
   return {
@@ -174,17 +143,14 @@ export function getBaseMasterTrack() : Track {
     name: "Master", 
     type: TrackType.Master,
     color: "var(--border6)", 
-    armed: true,
     automationLanes: [
-      ...baseTrack.automationLanes,
       {
         id: v4(), 
         label: "Tempo", 
-        envelope: AutomationLaneEnvelope.Tempo,
-        enabled: true,
-        minValue: 20, 
-        maxValue: 320, 
-        nodes: [], 
+        envelope: AutomationLaneEnvelope.Volume,
+        nodes: [],
+        minValue: 20,
+        maxValue: 320,
         show: false, 
         expanded: true
       }
@@ -227,8 +193,8 @@ export function isValidTrackFileFormat(mimetype: string) {
   return isValidAudioTrackFileFormat(mimetype) || mimetype === "audio/midi";
 }
 
-export function normalizedToVolume(t: number) {
-  return 48.0236 * Math.log10(Math.max(t, 0) / 0.75);
+export function normalizedToVolume(value: number) {
+  return Math.pow(10, value / 48.0236) * 0.75;
 }
 
 export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Clip {
@@ -236,9 +202,9 @@ export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Cl
     ...clip,
     start: preservePosMargin(clip.start, settings),
     end: preservePosMargin(clip.end, settings),
-    startLimit: clip.startLimit ? preservePosMargin(clip.startLimit, settings, false) : null,
-    endLimit: clip.endLimit ? preservePosMargin(clip.endLimit, settings, false) : null,
-    loopEnd: clip.loopEnd ? preservePosMargin(clip.loopEnd, settings) : null
+    startLimit: clip.startLimit ? clip.startLimit ? preservePosMargin(clip.startLimit, settings, false) : undefined : undefined,
+    endLimit: clip.endLimit ? clip.endLimit ? preservePosMargin(clip.endLimit, settings, false) : undefined : undefined,
+    loopEnd: clip.loopEnd ? preservePosMargin(clip.loopEnd, settings) : undefined
   };
   
   if (newClip.type === TrackType.Audio && newClip.audio) {
@@ -253,7 +219,7 @@ export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Cl
   TimelinePosition.timelineSettings = settings;
 
   if (newClip.loopEnd && newClip.loopEnd.compareTo(newClip.end) <= 0)
-    newClip.loopEnd = null;
+    newClip.loopEnd = undefined;
 
   TimelinePosition.timelineSettings = temp;
 
@@ -264,10 +230,12 @@ export function preserveTrackMargins(track: Track, settings: TimelineSettings) {
   return {
     ...track, 
     clips: track.clips.map(clip => preserveClipMargins(clip, settings)),
-    automationLanes: track.automationLanes.map(lane => ({
-      ...lane, 
-      nodes: lane.nodes.map(node => ({...node, pos: preservePosMargin(node.pos, settings)}))
-    }))
+    automationLanes: track.automationLanes ? track.automationLanes.map(lane => {
+      return {
+        ...lane, 
+        nodes: lane.nodes ? lane.nodes.map((node: AutomationNode) => ({...node, position: preservePosMargin(node.position, settings)})) : []
+      };
+    }) : []
   };
 }
 
@@ -346,7 +314,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
       newClip.loopEnd = pos.copy();
     } else {
       newClip.end = pos.copy();
-      newClip.loopEnd = null;
+      newClip.loopEnd = undefined;
     }
 
     clips.push(newClip);
@@ -357,7 +325,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
     if (pos.compareTo(clip.end) < 0) {
       newClip = copyClip(clip);
       newClip.start = pos.copy();
-      newClip.loopEnd = null;
+      newClip.loopEnd = undefined;
       clips.push(newClip);
 
       if (clip.loopEnd && clip.loopEnd.compareTo(clip.end) > 0) {
@@ -367,7 +335,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
           newClip.loopEnd = clip.loopEnd.copy();
         } else {
           newClip.end = clip.loopEnd.copy();
-          newClip.loopEnd = null;
+          newClip.loopEnd = undefined;
         }
 
         clips.push(newClip);
@@ -382,7 +350,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
 
         newClip = copyClip(clipAtPos(clip.end.add(measures, beats, fraction, false), clip));
         newClip.start = pos.copy();
-        newClip.loopEnd = null;
+        newClip.loopEnd = undefined;
         clips.push(newClip);
 
         repetition++;
@@ -396,7 +364,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
           newClip.loopEnd = clip.loopEnd.copy();
         } else {
           newClip.end = clip.loopEnd.copy();
-          newClip.loopEnd = null;
+          newClip.loopEnd = undefined;
         }
 
         clips.push(newClip);
