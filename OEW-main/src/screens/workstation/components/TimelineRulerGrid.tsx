@@ -1,4 +1,5 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react";
+/** @jsx React.createElement */
+import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import { PreferencesContext, WorkstationContext } from "../../../contexts";
 import { TimelinePosition, SnapGridSizeOption } from "../../../services/types/types";
 import { formatDuration, measureSeconds } from "../../../services/utils/general";
