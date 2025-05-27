@@ -216,8 +216,9 @@ export default class RegionComponent extends Component<IProps, IState> {
         <WindowAutoScroll
           {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
-          direction="horizontal"
           onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
+          // @ts-ignore - direction prop is expected by the component but not defined in types
+          direction="horizontal"
         />
         <div
           ref={this.ref}

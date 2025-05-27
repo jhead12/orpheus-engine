@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   FastForward,
   FastRewind,
@@ -695,7 +695,7 @@ export default function Header() {
                 style={{ fontSize: 10, marginTop: 1, color: "var(--fg1)" }}
               />
             }
-            onChange={(val) => setSnapGridSizeOption(val as SnapGridSizeOption)}
+            onChange={(val: SnapGridSizeOption) => setSnapGridSizeOption(val)}
             options={[
               { label: "None", value: SnapGridSizeOption.None },
               { label: "Auto", value: SnapGridSizeOption.Auto },
