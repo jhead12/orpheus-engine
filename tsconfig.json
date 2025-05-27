@@ -18,7 +18,9 @@
       "@orpheus-engine/components-icons/*": ["./packages/components/icons/src/*"],
       "@orpheus-engine/contexts": ["./packages/contexts/src"],
       "@orpheus-engine/contexts/*": ["./packages/contexts/src/*"],
-      "@orpheus-engine/services/*": ["./packages/services/src/*"]
+      "@orpheus-engine/services/*": ["./packages/services/src/*"],
+      "@orpheus/*": ["./OEW-main/*"],
+      "@/*": ["./OEW-main/*"]
     },
     "noImplicitAny": true,
     "sourceMap": true,
