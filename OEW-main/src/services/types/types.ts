@@ -353,6 +353,41 @@ export class TimelinePosition {
   }
 }
 
+/**
+ * Represents an audio effect in the FX chain
+ */
+export interface Effect {
+  id: string;
+  name: string;
+  enabled: boolean;
+  // Add these new properties for external effect integration
+  type?: "native" | "juce" | "python";
+  source?: string; // Path to plugin/script
+  parameters?: Record<string, any>;
+}
+
+/**
+ * Represents a preset of FX chain configurations
+ */
+export interface FXChainPreset {
+  id: string;
+  name: string;
+  effects: Effect[];
+}
+
+/**
+ * Extends the Track interface with FX chain support
+ */
+export interface Track {
+  // ...existing properties...
+  fx: {
+    preset: string | null;
+    effects: Effect[];
+    selectedEffectIndex: number;
+  }
+  // ...existing properties...
+}
+
 // Enums
 export enum TrackType {
   Audio = 'Audio',
@@ -367,15 +402,10 @@ export enum ContextMenuType {
   Clip = 'Clip',
   Automation = 'Automation',
   AddAutomationLane = 'AddAutomationLane',
-  FXChainPreset = 'FXChainPreset',
+  FXChainPreset = "FXChainPreset",
   Lane = 'Lane',
   Node = 'Node',
   Text = 'Text'
-}
-
-export interface FXChainPreset {
-  name: string;
-  id: string;
 }
 
 export interface Track {
@@ -385,6 +415,11 @@ export interface Track {
   clips: Clip[];
   color?: string;
   automationLanes?: any[];
+  fx: {
+    preset: string | null;
+    effects: Effect[];
+    selectedEffectIndex: number;
+  }
 }
 
 export interface Clip {

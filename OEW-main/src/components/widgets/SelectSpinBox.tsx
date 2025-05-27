@@ -17,23 +17,23 @@ interface SelectSpinBoxElements<T extends string | CSSProperties> {
   select?: T;
 }
 
-interface IProps {
+interface IProps<T extends string | number = string | number> {
   classes?: SelectSpinBoxElements<string>;
   defaultLabel?: string;
   disableSelect?: boolean;
   hideButtons?: boolean;
   icon?: JSX.Element;
   layout?: "alt" | undefined;
-  onChange: (value: string | number) => void;
-  options: { label: string, value: string | number }[];
+  onChange: (value: T) => void;
+  options: { label: string, value: T }[];
   optionsPopover?: Partial<PopoverProps>;
   showArrow?: boolean;
   style?: SelectSpinBoxElements<CSSProperties>;
   title?: string;
-  value: string | number;
+  value: T;
 }
 
-export default function SelectSpinBox(props: IProps) {
+export default function SelectSpinBox<T extends string | number = string | number>(props: IProps<T>) {
   const { 
     classes, 
     defaultLabel, 

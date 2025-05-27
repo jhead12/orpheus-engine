@@ -4,8 +4,14 @@ import { IconButton } from "@mui/material";
 import { ContextMenuType, Effect, FXChainPreset, Track } from "../../../services/types/types";
 import { v4 } from "uuid";
 import { WorkstationContext } from "../../../contexts";
-import { SelectSpinBox } from "@/components/widgets";
-import { openContextMenu } from "@/services/electron/utils";
+import { SelectSpinBox } from "../../../components/widgets";
+import { openContextMenu } from "../../../services/electron/utils";
+
+const FX_TYPES = [
+  { label: "Native FX", value: "native" },
+  { label: "JUCE Plugin", value: "juce" },
+  { label: "Python Script", value: "python" }
+];
 
 interface FXElements<T> {
   add?: { button?: T, icon?: T };
@@ -82,14 +88,19 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
   function addEffect() {
     const effects = [
       ...track.fx.effects,
-      { id: v4(), name: `Effect ${(track.fx.effects.length + 1)}`, enabled: true }
+      { 
+        id: v4(), 
+        name: `Effect ${(track.fx.effects.length + 1)}`, 
+        enabled: true,
+        type: "native" // Default to native type
+      }
     ];
 
     setTrack({ ...track, fx: { ...track.fx, effects, selectedEffectIndex: effects.length - 1 } });
   }
   
   function deleteEffect() {
-    const effects = track.fx.effects.filter((_, idx) => idx !== effectIndex);
+    const effects = track.fx.effects.filter((_, idx: number) => idx !== effectIndex);
     setTrack({ ...track, fx: { ...track.fx, effects } });
   }
 
@@ -100,7 +111,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
 
   function more() {
     if (preset) {
-      openContextMenu(ContextMenuType.FXChainPreset, { presetModified }, params => {
+      openContextMenu(ContextMenuType.FXChainPreset, { presetModified }, (params: any) => {
         switch (params.action) {
           case 0:
             setPresetNameText("");
@@ -193,6 +204,40 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
     const effects = track.fx.effects.slice();
     effects[effectIndex] = { ...effects[effectIndex], enabled: !effects[effectIndex].enabled };
     setTrack({ ...track, fx: { ...track.fx, effects } });
+  }
+
+  function changeEffectType(type: "native" | "juce" | "python") {
+    const effects = track.fx.effects.slice();
+    effects[effectIndex] = { 
+      ...effects[effectIndex], 
+      type,
+      // Reset parameters when changing type
+      parameters: {}
+    };
+    setTrack({ ...track, fx: { ...track.fx, effects } });
+  }
+
+  function selectExternalSource() {
+    const effect = track.fx.effects[effectIndex];
+    if (effect?.type === "juce" || effect?.type === "python") {
+      // Show file picker dialog to select plugin/script
+      const filePicker = document.createElement('input');
+      filePicker.type = 'file';
+      filePicker.accept = effect.type === 'juce' ? '.vst3,.au,.dll,.component' : '.py';
+      filePicker.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          const effects = track.fx.effects.slice();
+          effects[effectIndex] = { 
+            ...effects[effectIndex], 
+            source: file.path,
+            name: file.name.replace(/\.[^/.]+$/, "") // Remove extension for display
+          };
+          setTrack({ ...track, fx: { ...track.fx, effects } });
+        }
+      };
+      filePicker.click();
+    }
   }
 
   const lastEffect = effectIndex >= track.fx.effects.length - 1;
@@ -363,11 +408,46 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
                   style={style.effect.text}
                   title={
                     `${effect.name} (${effectIndex + 1} of ${track.fx.effects.length}` +
-                    `${!effect.enabled ? ", disabled" : ""})`
+                    `${!effect.enabled ? ", disabled" : ""}` +
+                    `${effect.type !== "native" ? `, ${effect.type} effect` : ""})`
                   }
                 >
                   {effect.name}
+                  {effect.type !== "native" && <small style={{opacity: 0.7}}> ({effect.type})</small>}
                 </p>
+                
+                {/* Add effect type selector */}
+                {effect && (
+                  <div className="d-flex align-items-center mr-2">
+                    <SelectSpinBox
+                      classes={{ 
+                        container: "mr-2",
+                        select: "font-small"
+                      }}
+                      hideButtons
+                      onChange={(value: string) => changeEffectType(value as "native" | "juce" | "python")}
+                      options={FX_TYPES}
+                      style={{
+                        container: { width: 90, height: 18, padding: 2 },
+                        select: { fontSize: 11 }
+                      }}
+                      value={effect.type || "native"}
+                    />
+                    
+                    {/* Show file selection button for external effects */}
+                    {effect.type !== "native" && (
+                      <IconButton 
+                        className="p-0 mx-1" 
+                        onClick={selectExternalSource}
+                        title={`Select ${effect.type === 'juce' ? 'plugin' : 'script'} file`}
+                        style={{ fontSize: 12 }}
+                      >
+                        <Add style={{ fontSize: 12 }} />
+                      </IconButton>
+                    )}
+                  </div>
+                )}
+                
                 <div 
                   className={"d-flex removed " + classes?.effect?.actionsContainer} 
                   onMouseDown={e => e.preventDefault()}
