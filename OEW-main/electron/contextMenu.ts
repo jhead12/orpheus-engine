@@ -20,8 +20,8 @@ export default class ContextMenuBuilder {
         case ContextMenuType.Automation:
           menu = this.buildAutomationContextMenu(!!params.showPasteOptions, params.disablePaste);
           break;
-        case ContextMenuType.AutomationMode:
-          menu = this.buildAutomationModesContextMenu(params.mode);
+        case ContextMenuType.Automation:
+          menu = this.buildAutomationContextMenu(!!params.showPasteOptions, params.disablePaste);
           break;
         case ContextMenuType.Clip:
           menu = this.buildClipContextMenu(params.clip);

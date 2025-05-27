@@ -1,4 +1,4 @@
-import { createContext, forwardRef, HTMLAttributes, PropsWithChildren, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import React, { createContext, forwardRef, HTMLAttributes, PropsWithChildren, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 
 interface ScrollSyncContextType {
   registerPane: (pane: HTMLElement) => void;

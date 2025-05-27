@@ -127,19 +127,19 @@ export default function Waveform(props: WaveformProps) {
 
   return (
     <div className="position-absolute col-12 overflow-hidden" ref={ref} style={{ top: 0, left: 0, height }}>
-      <div style={{ position: "absolute", left: offset, width, height, opacity: 0.5 }}>
+      <div style={{ position: "absolute", left: offset, width: Math.max(0, width), height, opacity: 0.5 }}>
         <canvas 
           height={height} 
           ref={canvasRef} 
           style={{ position: "absolute", top: 0, left: CHUNK_SIZE * chunk }} 
-          width={Math.min(CHUNK_SIZE, width - CHUNK_SIZE * chunk)} 
+          width={Math.max(1, Math.min(CHUNK_SIZE, width - CHUNK_SIZE * chunk))} 
         />
-        {width > CHUNK_SIZE && showAuxiliary && (
+        {width > CHUNK_SIZE && showAuxiliary && (chunk + 1) * CHUNK_SIZE < width && (
           <canvas 
             height={height} 
             ref={auxiliaryCanvasRef} 
             style={{ position: "absolute", top: 0, left: CHUNK_SIZE * (chunk + 1) }} 
-            width={Math.min(CHUNK_SIZE, width - CHUNK_SIZE * (chunk + 1))}
+            width={Math.max(1, Math.min(CHUNK_SIZE, width - CHUNK_SIZE * (chunk + 1)))}
           />
         )}
       </div>

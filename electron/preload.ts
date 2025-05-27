@@ -47,9 +47,14 @@ contextBridge.exposeInMainWorld('orpheusAPI', {
   
   capabilities: {
     audioProcessing: true,
-    gpu: process.getGPUFeatureStatus !== undefined,
+    gpu: false, // Default value - will be updated using system:detect-capabilities
     maxChannels: 32,
     maxSampleRate: 192000
+  },
+  
+  // Add method to detect capabilities at runtime
+  detectCapabilities: () => {
+    return ipcRenderer.invoke('system:detect-capabilities');
   }
 });
 

@@ -8,7 +8,7 @@ interface PlayheadProps {
 const Playhead: React.FC<PlayheadProps> = ({ size = 24, style }) => {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" style={style}>
-      <path d="M10 6v12l8.5-6z" fill="currentColor" />
+      <path d="M8 5v14l11-7z" fill="currentColor" />
     </svg>
   );
 };

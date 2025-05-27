@@ -1,73 +1,84 @@
-import { PreferencesContext } from "@/contexts";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { Preferences } from "@/services/types/types";
+import React, { ReactNode, useState, useContext } from 'react';
+import { Preferences, SnapGridSizeOption } from '../services/types/types';
 
-const defaultPreferences = { color: "rose", theme: "system" };
-const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+// Use the interface from index.ts to match exactly what's expected
+interface PreferencesContextType {
+  darkMode: boolean;
+  preferences: Preferences;
+  savePreferences: () => void;
+  savedPreferences: Preferences;
+  setShowPreferences: (show: boolean) => void;
+  showPreferences: boolean;
+  theme: string; // Add this missing required property
+  updatePreferences: (preferences: Preferences) => void;
+}
 
-export function PreferencesProvider({ children }: PropsWithChildren) {
-  const [darkMode, setDarkMode] = useState(false);
-  const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
-  const [savedPreferences, setSavedPreferences] = useState<Preferences>(defaultPreferences); 
+// Create a local context that matches the interface
+export const PreferencesContext = React.createContext<PreferencesContextType | undefined>(undefined);
+
+export const usePreferences = () => {
+  const context = useContext(PreferencesContext);
+  if (!context) {
+    throw new Error('usePreferences must be used within a PreferencesProvider');
+  }
+  return context;
+};
+
+interface PreferencesProviderProps {
+  children: ReactNode;
+}
+
+const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ children }) => {
+  // Initialize with the correct Preferences shape
+  const [preferences, setPreferences] = useState<Preferences>({
+    theme: 'dark',
+    snapGridSize: SnapGridSizeOption.Measure
+    // Remove the color property as it's not in the Preferences interface
+  });
+  
+  const [savedPreferences, setSavedPreferences] = useState<Preferences>({
+    theme: 'dark',
+    snapGridSize: SnapGridSizeOption.Measure
+    // Remove the color property as it's not in the Preferences interface
+  });
+  
   const [showPreferences, setShowPreferences] = useState(false);
-
-  useEffect(() => {
-    const localStoragePreferences = localStorage.getItem("preferences");
-    
-    if (localStoragePreferences) {
-      const newPreferences = JSON.parse(localStoragePreferences);
-      updatePreferences(newPreferences);
-      setSavedPreferences(newPreferences);
-    }    
-  }, [])
-
-  useEffect(() => {
-    function handleSystemThemeChange(e: MediaQueryListEvent) {
-      if (preferences.theme === "system")
-        updateTheme(e.matches);
+  
+  // Calculate dark mode based on theme
+  const darkMode = preferences.theme === 'dark' || 
+                  (preferences.theme === 'system' && 
+                   window.matchMedia('(prefers-color-scheme: dark)').matches);
+  
+  const savePreferences = () => {
+    setSavedPreferences({ ...preferences });
+    // Save to localStorage or elsewhere
+    try {
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+    } catch (e) {
+      console.error('Failed to save preferences to localStorage', e);
     }
-
-    matchMedia.addEventListener('change', handleSystemThemeChange); 
-    return () => matchMedia.removeEventListener("change", handleSystemThemeChange);
-  }, [preferences.theme])
-
-  function savePreferences() {
-    localStorage.setItem("preferences", JSON.stringify(preferences));
-    setSavedPreferences(preferences);
-  }
-
-  function updateTheme(dark: boolean) {
-    if (dark)
-      document.documentElement.setAttribute("data-theme", "dark"); 
-    else
-      document.documentElement.removeAttribute("data-theme");
-
-    setDarkMode(dark);
-  }
-
-  function updatePreferences(newPreferences: Preferences) {
-    if (newPreferences.color !== "rose")
-      document.documentElement.setAttribute("data-color", newPreferences.color);
-    else
-      document.documentElement.removeAttribute("data-color");
-
-    updateTheme(newPreferences.theme === "dark" || newPreferences.theme === "system" && matchMedia.matches);
-    setPreferences(newPreferences);
-  }
+  };
+  
+  const updatePreferences = (newPrefs: Preferences) => {
+    setPreferences(newPrefs);
+  };
 
   return (
     <PreferencesContext.Provider 
-      value={{ 
+      value={{
         darkMode,
-        preferences, 
+        preferences,
         savePreferences,
         savedPreferences,
         setShowPreferences,
         showPreferences,
+        theme: preferences.theme, // Add the required theme property
         updatePreferences
       }}
     >
       {children}
     </PreferencesContext.Provider>
-  )
-}
+  );
+};
+
+export default PreferencesProvider;

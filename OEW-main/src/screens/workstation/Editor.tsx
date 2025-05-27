@@ -19,7 +19,7 @@ import {
   SyncScrollPane,
   Scrollbar,
   WindowAutoScroll,
-} from "@/components";
+} from "../../../components";
 import {
   TrackComponent,
   RegionComponent,
@@ -27,16 +27,16 @@ import {
   Lane,
   ZoomControls,
 } from "./components";
-import { Playhead as PlayheadIcon, TrackIcon } from "@/components/icons";
-import { SortableList, SortableListItem } from "@/components/widgets";
-import { WorkstationContext } from "@/contexts";
+import { Playhead as PlayheadIcon, TrackIcon } from "../../../components/icons";
+import { SortableList, SortableListItem } from "../../../components/widgets";
+import { WorkstationContext } from "../../../contexts";
 import {
   Clip,
   ContextMenuType,
   TimelinePosition,
   Track,
   TrackType,
-} from "@/services/types/types";
+} from "../../../services/types/types";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,
@@ -46,10 +46,10 @@ import {
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from "@/services/utils/utils";
-import { SortData } from "@/components/widgets/SortableList";
-import { clamp, cmdOrCtrl, isMacOS } from "@/services/utils/general";
-import { openContextMenu } from "@/services/electron/utils";
+} from "@orpheus/components/src//services/utils/utils";
+import { SortData } from "@orpheus/components/src/components/widgets/SortableList";
+import { clamp, cmdOrCtrl, isMacOS } from "@orpheus/components/src/services/utils/general";
+import { openContextMenu } from "@orpheus/components/src/services/utils";
 import { debounce } from "lodash";
 
 export interface EditorDragData {

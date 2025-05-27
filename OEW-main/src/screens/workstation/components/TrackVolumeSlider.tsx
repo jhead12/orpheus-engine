@@ -1,9 +1,9 @@
 import { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from "@/services/types/types";
-import { formatVolume, normalizedToVolume, volumeToNormalized } from "@/services/utils/utils";
-import Slider from "@/components/widgets/Slider";
-import { WorkstationContext } from "@/contexts";
-import { TooltipProps } from "@/components/widgets/Tooltip";
+import { AutomationLaneEnvelope, Track } from "../../../services/types/types";
+import { formatVolume, normalizedToVolume, volumeToNormalized } from "../../../services/utils/utils";
+import Slider from "../../../components/widgets/Slider";
+import { WorkstationContext } from "../../../contexts";
+import { TooltipProps } from "../../../components/widgets/Tooltip";
 
 interface TrackVolumeSliderProps {
   className?: string;

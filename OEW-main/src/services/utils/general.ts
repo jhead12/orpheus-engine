@@ -1,12 +1,18 @@
 import React from "react";
 
-export function clamp(value: number, min: number, max: number) {
+// Clamp a value between min and max
+export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-export function cmdOrCtrl(e: React.KeyboardEvent | KeyboardEvent) {
-  const isMacOS = navigator.userAgent.includes("Mac");
-  return (isMacOS && e.metaKey) || (!isMacOS && e.ctrlKey);
+// Check if Cmd (macOS) or Ctrl (Windows/Linux) is pressed
+export function cmdOrCtrl(e: KeyboardEvent): boolean {
+  return e.metaKey || e.ctrlKey;
+}
+
+// Check if running on macOS
+export function isMacOS(): boolean {
+  return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 }
 
 export function dBToGainFactor(dB: number) {
@@ -146,10 +152,6 @@ export function hueFromHex(hex: string) {
 export function inverseLerp(value: number, min: number, max: number) {
   const t = (value - min) / (max - min);
   return clamp(t, 0, 1);
-}
-
-export function isMacOS() {
-  return navigator.userAgent.includes("Mac");
 }
 
 export function lerp(t: number, min: number, max: number) {
