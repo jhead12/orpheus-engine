@@ -447,7 +447,7 @@ export default function Editor() {
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params) => {
+    openContextMenu(ContextMenuType.Region, {}, (params: any) => {
       switch (params.action) {
         case 1:
           setSongRegion(null);
@@ -538,7 +538,7 @@ export default function Editor() {
             zoomAnchorWindowAlignment.current =
               (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
-            updateTimelineSettings((prev) => {
+            updateTimelineSettings((prev: any) => {
               const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
@@ -550,7 +550,7 @@ export default function Editor() {
           }
         } else {
           if (Math.abs(e.deltaY) > 5)
-            setVerticalScale((prev) =>
+            setVerticalScale((prev: number) =>
               clamp(prev + (e.deltaY < 0 ? 0.25 : -0.25), 0.75, 5)
             );
         }
@@ -776,7 +776,7 @@ export default function Editor() {
                   thresholds: timelineEditorWindowScrollThresholds,
                 }}
                 cancel=".stop-reorder"
-                onSortUpdate={(data) =>
+                onSortUpdate={(data: any) =>
                   setTrackReorderData({
                     ...trackReorderData,
                     edgeIndex: data.edgeIndex,
@@ -785,7 +785,7 @@ export default function Editor() {
                 onStart={handleSortStart}
                 onEnd={handleSortEnd}
               >
-                {tracks.map((track, idx) => (
+                {tracks.map((track: Track, idx: number) => (
                   <SortableListItem
                     className={"position-relative " + getTrackClass(idx)}
                     index={idx}
@@ -875,7 +875,7 @@ export default function Editor() {
                   </div>
                 )}
                 <div className="d-flex flex-column position-relative">
-                  {tracks.map((track, idx) => (
+                  {tracks.map((track: Track, idx: number) => (
                     <div {...dropzoneProps(track)} key={track.id}>
                       <Lane
                         className={getTrackClass(idx)}

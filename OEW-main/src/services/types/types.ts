@@ -1,10 +1,17 @@
 import { formatDuration, measureSeconds, truncate } from "../utils/general";
 import { BASE_BEAT_WIDTH } from "../utils/utils";
 
+// Add TimeSignature export
+export interface TimeSignature {
+  beats: number;
+  noteValue: number;
+}
+
 export interface TimelineSettings {
-  horizontalScale: number;
-  timeSignature: TimeSignature;
   tempo: number;
+  timeSignature: TimeSignature;
+  horizontalScale: number; // Adding the missing property
+  // ...other properties
 }
 
 export interface TimelineSpan {
@@ -155,8 +162,9 @@ export class TimelinePosition {
   }
 
   static measureMargin(margin: number): DirectionalTimelineSpan {
-    const { horizontalScale, timeSignature } =
-      TimelinePosition.timelineSettings;
+    // Add explicit type annotation to ensure TypeScript recognizes the property
+    const settings: TimelineSettings = TimelinePosition.timelineSettings;
+    const { horizontalScale, timeSignature } = settings;
     const beatWidth =
       BASE_BEAT_WIDTH * horizontalScale * (4 / timeSignature.noteValue);
     const measureWidth = beatWidth * timeSignature.beats;
@@ -379,16 +387,28 @@ export interface FXChainPreset {
  * Extends the Track interface with FX chain support
  */
 export interface Track {
-  // ...existing properties...
+  id: string;
+  name: string;
+  type: TrackType;
+  color: string; // Make required instead of optional
+  clips: Clip[];
   fx: {
     preset: string | null;
     effects: Effect[];
     selectedEffectIndex: number;
-  }
-  // ...existing properties...
+  };
+  automationLanes: AutomationLane[]; // Make required with specific type
+  
+  // Add other properties
+  mute: boolean;
+  solo: boolean;
+  armed: boolean;
+  volume: number;
+  pan: number;
+  automation?: boolean;
+  automationMode?: AutomationMode;
 }
 
-// Enums
 export enum TrackType {
   Audio = 'Audio',
   Midi = 'Midi',
@@ -406,20 +426,6 @@ export enum ContextMenuType {
   Lane = 'Lane',
   Node = 'Node',
   Text = 'Text'
-}
-
-export interface Track {
-  id: string;
-  name: string;
-  type: TrackType;
-  clips: Clip[];
-  color?: string;
-  automationLanes?: any[];
-  fx: {
-    preset: string | null;
-    effects: Effect[];
-    selectedEffectIndex: number;
-  }
 }
 
 export interface Clip {
@@ -464,40 +470,55 @@ export interface Region {
 }
 
 export enum AutomationLaneEnvelope {
-  Volume = 'Volume',
-  Pan = 'Pan'
-}
-
-export interface AutomationLane {
-  id: string;
-  envelope: AutomationLaneEnvelope;
-  show?: boolean;
-  label?: string;
-  nodes?: AutomationNode[];
-  minValue?: number;
-  maxValue?: number;
+  Volume = "Volume",
+  Pan = "Pan",
+  Tempo = "Tempo",
+  // ...other values
 }
 
 export interface AutomationNode {
   id: string;
-  position: TimelinePosition;
+  pos: TimelinePosition;
   value: number;
 }
 
-export enum AutomationMode {
-  Off = "Off",
-  Read = "Read",
-  Write = "Write",
+export interface AutomationLane {
+  envelope: AutomationLaneEnvelope;
+  enabled: boolean;
+  expanded: boolean;
+  id: string;
+  label: string;
+  minValue: number;
+  maxValue: number;
+  nodes?: AutomationNode[];
+  show: boolean;
 }
 
-export interface TimeSignature {
-  beats: number;
-  noteValue: number;
+export interface BaseClipComponentProps {
+  clip: Clip;
+  height: number;
+  onChangeLane: (clip: Clip, track: Track) => void;
+  onSetClip: (clip: Clip) => void;
+  track: Track;
 }
 
+/**
+ * Represents an audio file in the workstation
+ */
 export interface WorkstationAudioInputFile {
   id: string;
   name: string;
   path: string;
   duration: number;
+}
+
+/**
+ * Defines automation modes for tracks
+ */
+export enum AutomationMode {
+  Read = "read",
+  Write = "write",
+  Touch = "touch",
+  Trim = "trim",
+  Latch = "latch"
 }

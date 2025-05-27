@@ -1,12 +1,17 @@
 import {v4 as uuidv4} from 'uuid';
-import { TimelinePosition, AutomationLaneEnvelope, Track, TrackType } from "./services/types/types";
+import { TimelinePosition, AutomationLaneEnvelope, Track, TrackType, AutomationMode } from "./services/types/types";
 
 const data : Track[] = [
   {
     id: uuidv4(), 
     name: "Track 1", 
     type: TrackType.Midi,
-    color: "#84a3ff", 
+    color: "#84a3ff",
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0
+    },
     clips: [
       {
         id: uuidv4(),
@@ -31,8 +36,13 @@ const data : Track[] = [
         type: TrackType.Midi
       }
     ],
-    // Note: fx, mute, solo, armed, automation, volume, pan, automationMode properties 
-    // are not part of the Track interface and have been removed/commented out
+    mute: false,
+    solo: false,
+    armed: false,
+    volume: 0, // Default volume (0dB)
+    pan: 0, // Center pan
+    automation: true,
+    automationMode: AutomationMode.Read, // Using enum value instead of string literal
     automationLanes: [
       {
         envelope: AutomationLaneEnvelope.Volume,

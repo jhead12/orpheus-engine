@@ -1,10 +1,10 @@
-import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { WorkstationContext } from "../../../contexts";
 import { BaseClipComponentProps, TimelinePosition } from "../../../services/types/types";
-import { ClipComponent, Waveform } from "@/screens/workstation/components";
-import { audioBufferToBuffer, audioContext, reverseAudio } from "@/services/utils/audio";
+import { ClipComponent, Waveform } from "./index";
+import { audioBufferToBuffer, audioContext, reverseAudio } from "../../../services/utils/audio";
 import { CHUNK_SIZE as WAVEFORM_CHUNK_SIZE, WaveformProps } from "./Waveform";
-import { ResizeDNRData } from "@/components/DNR";
+import { ResizeDNRData } from "../../../components/DNR";
 
 interface AudioClipWaveformProps extends WaveformProps {
   copyFrom?: { canvas: HTMLCanvasElement };
@@ -200,15 +200,15 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
   return (
     <>
       <ClipComponent
-        automationSprite={height => <AudioClipWaveform {...wavefromProps(height, true)} />}
+        automationSprite={(height: number) => <AudioClipWaveform {...wavefromProps(height, true)} />}
         clip={clip}
         height={height}
         listeners={listeners}
-        loopSprite={height => <AudioClipWaveform {...wavefromProps(height, true)} />}
+        loopSprite={(height: number) => <AudioClipWaveform {...wavefromProps(height, true)} />}
         onChangeLane={onChangeLane}
         onResize={onResize}
         onSetClip={onSetClip}
-        sprite={height => <AudioClipWaveform {...wavefromProps(height, false)} />}
+        sprite={(height: number) => <AudioClipWaveform {...wavefromProps(height, false)} />}
         track={track}
       />
       <audio ref={audioRef} src={url} />
