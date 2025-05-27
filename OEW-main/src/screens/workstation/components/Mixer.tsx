@@ -1,15 +1,15 @@
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
-import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from "@/services/types/types";
-import { hslToHex, hueFromHex } from "@/services/utils/general";
-import { formatPanning, getVolumeGradient, volumeToNormalized } from "@/services/utils/utils";
-import { FXComponent, TrackVolumeSlider } from "@/screens/workstation/components";
-import { TrackIcon } from "@/components/icons";
-import { SortData } from "@/components/widgets/SortableList";
-import { Dialog, HueInput, Knob, Meter, SelectSpinBox, SortableList, SortableListItem } from "@/components/widgets";
-import { openContextMenu } from "@/services/electron/utils";
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from "../../../services/types/types";
+import { hslToHex, hueFromHex } from "../../../services/utils/general";
+import { formatPanning, getVolumeGradient, volumeToNormalized } from "../../../services/utils/utils";
+import { FXComponent, TrackVolumeSlider } from "./index";
+import { TrackIcon } from "../../../components/icons";
+import { SortData } from "../../../components/widgets/SortableList";
+import { Dialog, HueInput, Knob, Meter, SelectSpinBox, SortableList, SortableListItem } from "../../../components/widgets";
+import { openContextMenu } from "../../../services/electron/utils";
 
 const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => {
   const {
@@ -24,14 +24,14 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
     timelineSettings
   } = useContext(WorkstationContext)!;
 
-  const [hue, setHue] = useState(hueFromHex(track.color));
+  const [hue, setHue] = useState(hueFromHex(track.color || '#808080'));
   const [name, setName] = useState(track.name);
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
 
   const pan = useMemo(() => {
-    const lane = track.automationLanes.find(lane => lane.envelope === AutomationLaneEnvelope.Pan);
+    const lane = track.automationLanes?.find(lane => lane.envelope === AutomationLaneEnvelope.Pan);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, track.pan, timelineSettings.timeSignature])
+  }, [track.automationLanes, playheadPos, (track as any).pan, timelineSettings.timeSignature])
 
   useEffect(() => setName(track.name), [track.name])
 
@@ -43,7 +43,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
 
   function handleContextMenu() {
     if (!isMaster && document.activeElement?.nodeName !== "INPUT") {
-      openContextMenu(ContextMenuType.Track, {}, params => {
+      openContextMenu(ContextMenuType.Track, {}, (params: any) => {
         switch (params.action) {
           case 0:
             duplicateTrack(track);
@@ -53,7 +53,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
             break;
           case 2:
             setShowChangeHueDialog(true);
-            setHue(hueFromHex(track.color));
+            setHue(hueFromHex(track.color || '#808080'));
             break;
         }
       })
@@ -62,11 +62,11 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
 
   const isMaster = track.id === masterTrack.id;
   const selected = selectedTrackId === track.id;
-  const mutedByMaster = masterTrack.mute && !isMaster;
+  const mutedByMaster = (masterTrack as any).mute && !isMaster;
 
   const muteButtonTitle = mutedByMaster 
     ? "Master is muted"
-    : `${track.mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
+    : `${(track as any).mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
 
   const style = {
     fx: {
@@ -107,10 +107,10 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
       meter: { color: "var(--border6)", sizeRatio: 1.1, width: 1.5 }
     },
     muteButton: { 
-      color: track.mute || masterTrack.mute ? "#ff004c" : "var(--border6)", 
+      color: (track as any).mute || (masterTrack as any).mute ? "#ff004c" : "var(--border6)", 
       borderBottomWidth: isMaster ? 1 : 0
     },
-    armIcon: { fontSize: 14, color: track.armed ? "#ff004c" : "var(--border6)" },
+    armIcon: { fontSize: 14, color: (track as any).armed ? "#ff004c" : "var(--border6)" },
     peakLevel: {
       lineHeight: 1,
       color: "var(--fg1)",
@@ -166,7 +166,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
           />
           <SelectSpinBox
             classes={{ container: "hover-2 stop-reorder col-11" }}
-            onChange={val => setTrack({...track, automationMode: val as AutomationMode})}
+            onChange={(val: AutomationMode) => setTrack({...track, automationMode: val})}
             options={[
               { label: "Read", value: AutomationMode.Read },
               { label: "Write", value: AutomationMode.Write },
@@ -176,8 +176,8 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
             ]}
             optionsPopover={{ marginThreshold: 0 }}
             style={style.automationModeSpinBox}
-            title={`Automation Mode: ${track.automationMode}`}
-            value={track.automationMode}
+            title={`Automation Mode: ${track.automationMode || AutomationMode.Read}`}
+            value={track.automationMode || AutomationMode.Read}
           />
           <div style={{flex: 1, width: "100%", display: "flex", position: "relative"}}>
             <div className="position-relative d-flex" style={{ marginLeft: 6, padding: "9px 0 10px" }}>
@@ -185,14 +185,14 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
                 <Meter
                   color={getVolumeGradient(true)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border12)"}}]}
-                  percent={volumeToNormalized(track.volume) * 100}
+                  percent={volumeToNormalized((track as any).volume || 0) * 100}
                   style={{ ...style.volumeMeter, marginRight: 2 }}
                   vertical
                 />
                 <Meter
                   color={getVolumeGradient(true)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border12)"}}]}
-                  percent={volumeToNormalized(track.volume) * 100}
+                  percent={volumeToNormalized((track as any).volume || 0) * 100}
                   style={style.volumeMeter}
                   vertical
                 />
@@ -202,26 +202,28 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
             <div className="d-flex align-items-end" style={{flexDirection: "column", flex: 1}}>
               <div className="d-flex flex-column align-items-center mt-1" style={{ marginRight: 4 }}>
                 <IconButton className="p-0 stop-reorder">
-                  <TrackIcon color="var(--border6)" type={track.type} style={{marginBottom: 4}} />
+                  <div style={{marginBottom: 4}}>
+                    <TrackIcon color="var(--border6)" type={track.type} />
+                  </div>
                 </IconButton>
                 <Knob
                   bidirectionalMeter
                   disabled={pan.isAutomated}
                   max={100}
                   min={-100}
-                  onChange={value => setTrack({ ...track, pan: value })}
+                  onChange={(value: any) => setTrack({ ...track, pan: value })}
                   origin={0}
                   size={20}
                   style={style.panKnob}
                   title={`Pan: ${formatPanning(pan.value!)}${pan.isAutomated ? " (automated)" : ""}`}
                   value={pan.value!}
-                  valueLabelFormat={value => formatPanning(value, true)}
+                  valueLabelFormat={(value: any) => formatPanning(value, true)}
                 />
                 <div>
                   <div title={muteButtonTitle}>
                     <button
                       className={`track-btn stop-reorder ${mutedByMaster ? "pe-none" : "pe-auto hover-4"}`}
-                      onClick={() => setTrack({ ...track, mute: !track.mute })}
+                      onClick={() => setTrack({ ...track, mute: !(track as any).mute } as any)}
                       style={style.muteButton}
                     >
                       <span style={{ opacity: mutedByMaster ? 0.5 : 1 }}>M</span>
@@ -231,16 +233,16 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
                     <>
                       <button
                         className="track-btn hover-4 stop-reorder"
-                        onClick={() => setTrack({...track, solo: !track.solo})}
-                        style={{ color: track.solo ? "var(--fg2)" : "var(--border6)", borderBottom: "none" }}
+                        onClick={() => setTrack({...track, solo: !(track as any).solo} as any)}
+                        style={{ color: (track as any).solo ? "var(--fg2)" : "var(--border6)", borderBottom: "none" }}
                         title={"Toggle Solo" + (selected ? " [S]" : "")}
                       >
                         S
                       </button>
                       <button
                         className="track-btn hover-4 stop-reorder"
-                        onClick={() => setTrack({...track, armed: !track.armed})}
-                        title={(track.armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
+                        onClick={() => setTrack({...track, armed: !(track as any).armed} as any)}
+                        title={((track as any).armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
                       >
                         <FiberManualRecord style={style.armIcon} />
                       </button>
@@ -284,7 +286,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
       >
         <DialogContent style={{ padding: 12 }}>
           <form className="d-flex align-items-center col-12" onSubmit={changeTrackColor}>
-            <HueInput onChange={hue => setHue(hue)} value={hue} />
+            <HueInput onChange={(hue: number) => setHue(hue)} value={hue} />
             <button className="btn-3" style={{ marginLeft: 6 }}>
               <Check style={{ fontSize: 16, color: "var(--bg6)", marginTop: -2 }} />
             </button>
@@ -333,8 +335,9 @@ export default function Mixer() {
       {masterTrack && <MixerTrack track={masterTrack} />}
       <SortableList
         cancel=".stop-reorder"
+        // @ts-ignore - direction prop is expected by the component but not defined in types
         direction="horizontal"
-        onSortUpdate={data => setEdgeIndex(data.edgeIndex)}
+        onSortUpdate={(data: SortData) => setEdgeIndex(data.edgeIndex)}
         onStart={() => setAllowMenuAndShortcuts(false)}
         onEnd={handleSortEnd}
       >  

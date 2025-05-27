@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { ClipboardContext, ClipboardItemType, WorkstationContext } from "@/contexts";
-import { clamp, inverseLerp, lerp } from "@/services/utils/general";
-import { AutomationNodeComponent } from "@/screens/workstation/components";
+import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../../contexts";
+import { clamp, inverseLerp, lerp } from "../../../services/utils/general";
+import { AutomationNodeComponent } from "./index";
 import { v4 } from "uuid";
-import { BASE_HEIGHT, normalizedToVolume, volumeToNormalized } from "@/services/utils/utils";
-import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from "@/services/types/types";
-import { openContextMenu } from "@/services/electron/utils";
+import { BASE_HEIGHT, normalizedToVolume, volumeToNormalized } from "../../../services/utils/utils";
+import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from "../../../services/types/types";
+import { openContextMenu } from "../../../services/electron/utils";
 
 interface IProps {
   color: string;
@@ -35,7 +35,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (lane.nodes.length === 1) {
+    if (lane.nodes && lane.nodes.length === 1) {
       switch (lane.envelope) {
         case AutomationLaneEnvelope.Volume:
           setTrack({ ...track, volume: lane.nodes[0].value });
@@ -51,21 +51,21 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
   }, [lane.nodes])
 
   useEffect(() => {
-    if (lane.nodes.length === 1) {
+    if (lane.nodes && lane.nodes.length === 1) {
       if (lane.envelope === AutomationLaneEnvelope.Volume)
         setNode({ ...lane.nodes[0], value: track.volume });
     }
   }, [track.volume])
 
   useEffect(() => {
-    if (lane.nodes.length === 1) {
+    if (lane.nodes && lane.nodes.length === 1) {
       if (lane.envelope === AutomationLaneEnvelope.Pan)
         setNode({ ...lane.nodes[0], value: track.pan });
     }
   }, [track.pan])
 
   useEffect(() => {
-    if (lane.nodes.length === 1) {
+    if (lane.nodes && lane.nodes.length === 1) {
       if (lane.envelope === AutomationLaneEnvelope.Tempo)
         setNode({ ...lane.nodes[0], value: timelineSettings.tempo });
     }
@@ -77,11 +77,11 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
 
   function drawPolylineFromNodes() {
     if (ref.current && polylineRef.current) {
-      let nodes = lane.nodes;
+      let nodes = lane.nodes || [];
       let points = "";
 
       if (movingNodeIndex.current > -1 && movingNode.current) {
-        const idx = lane.nodes.findIndex(node => node.id === movingNode.current!.id); 
+        const idx = (lane.nodes || []).findIndex(node => node.id === movingNode.current!.id); 
         
         if (idx > -1) {
           nodes = nodes.slice();
@@ -167,7 +167,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
     const target = e.currentTarget;
     const disablePaste = clipboardItem?.type !== ClipboardItemType.Node;
 
-    openContextMenu(ContextMenuType.Automation, { showPasteOptions: true, disablePaste }, params => {
+    openContextMenu(ContextMenuType.Automation, { showPasteOptions: true, disablePaste }, (params: any) => {
       switch (params.action) {
         case 0:
           setLane(track, { ...lane, show: false });
@@ -192,7 +192,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
 
   function handleNodeMove(node: AutomationNode) {
     if (movingNodeIndex.current === -1 || node.id !== movingNode.current?.id)
-      movingNodeIndex.current = lane.nodes.findIndex(n => n.id === node.id);
+      movingNodeIndex.current = (lane.nodes || []).findIndex(n => n.id === node.id);
 
     movingNode.current = node;
 
@@ -204,7 +204,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
     point.x = x;
     point.y = y;
 
-    while (movingNodeIndex.current < lane.nodes.length - 1 && point.x > points[movingNodeIndex.current + 2].x) {
+    while (movingNodeIndex.current < (lane.nodes || []).length - 1 && point.x > points[movingNodeIndex.current + 2].x) {
       points.replaceItem(points[movingNodeIndex.current + 2], movingNodeIndex.current + 1);
       points.replaceItem(point, movingNodeIndex.current + 2);
       movingNodeIndex.current++;
@@ -225,7 +225,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
     const laneIndex = automationLanes.findIndex(l => l.id === lane.id)
 
     if (laneIndex !== -1) {
-      const nodes = lane.nodes.slice();
+      const nodes = (lane.nodes || []).slice();
       const nodeIndex = nodes.findIndex(n => n.id === node.id);
 
       if (nodeIndex !== -1) {
@@ -247,61 +247,77 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
   }
 
   function valueToY(value: number) {
-    const height = ref.current ? ref.current.clientHeight - 8 : 0;
-    const percentage = lane.envelope === AutomationLaneEnvelope.Volume 
-      ? volumeToNormalized(value)
-      : inverseLerp(value, lane.minValue, lane.maxValue);
-
-    return height - percentage * height;
+    const height = BASE_HEIGHT * verticalScale;
+    const normalizedValue = inverseLerp(value, lane.minValue, lane.maxValue);
+    
+    return height - (normalizedValue * height);
   }
 
   function yToValue(y: number) {
-    const height = ref.current ? ref.current.clientHeight - 8 : 0;
-    const percentage = clamp((height - y) / height, 0, 1);
+    const height = BASE_HEIGHT * verticalScale;
+    const normalizedValue = clamp(inverseLerp(height, 0, y), 0, 1);
     
-    return lane.envelope === AutomationLaneEnvelope.Volume
-      ? normalizedToVolume(percentage)
-      : lerp(percentage, lane.minValue, lane.maxValue);
+    return lerp(normalizedValue, lane.minValue, lane.maxValue);
   }
 
-  const automationColor = lane.enabled ? color : "var(--bg11)";
-
   return (
-    <div
+    <div 
+      className="automation-lane" 
+      style={{ 
+        position: "relative", 
+        height: BASE_HEIGHT, 
+        ...style 
+      }}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
       ref={ref}
-      style={{
-        width: "100%",
-        borderBottom: `1px solid #0002`,
-        position: "relative",
-        height: lane.expanded ? BASE_HEIGHT * verticalScale : 22,
-        marginLeft: -2,
-        ...style
-      }}
     >
       <svg 
-        width="100%" 
-        height="100%"
-        style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none", zIndex: 11 }} 
+        className="automation-lane-svg" 
+        style={{ 
+          position: "absolute", 
+          top: 0, 
+          left: 0, 
+          pointerEvents: "none", 
+          width: "100%", 
+          height: "100%" 
+        }}
       >
+        <defs>
+          <marker id="arrowhead" markerWidth={10} markerHeight={7} refX={0} refY={3.5} orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill={color} />
+          </marker>
+        </defs>
+        
         <polyline 
           ref={polylineRef} 
-          style={{ fill: "none", stroke: automationColor, strokeWidth: lane.nodes.length > 0 ? 2 : 1 }} 
+          points="" 
+          style={{ 
+            fill: "none", 
+            stroke: color, 
+            strokeWidth: 2, 
+            pointerEvents: "none" 
+          }}
+          markerEnd="url(#arrowhead)"
         />
       </svg>
-      {lane.expanded && lane.nodes.map(node => (
-        <AutomationNodeComponent 
-          color={automationColor}
-          key={node.id}
-          lane={lane}
-          node={node} 
-          onNodeMove={handleNodeMove}
-          onSetNode={setNode}
-          valueToY={valueToY}
-          yToValue={yToValue}
-        />
-      ))}
+
+      <div className="automation-lane-content" style={{ position: "relative", height: "100%" }}>
+        {lane.nodes && lane.nodes.map((node) => {
+          return (
+            <AutomationNodeComponent
+              key={node.id}
+              node={node}
+              lane={lane}
+              color={color}
+              onNodeMove={handleNodeMove}
+              onSetNode={setNode}
+              valueToY={valueToY}
+              yToValue={yToValue}
+            />
+          );
+        })}
+      </div>
     </div>
-  )
+  );
 }

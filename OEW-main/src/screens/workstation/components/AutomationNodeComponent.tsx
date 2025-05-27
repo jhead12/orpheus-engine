@@ -1,14 +1,14 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { Popover } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
-import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from "@/services/types/types";
-import { clamp } from "@/services/utils/general";
-import { formatPanning, formatVolume, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "@/services/utils/utils";
-import { Tooltip } from "@/components/widgets";
-import DNR, { DNRData } from "@/components/DNR";
-import { openContextMenu } from "@/services/electron/utils";
-import useClickAway from "@/services/hooks/useClickAway";
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from "../../../services/types/types";
+import { clamp } from "../../../services/utils/general";
+import { formatPanning, formatVolume, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from "../../../services/utils/utils";
+import { Tooltip } from "../../../components/widgets";
+import DNR, { DNRData } from "../../../components/DNR";
+import { openContextMenu } from "../../../services/electron/utils";
+import useClickAway from "../../../services/hooks/useClickAway";
 
 interface IProps {
   color: string;
@@ -132,7 +132,8 @@ export default function AutomationNodeComponent(props: IProps) {
     e.stopPropagation();
     const target = e.currentTarget as HTMLElement;
     
-    openContextMenu(ContextMenuType.Node, {}, params => {
+    openContextMenu(ContextMenuType.Node, {}, (params: Record<string, any>) => {
+      const action = params.action as number;
       switch (params.action) {
         case 0:
           deleteNode(node);
