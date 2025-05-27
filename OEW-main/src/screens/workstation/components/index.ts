@@ -14,3 +14,4 @@ export { default as TrackComponent } from "./TrackComponent";
 export { default as TrackVolumeSlider } from "./TrackVolumeSlider";
 export { default as Waveform } from "./Waveform";
 export { default as ZoomControls } from "./ZoomControls";
+export { default as AudioAnalysisPanel } from './AudioAnalysisPanel';

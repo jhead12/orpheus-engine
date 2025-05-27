@@ -1,4 +1,6 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext } from 'react';
+import { AnalysisContextType } from '../services/types/types';
+
 import { 
   AutomationLane, 
   AutomationNode, 
@@ -13,7 +15,9 @@ import {
   TimeSignature, 
   Track, 
   TrackType, 
-  WorkstationAudioInputFile 
+  WorkstationAudioInputFile,
+  AudioAnalysisType, 
+  AnalysisContextType 
 } from "@/services/types/types";
 
 export enum ClipboardItemType {
@@ -133,4 +137,5 @@ interface WorkstationFile {
 }
 
 export const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
+export const AnalysisContext = createContext<AnalysisContextType | null>(null);
 // export { default as WorkstationContext } from './WorkstationContext';
