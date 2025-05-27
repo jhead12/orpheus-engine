@@ -1,5 +1,8 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction } from 'react';
+
+// Imports from services/types/types - fix path and remove duplicates
 import { 
+  AnalysisContextType,
   AutomationLane, 
   AutomationNode, 
   Clip, 
@@ -13,8 +16,9 @@ import {
   TimeSignature, 
   Track, 
   TrackType, 
-  WorkstationAudioInputFile 
-} from "@/services/types/types";
+  WorkstationAudioInputFile,
+  AudioAnalysisType
+} from "../services/types/types";
 
 export enum ClipboardItemType {
   Clip, 
@@ -133,4 +137,5 @@ interface WorkstationFile {
 }
 
 export const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
+export const AnalysisContext = createContext<AnalysisContextType | null>(null);
 // export { default as WorkstationContext } from './WorkstationContext';

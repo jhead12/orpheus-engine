@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   FastForward,
   FastRewind,
@@ -10,26 +10,44 @@ import {
   SkipPrevious,
   Stop,
   Undo,
+  Settings,
+  Chat,
+  MoreVert,
+  AudiotrackOutlined,
+  Extension,
 } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { WorkstationContext } from "@/contexts";
-import { Meter, NumberInput, SelectSpinBox } from "@/components/widgets";
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Tabs,
+  Tab,
+  Drawer,
+  Badge,
+} from "@mui/material";
+import { WorkstationContext } from "../../../contexts";
+import { Meter, NumberInput, SelectSpinBox } from "../../../components/widgets";
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
   SnapGridSizeOption,
   TrackType,
-} from "@/services/types/types";
+} from "../../../services/types/types";
 import { FaMagnet } from "react-icons/fa";
 import {
   getVolumeGradient,
   sliceClip,
   volumeToNormalized,
-} from "@/services/utils/utils";
-import { HoldActionButton } from "@/components";
-import { Metronome, TrackVolumeSlider } from "@/screens/workstation/components";
-import { StretchAudio } from "@/components/icons";
-import { parseDuration } from "@/services/utils/general";
+} from "../../../services/utils/utils";
+import { HoldActionButton } from "../../../components";
+import { Metronome, TrackVolumeSlider } from "./index";
+import { StretchAudio } from "../../../components/icons";
+import { parseDuration } from "../../../services/utils/general";
+import SettingsPanel from "../../../components/settings/SettingsPanel";
+import { SettingsContext } from "../../../services/settings";
 
 const noteValues: { label: string; value: number }[] = [];
 
@@ -65,6 +83,9 @@ export default function Header() {
     updateTimelineSettings,
     snapGridSize,
   } = useContext(WorkstationContext)!;
+
+  // Get settings from context
+  const settingsContext = useContext(SettingsContext);
 
   const [timePosText, setTimePosText] = useState("");
   const [typeCursorPosMode, setTypeCursorPosMode] = useState(false);
@@ -284,7 +305,7 @@ export default function Header() {
 
   const tempo = useMemo(() => {
     const lane = masterTrack.automationLanes.find(
-      (lane) => lane.envelope === AutomationLaneEnvelope.Tempo
+      (lane: any) => lane.envelope === (AutomationLaneEnvelope as any).Tempo
     );
     return getTrackCurrentValue(masterTrack, lane);
   }, [
@@ -428,7 +449,90 @@ export default function Header() {
       prevIcon: { color: "var(--fg1)" },
       select: { color: "var(--fg1)" },
     },
+    actionButtons: {
+      display: "flex",
+      alignItems: "center",
+      marginLeft: "auto",
+      marginRight: 12,
+    },
+    settingsDialog: {
+      width: 600,
+      maxWidth: "90vw",
+    },
+    tabPanel: {
+      padding: 16,
+    },
+    chatDrawer: {
+      width: 320,
+      padding: 16,
+    },
+    pluginsDialog: {
+      width: 700,
+      maxWidth: "90vw",
+    },
+    audioMenu: {
+      minWidth: 240,
+    },
   } as const;
+
+  // New state for UI features
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [audioMenuAnchorEl, setAudioMenuAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
+  const [pluginsOpen, setPluginsOpen] = useState(false);
+  const [settingsTabValue, setSettingsTabValue] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(2); // Example for notification badge
+
+  // Handle settings dialog
+  const handleOpenSettings = () => {
+    setSettingsOpen(true);
+  };
+
+  const handleCloseSettings = () => {
+    setSettingsOpen(false);
+  };
+
+  // Handle chat drawer
+  const handleToggleChat = () => {
+    setChatOpen(!chatOpen);
+    if (!chatOpen) setUnreadMessages(0);
+  };
+
+  // Handle audio I/O menu
+  const handleAudioMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAudioMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleAudioMenuClose = () => {
+    setAudioMenuAnchorEl(null);
+  };
+
+  // Handle plugins dialog
+  const handleTogglePlugins = () => {
+    setPluginsOpen(!pluginsOpen);
+  };
+
+  // Define TabPanel component for settings
+  function TabPanel(props: {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+  }) {
+    const { children, value, index } = props;
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`settings-tabpanel-${index}`}
+        aria-labelledby={`settings-tab-${index}`}
+        style={style.tabPanel}
+      >
+        {value === index && <>{children}</>}
+      </div>
+    );
+  }
 
   return (
     <div className="col-12 position-relative" style={{ zIndex: 19 }}>
@@ -470,7 +574,7 @@ export default function Header() {
             layout="alt"
             min={1}
             max={24}
-            onChange={(value) =>
+            onChange={(value: number) =>
               setTimeSignature({
                 ...timelineSettings.timeSignature,
                 beats: value,
@@ -490,7 +594,7 @@ export default function Header() {
             }}
             disableSelect
             layout="alt"
-            onChange={(value) => {
+            onChange={(value: number) => {
               setTimeSignature({
                 ...timelineSettings.timeSignature,
                 noteValue: Number(value),
@@ -519,7 +623,7 @@ export default function Header() {
               min={20}
               max={320}
               layout="alt"
-              onChange={(value) => changeTempo(value)}
+              onChange={(value: number) => changeTempo(value)}
               orientation="vertical"
               style={style.tempo}
               value={+tempo.value!.toFixed(1)}
@@ -684,6 +788,45 @@ export default function Header() {
             style={{ ...style.masterVolumeMeter, margin: 0 }}
           />
         </div>
+        <div style={style.actionButtons}>
+          {/* Audio I/O Button */}
+          <IconButton
+            className="btn-1 mx-1 hover-1"
+            onClick={handleAudioMenuOpen}
+            title="Audio I/O Settings"
+          >
+            <AudiotrackOutlined style={{ fontSize: 18, color: "var(--border6)" }} />
+          </IconButton>
+
+          {/* Plugins Button */}
+          <IconButton
+            className="btn-1 mx-1 hover-1"
+            onClick={handleTogglePlugins}
+            title="Manage Plugins"
+          >
+            <Extension style={{ fontSize: 18, color: "var(--border6)" }} />
+          </IconButton>
+
+          {/* Chat Button */}
+          <IconButton
+            className="btn-1 mx-1 hover-1"
+            onClick={handleToggleChat}
+            title="Chat"
+          >
+            <Badge badgeContent={unreadMessages} color="error">
+              <Chat style={{ fontSize: 18, color: chatOpen ? "var(--color1)" : "var(--border6)" }} />
+            </Badge>
+          </IconButton>
+
+          {/* Settings Button */}
+          <IconButton
+            className="btn-1 mx-1 hover-1"
+            onClick={handleOpenSettings}
+            title="Settings"
+          >
+            <Settings style={{ fontSize: 18, color: "var(--border6)" }} />
+          </IconButton>
+        </div>
         <div
           className="d-flex align-items-center"
           style={{ height: "100%", marginLeft: 12 }}
@@ -695,7 +838,7 @@ export default function Header() {
                 style={{ fontSize: 10, marginTop: 1, color: "var(--fg1)" }}
               />
             }
-            onChange={(val) => setSnapGridSizeOption(val as SnapGridSizeOption)}
+            onChange={(val: SnapGridSizeOption) => setSnapGridSizeOption(val)}
             options={[
               { label: "None", value: SnapGridSizeOption.None },
               { label: "Auto", value: SnapGridSizeOption.Auto },
@@ -723,6 +866,132 @@ export default function Header() {
           />
         </div>
       </div>
+
+      {/* Replace the Settings Dialog with the new SettingsPanel */}
+      <SettingsPanel
+        open={settingsOpen}
+        onClose={handleCloseSettings}
+        initialTab={settingsTabValue}
+      />
+
+      {/* Chat Drawer */}
+      <Drawer
+        anchor="right"
+        open={chatOpen}
+        onClose={handleToggleChat}
+      >
+        <div style={style.chatDrawer}>
+          <h4>Chat</h4>
+          <div
+            style={{
+              height: "400px",
+              overflow: "auto",
+              border: "1px solid var(--border1)",
+              padding: "8px",
+              marginBottom: "8px",
+            }}
+          >
+            {/* Chat messages would go here */}
+            <div style={{ margin: "8px 0", textAlign: "left" }}>
+              <strong>System:</strong> Welcome to the chat!
+            </div>
+            <div style={{ margin: "8px 0", textAlign: "right" }}>
+              <strong>You:</strong> How do I add a plugin?
+            </div>
+            <div style={{ margin: "8px 0", textAlign: "left" }}>
+              <strong>System:</strong> You can add plugins through the plugins manager. Click on the puzzle piece icon in the toolbar.
+            </div>
+          </div>
+          <input
+            type="text"
+            placeholder="Type a message..."
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid var(--border1)",
+            }}
+          />
+        </div>
+      </Drawer>
+
+      {/* Plugins Dialog */}
+      <Dialog
+        open={pluginsOpen}
+        onClose={handleTogglePlugins}
+        PaperProps={{ style: style.pluginsDialog }}
+      >
+        <DialogTitle>Plugin Manager</DialogTitle>
+        <DialogContent>
+          <Tabs value={0}>
+            <Tab label="Installed" />
+            <Tab label="Store" />
+            <Tab label="Settings" />
+          </Tabs>
+          <div style={{ marginTop: 16 }}>
+            <h4>Installed Plugins</h4>
+            <p>Manage your installed plugins and add-ons.</p>
+            {/* Plugin list UI would go here */}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Audio I/O Menu */}
+      <Menu
+        anchorEl={audioMenuAnchorEl}
+        open={Boolean(audioMenuAnchorEl)}
+        onClose={handleAudioMenuClose}
+        PaperProps={{ style: style.audioMenu }}
+      >
+        <MenuItem>
+          <div style={{ width: "100%" }}>
+            <div>
+              <strong>Input Device</strong>
+            </div>
+            <select style={{ width: "100%", marginTop: 8 }}>
+              <option>Default Input</option>
+              <option>Built-in Microphone</option>
+              <option>Audio Interface Input 1-2</option>
+            </select>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div style={{ width: "100%" }}>
+            <div>
+              <strong>Output Device</strong>
+            </div>
+            <select style={{ width: "100%", marginTop: 8 }}>
+              <option>Default Output</option>
+              <option>Built-in Speakers</option>
+              <option>Audio Interface Output 1-2</option>
+            </select>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div style={{ width: "100%" }}>
+            <div>
+              <strong>Buffer Size</strong>
+            </div>
+            <select style={{ width: "100%", marginTop: 8 }}>
+              <option>128 samples</option>
+              <option>256 samples</option>
+              <option selected>512 samples</option>
+              <option>1024 samples</option>
+            </select>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div style={{ width: "100%" }}>
+            <div>
+              <strong>Sample Rate</strong>
+            </div>
+            <select style={{ width: "100%", marginTop: 8 }}>
+              <option>44.1 kHz</option>
+              <option selected>48 kHz</option>
+              <option>96 kHz</option>
+            </select>
+          </div>
+        </MenuItem>
+      </Menu>
     </div>
   );
 }

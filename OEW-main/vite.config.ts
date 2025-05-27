@@ -14,6 +14,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@orpheus": path.resolve(__dirname, "./src"),
       "@orpheus-engine": path.resolve(__dirname, "..")
     }
   },

@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef, useState, useLayoutEffect } from "react";
 
 export interface WaveformProps {
   data: Float32Array[] | null;

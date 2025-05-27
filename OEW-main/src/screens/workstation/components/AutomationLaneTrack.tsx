@@ -1,13 +1,13 @@
 import React, { useContext, useMemo, useState } from "react"
 import { IconButton, Popover } from "@mui/material"
-import { WorkstationContext } from "@/contexts"
-import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from "@/services/types/types"
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from "../../../services/types/types"
 import { Add, ExpandLess, ExpandMore, Remove } from "@mui/icons-material"
-import { clamp, inverseLerp, lerp } from "@/services/utils/general"
+import { clamp, inverseLerp, lerp } from "../../../services/utils/general"
 import { v4 } from "uuid"
-import { BASE_HEIGHT, automatedValueAtPos, volumeToNormalized } from "@/services/utils/utils"
-import { Meter } from "@/components/widgets"
-import { openContextMenu } from "@/services/electron/utils"
+import { BASE_HEIGHT, automatedValueAtPos, volumeToNormalized } from "../../../services/utils/utils"
+import { Meter } from "../../../components/widgets"
+import { openContextMenu } from "../../../services/electron/utils"
 
 interface Props {
   color: string;
@@ -66,7 +66,7 @@ export default function AutomationLaneTrack({ color, lane, track }: Props) {
 
   function handleContextMenu(_: React.MouseEvent<HTMLDivElement>) {
     if (document.activeElement?.nodeName !== "INPUT") {
-      openContextMenu(ContextMenuType.Automation, {}, params => {
+      openContextMenu(ContextMenuType.Automation, {}, (params: Record<string, any>) => {
         switch (params.action) {
           case 0:
             setLane(track, { ...lane, show: false });

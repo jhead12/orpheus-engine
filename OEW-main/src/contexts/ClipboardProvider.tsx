@@ -1,4 +1,4 @@
-import { ClipboardContext, ClipboardItem } from "@/contexts";
+import { ClipboardContext, ClipboardItem } from "./index";
 import React, { PropsWithChildren } from "react";
 
 export function ClipboardProvider({ children }: PropsWithChildren) {

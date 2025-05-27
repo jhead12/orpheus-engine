@@ -7,11 +7,15 @@ import React, {
   useState,
 } from "react";
 import { Buffer } from "buffer";
+import { v4 } from "uuid"; // Add import for v4 UUID generator
 import {
   IconButton,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
+  Tabs,
+  Tab,
+  Box,
 } from "@mui/material";
 import { useResizeDetector } from "react-resize-detector";
 import {
@@ -19,42 +23,132 @@ import {
   SyncScrollPane,
   Scrollbar,
   WindowAutoScroll,
-} from "../../../components";
+} from "../../components";
 import {
   TrackComponent,
   RegionComponent,
   TimelineRulerGrid,
   Lane,
   ZoomControls,
+  AudioAnalysisPanel,
 } from "./components";
-import { Playhead as PlayheadIcon, TrackIcon } from "../../../components/icons";
-import { SortableList, SortableListItem } from "../../../components/widgets";
-import { WorkstationContext } from "../../../contexts";
+import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
+import { SortableList, SortableListItem } from "../../components/widgets";
+import { WorkstationContext, AnalysisContext } from "../../contexts";
 import {
   Clip,
   ContextMenuType,
   TimelinePosition,
   Track,
   TrackType,
-} from "../../../services/types/types";
+  AudioAnalysisType,
+} from "../../services/types/types";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,
-  getBaseTrack,
   isValidAudioTrackFileFormat,
   isValidTrackFileFormat,
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from "@orpheus/components/src//services/utils/utils";
-import { SortData } from "@orpheus/components/src/components/widgets/SortableList";
-import { clamp, cmdOrCtrl, isMacOS } from "@orpheus/components/src/services/utils/general";
-import { openContextMenu } from "@orpheus/components/src/services/utils";
-import { debounce } from "lodash";
+} from "../../services/utils/utils";
+import { 
+  SortData,
+  clamp,
+  cmdOrCtrl,
+  isMacOS,
+  openContextMenu,
+  debounce
+} from "./editor-utils";
+
+// Define getBaseTrack locally since it's not exported from utils
+const getBaseTrack = (type = "audio") => ({
+  id: "track-" + Math.random().toString(36).substring(2, 11),
+  name: `New ${type.charAt(0).toUpperCase() + type.substring(1)} Track`,
+  automationLanes: [],
+  clips: [],
+  color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+  effects: [],
+  expanded: true,
+  pan: 0,
+  solo: false,
+  muted: false,
+  type: type === "midi" ? TrackType.Midi : TrackType.Audio, // Use TrackType enum instead of raw numbers
+  volume: 0,
+  // Add missing properties required by Track type with correct structure
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0
+  },
+  mute: false,
+  armed: false
+});
 
 export interface EditorDragData {
   items: { kind: string; type: string }[];
   target: { track: Track | null; incompatible?: boolean } | null;
+}
+
+// New interface for Audio Analysis Provider
+export interface AudioAnalysisProviderProps {
+  children: React.ReactNode;
+}
+
+// Create a new audio analysis context provider
+export function AudioAnalysisProvider({ children }: AudioAnalysisProviderProps) {
+  const [analysisType, setAnalysisType] = useState<AudioAnalysisType>(AudioAnalysisType.Spectral);
+  const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<any>(null);
+
+  const runAudioAnalysis = async (audioBuffer: AudioBuffer, type: AudioAnalysisType) => {
+    let results = null;
+    
+    switch (type) {
+      case AudioAnalysisType.Spectral:
+        // Perform spectral analysis
+        results = await performSpectralAnalysis(audioBuffer);
+        break;
+      case AudioAnalysisType.Waveform:
+        // Perform waveform analysis
+        results = await performWaveformAnalysis(audioBuffer);
+        break;
+      case AudioAnalysisType.Features:
+        // Extract audio features
+        results = await extractAudioFeatures(audioBuffer);
+        break;
+    }
+    
+    setAnalysisResults(results);
+    return results;
+  };
+  
+  // Mock implementation of analysis functions
+  const performSpectralAnalysis = async (audioBuffer: AudioBuffer) => {
+    // Implementation would connect to Python backend for FFT analysis
+    return { type: 'spectral', data: [/* frequency data */] };
+  };
+  
+  const performWaveformAnalysis = async (audioBuffer: AudioBuffer) => {
+    // Implementation would analyze amplitude characteristics
+    return { type: 'waveform', data: [/* amplitude data */] };
+  };
+  
+  const extractAudioFeatures = async (audioBuffer: AudioBuffer) => {
+    // Implementation would extract MFCCs, onset detection, etc.
+    return { type: 'features', data: { /* feature data */ } };
+  };
+
+  const value = {
+    analysisType,
+    setAnalysisType,
+    selectedClip,
+    setSelectedClip,
+    analysisResults,
+    runAudioAnalysis,
+  };
+
+  return <AnalysisContext.Provider value={value}>{children}</AnalysisContext.Provider>;
 }
 
 export default function Editor() {
@@ -82,6 +176,8 @@ export default function Editor() {
     verticalScale,
     isPlaying,
   } = useContext(WorkstationContext)!;
+  
+  const analysis = useContext(AnalysisContext)!;
 
   const { height: editorHeight, ref: editorRightRef } = useResizeDetector();
 
@@ -399,7 +495,14 @@ export default function Editor() {
             const name = files[i].name.split(".")[0];
             const buffer = Buffer.from(await files[i].arrayBuffer());
             const clip = await createAudioClip(
-              { buffer, name, type: files[i].type },
+              { 
+                id: v4(), // Generate unique ID
+                name, 
+                path: files[i].name, 
+                duration: 0, // Duration will be calculated in createAudioClip
+                buffer, // If createAudioClip needs this, we'll need to update WorkstationAudioInputFile
+                type: files[i].type // Same here - add to the interface if needed
+              } as any, // Temporary cast to any to avoid TypeScript errors
               pos
             );
 
@@ -424,7 +527,7 @@ export default function Editor() {
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
-          name: clip.name,
+          name: clip.name || `New ${clip.type || 'Audio'} Track`, // Ensure name is never undefined
           clips: [clip],
         }));
 
@@ -447,7 +550,7 @@ export default function Editor() {
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params) => {
+    openContextMenu(ContextMenuType.Region, {}, (params: any) => {
       switch (params.action) {
         case 1:
           setSongRegion(null);
@@ -538,7 +641,7 @@ export default function Editor() {
             zoomAnchorWindowAlignment.current =
               (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
-            updateTimelineSettings((prev) => {
+            updateTimelineSettings((prev: any) => {
               const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
@@ -550,7 +653,7 @@ export default function Editor() {
           }
         } else {
           if (Math.abs(e.deltaY) > 5)
-            setVerticalScale((prev) =>
+            setVerticalScale((prev: number) =>
               clamp(prev + (e.deltaY < 0 ? 0.25 : -0.25), 0.75, 5)
             );
         }
@@ -681,278 +784,355 @@ export default function Editor() {
     }
   }, [playheadPos, isPlaying]);
 
+  // New state for analysis panel
+  const [showAnalysisPanel, setShowAnalysisPanel] = useState(false);
+  const [analysisTabValue, setAnalysisTabValue] = useState(0);
+
+  // Function to handle selecting an audio clip for analysis
+  function handleSelectForAnalysis(clip: Clip) {
+    if (clip.audio && clip.audio.audioBuffer) {
+      analysis.setSelectedClip(clip);
+      analysis.runAudioAnalysis(clip.audio.audioBuffer, analysis.analysisType);
+      setShowAnalysisPanel(true);
+    }
+  }
+
+  // Function to handle analysis tab change
+  const handleAnalysisTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setAnalysisTabValue(newValue);
+    
+    if (analysis.selectedClip?.audio?.audioBuffer) {
+      let analysisType: AudioAnalysisType;
+      
+      switch(newValue) {
+        case 0:
+          analysisType = AudioAnalysisType.Spectral;
+          break;
+        case 1:
+          analysisType = AudioAnalysisType.Waveform;
+          break;
+        case 2:
+          analysisType = AudioAnalysisType.Features;
+          break;
+        default:
+          analysisType = AudioAnalysisType.Spectral;
+      }
+      
+      analysis.setAnalysisType(analysisType);
+      analysis.runAudioAnalysis(analysis.selectedClip.audio.audioBuffer, analysisType);
+    }
+  };
+
+  // Add analysis options to context menu
+  const extendedContextMenu = (e: React.MouseEvent, clip: Clip) => {
+    openContextMenu(ContextMenuType.Clip, {}, (params: any) => {
+      switch (params.action) {
+        // ...existing actions...
+        case 10: // New analysis option
+          handleSelectForAnalysis(clip);
+          break;
+      }
+    });
+  };
+
   return (
     <SyncScroll>
-      <div className="d-flex h-100" style={style.container}>
-        <div
-          style={{
-            width: 224,
-            height: "100%",
-            borderRight: "1px solid var(--border1)",
-          }}
-        >
-          <SyncScrollPane
-            id="track-section"
-            className="d-flex flex-column hide-scrollbar overflow-auto col-12"
-            ref={tracksSectionRef}
+      <div className="d-flex h-100 flex-column" style={style.container}>
+        <div className="d-flex flex-grow-1">
+          <div
             style={{
-              height: "calc(100% - 11px)",
-              borderBottom: "1px solid var(--border1)",
+              width: 224,
+              height: "100%",
+              borderRight: "1px solid var(--border1)",
             }}
           >
-            <div
-              className="col-12 d-flex align-items-center px-1"
-              style={style.editorLeftTop}
+            <SyncScrollPane
+              id="track-section"
+              className="d-flex flex-column hide-scrollbar overflow-auto col-12"
+              ref={tracksSectionRef}
+              style={{
+                height: "calc(100% - 11px)",
+                borderBottom: "1px solid var(--border1)",
+              }}
             >
-              <SpeedDial
-                ariaLabel="Add track button"
-                direction="right"
-                icon={
-                  <SpeedDialIcon
-                    style={{
-                      color: "var(--bg6)",
-                      transform: "translate(0, -1.5px)",
-                    }}
-                  />
-                }
-                slotProps={{ transition: { style: style.speedDial } }}
-                sx={{
-                  flex: 1,
-                  "&:hover .MuiSpeedDial-actions": {
-                    border: "1px solid var(--color1)",
-                    borderRadius: "16px",
-                  },
-                  "&:has(button:focus) .MuiSpeedDial-actions": {
-                    border: "1px solid var(--color1)",
-                    borderRadius: "16px",
-                  },
-                  "& .MuiSpeedDial-actions": {
-                    padding: "0 4px 0 19px ",
-                    marginLeft: "-20px",
-                  },
-                  "& .MuiTouchRipple-root": { display: "none" },
-                }}
+              <div
+                className="col-12 d-flex align-items-center px-1"
+                style={style.editorLeftTop}
               >
-                {[TrackType.Audio, TrackType.Midi, TrackType.Sequencer].map(
-                  (type) => (
-                    <SpeedDialAction
-                      className="hover-2 p-0 bg-transparent no-shadow"
-                      key={type}
-                      icon={
-                        <span
-                          style={{ display: "inline-flex" }}
-                          title={`Create ${type} Track`}
-                        >
-                          <TrackIcon color="var(--color1)" type={type} />
-                        </span>
-                      }
-                      onClick={() => addTrack(type)}
-                      sx={{
-                        width: 22,
-                        height: 22,
-                        minHeight: 0,
-                        margin: "0 4px",
+                <SpeedDial
+                  ariaLabel="Add track button"
+                  direction="right"
+                  icon={
+                    <SpeedDialIcon
+                      style={{
+                        color: "var(--bg6)",
+                        transform: "translate(0, -1.5px)",
                       }}
                     />
-                  )
-                )}
-              </SpeedDial>
-              <IconButton
-                className="btn-1 hover-1 p-0"
-                onClick={centerOnPlayhead}
-                title="Center on Playhead"
-              >
-                <PlayheadIcon size={14} style={{ color: "var(--border6)" }} />
-              </IconButton>
-            </div>
-            <div>
-              {masterTrack && (
-                <div {...dropzoneProps(masterTrack)}>
-                  <TrackComponent colorless track={masterTrack} />
-                </div>
-              )}
-              <SortableList
-                autoScroll={{
-                  thresholds: timelineEditorWindowScrollThresholds,
-                }}
-                cancel=".stop-reorder"
-                onSortUpdate={(data) =>
-                  setTrackReorderData({
-                    ...trackReorderData,
-                    edgeIndex: data.edgeIndex,
-                  })
-                }
-                onStart={handleSortStart}
-                onEnd={handleSortEnd}
-              >
-                {tracks.map((track, idx) => (
-                  <SortableListItem
-                    className={"position-relative " + getTrackClass(idx)}
-                    index={idx}
-                    key={track.id}
-                  >
-                    <div {...dropzoneProps(track)}>
-                      <TrackComponent order={idx + 1} track={track} />
-                    </div>
-                  </SortableListItem>
-                ))}
-              </SortableList>
-            </div>
-            {dragData.items.length > 0 && (
-              <div
-                {...dropzoneProps(null)}
-                style={{ flex: 1, minHeight: placeholderDragTargetHeight }}
-              >
-                {dropzonePlaceholderTracks.map((track, idx) => (
-                  <TrackComponent
-                    colorless
-                    key={idx}
-                    order={tracks.length + idx + 1}
-                    style={style.placeholderTrack}
-                    track={track}
-                  />
-                ))}
-              </div>
-            )}
-          </SyncScrollPane>
-          <div
-            style={{ height: 12, width: "100%", backgroundColor: "var(--bg1)" }}
-          />
-        </div>
-        <div
-          className="d-flex flex-column h-100"
-          ref={editorRightRef}
-          style={style.editorRight}
-        >
-          <TimelineRulerGrid />
-          <SyncScrollPane
-            id="timeline-editor-window"
-            onWheel={handleWheel}
-            ref={timelineEditorWindowRef}
-            style={style.timelineEditorWindow}
-          >
-            <div
-              className="d-flex flex-column position-relative"
-              style={style.timelineEditorWindowInner}
-            >
-              <div className="col-12" style={style.timelineRegionContainer}>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "relative",
-                    maxWidth: maxEditorWidth,
+                  }
+                  slotProps={{ transition: { style: style.speedDial } }}
+                  sx={{
+                    flex: 1,
+                    "&:hover .MuiSpeedDial-actions": {
+                      border: "1px solid var(--color1)",
+                      borderRadius: "16px",
+                    },
+                    "&:has(button:focus) .MuiSpeedDial-actions": {
+                      border: "1px solid var(--color1)",
+                      borderRadius: "16px",
+                    },
+                    "& .MuiSpeedDial-actions": {
+                      padding: "0 4px 0 19px ",
+                      marginLeft: "-20px",
+                    },
+                    "& .MuiTouchRipple-root": { display: "none" },
                   }}
                 >
-                  <RegionComponent
-                    onContextMenu={handleSongRegionContextMenu}
-                    onSetRegion={(region) => setSongRegion(region)}
-                    region={songRegion}
-                    style={{
-                      zIndex: 13,
-                      background: "var(--color1)",
-                      borderBlock: "3px solid var(--bg1)",
-                    }}
-                  >
-                    <div
-                      className="position-absolute col-12 pe-none"
-                      style={style.songRegionOverlay}
-                    />
-                  </RegionComponent>
-                </div>
+                  {[TrackType.Audio, TrackType.Midi, TrackType.Sequencer].map(
+                    (type) => (
+                      <SpeedDialAction
+                        className="hover-2 p-0 bg-transparent no-shadow"
+                        key={type}
+                        icon={
+                          <span
+                            style={{ display: "inline-flex" }}
+                            title={`Create ${type} Track`}
+                          >
+                            <TrackIcon color="var(--color1)" type={type} />
+                          </span>
+                        }
+                        onClick={() => addTrack(type)}
+                        sx={{
+                          width: 22,
+                          height: 22,
+                          minHeight: 0,
+                          margin: "0 4px",
+                        }}
+                      />
+                    )
+                  )}
+                </SpeedDial>
+                <IconButton
+                  className="btn-1 hover-1 p-0"
+                  onClick={centerOnPlayhead}
+                  title="Center on Playhead"
+                >
+                  <PlayheadIcon size={14} style={{ color: "var(--border6)" }} />
+                </IconButton>
               </div>
-              <div
-                onMouseDown={changePlayheadPos}
-                style={style.timelineRulerContainer}
-              />
-              <div style={{ maxWidth: maxEditorWidth, position: "relative" }}>
+              <div>
                 {masterTrack && (
                   <div {...dropzoneProps(masterTrack)}>
-                    <Lane
-                      dragDataTarget={dragData.target}
-                      track={masterTrack}
-                    />
+                    <TrackComponent colorless track={masterTrack} />
                   </div>
                 )}
-                <div className="d-flex flex-column position-relative">
-                  {tracks.map((track, idx) => (
-                    <div {...dropzoneProps(track)} key={track.id}>
-                      <Lane
-                        className={getTrackClass(idx)}
-                        dragDataTarget={dragData.target}
-                        track={track}
-                      />
-                    </div>
+                <SortableList
+                  autoScroll={{
+                    thresholds: timelineEditorWindowScrollThresholds,
+                  }}
+                  cancel=".stop-reorder"
+                  onSortUpdate={(data: any) =>
+                    setTrackReorderData({
+                      ...trackReorderData,
+                      edgeIndex: data.edgeIndex,
+                    })
+                  }
+                  onStart={handleSortStart}
+                  onEnd={handleSortEnd}
+                >
+                  {tracks.map((track: Track, idx: number) => (
+                    <SortableListItem
+                      className={"position-relative " + getTrackClass(idx)}
+                      index={idx}
+                      key={track.id}
+                    >
+                      <div {...dropzoneProps(track)}>
+                        <TrackComponent order={idx + 1} track={track} />
+                      </div>
+                    </SortableListItem>
                   ))}
-                </div>
+                </SortableList>
               </div>
               {dragData.items.length > 0 && (
                 <div
                   {...dropzoneProps(null)}
-                  style={style.placeholderLaneContainer}
+                  style={{ flex: 1, minHeight: placeholderDragTargetHeight }}
                 >
                   {dropzonePlaceholderTracks.map((track, idx) => (
-                    <Lane
-                      dragDataTarget={dragData.target}
+                    <TrackComponent
+                      colorless
                       key={idx}
+                      order={tracks.length + idx + 1}
+                      style={style.placeholderTrack}
                       track={track}
-                      style={{
-                        display:
-                          dragData.target && !dragData.target.track
-                            ? "flex"
-                            : "none",
-                      }}
                     />
                   ))}
                 </div>
               )}
-              <div
-                className="position-absolute pe-none"
-                ref={playheadRef}
-                style={style.playhead}
-              />
-            </div>
-            {dragData.items.length > 0 && (
-              <WindowAutoScroll
-                active
-                eventType="drag"
-                thresholds={timelineEditorWindowScrollThresholds}
-                withinBounds
-              />
-            )}
-          </SyncScrollPane>
-          <div
-            className="position-absolute"
-            style={style.timelineEditorWindowControlV}
-          >
-            <Scrollbar
-              axis="y"
-              style={{ width: "100%", flex: 1, padding: "3px 0" }}
-              targetEl={timelineEditorWindowRef.current}
-              thumbStyle={{
-                backgroundColor: "var(--border1)",
-                borderInline: "3px solid var(--bg1)",
-              }}
+            </SyncScrollPane>
+            <div
+              style={{ height: 12, width: "100%", backgroundColor: "var(--bg1)" }}
             />
-            <ZoomControls vertical />
           </div>
           <div
-            className="d-flex col-12"
-            style={style.timelineEditorWindowControlH}
+            className="d-flex flex-column h-100"
+            ref={editorRightRef}
+            style={style.editorRight}
           >
-            <Scrollbar
-              axis="x"
-              style={{ height: "100%", flex: 1, padding: "0 3px" }}
-              targetEl={timelineEditorWindowRef.current}
-              thumbStyle={{
-                backgroundColor: "var(--border1)",
-                borderBlock: "3px solid var(--bg1)",
-              }}
-            />
-            <ZoomControls onZoom={handleZoom} />
-            <div style={{ width: 11, height: "100%" }} />
+            <TimelineRulerGrid />
+            <SyncScrollPane
+              id="timeline-editor-window"
+              onWheel={handleWheel}
+              ref={timelineEditorWindowRef}
+              style={style.timelineEditorWindow}
+            >
+              <div
+                className="d-flex flex-column position-relative"
+                style={style.timelineEditorWindowInner}
+              >
+                <div className="col-12" style={style.timelineRegionContainer}>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      position: "relative",
+                      maxWidth: maxEditorWidth,
+                    }}
+                  >
+                    <RegionComponent
+                      onContextMenu={handleSongRegionContextMenu}
+                      onSetRegion={(region) => setSongRegion(region)}
+                      region={songRegion}
+                      style={{
+                        zIndex: 13,
+                        background: "var(--color1)",
+                        borderBlock: "3px solid var(--bg1)",
+                      }}
+                    >
+                      <div
+                        className="position-absolute col-12 pe-none"
+                        style={style.songRegionOverlay}
+                      />
+                    </RegionComponent>
+                  </div>
+                </div>
+                <div
+                  onMouseDown={changePlayheadPos}
+                  style={style.timelineRulerContainer}
+                />
+                <div style={{ maxWidth: maxEditorWidth, position: "relative" }}>
+                  {masterTrack && (
+                    <div {...dropzoneProps(masterTrack)}>
+                      <Lane
+                        dragDataTarget={dragData.target}
+                        track={masterTrack}
+                      />
+                    </div>
+                  )}
+                  <div className="d-flex flex-column position-relative">
+                    {tracks.map((track: Track, idx: number) => (
+                      <div {...dropzoneProps(track)} key={track.id}>
+                        <Lane
+                          className={getTrackClass(idx)}
+                          dragDataTarget={dragData.target}
+                          track={track}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {dragData.items.length > 0 && (
+                  <div
+                    {...dropzoneProps(null)}
+                    style={style.placeholderLaneContainer}
+                  >
+                    {dropzonePlaceholderTracks.map((track, idx) => (
+                      <Lane
+                        dragDataTarget={dragData.target}
+                        key={idx}
+                        track={track}
+                        style={{
+                          display:
+                            dragData.target && !dragData.target.track
+                              ? "flex"
+                              : "none",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+                <div
+                  className="position-absolute pe-none"
+                  ref={playheadRef}
+                  style={style.playhead}
+                />
+              </div>
+              {dragData.items.length > 0 && (
+                <WindowAutoScroll
+                  active
+                  eventType="drag"
+                  thresholds={timelineEditorWindowScrollThresholds}
+                  withinBounds
+                />
+              )}
+            </SyncScrollPane>
+            <div
+              className="position-absolute"
+              style={style.timelineEditorWindowControlV}
+            >
+              <Scrollbar
+                axis="y"
+                style={{ width: "100%", flex: 1, padding: "3px 0" }}
+                targetEl={timelineEditorWindowRef.current}
+                thumbStyle={{
+                  backgroundColor: "var(--border1)",
+                  borderInline: "3px solid var(--bg1)",
+                }}
+              />
+              <ZoomControls vertical />
+            </div>
+            <div
+              className="d-flex col-12"
+              style={style.timelineEditorWindowControlH}
+            >
+              <Scrollbar
+                axis="x"
+                style={{ height: "100%", flex: 1, padding: "0 3px" }}
+                targetEl={timelineEditorWindowRef.current}
+                thumbStyle={{
+                  backgroundColor: "var(--border1)",
+                  borderBlock: "3px solid var(--bg1)",
+                }}
+              />
+              <ZoomControls onZoom={handleZoom} />
+              <div style={{ width: 11, height: "100%" }} />
+            </div>
           </div>
         </div>
+        
+        {showAnalysisPanel && (
+          <div style={{ height: '300px', borderTop: '1px solid var(--border1)' }}>
+            <div className="d-flex justify-content-between align-items-center p-1" 
+                 style={{ backgroundColor: 'var(--bg2)', borderBottom: '1px solid var(--border1)' }}>
+              <Tabs value={analysisTabValue} onChange={handleAnalysisTabChange}>
+                <Tab label="Spectral Analysis" />
+                <Tab label="Waveform Analysis" />
+                <Tab label="Feature Extraction" />
+              </Tabs>
+              <IconButton onClick={() => setShowAnalysisPanel(false)} size="small">
+                &times;
+              </IconButton>
+            </div>
+            
+            <div className="p-2">
+              <AudioAnalysisPanel 
+                type={analysis.analysisType} 
+                results={analysis.analysisResults}
+                clip={analysis.selectedClip}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </SyncScroll>
   );

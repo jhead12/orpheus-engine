@@ -1,7 +1,7 @@
 import React, { CSSProperties, useContext, useEffect, useState } from "react";
 import { Settings } from "@mui/icons-material";
 import { DialogActions, DialogContent, FormControlLabel, Radio as MuiRadio, RadioGroup, RadioProps as MuiRadioProps, Snackbar } from "@mui/material";
-import { PreferencesContext } from "../contexts"; 
+import { PreferencesContext } from "../contexts";
 import { Dialog } from "./widgets";
 import styled from "styled-components";
 
@@ -56,6 +56,17 @@ const Radio = ({ className, label, radioProps, style, value }: RadioProps) => (
 
 const tabs = ["Appearance", "Audio", "General", "Media", "MIDI", "Project", "Recording", "VST & Plug-ins"];
 
+interface PreferencesContextType {
+  darkMode: boolean;
+  preferences: import("../services/types/types").Preferences;
+  savePreferences: () => void;
+  savedPreferences: import("../services/types/types").Preferences;
+  setShowPreferences: (show: boolean) => void;
+  showPreferences: boolean;
+  updatePreferences: (preferences: import("../services/types/types").Preferences) => void;
+}
+
+
 export default function Preferences() {
   const {
     preferences,
@@ -64,8 +75,7 @@ export default function Preferences() {
     setShowPreferences,
     showPreferences,
     updatePreferences
-  } = useContext(PreferencesContext)!;
-
+  } = useContext(PreferencesContext) as PreferencesContextType;
   const [saved, setSaved] = useState(false);
   const [tabIdx, setTabIdx] = useState(0);
 
@@ -79,15 +89,6 @@ export default function Preferences() {
   function cancel() {
     updatePreferences(savedPreferences);
     setShowPreferences(false);
-  }
-
-  function changeColor(e: React.ChangeEvent<HTMLInputElement>) {
-    const updatedPreferences = {
-      ...preferences,
-      color: e.target.value
-    };
-    
-    updatePreferences(updatedPreferences as any);
   }
 
   function changeTheme(e: React.ChangeEvent<HTMLInputElement>) {
@@ -152,7 +153,7 @@ export default function Preferences() {
                             <Radio className="m-0" value="system" label="System" />
                           </RadioGroup>
                         </PreferencesRow>
-                        <PreferencesRow>
+                        {/* <PreferencesRow>
                           <label>Color</label>
                           <RadioGroup name="color" onChange={changeColor} row value={preferences.color}>
                             <table style={{textAlign: "left", columnWidth: 90}}>
@@ -172,7 +173,7 @@ export default function Preferences() {
                               </tbody>
                             </table>
                           </RadioGroup>
-                        </PreferencesRow>
+                        </PreferencesRow> */}
                       </div>
                     </div>
                   </div>
