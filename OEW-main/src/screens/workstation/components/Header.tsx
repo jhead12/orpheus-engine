@@ -29,7 +29,7 @@ import {
   Badge,
 } from "@mui/material";
 import { WorkstationContext } from "../../../contexts";
-import { Meter, NumberInput, SelectSpinBox } from "@/components/widgets";
+import { Meter, NumberInput, SelectSpinBox } from "../../../components/widgets";
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
@@ -41,11 +41,13 @@ import {
   getVolumeGradient,
   sliceClip,
   volumeToNormalized,
-} from "@/services/utils/utils";
-import { HoldActionButton } from "@/components";
+} from "../../../services/utils/utils";
+import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
-import { StretchAudio } from "@/components/icons";
-import { parseDuration } from "@/services/utils/general";
+import { StretchAudio } from "../../../components/icons";
+import { parseDuration } from "../../../services/utils/general";
+import SettingsPanel from "../../../components/settings/SettingsPanel";
+import { SettingsContext } from "../../../services/settings";
 
 const noteValues: { label: string; value: number }[] = [];
 
@@ -81,6 +83,9 @@ export default function Header() {
     updateTimelineSettings,
     snapGridSize,
   } = useContext(WorkstationContext)!;
+
+  // Get settings from context
+  const settingsContext = useContext(SettingsContext);
 
   const [timePosText, setTimePosText] = useState("");
   const [typeCursorPosMode, setTypeCursorPosMode] = useState(false);
@@ -480,216 +485,6 @@ export default function Header() {
   const [settingsTabValue, setSettingsTabValue] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(2); // Example for notification badge
 
-  useEffect(() => {
-    if (!typeCursorPosMode) {
-      if (showTimeRuler) {
-        setTimePosText(playheadPos.toTimeString());
-      } else {
-        // Snap to selected grid size (TimelineSpan)
-        const snappedPos = playheadPos.copy().snap(snapGridSize);
-        // Always show 3 digits, but hide fraction if zero
-        const fraction = Math.round(snappedPos.fraction);
-        if (fraction === 0) {
-          setTimePosText(`${snappedPos.measure}.${snappedPos.beat}`);
-        } else {
-          setTimePosText(snappedPos.toString(3));
-        }
-      }
-    }
-  }, [
-    playheadPos,
-    showTimeRuler,
-    timelineSettings,
-    typeCursorPosMode,
-    snapGridSize,
-  ]);
-
-  useEffect(() => {
-    if (typeCursorPosMode) {
-      posTimeTextInput.current!.focus();
-      posTimeTextInput.current!.select();
-    }
-  }, [typeCursorPosMode]);
-
-  function changeTempo(newTempo: number) {
-    if (!stretchAudio) {
-      const newTracks = tracks.slice();
-
-      for (let i = 0; i < newTracks.length; i++) {
-        if (newTracks[i].type === TrackType.Audio) {
-          const clips = [];
-
-          for (let j = 0; j < newTracks[i].clips.length; j++) {
-            let clip = { ...newTracks[i].clips[j] };
-
-            if (clip.type === TrackType.Audio && clip.audio) {
-              const originalTempo = TimelinePosition.timelineSettings.tempo;
-
-              const durationSinceAudioStart = TimelinePosition.fromSpan(
-                clip.start.diff(clip.audio.start)
-              ).toSeconds();
-              const audioDuration = TimelinePosition.fromSpan(
-                clip.audio.end.diff(clip.audio.start)
-              ).toSeconds();
-              const clipRepetitionDuration = TimelinePosition.fromSpan(
-                clip.end.diff(clip.start)
-              ).toSeconds();
-              const durationSinceStartLimit = clip.startLimit
-                ? TimelinePosition.fromSpan(
-                    clip.start.diff(clip.startLimit)
-                  ).toSeconds()
-                : null;
-              const durationFromStartToEndLimit = clip.endLimit
-                ? TimelinePosition.fromSpan(
-                    clip.endLimit.diff(clip.start)
-                  ).toSeconds()
-                : null;
-              const clipDuration = clip.loopEnd
-                ? TimelinePosition.fromSpan(
-                    clip.loopEnd.diff(clip.start)
-                  ).toSeconds()
-                : null;
-
-              TimelinePosition.timelineSettings.tempo = newTempo;
-
-              let { measures, beats, fraction } =
-                TimelinePosition.durationToSpan(durationSinceAudioStart);
-              clip.audio = {
-                ...clip.audio,
-                start: clip.start.subtract(measures, beats, fraction, false),
-              };
-              ({ measures, beats, fraction } =
-                TimelinePosition.durationToSpan(audioDuration));
-              clip.audio = {
-                ...clip.audio,
-                end: clip.audio.start.add(measures, beats, fraction, false),
-              };
-              ({ measures, beats, fraction } = TimelinePosition.durationToSpan(
-                clipRepetitionDuration
-              ));
-              clip.end = clip.start.add(measures, beats, fraction, false);
-
-              if (durationSinceStartLimit && clip.startLimit) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(durationSinceStartLimit));
-                clip.startLimit = clip.start.subtract(
-                  measures,
-                  beats,
-                  fraction,
-                  false
-                );
-              }
-
-              if (durationFromStartToEndLimit && clip.endLimit) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(durationFromStartToEndLimit));
-                clip.loopEnd = clip.start.add(measures, beats, fraction, false);
-              }
-
-              if (clipDuration && clip.loopEnd) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(clipDuration));
-                clip.loopEnd = clip.start.add(measures, beats, fraction, false);
-              }
-
-              TimelinePosition.timelineSettings.tempo = originalTempo;
-            }
-
-            clips.push(sliceClip(clip, maxPos)[0]);
-          }
-
-          newTracks[i] = { ...newTracks[i], clips };
-        }
-      }
-
-      setTracks(newTracks);
-    }
-
-    updateTimelineSettings({ ...timelineSettings, tempo: newTempo });
-  }
-
-  function handleClick() {
-    if (!typeCursorPosMode) {
-      if (timeout.current === null) {
-        timeout.current = setTimeout(() => {
-          setShowTimeRuler(!showTimeRuler);
-          timeout.current = null;
-        }, 250);
-      } else {
-        clearTimeout(timeout.current);
-        timeout.current = null;
-        setTypeCursorPosMode(true);
-      }
-    }
-  }
-
-  function handleConfirmTimePosText() {
-    setTypeCursorPosMode(false);
-
-    let pos = TimelinePosition.parseFromString(timePosText);
-
-    if (!pos) {
-      const time = parseDuration(timePosText);
-
-      if (timePosText && time) {
-        const { hours, minutes, seconds, milliseconds } = time;
-        const totalSeconds =
-          hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
-        pos = TimelinePosition.fromSpan(
-          TimelinePosition.durationToSpan(totalSeconds)
-        );
-      }
-    }
-
-    if (
-      pos &&
-      pos.compareTo(TimelinePosition.start) >= 0 &&
-      !pos.equals(playheadPos)
-    ) {
-      pos.normalize();
-
-      if (pos.compareTo(maxPos) > 0) pos = maxPos.copy();
-
-      setPlayheadPos(pos);
-      setScrollToItem({ type: "cursor", params: { alignment: "center" } });
-    }
-  }
-
-  function fastForward() {
-    const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "ceil");
-
-    if (playheadPos.equals(newPos))
-      newPos.add(span.measures, span.beats, span.fraction);
-
-    setPlayheadPos(TimelinePosition.min(maxPos.copy(), newPos));
-    setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
-    });
-  }
-
-  function fastRewind() {
-    const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "floor");
-
-    if (playheadPos.equals(newPos))
-      newPos.subtract(span.measures, span.beats, span.fraction);
-
-    setPlayheadPos(TimelinePosition.max(TimelinePosition.start.copy(), newPos));
-    setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
-    });
-  }
-
-  function stop() {
-    if (isPlaying) {
-      setIsPlaying(false);
-      skipToStart();
-    }
-  }
-
   // Handle settings dialog
   const handleOpenSettings = () => {
     setSettingsOpen(true);
@@ -779,7 +574,7 @@ export default function Header() {
             layout="alt"
             min={1}
             max={24}
-            onChange={(value) =>
+            onChange={(value: number) =>
               setTimeSignature({
                 ...timelineSettings.timeSignature,
                 beats: value,
@@ -799,7 +594,7 @@ export default function Header() {
             }}
             disableSelect
             layout="alt"
-            onChange={(value) => {
+            onChange={(value: number) => {
               setTimeSignature({
                 ...timelineSettings.timeSignature,
                 noteValue: Number(value),
@@ -1072,74 +867,12 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Settings Dialog */}
-      <Dialog
+      {/* Replace the Settings Dialog with the new SettingsPanel */}
+      <SettingsPanel
         open={settingsOpen}
         onClose={handleCloseSettings}
-        PaperProps={{ style: style.settingsDialog }}
-      >
-        <DialogTitle>Settings</DialogTitle>
-        <Tabs
-          value={settingsTabValue}
-          onChange={(_, newValue) => setSettingsTabValue(newValue)}
-          aria-label="settings tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          <Tab
-            label="General"
-            id="settings-tab-0"
-            aria-controls="settings-tabpanel-0"
-          />
-          <Tab
-            label="Audio"
-            id="settings-tab-1"
-            aria-controls="settings-tabpanel-1"
-          />
-          <Tab
-            label="MIDI"
-            id="settings-tab-2"
-            aria-controls="settings-tabpanel-2"
-          />
-          <Tab
-            label="Interface"
-            id="settings-tab-3"
-            aria-controls="settings-tabpanel-3"
-          />
-          <Tab
-            label="Plugins"
-            id="settings-tab-4"
-            aria-controls="settings-tabpanel-4"
-          />
-        </Tabs>
-        <DialogContent>
-          <TabPanel value={settingsTabValue} index={0}>
-            <h4>General Settings</h4>
-            <p>Configure project defaults, autosave, and backup settings.</p>
-            {/* Add settings UI components here */}
-          </TabPanel>
-          <TabPanel value={settingsTabValue} index={1}>
-            <h4>Audio Settings</h4>
-            <p>Configure audio hardware, buffer size, and sample rate.</p>
-            {/* Add audio settings UI components here */}
-          </TabPanel>
-          <TabPanel value={settingsTabValue} index={2}>
-            <h4>MIDI Settings</h4>
-            <p>Configure MIDI devices and routing preferences.</p>
-            {/* Add MIDI settings UI components here */}
-          </TabPanel>
-          <TabPanel value={settingsTabValue} index={3}>
-            <h4>Interface Settings</h4>
-            <p>Configure themes, colors, and display preferences.</p>
-            {/* Add interface settings UI components here */}
-          </TabPanel>
-          <TabPanel value={settingsTabValue} index={4}>
-            <h4>Plugin Settings</h4>
-            <p>Configure plugin paths and scanning preferences.</p>
-            {/* Add plugin settings UI components here */}
-          </TabPanel>
-        </DialogContent>
-      </Dialog>
+        initialTab={settingsTabValue}
+      />
 
       {/* Chat Drawer */}
       <Drawer

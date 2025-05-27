@@ -222,12 +222,14 @@ export default class RegionComponent extends Component<IProps, IState> {
 
     return (
       <>
-        {/* @ts-ignore - The WindowAutoScroll component props don't match its TypeScript definition */}
         <WindowAutoScroll
           {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
+          // @ts-ignore - onScroll prop not in type definition
           onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
+          // @ts-ignore - direction prop not in type definition
           direction="horizontal"
+          // @ts-ignore - eventType prop not in type definition
           eventType="drag"
         />
         <div
