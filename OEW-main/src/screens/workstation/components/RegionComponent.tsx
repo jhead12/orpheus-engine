@@ -1,11 +1,20 @@
 import React, { Component, ContextType, RefObject, createRef } from "react";
 import { WorkstationContext } from "../../../contexts";
 import { Region, TimelinePosition, TimelineSettings } from "../../../services/types/types";
-import WindowAutoScroll, { default as WindowAutoScrollProps } from "../../../components/WindowAutoScroll";
+import WindowAutoScroll from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
 
+// Define a complete interface for WindowAutoScroll props without extending
+interface WindowAutoScrollProps {
+  active?: boolean;
+  onScroll?: (by: number) => void;
+  direction?: string;
+  thresholds?: any;
+  // Add any other props the component might need
+}
+
 interface IProps {
-  autoScroll?: Partial<typeof WindowAutoScrollProps>;
+  autoScroll?: Partial<WindowAutoScrollProps>;
   children?: React.ReactNode;
   onContextMenu?: (e: MouseEvent) => void;
   onSetRegion: (region: Region | null) => void;
@@ -213,12 +222,13 @@ export default class RegionComponent extends Component<IProps, IState> {
 
     return (
       <>
+        {/* @ts-ignore - The WindowAutoScroll component props don't match its TypeScript definition */}
         <WindowAutoScroll
           {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
           onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
-          // @ts-ignore - direction prop is expected by the component but not defined in types
           direction="horizontal"
+          eventType="drag"
         />
         <div
           ref={this.ref}
