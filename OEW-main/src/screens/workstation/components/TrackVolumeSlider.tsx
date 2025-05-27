@@ -18,12 +18,13 @@ const markVolumes = [6, 0, -6, -12, -18, -24, -30, -36, -42, -48, -54, -60, -Inf
 export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolumeSliderProps) {
   const { getTrackCurrentValue, playheadPos, setTrack, timelineSettings } = useContext(WorkstationContext)!;
   
-  const [volume, setVolume] = useState(track.volume);
+  // Default volume to 0 since Track interface doesn't include volume property
+  const [volume, setVolume] = useState((track as any).volume ?? 0);
 
   const { isAutomated, value } = useMemo(() => {
-    const lane = track.automationLanes.find(lane => lane.envelope === AutomationLaneEnvelope.Volume);
+    const lane = track.automationLanes?.find(lane => lane.envelope === AutomationLaneEnvelope.Volume);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, track.volume, timelineSettings.timeSignature])
+  }, [track.automationLanes, playheadPos, (track as any).volume, timelineSettings.timeSignature])
 
   useEffect(() => setVolume(value!), [value])
 
@@ -41,7 +42,7 @@ export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolume
         {...rest}
         disabled={isAutomated}
         onChange={(_, value) => setVolume(normalizedToVolume((value as number) / 1000)) }
-        onChangeCommitted={() => setTrack({ ...track, volume })}
+        onChangeCommitted={() => setTrack({ ...track, volume } as any)}
         marks={markVolumes.map(volume => ({ value: volumeToNormalized(volume) * 1000 }))}
         max={1000}
         min={0}
