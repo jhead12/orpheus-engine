@@ -5,6 +5,7 @@ package-lock.json
 dist/
 build/
 coverage/
+chroma_db
 
 # Python
 __pycache__/
