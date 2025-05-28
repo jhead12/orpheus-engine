@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardProvider";
-import { PreferencesProvider } from "./contexts/PreferencesContext";
 import { WorkstationProvider } from "./contexts/WorkstationProvider";
-import { MixerProvider } from "./contexts/MixerContext";
+import { MixerProvider } from "./context/MixerContext";
+import { PreferencesProvider } from "./context/PreferencesContext";
+import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
-import Workstation from "./screens/workstation/Workstation";
 import SettingsProvider from "./components/settings/SettingsManager";
 import "./styles/App.css";
 
@@ -28,37 +28,28 @@ function App(): React.ReactElement {
     return () => document.removeEventListener("focusout", handleFocusOut, { capture: true });
   }, []);
 
-  return React.createElement(
-    SettingsProvider,
-    null,
-    React.createElement(
-      PreferencesProvider,
-      null,
-      React.createElement(
-        Router,
-        null,
-        React.createElement(
-          Routes,
-          null,
-          React.createElement(
-            Route,
-            {
-              path: "/",
-              element: React.createElement(
-                ClipboardProvider,
-                null,
-                React.createElement(
-                  WorkstationProvider,
-                  null,
-                  React.createElement(MixerProvider, null, React.createElement(Workstation))
-                )
-              )
-            }
-          )
-        ),
-        React.createElement(Preferences)
-      )
-    )
+  return (
+    <SettingsProvider>
+      <MixerProvider>
+        <PreferencesProvider> {/* Move PreferencesProvider outside Router */}
+          <Router>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ClipboardProvider>
+                    <WorkstationProvider>
+                      <Workstation />
+                    </WorkstationProvider>
+                  </ClipboardProvider>
+                }
+              />
+            </Routes>
+            <Preferences />
+          </Router>
+        </PreferencesProvider>
+      </MixerProvider>
+    </SettingsProvider>
   );
 }
 

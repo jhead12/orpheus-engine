@@ -9,7 +9,6 @@ export default defineConfig({
   plugins: [
     react({
       jsxRuntime: 'automatic',
-      fastRefresh: true,
     }),
   ],
   base: "./",

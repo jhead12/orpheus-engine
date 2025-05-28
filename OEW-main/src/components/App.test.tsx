@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
+import { PreferencesProvider } from '../contexts/PreferencesContext';
 
 // Mock the Workstation component since we don't need its full functionality in this test
 vi.mock('../screens/workstation/Workstation', () => ({
@@ -23,15 +24,13 @@ vi.mock('../components/settings/SettingsManager', () => ({
   default: ({ children }: { children: React.ReactNode }) => children
 }));
 
-vi.mock('../contexts/PreferencesProvider', () => ({
-  default: ({ children }: { children: React.ReactNode }) => children
-}));
-
 describe('App component', () => {
   it('renders correctly', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/']}>
-        <App />
+        <PreferencesProvider>
+          <App />
+        </PreferencesProvider>
       </MemoryRouter>
     );
     const workstationElement = container.querySelector('div');
