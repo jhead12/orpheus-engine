@@ -1,4 +1,4 @@
-import { CSSProperties, JSX, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, JSX, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getScrollParent } from "@/services/utils/general";
 
@@ -162,12 +162,12 @@ export default function Tooltip(props: TooltipProps) {
   }
 
   return (
-    <>
+    <React.Fragment>
       {children && <div ref={ref}>{children}</div>}
       {(open || showOnHover && hovering) && createPortal(
         <div className="px-1" ref={tooltipRef} style={tooltipStyle}>{title}</div>,
         document.getElementById("root")!
       )}
-    </>
+    </React.Fragment>
   )
 }
