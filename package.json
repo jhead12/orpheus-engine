@@ -59,7 +59,7 @@
     "setup-symlinks": "node scripts/setup-symlinks.js",
     "presync-versions": "npm run setup-symlinks",
     "prebuild": "npm run setup-symlinks",
-    "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"/home/codespace/.npm\" || true",
+    "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"$HOME/.npm\" || true",
     "start:vite": "cd orpheus-engine-workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js",
