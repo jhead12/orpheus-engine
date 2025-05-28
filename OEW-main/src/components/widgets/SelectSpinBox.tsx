@@ -2,7 +2,7 @@ import React, { CSSProperties, JSX, useCallback, useEffect, useLayoutEffect, use
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { Popover, PopoverProps } from "@mui/material";
 import { ArrowDropDown, ArrowDropUp, ArrowLeft, ArrowRight } from "@mui/icons-material";
-import useClickAway from "@/services/hooks/useClickAway";
+import useClickAway from "../../services/hooks/useClickAway";
 
 interface SelectSpinBoxElements<T extends string | CSSProperties> {
   buttonsContainer?: T;
@@ -60,7 +60,7 @@ export default function SelectSpinBox<T extends string | number = string | numbe
 
   useEffect(() => {
     if (anchorEl && listRef.current) {
-      const listItems = listRef.current.getElementsByTagName("li");
+      const listItems = Array.from(listRef.current.getElementsByTagName("li")) as HTMLLIElement[];
       if (selectedIdx > -1)
         listItems[selectedIdx].focus();
     }
@@ -89,7 +89,7 @@ export default function SelectSpinBox<T extends string | number = string | numbe
       e.preventDefault();
 
       if (anchorEl && listRef.current) {
-        const listItems = Array.from(listRef.current.getElementsByTagName("li"));
+        const listItems = Array.from(listRef.current.getElementsByTagName("li")) as HTMLLIElement[];
         const idx = listItems.findIndex(li => li === document.activeElement);
 
         if (idx > -1) {

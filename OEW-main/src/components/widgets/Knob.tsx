@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react"
 import { Popover } from "@mui/material"
-import Tooltip, { TooltipProps } from "@/components/widgets/Tooltip"
-import { clamp, inverseLerp, lerp } from "@/services/utils/general"
+import Tooltip, { TooltipProps } from "./Tooltip"
+import { clamp, inverseLerp, lerp } from "../../services/utils/general"
 
 interface MeterStyle {
   bgColor?: string;
@@ -154,7 +154,7 @@ export default class Knob extends React.Component<IProps, IState> {
     }
   }
 
-  onDoubleClick(e: React.MouseEvent) {
+  onDoubleClick(_e: React.MouseEvent) {
     if (!this.props.disabled && this.props.origin !== undefined) {
       const origin = clamp(this.props.origin, this.props.min, this.props.max);
       this.props.onChange?.(origin);  
@@ -180,7 +180,7 @@ export default class Knob extends React.Component<IProps, IState> {
     this.setState({ value });
   }
 
-  onMouseUp(e: MouseEvent) {
+  onMouseUp(_e: MouseEvent) {
     document.removeEventListener("mousemove", this.onMouseMove);
     document.removeEventListener("mouseup", this.onMouseUp);
     document.body.style.cursor = "";

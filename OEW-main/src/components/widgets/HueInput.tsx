@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface IProps {
   onChange: (value: number) => void;
   style?: React.CSSProperties;

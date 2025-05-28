@@ -25,7 +25,7 @@
     "start:rag-backend": "cd orpheus-engine-workstation/backend/agentic_rag && FLASK_APP=main.py FLASK_ENV=development python -m flask run --port 5000",
     "start:audio-backend": "cd orpheus-engine-workstation/backend && uvicorn main:app --host 0.0.0.0 --port 7008 --reload",
     "start:monitor-backend": "cd orpheus-engine-workstation/backend && FLASK_APP=monitor_api.py FLASK_ENV=development python -m flask run --port 8000",
-    "build": "cd orpheus-engine-workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
+    "build": "cd orpheus-engine-workstation/frontend && npm install && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "build-all": "npm run build --workspace=orpheus-engine-workstation/frontend && npm run build --workspace=orpheus-engine-workstation/backend",
     "test": "npm run test:frontend",
     "test:frontend": "cd orpheus-engine-workstation/frontend && npm test -- --watchAll=false --passWithNoTests",
