@@ -1,3 +1,4 @@
+import React from "react";
 import { SVGProps } from "react";
 
 export default function Metronome({ size, style, ...rest }: SVGProps<SVGSVGElement> & { size: number }) {

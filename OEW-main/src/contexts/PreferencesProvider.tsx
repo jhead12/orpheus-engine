@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, type PropsWithChildren } from 'react';
 import { Preferences, SnapGridSizeOption } from '../services/types/types';
 
 // Use the interface from index.ts to match exactly what's expected
@@ -14,21 +14,17 @@ interface PreferencesContextType {
 }
 
 // Create a local context that matches the interface
-export const PreferencesContext = React.createContext<PreferencesContextType | undefined>(undefined);
+export const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
 
-export const usePreferences = () => {
+export function usePreferences(): PreferencesContextType {
   const context = useContext(PreferencesContext);
   if (!context) {
     throw new Error('usePreferences must be used within a PreferencesProvider');
   }
   return context;
-};
-
-interface PreferencesProviderProps {
-  children: ReactNode;
 }
 
-const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ children }) => {
+export default function PreferencesProvider({ children }: PropsWithChildren<{}>) {
   // Initialize with the correct Preferences shape
   const [preferences, setPreferences] = useState<Preferences>({
     theme: 'dark',
@@ -63,22 +59,20 @@ const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ children }) =
     setPreferences(newPrefs);
   };
 
-  return (
-    <PreferencesContext.Provider 
-      value={{
-        darkMode,
-        preferences,
-        savePreferences,
-        savedPreferences,
-        setShowPreferences,
-        showPreferences,
-        theme: preferences.theme, // Add the required theme property
-        updatePreferences
-      }}
-    >
-      {children}
-    </PreferencesContext.Provider>
+  const contextValue = {
+    darkMode,
+    preferences,
+    savePreferences,
+    savedPreferences,
+    setShowPreferences,
+    showPreferences,
+    theme: preferences.theme, // Add the required theme property
+    updatePreferences
+  };
+
+  return React.createElement(
+    PreferencesContext.Provider,
+    { value: contextValue },
+    children
   );
 };
-
-export default PreferencesProvider;

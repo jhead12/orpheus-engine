@@ -1,15 +1,17 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { forwardRef, type HTMLAttributes, type PropsWithChildren } from 'react';
 
-interface SyncScrollPaneProps {
+interface SyncScrollPaneProps extends HTMLAttributes<HTMLDivElement> {
   id?: string;
-  children?: ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
   onWheel?: (e: React.WheelEvent) => void;
 }
 
 const SyncScrollPane = forwardRef<HTMLDivElement, SyncScrollPaneProps>((props, ref) => {
-  return <div ref={ref} {...props} />;
+  return React.createElement('div', { 
+    ...props,
+    ref
+  });
 });
+
+SyncScrollPane.displayName = 'SyncScrollPane';
 
 export default SyncScrollPane;

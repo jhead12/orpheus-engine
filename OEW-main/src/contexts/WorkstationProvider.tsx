@@ -1,12 +1,13 @@
 import React, {
+  createContext,
   PropsWithChildren,
   useContext,
   useEffect,
   useMemo,
   useState,
   useRef,
-  createContext,
 } from "react";
+import type { ReactNode } from "react";
 import {
   AutomationLane,
   AutomationLaneEnvelope,
@@ -229,7 +230,7 @@ interface WorkstationContextType {
 }
 
 // Update the context creation with explicit React namespace to avoid type conflicts
-export const WorkstationContext = React.createContext<WorkstationContextType>({} as WorkstationContextType);
+export const WorkstationContext = createContext<WorkstationContextType | null>(null);
 
 /**
  * WorkstationProvider Component
@@ -239,7 +240,7 @@ export const WorkstationContext = React.createContext<WorkstationContextType>({}
  * 
  * @param children - React child components that will have access to the workstation context
  */
-export function WorkstationProvider({ children }: PropsWithChildren) {
+export function WorkstationProvider({ children }: PropsWithChildren<{}>) {
   // Type assertion with unknown first to avoid the TypeScript error
   const { clipboardItem, copy } = useContext(ClipboardContext as unknown as React.Context<ClipboardContextType>);
   const { setShowPreferences } = useContext(PreferencesContext as unknown as React.Context<PreferencesContextType>);
@@ -1459,7 +1460,6 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
     verticalScale,
   };
 
-  // Use React.createElement instead of JSX to avoid UMD global error
   return React.createElement(
     WorkstationContext.Provider,
     { value: contextValue },
