@@ -1,51 +1,85 @@
 const { execSync } = require('child_process');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 
-const MAX_RETRIES = 3;
-const PROBLEMATIC_PACKAGES = ['7zip-bin'];
-
-function cleanNodeModules(dir) {
-  if (fs.existsSync(path.join(dir, 'node_modules'))) {
-    console.log(`Cleaning node_modules in ${dir}...`);
-    // Clean problematic packages first
-    PROBLEMATIC_PACKAGES.forEach(pkg => {
-      const pkgPath = path.join(dir, 'node_modules', pkg);
-      if (fs.existsSync(pkgPath)) {
-        execSync(`rm -rf "${pkgPath}"`, { stdio: 'inherit' });
-      }
+// Helper to run commands safely
+function runCommand(command, cwd = process.cwd()) {
+  console.log(`Running: ${command} in ${cwd}`);
+  try {
+    execSync(command, { 
+      cwd, 
+      stdio: 'inherit',
+      env: { ...process.env }
     });
-    // Clean temp directories
-    execSync(`find ${path.join(dir, 'node_modules')} -name "*.7zip-bin-*" -type d -exec rm -rf {} +`, { stdio: 'inherit' });
+    return true;
+  } catch (error) {
+    console.error(`Command failed: ${command}`, error.message);
+    return false;
   }
 }
 
-function installDependencies(dir, attempt = 1) {
+// Fix permissions for npm cache
+function fixNpmPermissions() {
+  console.log('Fixing npm cache permissions...');
+  const userInfo = execSync('id -u').toString().trim();
+  const groupInfo = execSync('id -g').toString().trim();
+  
   try {
-    console.log(`Installing dependencies in ${dir} (attempt ${attempt}/${MAX_RETRIES})...`);
-    cleanNodeModules(dir);
-    execSync('npm install --legacy-peer-deps --no-audit', { cwd: dir, stdio: 'inherit' });
+    runCommand(`sudo chown -R ${userInfo}:${groupInfo} "/home/codespace/.npm" || true`);
+    console.log('Fixed npm cache permissions.');
   } catch (error) {
-    if (attempt < MAX_RETRIES && (error.message.includes('ENOTEMPTY') || error.status === 217)) {
-      console.log(`Retry ${attempt + 1}/${MAX_RETRIES}...`);
-      return installDependencies(dir, attempt + 1);
+    console.warn('Could not fix npm permissions, but continuing installation...');
+  }
+}
+
+// Main installation function
+async function installAll() {
+  // Fix permissions first
+  fixNpmPermissions();
+  
+  // Root project
+  console.log('Installing root project dependencies...');
+  runCommand('yarn install');
+  
+  // Install OEW-main dependencies
+  const oewMainPath = path.join(process.cwd(), 'OEW-main');
+  if (fs.existsSync(oewMainPath)) {
+    console.log('Installing OEW-main dependencies...');
+    runCommand('yarn install --legacy-peer-deps', oewMainPath);
+  } else {
+    console.warn('OEW-main directory not found, skipping...');
+  }
+
+  // Install frontend dependencies
+  const frontendPath = path.join(process.cwd(), 'orpheus-engine-workstation/frontend');
+  if (fs.existsSync(frontendPath)) {
+    console.log('Installing frontend dependencies...');
+    runCommand('yarn install', frontendPath);
+  } else {
+    console.warn('Frontend directory not found, skipping...');
+  }
+
+  // Install backend dependencies
+  const backendPath = path.join(process.cwd(), 'orpheus-engine-workstation/backend');
+  if (fs.existsSync(backendPath)) {
+    console.log('Installing backend dependencies...');
+    runCommand('yarn install', backendPath);
+    
+    // Install Python dependencies if requirements.txt exists
+    const ragPath = path.join(backendPath, 'agentic_rag');
+    if (fs.existsSync(path.join(ragPath, 'requirements.txt'))) {
+      console.log('Installing Python RAG dependencies...');
+      runCommand('pip install -r requirements.txt', ragPath);
     }
-    throw error;
+  } else {
+    console.warn('Backend directory not found, skipping...');
   }
+
+  console.log('Installation completed successfully!');
 }
 
-const directories = [
-  '.',
-  'OEW-main',
-  'orpheus-engine-workstation/frontend',
-  'orpheus-engine-workstation/backend'
-];
-
-directories.forEach(dir => {
-  try {
-    installDependencies(dir);
-  } catch (error) {
-    console.error(`Failed to install dependencies in ${dir}:`, error);
-    process.exit(1);
-  }
+// Run the installation
+installAll().catch(err => {
+  console.error('Installation failed:', err);
+  process.exit(1);
 });

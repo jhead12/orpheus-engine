@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "private": true,
   "workspaces": [
     "orpheus-engine-workstation/*"
@@ -17,8 +17,8 @@
   "scripts": {
     "setup-python": "node scripts/setup-python.js",
     "postinstall": "npm run setup-python",
-    "install-all": "npm run clean && node scripts/install-all.js",
-    "install-all:force": "rm -rf */node_modules && node scripts/install-all.js --force",
+    "install-all": "yarn run fix-permissions && yarn run clean && node scripts/install-all.js",
+    "install-all:force": "yarn run fix-permissions && rm -rf */node_modules && node scripts/install-all.js --force",
     "start": "concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:daw\"",
     "dev": "concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:daw\"",
     "start:frontend": "cd orpheus-engine-workstation/frontend && npm start",
@@ -34,17 +34,18 @@
     "test": "npm run test:frontend || echo 'Tests skipped - react-scripts not found'",
     "test:frontend": "cd orpheus-engine-workstation/frontend && (test -f node_modules/.bin/react-scripts && npm test -- --watchAll=false --passWithNoTests || echo 'Skipping tests - react-scripts not installed')",
     "lint": "npm run lint:frontend",
-    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules package-lock.json && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/package-lock.json && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/package-lock.json && echo 'Installing dependencies...' && npm install",
+    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/yarn.lock && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/yarn.lock && echo 'Installing dependencies...' && yarn install",
     "lint:frontend": "echo 'Linting frontend via build process...' && cd orpheus-engine-workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "validate": "npm run test && npm run lint",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "release:patch": "npm run release:prepare && npm run version:patch && npm run branch:release && npm run github:release",
     "release:minor": "npm run release:prepare && npm run version:minor && npm run branch:release && npm run github:release",
     "release:major": "npm run release:prepare && npm run version:major && npm run branch:release && npm run github:release",
+    "run-from-subdir": "node -e \"console.log('Running script from root directory: ' + process.argv[1]); require('child_process').spawnSync('npm', ['run', process.argv[1]], {stdio: 'inherit', cwd: '/workspaces/orpheus-engine'});\"",
     "release:prepare": "git checkout main && git pull origin main && git merge develop",
-    "version:patch": "npm run validate && npm run changelog && npm version patch --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
-    "version:minor": "npm run validate && npm run changelog && npm version 1.1.0 --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
-    "version:major": "(npm run validate || true) && npm run changelog && npm version major -m 'chore(release): %s' && git push && git push --tags",
+    "version:patch": "npm run validate && npm run changelog && npm version patch --no-git-tag-version -m 'chore(release): %s' && git push && git push origin v$npm_package_version",
+    "version:minor": "npm run validate && npm run changelog && npm version 1.1.0 --no-git-tag-version -m 'chore(release): %s' && git push && git push origin v$npm_package_version",
+    "version:major": "(npm run validate || true) && npm run changelog && npm version major -m 'chore(release): %s' && git push && git push origin v$npm_package_version",
     "sync-versions": "node scripts/sync-versions.js",
     "postversion": "npm run sync-versions",
     "permissions": "find . -type f -name '*.sh' -exec chmod +x {} \\;",
@@ -57,7 +58,8 @@
     "prestart": "npm run typecheck",
     "setup-symlinks": "node scripts/setup-symlinks.js",
     "presync-versions": "npm run setup-symlinks",
-    "prebuild": "npm run setup-symlinks"
+    "prebuild": "npm run setup-symlinks",
+    "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"/home/codespace/.npm\" || true"
   },
   "devDependencies": {
     "conventional-changelog-cli": "^4.1.0",
