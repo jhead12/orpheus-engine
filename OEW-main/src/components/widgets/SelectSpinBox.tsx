@@ -1,4 +1,4 @@
-import { CSSProperties, JSX, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { CSSProperties, JSX, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { Popover, PopoverProps } from "@mui/material";
 import { ArrowDropDown, ArrowDropUp, ArrowLeft, ArrowRight } from "@mui/icons-material";
@@ -121,7 +121,7 @@ export default function SelectSpinBox<T extends string | number = string | numbe
       onChange(options[selectedIdx - 1].value);
   }
 
-  function selectOption(option: { label: string, value: string | number }) {
+  function selectOption(option: { label: string, value: T }) {
     onChange(option.value); 
     setAnchorEl(null);
   }
@@ -245,31 +245,30 @@ export default function SelectSpinBox<T extends string | number = string | numbe
           <ArrowRight className={"center-absolute " + classes?.nextIcon} style={style.nextIcon} />
         </button>
       )}
-      <Popover
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-        className={"stop-reorder " + classes?.optionsList}
-        onClose={(_, reason) => { if (reason === "escapeKeyDown") setAnchorEl(null); }}
-        slotProps={{ paper: { className: "scrollbar", ref: listRef, style: style.optionsPopover } }}
-        transitionDuration={0}
-        {...optionsPopover}
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-      >
-        <ul style={{ listStyleType: "none", margin: 0, padding: 0, width: "fit-content", minWidth: "100%" }}>
-          {options.map((option, idx) => (
-            <li
-              className={"hover-3 " + classes?.option}
-              key={idx} 
-              onClick={() => selectOption(option)}
-              onKeyDown={e => { if (e.key === "Enter") selectOption(option); }}
-              style={style.option(option)}
-              tabIndex={0}
-            >
-              {option.label}
-            </li>
-          ))}
-        </ul>
-      </Popover>
+      {React.createElement(Popover, {
+        anchorOrigin: { horizontal: "left", vertical: "bottom" },
+        className: "stop-reorder " + classes?.optionsList,
+        onClose: (_, reason) => { if (reason === "escapeKeyDown") setAnchorEl(null); },
+        slotProps: { paper: { className: "scrollbar", ref: listRef, style: style.optionsPopover } },
+        transitionDuration: 0,
+        ...optionsPopover,
+        anchorEl: anchorEl,
+        open: !!anchorEl,
+        children: React.createElement("ul", {
+          style: { listStyleType: "none", margin: 0, padding: 0, width: "fit-content", minWidth: "100%" },
+          children: options.map((option, idx) => 
+            React.createElement("li", {
+              className: "hover-3 " + classes?.option,
+              key: idx,
+              onClick: () => selectOption(option),
+              onKeyDown: e => { if (e.key === "Enter") selectOption(option); },
+              style: style.option(option),
+              tabIndex: 0,
+              children: option.label
+            })
+          )
+        })
+      })}
     </div>
   )
 }
