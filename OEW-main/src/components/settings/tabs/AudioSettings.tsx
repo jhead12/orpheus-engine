@@ -42,8 +42,8 @@ const AudioSettings: React.FC = () => {
     <div>
       <Typography variant="h6" gutterBottom>Audio Configuration</Typography>
       
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid container spacing={3} component="div">
+        <Grid item xs={12} component="div">
           <Button 
             onClick={refreshDevices}
             variant="outlined"
@@ -101,7 +101,7 @@ const AudioSettings: React.FC = () => {
           </FormControl>
         </Grid>
         
-        <Grid item xs={12} md={6}>
+        <Grid xs={12} md={6}>
           <FormControl fullWidth>
             <FormLabel>Buffer Size</FormLabel>
             <Select
