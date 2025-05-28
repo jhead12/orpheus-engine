@@ -6,10 +6,16 @@ import { configDefaults } from 'vitest/config'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+      fastRefresh: true,
+    }),
+  ],
   base: "./",
   build: {
-    outDir: "build/src"
+    outDir: "build/src",
+    sourcemap: true,
   },
   resolve: {
     alias: {
@@ -19,7 +25,8 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000,
+    port: 5174, // Changed from 5173 to avoid conflicts
+    strictPort: false, // Allow fallback to another port if needed
     host: true
   },
   test: {
