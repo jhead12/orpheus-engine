@@ -1,0 +1,43 @@
+From 8425250d344f51a09fe1709bd7dcd6b770a14ac7 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <github-copilot@example.com>
+Date: Tue, 27 May 2025 23:32:21 +0000
+Subject: [PATCH] Fix package.json scripts
+
+---
+ package.json | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/package.json b/package.json
+index ff5040562..2a6c57658 100644
+--- a/package.json
++++ b/package.json
+@@ -34,20 +34,21 @@
+     "lint:frontend": "echo 'Linting frontend via build process...' && cd orpheus-engine-workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
+     "validate": "npm run test && npm run lint",
+     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+-    "release:patch": "npm run release:prepare && npm run version:patch && npm run branch:release",
+-    "release:minor": "npm run release:prepare && npm run version:minor && npm run branch:release",
+-    "release:major": "npm run release:prepare && npm run version:major && npm run branch:release",
++    "release:patch": "npm run release:prepare && npm run version:patch && npm run branch:release && npm run github:release",
++    "release:minor": "npm run release:prepare && npm run version:minor && npm run branch:release && npm run github:release",
++    "release:major": "npm run release:prepare && npm run version:major && npm run branch:release && npm run github:release",
+     "release:prepare": "git checkout main && git pull origin main && git merge develop",
+     "version:patch": "npm run validate && npm run changelog && npm version patch --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
+     "version:minor": "npm run validate && npm run changelog && npm version 1.1.0 --no-git-tag-version -m 'chore(release): %s' && git push && git push --tags",
+     "version:major": "npm run validate && npm run changelog && npm version major -m 'chore(release): %s' && git push && git push --tags",
+     "sync-versions": "node scripts/sync-versions.js",
+     "postversion": "npm run sync-versions",
+-    "permissions": "find . -type f -name '*.sh' -exec chmod +x {} \\",
++    "permissions": "find . -type f -name '*.sh' -exec chmod +x {} \\;",
+     "branch:feature": "git checkout develop && git checkout -b feature/$npm_config_name",
+     "branch:hotfix": "git checkout main && git checkout -b hotfix/$npm_config_name",
+     "branch:cleanup": "git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -r git branch -d",
+-    "branch:release": "git checkout -b release/v$npm_package_version",
++    "branch:release": "git branch | grep -q \"release/v$npm_package_version\" && echo \"Branch release/v$npm_package_version already exists\" || git checkout -b release/v$npm_package_version",
++    "github:release": "gh release create v$npm_package_version --title \"Release v$npm_package_version\" --notes \"$(cat CHANGELOG.md | sed -n \"/^## \\[$npm_package_version\\]/,/^## /p\" | sed '$ d')\" || echo \"Could not create release. Make sure gh CLI is installed and authenticated.\"",
+     "typecheck": "tsc --noEmit",
+     "prestart": "npm run typecheck",
+     "setup-symlinks": "node scripts/setup-symlinks.js",
+-- 
+2.49.0
+

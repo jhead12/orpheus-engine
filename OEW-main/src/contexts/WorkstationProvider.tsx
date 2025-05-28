@@ -99,7 +99,9 @@ function getBaseMasterTrack(): Track {
     automationLanes: [],
     color: "#e53935", // Default master track color - red
     fx: {
+      preset: null,
       effects: [],
+      selectedEffectIndex: 0,
     },
   };
 }
@@ -123,7 +125,9 @@ function getBaseTrack(): Track {
     automationLanes: [],
     color: getRandomTrackColor(),
     fx: {
+      preset: null,
       effects: [],
+      selectedEffectIndex: 0,
     },
   };
 }
@@ -336,10 +340,13 @@ export function WorkstationProvider({ children }: PropsWithChildren) {
           editorFarthestPos = clip.loopEnd;
       }
 
-      for (const lane of track.automationLanes)
-        for (const node of lane.nodes)
-          if (node.pos.compareTo(editorFarthestPos) > 0)
-            editorFarthestPos = node.pos;
+      for (const lane of track.automationLanes) {
+        if (lane.nodes) {
+          for (const node of lane.nodes)
+            if (node.pos.compareTo(editorFarthestPos) > 0)
+              editorFarthestPos = node.pos;
+        }
+      }
     }
 
     editorFarthestPos = TimelinePosition.min(editorFarthestPos, maxPos);
