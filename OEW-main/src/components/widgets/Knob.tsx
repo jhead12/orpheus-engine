@@ -10,9 +10,23 @@ interface MeterStyle {
   sizeRatio?: number;
 }
 
-interface IProps {
+interface KnobScale {
+  toNormalized: (value: number) => number;
+  toScale: (t: number) => number;
+}
+
+interface KnobStyle {
+  indicator?: CSSProperties;
+  knob?: CSSProperties;
+  meter?: MeterStyle;
+}
+
+export interface KnobProps {
   bidirectionalMeter?: boolean;
-  classes?: { knob?: string; meter?: string };
+  classes?: {
+    knob?: string;
+    meter?: string;
+  };
   degrees: number;
   disabled?: boolean;
   disableTextInput?: boolean;
@@ -22,17 +36,17 @@ interface IProps {
   onInput?: (value: number) => void;
   origin?: number;
   rotationOffset?: number;
-  scale?: {toNormalized: (value: number) => number, toScale: (t: number) => number}
-  showMeter: boolean;
+  scale?: KnobScale;
+  showMeter?: boolean;
   size: number;
-  style?: { indicator?: CSSProperties; knob?: CSSProperties; meter?: MeterStyle };
+  style?: KnobStyle;
   title?: string; 
   tooltipProps?: Partial<TooltipProps>;
   value: number;
   valueLabelFormat?: string | ((value: number) => string);
 }
 
-interface IState {
+interface KnobState {
   active: boolean;
   anchorEl: HTMLElement | null;
   text: string;
@@ -40,13 +54,13 @@ interface IState {
   wheel: boolean;
 }
 
-export default class Knob extends React.Component<IProps, IState> {
-  static defaultProps: Partial<IProps> = { degrees: 270 };
+export default class Knob extends React.Component<KnobProps, KnobState> {
+  static defaultProps: Partial<KnobProps> = { degrees: 270 };
 
   ref: React.RefObject<HTMLDivElement | null>;
   timeout: ReturnType<typeof setTimeout> | undefined;
 
-  constructor(props: IProps) {
+  constructor(props: KnobProps) {
     super(props);
 
     this.ref = React.createRef();
@@ -72,7 +86,7 @@ export default class Knob extends React.Component<IProps, IState> {
     this.ref.current?.addEventListener("wheel", this.onWheel, {passive: false});
   }
 
-  componentDidUpdate(prevProps: Readonly<IProps>): void {
+  componentDidUpdate(prevProps: Readonly<KnobProps>): void {
     if (prevProps.value !== this.props.value && this.props.value !== this.state.value)
       this.setState({ value: this.props.value });
   }

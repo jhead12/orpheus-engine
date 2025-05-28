@@ -165,7 +165,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
     });
   }
 
-  function onTrackRegionContextMenu(e: MouseEvent) {
+  function onTrackRegionContextMenu(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
   
     openContextMenu(ContextMenuType.Region, { trackRegion: true }, (params: any) => {
@@ -246,8 +246,8 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
         <div className="position-relative" onContextMenu={onLaneContextMenu} style={styles.innerContainer}>
           {track.type !== TrackType.Audio && (
             <RegionComponent 
-              autoScroll={{ thresholds: timelineEditorWindowScrollThresholds }}
-              onContextMenu={onTrackRegionContextMenu}
+              autoScroll={{ thresholds: { left: timelineEditorWindowScrollThresholds[0], right: timelineEditorWindowScrollThresholds[1] } }}
+              onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => onTrackRegionContextMenu(e)}
               onSetRegion={(region: any) => setTrackRegion(region ? { region, trackId: track.id } : null)}
               region={showRegion ? trackRegion!.region : null}
               style={styles.regionStyle}

@@ -11,11 +11,11 @@ import {
   DialogTitle 
 } from '@mui/material';
 import { SettingsContext } from '../../services/settings';
-import GeneralSettings from './tabs/GeneralSettings';
-import AudioSettings from './tabs/AudioSettings';
-import MIDISettings from './tabs/MIDISettings';
-import InterfaceSettings from './tabs/InterfaceSettings';
-import PluginSettings from './tabs/PluginSettings';
+import GeneralSettings from './tabs/GeneralSettings.js';
+import AudioSettings from './tabs/AudioSettings.js';
+import MIDISettings from './tabs/MIDISettings.js';
+import InterfaceSettings from './tabs/InterfaceSettings.js';
+import PluginSettings from './tabs/PluginSettings.js';
 
 interface TabPanelProps {
   children?: React.ReactNode;

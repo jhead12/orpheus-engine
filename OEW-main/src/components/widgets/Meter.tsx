@@ -1,17 +1,20 @@
 import React from 'react';
 
-interface IProps {
+interface IMeterProps {
   color?: string;
-  marks?: {value: number, style?: React.CSSProperties}[];
+  marks?: {
+    value: number;
+    style?: React.CSSProperties;
+  }[];
   percent: number;
   style?: React.CSSProperties;
   vertical?: boolean;
 }
 
-function Meter({ color, marks, percent, style, vertical }: IProps) {
-  const flexStyle: Partial<React.CSSProperties> = {
-    display: "flex", 
-    flexDirection: vertical ? "column" : "row", 
+function Meter({ color, marks, percent, style, vertical }: IMeterProps) {
+  const flexStyle: React.CSSProperties = {
+    display: "flex",
+    flexDirection: vertical ? "column" : "row",
     justifyContent: vertical ? "flex-end" : "flex-start"
   }
 
@@ -20,7 +23,7 @@ function Meter({ color, marks, percent, style, vertical }: IProps) {
       <div style={{width: "100%", height: "100%", position: "relative", ...flexStyle}}>
         <div 
           style={{
-            width: vertical ? "100%" : `${percent}%`, 
+            width: vertical ? "100%" : `${percent}%`,
             height: vertical ? `${percent}%` : "100%",
             overflow: "hidden",
             ...flexStyle
@@ -42,8 +45,8 @@ function Meter({ color, marks, percent, style, vertical }: IProps) {
               position: "absolute",
               backgroundColor: "#000",
               bottom: vertical ? `${mark.value}%` : 0,
-              left: vertical ? 0 :`${mark.value}%`,
-              width: vertical ? "100%" : 1, 
+              left: vertical ? 0 : `${mark.value}%`,
+              width: vertical ? "100%" : 1,
               height: vertical ? 1 : "100%",
               ...mark.style
             }}

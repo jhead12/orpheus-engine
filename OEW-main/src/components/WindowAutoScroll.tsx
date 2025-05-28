@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react"
-import { getScrollParent } from "@/services/utils/general";
+import React, { useEffect, useRef, useState } from "react";
+import { getScrollParent } from "../services/utils/general";
 
-interface WindowAutoScrollProps {
+export interface WindowAutoScrollProps {
   active: boolean;
-  eventType: string;
+  direction?: 'horizontal' | 'vertical';
+  eventType?: string;
   thresholds?: number[];
   withinBounds?: boolean;
   speed?: number | {
@@ -11,7 +12,7 @@ interface WindowAutoScrollProps {
     medium: number;
     slow: number;
   };
-  onScroll?: (by: number) => void;
+  onScroll?: (by: number, vertical: boolean) => void;
 }
 
 const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
@@ -152,7 +153,7 @@ const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
       by = Math.max(-scrollMargin, Math.min(by, scrollLength - clientLength - scrollMargin));
       el.scrollBy(vertical ? 0 : by, vertical ? -by : 0);
       if (onScroll) {
-        onScroll(by);
+        onScroll(by, vertical);
       }
     }
   

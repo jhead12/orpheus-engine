@@ -1,268 +1,304 @@
-import React, { Component, ContextType, RefObject, createRef } from "react";
+/**
+ * RegionComponent
+ * 
+ * A React component that handles the visualization and interaction with timeline regions
+ * in the workstation editor. Regions are selectable, resizable areas that can represent
+ * things like loop points, song sections, or selection ranges.
+ * 
+ * Features:
+ * - Click and drag to create new regions
+ * - Resize regions from either edge
+ * - Snap to grid functionality
+ * - Auto-scrolling when dragging near viewport edges
+ */
+
+import React, { Component, ContextType } from "react";
 import { WorkstationContext } from "../../../contexts";
-import { Region, TimelinePosition, TimelineSettings } from "../../../services/types/types";
+import { Region, TimelinePosition } from "../../../services/types/types";
 import WindowAutoScroll from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
+import { BASE_BEAT_WIDTH } from "../../../services/utils/utils";
 
-// Define a complete interface for WindowAutoScroll props without extending
-interface WindowAutoScrollProps {
-  active?: boolean;
-  onScroll?: (by: number) => void;
-  direction?: string;
-  thresholds?: any;
-  // Add any other props the component might need
+/**
+ * Interface for auto-scroll configuration
+ */
+interface AutoScrollConfig {
+  /** Scroll trigger thresholds in pixels from viewport edges */
+  thresholds?: { left?: number; right?: number };
 }
 
-interface IProps {
-  autoScroll?: Partial<WindowAutoScrollProps>;
+/** Props interface for RegionComponent */
+interface RegionComponentProps {
+  /** Enable auto-scrolling when resizing near viewport edges */
+  autoScroll?: boolean | AutoScrollConfig;
+  /** Content to render inside the region */
   children?: React.ReactNode;
-  onContextMenu?: (e: MouseEvent) => void;
-  onSetRegion: (region: Region | null) => void;
-  region: Region | null;
+  /** Handler for right-click context menu */
+  onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  /** Called when region resizing starts */
+  onResizeStart?: () => void;
+  /** Called during region resize with updated region data */
+  onResize?: (region: Region) => void;
+  /** Called when region resizing ends */
+  onResizeStop?: (region: Region) => void;
+  /** Called when region is updated or removed */
+  onSetRegion?: (region: Region | null) => void;
+  /** Region data containing start and end positions */
+  region?: Region | null;
+  /** Custom styles to apply to the region element */
   style?: React.CSSProperties;
 }
 
-interface IState {
+/** State interface for RegionComponent */
+interface RegionComponentState {
+  /** Whether user is in the process of creating a new region */
   isCreatingNewRegion: boolean;
-  region: { start: number, end: number };
-  resizeEdge: "start" | "end";
+  /** Current region data */
+  region: Region | null;
+  /** Which edge is being resized ("start" | "end" | null) */
+  resizeEdge: "start" | "end" | null;
+  /** Whether region is currently being resized */
   resizing: boolean;
-  temp: { start: number, end: number };
+  /** Temporary region data during resize operations */
+  temp: Region | null;
 }
 
-export default class RegionComponent extends Component<IProps, IState> {
+/**
+ * RegionComponent Class
+ * 
+ * A React component for rendering and managing timeline regions.
+ * Supports creation, resizing, and snap-to-grid functionality.
+ */
+export default class RegionComponent extends Component<RegionComponentProps, RegionComponentState> {
   static contextType = WorkstationContext;
-  declare context: ContextType<typeof WorkstationContext>;
+  declare context: NonNullable<ContextType<typeof WorkstationContext>>;
+  
+  /** Reference to the root DOM element */
+  private ref = React.createRef<HTMLDivElement>();
 
-  prevTimelineSettings?: TimelineSettings;
-  ref: RefObject<HTMLDivElement | null>;
-
-  constructor(props : any) {
+  /**
+   * Initialize the component with default state and bind event handlers
+   * @param props - Component props
+   */
+  constructor(props: RegionComponentProps) {
     super(props);
-
-    this.ref = createRef();
 
     this.state = {
       isCreatingNewRegion: false,
-      region: { start: 0, end: 0 },
-      resizeEdge: "end",
+      region: props.region || null,
+      resizeEdge: null,
       resizing: false,
-      temp: { start: 0, end: 0 }
-    }
+      temp: null
+    };
 
-    this.handleContextMenu = this.handleContextMenu.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    // Bind methods to preserve 'this' context
     this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.handleResizeStop = this.handleResizeStop.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleResizeStart = this.handleResizeStart.bind(this);
   }
 
+  /**
+   * Set up global mouse event listeners when component mounts
+   */
   componentDidMount() {
-    if (this.ref.current?.parentElement) {
-      this.ref.current.parentElement.addEventListener("contextmenu", this.handleContextMenu, { capture: true });
-      this.ref.current.parentElement.addEventListener("dblclick", this.handleDoubleClick, { capture: true });
-      this.ref.current.parentElement.addEventListener("mousedown", this.handleMouseDown, { capture: true });
-    }
+    document.addEventListener("mousemove", this.handleMouseMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
+  }
 
-    if (this.props.region) {
-      const region = { start: this.props.region.start.toMargin(), end: this.props.region.end.toMargin() };
-      this.setState({ temp: region, region });
+  /**
+   * Update region state when props change
+   * @param prevProps - Previous props for comparison
+   */
+  componentDidUpdate(prevProps: RegionComponentProps) {
+    if (prevProps.region !== this.props.region) {
+      this.setState({ region: this.props.region || null });
     }
   }
 
-  componentDidUpdate(prevProps: Readonly<IProps>) {
-    const timelineSettings = this.context!.timelineSettings;
-
-    if (this.prevTimelineSettings?.timeSignature !== timelineSettings.timeSignature || (
-      prevProps.region?.start !== this.props.region?.start ||
-      prevProps.region?.end !== this.props.region?.end
-    )) {
-      if (this.props.region) {
-        const region = { start: this.props.region.start.toMargin(), end: this.props.region.end.toMargin() };
-        this.setState({ temp: region, region });
-      } else {
-        this.setState({ region: { start: 0, end: 0 } });
-      }
-    }
-
-    if (this.prevTimelineSettings) {
-      if (this.prevTimelineSettings.horizontalScale !== timelineSettings.horizontalScale) {
-        const percentChange = timelineSettings.horizontalScale / this.prevTimelineSettings.horizontalScale;
-        const region = { 
-          start: this.state.region.start * percentChange,
-          end: this.state.region.end * percentChange
-        }
-        
-        this.setState({ temp: region, region });
-      }
-    }
-
-    this.prevTimelineSettings = timelineSettings;
-  }
-
+  /**
+   * Clean up global event listeners when component unmounts
+   */
   componentWillUnmount() {
-    if (this.ref.current?.parentElement) {
-      this.ref.current.parentElement.removeEventListener("contextmenu", this.handleContextMenu, { capture: true });
-      this.ref.current.parentElement.removeEventListener("dblclick", this.handleDoubleClick, { capture: true });
-      this.ref.current.parentElement.removeEventListener("mousedown", this.handleMouseDown, { capture: true });
-    }
-
-    document.body.style.cursor = "";
-    document.body.classList.remove("force-cursor");
+    document.removeEventListener("mousemove", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
   }
 
-  handleContextMenu(e: MouseEvent) {
-    if (e.target === this.ref.current?.parentElement && this.context!.allowMenuAndShortcuts) {
-      if (this.ref.current && this.isMousePosInBounds(this.ref.current, e.clientX, e.clientY)) {
-        e.stopPropagation();
-        this.props.onContextMenu?.(e);
-      }
-    }
+  /**
+   * Handle mouse down to start creating a new region
+   * @param e - Mouse event
+   */
+  handleMouseDown(e: React.MouseEvent) {
+    if (e.button !== 0) return;
+
+    const rect = this.ref.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const margin = e.clientX - rect.left;
+    const pos = TimelinePosition.fromMargin(margin);
+
+    this.setState({ 
+      isCreatingNewRegion: true, 
+      resizeEdge: "end", 
+      temp: { 
+        start: pos,
+        end: pos 
+      } 
+    });
   }
 
-  handleDoubleClick(e: MouseEvent) {
-    if (this.ref.current && this.isMousePosInBounds(this.ref.current, e.clientX, e.clientY))
-      this.props.onSetRegion(null);
-  }
-
-  handleMouseDown(e: MouseEvent) {
-    const element = this.ref.current;
-
-    if (e.button === 0 && e.target === this.ref.current?.parentElement) {
-      if (element?.parentElement && this.isMousePosInBounds(element.parentElement, e.clientX, e.clientY)) {
-        let x = e.clientX - this.ref.current!.parentElement!.getBoundingClientRect().left;
-        const snapWidth = TimelinePosition.fromSpan(this.context!.snapGridSize).toMargin();
-        x = snapWidth ? snapWidth * Math.round(x / snapWidth) : x;
-        
-        document.addEventListener("mousemove", this.handleResize);
-        document.addEventListener("mouseup", this.handleResizeStop);
-  
-        this.setState({ isCreatingNewRegion: true, resizeEdge: "end", temp: { start: x, end: x } });
-      }
+  /**
+   * Handle mouse movement during region creation or resizing
+   * @param e - Mouse event
+   */
+  handleMouseMove(e: MouseEvent) {
+    if (this.state.resizeEdge) {
+      this.resize(e.movementX, this.state.resizeEdge);
     }
   }
 
-  handleResize(e: MouseEvent) {
-    this.resize(e.movementX, this.state.resizeEdge);
-  }
-
-  handleResizeStart(e: React.MouseEvent, edge: "start" | "end") {
-    document.addEventListener("mousemove", this.handleResize);
-    document.addEventListener("mouseup", this.handleResizeStop);
-    document.body.style.cursor = "ew-resize";
-    document.body.classList.add("force-cursor");
-
-    this.setState({ resizeEdge: edge, resizing: true, temp: this.state.region });
-  }
-
-  handleResizeStop() {
-    document.removeEventListener("mousemove", this.handleResize);
-    document.removeEventListener("mouseup", this.handleResizeStop);
-    document.body.style.cursor = "";
-    document.body.classList.remove("force-cursor");
-    
+  /**
+   * Handle mouse up to finalize region changes
+   */
+  handleMouseUp() {
     this.setState({ isCreatingNewRegion: false, resizing: false });
 
-    if (this.state.region.start !== this.state.region.end) {
-      const region = {
-        start: TimelinePosition.fromMargin(this.state.region.start),
-        end: TimelinePosition.fromMargin(this.state.region.end)
+    if (!this.state.region) return;
+
+    const startMargin = this.state.region.start.toMargin();
+    const endMargin = this.state.region.end.toMargin();
+
+    if (startMargin !== endMargin) {
+      const region: Region = {
+        start: this.state.region.start,
+        end: this.state.region.end
       };
-      this.props.onSetRegion(region);
+
+      this.props.onSetRegion?.(region);
     } else {
-      this.props.onSetRegion(null);
+      this.props.onSetRegion?.(null);
     }
   }
 
-  isMousePosInBounds(element: HTMLElement, x: number, y: number) {
-    const rect = element.getBoundingClientRect();
-    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  /**
+   * Start resizing the region from a specific edge
+   * @param edge - Which edge to resize ("start" or "end")
+   */
+  handleResizeStart(edge: "start" | "end") {
+    if (!this.props.onResizeStart || !this.ref.current || this.state.resizing) return;
+
+    this.setState({ resizing: true, resizeEdge: edge, temp: this.state.region });
+    this.props.onResizeStart();
   }
 
+  /**
+   * Handle region resizing logic with grid snapping
+   * @param x - Mouse movement in x direction
+   * @param edge - Which edge is being resized
+   */
   resize(x: number, edge: "start" | "end") {
-    let temp = { ...this.state.temp };
-    let region: { start: number; end: number };
-    let resizeEdge = edge;
+    if (!this.state.temp || !this.context?.timelineSettings) return;
 
-    if (this.ref.current && this.ref.current.parentElement) {
-      const snapWidth = TimelinePosition.fromSpan(this.context!.snapGridSize).toMargin();
-  
-      if (edge === "start") {
-        temp.start += x;
-        region = { ...temp, start: snapWidth ? snapWidth * Math.round(temp.start / snapWidth) : temp.start };
+    const { horizontalScale = 1, timeSignature = { noteValue: 4 } } = this.context.timelineSettings;
+    const snapWidth = BASE_BEAT_WIDTH * horizontalScale * (4 / timeSignature.noteValue);
+    const temp = { ...this.state.temp };
+    let region: Region;
 
-        if (region.start < 0)
-          region.start = 0;
-        if (region.start > this.ref.current.parentElement.clientWidth)
-          region.start = this.ref.current.parentElement.clientWidth;
-      } else {
-        temp.end += x;
-        region = { ...temp, end: snapWidth ? snapWidth * Math.round(temp.end / snapWidth) : temp.end };
-        
-        if (region.end < 0)
-          region.end = 0;
-        if (region.end > this.ref.current.parentElement.clientWidth)
-          region.end = this.ref.current.parentElement.clientWidth;
-      }
+    // Handle start edge resizing
+    if (edge === "start") {
+      const currentMargin = temp.start.toMargin();
+      const newPos = TimelinePosition.fromMargin(currentMargin + x);
+      temp.start = newPos;
       
-      if (temp.start > temp.end) {
-        temp = { start: temp.end, end: temp.start };
-        region = { start: region.end, end: region.start };
-        resizeEdge = edge === "start" ? "end" : "start";
-      }
-
-      flushSync(() => this.setState({ region, temp, resizeEdge }));
-      this.context!.adjustNumMeasures(TimelinePosition.fromMargin(region.end));
+      const snappedMargin = snapWidth ? snapWidth * Math.round(newPos.toMargin() / snapWidth) : newPos.toMargin();
+      region = { 
+        ...temp, 
+        start: TimelinePosition.fromMargin(snappedMargin)
+      };
+    } 
+    // Handle end edge resizing
+    else {
+      const currentMargin = temp.end.toMargin();
+      const newPos = TimelinePosition.fromMargin(currentMargin + x);
+      temp.end = newPos;
+      
+      const snappedMargin = snapWidth ? snapWidth * Math.round(newPos.toMargin() / snapWidth) : newPos.toMargin();
+      region = {
+        ...temp,
+        end: TimelinePosition.fromMargin(snappedMargin)
+      };
     }
+
+    // Ensure start is always before end
+    if (region.start.toMargin() > region.end.toMargin()) {
+      const start = region.start;
+      region.start = region.end;
+      region.end = start;
+    }
+
+    flushSync(() => this.setState({ region, temp, resizeEdge: edge }));
+    this.props.onResize?.(region);
   }
 
+  /**
+   * Render the region component
+   * 
+   * The region is rendered as a div with resize handles on both ends.
+   * When creating a new region or during resize operations, the WindowAutoScroll
+   * component enables auto-scrolling when near viewport edges.
+   * 
+   * Visual feedback is provided through cursor changes and the region's appearance
+   * is controlled through CSS classes and inline styles.
+   */
   render() {
     const show = this.state.isCreatingNewRegion || this.props.region;
+
+    if (!show || !this.state.region) return null;
+
+    const startMargin = this.state.region.start.toMargin();
+    const endMargin = this.state.region.end.toMargin();
 
     return (
       <>
         <WindowAutoScroll
-          {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
-          // @ts-ignore - onScroll prop not in type definition
-          onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
-          // @ts-ignore - direction prop not in type definition
-          direction="horizontal"
-          // @ts-ignore - eventType prop not in type definition
-          eventType="drag"
+          onScroll={(by: number) => this.resize(by, this.state.resizeEdge || "end")}
         />
         <div
+          className="region pe-none"
           ref={this.ref}
+          onContextMenu={this.props.onContextMenu}
           style={{
-            height: "100%",
             cursor: !this.state.isCreatingNewRegion && !this.state.resizing ? "default" : "",
-            pointerEvents: "none",
-            ...this.props.style, 
-            position: "absolute", 
-            top: 0, 
-            left: this.state.region.start, 
-            width: this.state.region.end - this.state.region.start,
-            display: show ? "block" : "none"
+            height: "100%",
+            left: startMargin,
+            position: "absolute",
+            width: endMargin - startMargin,
+            ...this.props.style
           }}
         >
           {this.props.region && !this.state.isCreatingNewRegion && (
-            <>
+            <div className="d-flex h-100">
+              {/* Left resize handle */}
               <div
-                className="position-absolute h-100"
-                onMouseDown={e => this.handleResizeStart(e, "start")}
-                style={{ width: 10, left: -5, cursor: "ew-resize", pointerEvents: "auto" }}
+                className="pe-auto resize-handle"
+                onMouseDown={() => this.handleResizeStart("start")}
+                style={{ cursor: "e-resize", width: 5 }}
               />
+              {/* Region content */}
+              <div className="flex-grow-1">
+                {this.props.children}
+              </div>
+              {/* Right resize handle */}
               <div
-                className="position-absolute h-100"
-                onMouseDown={e => this.handleResizeStart(e, "end")}
-                style={{ width: 10, right: -5, cursor: "ew-resize", pointerEvents: "auto" }} 
+                className="pe-auto resize-handle"
+                onMouseDown={() => this.handleResizeStart("end")}
+                style={{ cursor: "e-resize", width: 5 }}
               />
-            </>
+            </div>
           )}
-          {this.props.children}
         </div>
       </>
-    )
+    );
   }
 }

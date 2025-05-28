@@ -1,4 +1,4 @@
-import { HTMLAttributes, useEffect, useRef, useState } from "react";
+import React, { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 export interface InputPane extends HTMLAttributes<HTMLDivElement> {
