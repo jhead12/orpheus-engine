@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.15",
+  "version": "1.0.14",
   "private": true,
   "workspaces": [
     "orpheus-engine-workstation/*"
@@ -64,7 +64,8 @@
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js",
     "fix-vite": "node scripts/install-vite-deps.js",
-    "fix-electron-path": "bash scripts/fix-start-electron.sh"
+    "fix-electron-path": "bash scripts/fix-start-electron.sh",
+    "auto-sync": "node scripts/auto-sync-version.js"
   },
   "devDependencies": {
     "conventional-changelog-cli": "^4.1.0",
