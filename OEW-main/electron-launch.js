@@ -1,12 +1,12 @@
 /**
- * Helper script to launch Electron with the proper flags in Codespaces
+ * Helper script to launch Electron with the proper flags for local development
  */
 
 const { spawn } = require('child_process');
 const path = require('path');
 const electronPath = require('electron');
 
-// Add necessary flags for running in Codespaces
+// Add necessary flags for running Electron locally
 const args = process.argv.slice(2);
 if (!args.includes('--no-sandbox')) {
   args.push('--no-sandbox');

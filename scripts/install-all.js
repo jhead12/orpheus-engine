@@ -24,12 +24,11 @@ function fixNpmPermissions() {
   const userInfo = execSync('id -u').toString().trim();
   const groupInfo = execSync('id -g').toString().trim();
   
-  try {
-    runCommand(`sudo chown -R ${userInfo}:${groupInfo} "/home/codespace/.npm" || true`);
-    console.log('Fixed npm cache permissions.');
-  } catch (error) {
-    console.warn('Could not fix npm permissions, but continuing installation...');
-  }
+  // Replace Codespaces-specific path with local user npm cache path
+  const npmCachePath = process.env.HOME ? `${process.env.HOME}/.npm` : '/tmp/.npm';
+  runCommand(`sudo chown -R ${userInfo}:${groupInfo} "${npmCachePath}" || true`);
+
+  console.log('Fixed npm cache permissions.');
 }
 
 // Main installation function
