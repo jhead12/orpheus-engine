@@ -14,10 +14,13 @@
   "private": true,
   "main": "build/electron/main.js",
   "scripts": {
-    "dev": "concurrently \"vite --port 5174\" \"wait-on http://localhost:5174 && nodemon\"",
+    "dev": "nodemon --exec \"node electron-launch.js\"",
     "dev:headless": "ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 NODE_ENV=development electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
     "build": "tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node electron-launch.js",
+    "fix-vite": "npm install --save-dev @vitejs/plugin-react",
+    "fix-electron-path": "node scripts/fix-electron-path.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

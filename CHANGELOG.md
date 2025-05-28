@@ -1,3 +1,11 @@
+## [1.0.12](https://github.com/jhead12/orpheus-engine/compare/v1.0.8...v1.0.12) (2025-05-28)
+
+
+
+## [1.0.11](https://github.com/jhead12/orpheus-engine/compare/v1.0.8...v1.0.11) (2025-05-28)
+
+
+
 ## [1.0.10](https://github.com/jhead12/orpheus-engine/compare/v1.0.8...v1.0.10) (2025-05-28)
 
 
@@ -85,3 +93,20 @@ All notable changes to this project will be documented in this file.
 - RAG pipeline integration
 - Python and TypeScript backend services
 - React-based frontend interface
+
+## [Unreleased]
+
+### Fixed
+- Fixed Vite server startup failure by adding missing `@vitejs/plugin-react` dependency
+- Fixed directory path in `start-electron.sh` script that was causing navigation errors
+- Added utility scripts (`fix-vite` and `fix-electron-path`) to automatically resolve these issues
+
+### Added
+- New npm scripts in package.json:
+  - `fix-vite`: Installs missing Vite dependencies
+  - `fix-electron-path`: Updates the frontend directory path in start-electron.sh
+
+## How to use the fixes
+1. Run `npm run fix-vite` to install missing Vite dependencies
+2. Run `npm run fix-electron-path` to fix the frontend directory path
+3. Start the application with `yarn start`
