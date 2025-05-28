@@ -1,3 +1,9 @@
+## 0.0.0 (2025-05-28)
+
+* Fixed: Vite server startup failure by adding missing `@vitejs/plugin-react` dependency
+* Fixed: Directory path in `start-electron.sh` script that was causing navigation errors
+* Added: Utility scripts for automatic dependency and path resolution
+
 ## 0.0.0 (2025-05-27)
 
 * update ([02da30e](https://github.com/sirgawain0x/orpheus-engine/commit/02da30e))
