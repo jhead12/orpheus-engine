@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
@@ -28,11 +29,12 @@ vi.mock('../contexts/PreferencesProvider', () => ({
 
 describe('App component', () => {
   it('renders correctly', () => {
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/']}>
         <App />
       </MemoryRouter>
     );
-    expect(screen.getByText(/Workstation/i)).toBeInTheDocument();
+    const workstationElement = container.querySelector('div');
+    expect(workstationElement).toHaveTextContent(/Workstation/i);
   });
 });
