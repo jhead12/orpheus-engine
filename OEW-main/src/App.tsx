@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardProvider";
-import PreferencesProvider from "./contexts/PreferencesProvider";
+import { PreferencesProvider } from "./contexts/PreferencesContext";
 import { WorkstationProvider } from "./contexts/WorkstationProvider";
+import { MixerProvider } from "./contexts/MixerContext";
 import Preferences from "./components/Preferences";
 import Workstation from "./screens/workstation/Workstation";
 import SettingsProvider from "./components/settings/SettingsManager";
@@ -49,7 +50,7 @@ function App(): React.ReactElement {
                 React.createElement(
                   WorkstationProvider,
                   null,
-                  React.createElement(Workstation)
+                  React.createElement(MixerProvider, null, React.createElement(Workstation))
                 )
               )
             }

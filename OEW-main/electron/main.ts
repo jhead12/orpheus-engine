@@ -5,13 +5,25 @@ import { setupAudioAnalysisHandlers } from './audioAnalysis';
 import ContextMenuBuilder from './contextMenu';
 import buildHandlers from './handlers';
 
+app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch('disable-software-rasterizer');
+app.commandLine.appendSwitch('disable-dev-shm-usage');
+
+if (process.argv.includes('--headless')) {
+  app.commandLine.appendSwitch('headless');
+  app.commandLine.appendSwitch('disable-gpu');
+  app.commandLine.appendSwitch('disable-software-rasterizer');
+  process.env.ELECTRON_DISABLE_GPU = '1';
+}
+
 function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      devTools: !app.isPackaged
+      devTools: !app.isPackaged,
+      offscreen: process.argv.includes('--headless'),
     },
     fullscreen: true
   });
@@ -41,6 +53,20 @@ ipcMain.handle('app:getUserDataPath', (_, subFolder) => {
 });
 
 app.whenReady().then(() => {
+  const mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      sandbox: false,
+    },
+  });
+
+  if (process.getuid && process.getuid() === 0) {
+    app.commandLine.appendSwitch('no-sandbox');
+  }
+
   createWindow()
 
   app.on('activate', function () {

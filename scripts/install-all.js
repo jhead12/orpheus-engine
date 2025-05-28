@@ -1,55 +1,51 @@
 const { execSync } = require('child_process');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
-function installDependencies() {
-    console.log('🚀 Installing all dependencies...\n');
+const MAX_RETRIES = 3;
+const PROBLEMATIC_PACKAGES = ['7zip-bin'];
 
-    // Install root dependencies
-    console.log('📦 Installing root dependencies...');
-    execSync('npm install', { stdio: 'inherit' });
-
-    // Get all workspace directories
-    const workspaces = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'))
-        .workspaces
-        .reduce((acc, ws) => {
-            if (ws.endsWith('/*')) {
-                const dir = ws.slice(0, -2);
-                const subdirs = fs.readdirSync(path.join(__dirname, '..', dir))
-                    .map(subdir => path.join(dir, subdir))
-                    .filter(subdir => fs.existsSync(path.join(__dirname, '..', subdir, 'package.json')));
-                return [...acc, ...subdirs];
-            }
-            return [...acc, ws];
-        }, []);
-
-    // Install workspace dependencies
-    workspaces.forEach(workspace => {
-        const wsPath = path.join(__dirname, '..', workspace);
-        console.log(`\n📦 Installing dependencies for ${workspace}...`);
-        execSync('npm install', { cwd: wsPath, stdio: 'inherit' });
-
-        // Check for Python requirements.txt
-        const requirementsPath = path.join(wsPath, 'requirements.txt');
-        const agenticRagRequirementsPath = path.join(wsPath, 'agentic_rag', 'requirements.txt');
-        
-        if (fs.existsSync(requirementsPath)) {
-            console.log(`\n🐍 Installing Python dependencies for ${workspace}...`);
-            execSync('python3 -m pip install -r requirements.txt', { cwd: wsPath, stdio: 'inherit' });
-        }
-        
-        if (fs.existsSync(agenticRagRequirementsPath)) {
-            console.log(`\n🐍 Installing Python dependencies for ${workspace}/agentic_rag...`);
-            execSync('python3 -m pip install -r agentic_rag/requirements.txt', { cwd: wsPath, stdio: 'inherit' });
-        }
+function cleanNodeModules(dir) {
+  if (fs.existsSync(path.join(dir, 'node_modules'))) {
+    console.log(`Cleaning node_modules in ${dir}...`);
+    // Clean problematic packages first
+    PROBLEMATIC_PACKAGES.forEach(pkg => {
+      const pkgPath = path.join(dir, 'node_modules', pkg);
+      if (fs.existsSync(pkgPath)) {
+        execSync(`rm -rf "${pkgPath}"`, { stdio: 'inherit' });
+      }
     });
-
-    console.log('\n✅ All dependencies installed successfully!');
+    // Clean temp directories
+    execSync(`find ${path.join(dir, 'node_modules')} -name "*.7zip-bin-*" -type d -exec rm -rf {} +`, { stdio: 'inherit' });
+  }
 }
 
-try {
-    installDependencies();
-} catch (error) {
-    console.error('❌ Error installing dependencies:', error);
+function installDependencies(dir, attempt = 1) {
+  try {
+    console.log(`Installing dependencies in ${dir} (attempt ${attempt}/${MAX_RETRIES})...`);
+    cleanNodeModules(dir);
+    execSync('npm install --legacy-peer-deps --no-audit', { cwd: dir, stdio: 'inherit' });
+  } catch (error) {
+    if (attempt < MAX_RETRIES && (error.message.includes('ENOTEMPTY') || error.status === 217)) {
+      console.log(`Retry ${attempt + 1}/${MAX_RETRIES}...`);
+      return installDependencies(dir, attempt + 1);
+    }
+    throw error;
+  }
+}
+
+const directories = [
+  '.',
+  'OEW-main',
+  'orpheus-engine-workstation/frontend',
+  'orpheus-engine-workstation/backend'
+];
+
+directories.forEach(dir => {
+  try {
+    installDependencies(dir);
+  } catch (error) {
+    console.error(`Failed to install dependencies in ${dir}:`, error);
     process.exit(1);
-}
+  }
+});

@@ -14,7 +14,8 @@
   "private": true,
   "main": "build/electron/main.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:3000 && nodemon\"",
+    "dev": "concurrently \"vite --port 5174\" \"wait-on http://localhost:5174 && nodemon\"",
+    "dev:headless": "ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 NODE_ENV=development electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
     "build": "tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
     "preview": "vite preview"
   },

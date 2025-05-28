@@ -1,4 +1,3 @@
-/** @jsx React.createElement */
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
 import { AutomationLaneEnvelope, Track } from "../../../services/types/types";
 import { formatVolume, normalizedToVolume, volumeToNormalized } from "../../../services/utils/utils";

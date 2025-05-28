@@ -67,6 +67,7 @@ import {
   ADD_TRACK,
   OPEN_PREFERENCES,
 } from "../services/electron/channels";
+import { usePreferences } from "./PreferencesContext";
 
 // Define the missing types and functions
 /**
@@ -241,9 +242,8 @@ export const WorkstationContext = createContext<WorkstationContextType | null>(n
  * @param children - React child components that will have access to the workstation context
  */
 export function WorkstationProvider({ children }: PropsWithChildren<{}>) {
-  // Type assertion with unknown first to avoid the TypeScript error
   const { clipboardItem, copy } = useContext(ClipboardContext as unknown as React.Context<ClipboardContextType>);
-  const { setShowPreferences } = useContext(PreferencesContext as unknown as React.Context<PreferencesContextType>);
+  const { setShowPreferences } = usePreferences();
 
   const [allowMenuAndShortcuts, setAllowMenuAndShortcuts] = useState(true);
   const [fxChainPresets, setFXChainPresets] = useState<FXChainPreset[]>(
