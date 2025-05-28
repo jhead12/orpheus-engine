@@ -41,22 +41,22 @@ export default function Slider({ labelProps, valueLabelFormat, ...rest }: Slider
 
   return (
     <React.Fragment>
-      <Tooltip
-        anchorEl={anchorEl}
-        placement={{ horizontal: "center", vertical: "top" }}
-        {...labelProps}
-        open={sliding || rest.valueLabelDisplay === "on"}
-        showOnHover={rest.valueLabelDisplay === "auto"}
-        title={getLabel()}
-      />
-      <MuiSlider
-        {...rest}
-        onChangeCommitted={handleChangeCommitted}
-        onMouseDown={handleMouseDown}
-        slotProps={{ ...rest.slotProps, thumb: { ...rest.slotProps?.thumb, ref: thumbRef } }}
-        sx={{ ...rest.sx, ".MuiSlider-thumb::after": { width: "100%", height: "100%" } }}
-        valueLabelDisplay="off"
-      />
+      {React.createElement(Tooltip, {
+        anchorEl,
+        placement: { horizontal: "center", vertical: "top" },
+        ...labelProps,
+        open: sliding || rest.valueLabelDisplay === "on",
+        showOnHover: rest.valueLabelDisplay === "auto",
+        title: getLabel()
+      })}
+      {React.createElement(MuiSlider, {
+        ...rest,
+        onChangeCommitted: handleChangeCommitted,
+        onMouseDown: handleMouseDown,
+        slotProps: { ...rest.slotProps, thumb: { ...rest.slotProps?.thumb, ref: thumbRef } },
+        sx: { ...rest.sx, ".MuiSlider-thumb::after": { width: "100%", height: "100%" } },
+        valueLabelDisplay: "off"
+      })}
     </React.Fragment>
   )
 }
