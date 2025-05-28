@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Slider as MuiSlider, SliderProps as MuiSliderProps } from "@mui/material"
 import Tooltip, { TooltipProps } from "./Tooltip";
 
@@ -40,7 +40,7 @@ export default function Slider({ labelProps, valueLabelFormat, ...rest }: Slider
   }
 
   return (
-    <>
+    <React.Fragment>
       <Tooltip
         anchorEl={anchorEl}
         placement={{ horizontal: "center", vertical: "top" }}
@@ -57,6 +57,6 @@ export default function Slider({ labelProps, valueLabelFormat, ...rest }: Slider
         sx={{ ...rest.sx, ".MuiSlider-thumb::after": { width: "100%", height: "100%" } }}
         valueLabelDisplay="off"
       />
-    </>
+    </React.Fragment>
   )
 }
