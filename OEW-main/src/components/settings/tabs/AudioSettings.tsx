@@ -5,7 +5,6 @@ import {
   Select,
   MenuItem,
   Typography,
-  Grid,
   Button
 } from '@mui/material';
 import { SettingsContext } from '../../../services/settings';
@@ -42,8 +41,8 @@ const AudioSettings: React.FC = () => {
     <div>
       <Typography variant="h6" gutterBottom>Audio Configuration</Typography>
       
-      <Grid container spacing={3} component="div">
-        <Grid item xs={12} component="div">
+      <div style={{ display: 'grid', gap: '24px', gridTemplateColumns: 'repeat(12, 1fr)' }}>
+        <div style={{ gridColumn: 'span 12' }}>
           <Button 
             onClick={refreshDevices}
             variant="outlined"
@@ -51,9 +50,9 @@ const AudioSettings: React.FC = () => {
           >
             Refresh Audio Devices
           </Button>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={6}>
+        <div style={{ gridColumn: 'span 6' }}>
           <FormControl fullWidth>
             <FormLabel>Input Device</FormLabel>
             <Select
@@ -67,9 +66,9 @@ const AudioSettings: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={6}>
+        <div style={{ gridColumn: 'span 6' }}>
           <FormControl fullWidth>
             <FormLabel>Output Device</FormLabel>
             <Select
@@ -83,9 +82,9 @@ const AudioSettings: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-        </Grid>
+        </div>
         
-        <Grid item xs={12} md={6}>
+        <div style={{ gridColumn: 'span 6' }}>
           <FormControl fullWidth>
             <FormLabel>Sample Rate</FormLabel>
             <Select
@@ -99,9 +98,9 @@ const AudioSettings: React.FC = () => {
               <MenuItem value={192000}>192 kHz</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
+        </div>
         
-        <Grid xs={12} md={6}>
+        <div style={{ gridColumn: 'span 6' }}>
           <FormControl fullWidth>
             <FormLabel>Buffer Size</FormLabel>
             <Select
@@ -115,8 +114,8 @@ const AudioSettings: React.FC = () => {
               <MenuItem value={2048}>2048 samples</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 };
