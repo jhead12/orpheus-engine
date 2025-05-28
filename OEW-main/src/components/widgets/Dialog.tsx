@@ -1,3 +1,4 @@
+import React from 'react';
 import { Close } from "@mui/icons-material"
 import { Dialog as MuiDialog, DialogTitle, IconButton } from "@mui/material"
 

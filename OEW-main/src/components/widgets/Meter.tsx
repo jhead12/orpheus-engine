@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface IProps {
   color?: string;
   marks?: {value: number, style?: React.CSSProperties}[];

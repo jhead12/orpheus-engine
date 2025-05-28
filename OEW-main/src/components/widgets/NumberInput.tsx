@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { Add, ArrowDropDown, ArrowDropUp, ArrowLeft, ArrowRight, Remove } from "@mui/icons-material";
 import { HoldActionButton } from "..";
 import { clamp } from "lodash";
@@ -175,7 +175,7 @@ export default function NumberInput(props: IProps) {
       decrement();
   }
 
-  function handleMouseDown(e: React.MouseEvent) {
+  function handleMouseDown(_e: React.MouseEvent) {
     if (props.clickAndDrag && !disableClickAndDrag) {
       setDragStartValue(ref.current === document.activeElement ? getTextValue() : props.value);
       yDeltaFromStart.current = 0;
