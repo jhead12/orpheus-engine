@@ -24,6 +24,13 @@ function logHeader(message) {
     console.log('='.repeat(50));
 }
 
+const essentialPackages = [
+  'flask',
+  'pyserial-asyncio',
+  'numpy',
+  'scipy'
+];
+
 async function fixPythonDependencies() {
     logHeader('Fixing Python Dependencies');
 
@@ -154,6 +161,27 @@ flake8>=6.0.0
     }
 }
 
+function installPythonDeps() {
+  const backendPath = path.join(__dirname, '..', 'workstation', 'backend');
+  
+  try {
+    console.log('📦 Installing Python packages...');
+    execSync(`cd "${backendPath}" && source venv/bin/activate && pip install -r requirements.txt`, {stdio: 'inherit'});
+  } catch (error) {
+    console.warn('⚠️ Failed to install from requirements.txt, installing essential packages individually...');
+    
+    essentialPackages.forEach(pkg => {
+      try {
+        console.log(`🔄 Installing ${pkg}...`);
+        execSync(`cd "${backendPath}" && source venv/bin/activate && pip install ${pkg}`, {stdio: 'inherit'});
+      } catch (err) {
+        console.warn(`⚠️ Failed to install ${pkg}`);
+      }
+    });
+  }
+}
+
 if (require.main === module) {
     fixPythonDependencies();
+    installPythonDeps();
 }

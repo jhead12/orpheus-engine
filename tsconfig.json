@@ -14,7 +14,8 @@
     },
     "noImplicitAny": true,
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "include": [
     "electron/**/*.ts",
@@ -22,8 +23,8 @@
     "src/**/*.tsx",
     "OEW-main/**/*.ts",
     "OEW-main/**/*.tsx",
-    "orpheus-engine-workstation/frontend/src/**/*.ts",
-    "orpheus-engine-workstation/frontend/src/**/*.tsx"
+    "workstation/frontend/src/**/*.ts",
+    "workstation/frontend/src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",

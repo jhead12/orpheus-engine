@@ -3,7 +3,7 @@ import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../.
 import { clamp, inverseLerp, lerp } from "../../../services/utils/general";
 import { AutomationNodeComponent } from "./index";
 import { v4 } from "uuid";
-import { BASE_HEIGHT, normalizedToVolume, volumeToNormalized } from "../../../services/utils/utils";
+import { BASE_HEIGHT } from "../../../services/utils/utils";
 import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from "../../../services/types/types";
 import { openContextMenu } from "../../../services/electron/utils";
 

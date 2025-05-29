@@ -3,7 +3,8 @@ import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardProvider";
 import { WorkstationProvider } from "./contexts/WorkstationProvider";
 import { MixerProvider } from "./context/MixerContext";
-import { PreferencesProvider } from "./context/PreferencesContext";
+import { PreferencesProvider } from "./contexts/PreferencesContext";
+import { AudioSearchProvider } from "./contexts/AudioSearchContext";
 import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
@@ -30,8 +31,8 @@ function App(): React.ReactElement {
 
   return (
     <SettingsProvider>
-      <MixerProvider>
-        <PreferencesProvider> {/* Move PreferencesProvider outside Router */}
+      <PreferencesProvider>
+        <MixerProvider>
           <Router>
             <Routes>
               <Route
@@ -39,7 +40,9 @@ function App(): React.ReactElement {
                 element={
                   <ClipboardProvider>
                     <WorkstationProvider>
-                      <Workstation />
+                      <AudioSearchProvider>
+                        <Workstation />
+                      </AudioSearchProvider>
                     </WorkstationProvider>
                   </ClipboardProvider>
                 }
@@ -47,8 +50,8 @@ function App(): React.ReactElement {
             </Routes>
             <Preferences />
           </Router>
-        </PreferencesProvider>
-      </MixerProvider>
+        </MixerProvider>
+      </PreferencesProvider>
     </SettingsProvider>
   );
 }

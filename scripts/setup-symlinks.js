@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 // Paths
-const nodeModulesPath = path.join(__dirname, '..', 'orpheus-engine-workstation', 'frontend', 'node_modules');
+const nodeModulesPath = path.join(__dirname, '..', 'workstation', 'frontend', 'node_modules');
 const oewPath = path.join(__dirname, '..', 'OEW-main');
 
 // Create a symlink for OEW-main

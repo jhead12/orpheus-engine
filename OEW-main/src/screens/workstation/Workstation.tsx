@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react"
+import { useContext, useMemo } from "react"
 import Editor from "./Editor"
 import { Header, Mixer } from "./components"
 import { PaneResize } from "../../components";

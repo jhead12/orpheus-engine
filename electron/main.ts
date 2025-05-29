@@ -81,7 +81,7 @@ class OrpheusEngine {
       name: 'audio',
       command: 'python',
       args: ['audio_service.py'],
-      cwd: path.join(rootPath, 'orpheus-engine-workstation', 'backend'),
+      cwd: path.join(rootPath, 'workstation', 'backend'),
       port: 7008,
       description: 'Audio Processing Service',
       critical: false

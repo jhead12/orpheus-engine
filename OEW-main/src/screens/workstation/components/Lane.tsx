@@ -14,11 +14,12 @@ export interface LaneComponentProps {
   dragDataTarget: { track: Track | null, incompatible?: boolean } | null;
   style?: React.CSSProperties;
   track: Track;
+  onClipContextMenu?: (e: React.MouseEvent, clip: Clip) => void;
 }
 
 // Define component as a named function expression and wrap with forwardRef
 const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
-  const { className, dragDataTarget, style, track } = props;
+  const { className, dragDataTarget, style, track, onClipContextMenu } = props;
   const { clipboardItem } = useContext(ClipboardContext)!;
   const { 
     adjustNumMeasures,
@@ -257,7 +258,8 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
             const props = { clip, height: laneHeight, onChangeLane: changeLane, onSetClip: setClip, track };
             return clip.type === TrackType.Audio && clip.audio 
               ? <AudioClipComponent {...props} key={clip.id} /> 
-              : <ClipComponent {...props} key={clip.id} />;
+              : <ClipComponent {...props} key={clip.id} 
+                  onContextMenu={(e: React.MouseEvent) => onClipContextMenu?.(e, clip)} />;
           })}
         </div>
         <div>

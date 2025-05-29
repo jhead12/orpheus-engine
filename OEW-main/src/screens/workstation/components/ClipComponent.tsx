@@ -12,6 +12,7 @@ interface IProps extends BaseClipComponentProps {
   automationSprite?: (height: number) => React.ReactNode;
   listeners?: { action: number, handler: () => void }[];
   loopSprite?: (height: number) => React.ReactNode;
+  onContextMenu?: (e: React.MouseEvent) => void;
   onDrag?: (data: DNRData) => void;
   onDragStart?: (e: React.MouseEvent, data: DNRData) => void;
   onDragStop?: (e: MouseEvent, data: DNRData) => void;

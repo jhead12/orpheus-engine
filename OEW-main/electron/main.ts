@@ -29,10 +29,30 @@ function createWindow () {
   });
 
   if (app.isPackaged) {
+    console.log('Loading packaged app from file');
     mainWindow.loadFile(path.join(__dirname, '../src/index.html'));
   } else {
-    mainWindow.loadURL("http://localhost:5173");
+    const viteUrl = "http://localhost:5174";
+    console.log(`🎵 Loading Orpheus Engine DAW from: ${viteUrl}`);
+    
+    // Add error handling for loading the URL
+    mainWindow.loadURL(viteUrl).then(() => {
+      console.log('✅ DAW loaded successfully');
+    }).catch((error) => {
+      console.error('❌ Failed to load DAW:', error);
+    });
+    
     mainWindow.webContents.openDevTools();
+    
+    // Add listener for when the page finishes loading
+    mainWindow.webContents.once('did-finish-load', () => {
+      console.log('🚀 DAW interface is ready');
+    });
+    
+    // Add listener for any loading errors
+    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+      console.error(`❌ Page failed to load: ${errorCode} - ${errorDescription}`);
+    });
   }
 
   const menuBuilder = new MenuBuilder(mainWindow);
