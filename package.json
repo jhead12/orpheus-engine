@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "private": true,
   "workspaces": [
     "orpheus-engine-workstation/*"
@@ -19,6 +19,7 @@
     "setup-python": "node scripts/setup-python.js",
     "setup-submodules": "git submodule init && git submodule update --recursive",
     "update-submodules": "node scripts/update-submodules.js",
+    "prepare-release": "npm run update-submodules && node scripts/prepare-release.js",
     "setup-project": "node scripts/setup-project.js",
     "setup": "npm run setup-project",
     "verify-setup": "node scripts/verify-setup.js",
