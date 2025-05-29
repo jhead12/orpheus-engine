@@ -43,9 +43,6 @@ jobs:
           git pull origin main
           npm run release:${{ github.event.inputs.release_type }}
           
-      - name: Sync Develop Branch
+      - name: Push Tags
         run: |
-          git checkout develop
-          git pull origin develop
-          git merge main --no-edit
-          git push origin develop
+          git push origin --tags
