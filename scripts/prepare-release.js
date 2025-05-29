@@ -18,15 +18,18 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 
 function execCommand(command, options = {}) {
     try {
-        return execSync(command, {
+        const output = execSync(command, {
             encoding: 'utf8',
             stdio: ['pipe', 'pipe', 'pipe'],
             ...options
         });
+        return output;
     } catch (error) {
         console.error(`Error executing command: ${command}`);
         console.error(error.message);
-        return null;
+        if (error.stdout) console.log('stdout:', error.stdout.toString());
+        if (error.stderr) console.log('stderr:', error.stderr.toString());
+        throw error;
     }
 }
 
@@ -41,10 +44,27 @@ async function promptForVersion() {
             rl.close();
             resolve(version.trim());
         });
-    });
+async function updateVersion(version) {
+    try {
+        // Update version in package.json
+        console.log('\nUpdating version number...');
+        execCommand(`npm version ${version} --no-git-tag-version --allow-same-version`);
+        
+        // Run version sync script
+        console.log('Syncing version across workspaces...');
+        execCommand('node scripts/sync-versions.js');
+        
+        return true;
+    } catch (error) {
+        console.error('Failed to update version:', error.message);
+        return false;
+    }
 }
 
 async function updateChangelog(version) {
+    const changelogPath = path.join(ROOT_DIR, 'CHANGELOG.md');
+    const date = new Date().toISOString().split('T')[0];
+    const newEntry = `\n## [${version}] - ${date}\n\n### Changed\n- Updated user submodules to latest versions\n\n`;
     const changelogPath = path.join(ROOT_DIR, 'CHANGELOG.md');
     const date = new Date().toISOString().split('T')[0];
     const newEntry = `\n## [${version}] - ${date}\n\n### Changed\n- Updated user submodules to latest versions\n\n`;
@@ -70,9 +90,11 @@ async function main() {
             process.exit(1);
         }
         
-        // Update version in package.json
-        console.log('\nUpdating version number...');
-        execCommand(`npm version ${version} --no-git-tag-version`);
+        // Update version numbers across all packages
+        const versionUpdated = await updateVersion(version);
+        if (!versionUpdated) {
+            throw new Error('Failed to update version numbers');
+        }
         
         // Update CHANGELOG.md
         console.log('Updating CHANGELOG...');
