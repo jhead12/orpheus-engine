@@ -2,6 +2,12 @@
 
 
 
+## [1.0.11] - 2025-05-29
+
+### Changed
+- Updated user submodules to latest versions
+
+
 ## [1.0.11](https://github.com/jhead12/orpheus-engine/compare/v1.0.8...v1.0.11) (2025-05-28)
 
 
