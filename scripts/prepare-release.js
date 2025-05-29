@@ -116,9 +116,11 @@ async function main() {
         
         console.log(`\n✅ Release v${version} prepared successfully!`);
         console.log(`\nNext steps:`);
-        console.log(`1. Create a pull request from ${branchName} to main`);
-        console.log(`2. Review the changes`);
-        console.log(`3. Merge the pull request to trigger the release`);
+        console.log(`1. Review the changes in the ${branchName} branch`);
+        console.log(`2. The merge-release-to-main workflow will automatically:`);
+        console.log(`   - Merge the release branch to main`);
+        console.log(`   - Create a GitHub release with changelog entries`);
+        console.log(`   - Push tags to the repository`);
         
     } catch (error) {
         console.error('Error preparing release:', error);

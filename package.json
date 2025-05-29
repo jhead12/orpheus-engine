@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.11",
+  "version": "1.0.10",
   "private": true,
   "workspaces": [
     "orpheus-engine-workstation/*"
