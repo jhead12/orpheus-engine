@@ -1,0 +1,57 @@
+name: Update User Submodules
+
+on:
+  workflow_dispatch:  # Manual trigger
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'workstation/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'workstation/**'
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+        token: ${{ secrets.SUBMODULE_TOKEN }}  # Needed for private submodules
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Configure Git
+      run: |
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        
+    - name: Install Dependencies
+      run: npm ci
+        
+    - name: Update Submodules
+      run: npm run update-submodules
+      
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: 'chore: Update user submodules to latest versions'
+        commit-message: 'chore: Update user submodules to latest versions'
+        branch: 'auto/update-submodules'
+        base: main
+        body: |
+          This PR was automatically created to update user submodules to their latest versions.
+          
+          - Automated by GitHub Actions workflow
+          - Updates submodules owned by the current user
+          - Each submodule is updated to its latest main branch
+          
+          Please review the changes before merging.
