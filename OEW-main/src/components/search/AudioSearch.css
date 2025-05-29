@@ -1,0 +1,125 @@
+.audio-search-container {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background-color: var(--background-primary, #1e1e1e);
+  border-radius: 6px;
+  color: var(--text-primary, #f0f0f0);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.audio-search-header {
+  margin-bottom: 15px;
+}
+
+.audio-search-header h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--text-highlight, #f0f0f0);
+}
+
+.audio-search-input {
+  display: flex;
+  gap: 8px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--background-secondary, #2d2d2d);
+  border: 1px solid var(--border-color, #444444);
+  color: var(--text-primary, #f0f0f0);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color, #5c7cfa);
+}
+
+.search-button {
+  padding: 8px 16px;
+  background-color: var(--button-primary, #4c6ef5);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.search-button:hover:not(:disabled) {
+  background-color: var(--button-hover, #5c7cfa);
+}
+
+.search-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.audio-search-results {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.results-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.result-item {
+  padding: 12px;
+  border-radius: 4px;
+  background-color: var(--background-secondary, #2d2d2d);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.result-item:hover {
+  background-color: var(--background-tertiary, #3d3d3d);
+}
+
+.result-text {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.result-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary, #a0a0a0);
+}
+
+.time-range {
+  font-weight: 500;
+}
+
+.confidence {
+  font-style: italic;
+}
+
+.error-message {
+  color: var(--error-color, #ff5959);
+  padding: 10px;
+  background-color: rgba(255, 89, 89, 0.1);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  color: var(--text-secondary, #a0a0a0);
+}
+
+.no-results {
+  color: var(--text-secondary, #a0a0a0);
+  text-align: center;
+  padding: 20px;
+}

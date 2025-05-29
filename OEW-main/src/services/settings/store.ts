@@ -1,12 +1,5 @@
 import { createContext } from 'react';
-import { 
-  SettingsStore, 
-  AudioSettings, 
-  MIDISettings, 
-  ThemeSettings,
-  GeneralSettings,
-  PluginSettings
-} from './types';
+import { SettingsStore } from './types';
 
 /**
  * Default settings values

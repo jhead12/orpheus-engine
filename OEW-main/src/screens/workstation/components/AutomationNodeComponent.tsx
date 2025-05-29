@@ -134,14 +134,22 @@ export default function AutomationNodeComponent(props: IProps) {
     
     openContextMenu(ContextMenuType.Node, {}, (params: Record<string, any>) => {
       const action = params.action as number;
-      switch (params.action) {
+      // Actions available in the automation node context menu:
+      // 0: Delete the current automation node
+      // 1: Open value editor popover for precise value input
+      // Future actions can be added here with new case statements
+      switch (action) {
         case 0:
           deleteNode(node);
           break;
         case 1:
           setAnchorEl(target);
           setValueText(node.value.toFixed(2));
-          break;  
+          break;
+        // Reserved for future automation node actions
+        default:
+          console.log(`Unhandled automation node action: ${action}`);
+          break;
       }
     });
   }

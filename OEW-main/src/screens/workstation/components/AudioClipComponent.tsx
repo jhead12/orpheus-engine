@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { WorkstationContext } from "../../../contexts";
 import { BaseClipComponentProps, TimelinePosition } from "../../../services/types/types";
 import { ClipComponent, Waveform } from "./index";

@@ -15,7 +15,6 @@ import {
   SpeedDialIcon,
   Tabs,
   Tab,
-  Box,
 } from "@mui/material";
 import { useResizeDetector } from "react-resize-detector";
 import {
@@ -124,17 +123,17 @@ export function AudioAnalysisProvider({ children }: AudioAnalysisProviderProps) 
   };
   
   // Mock implementation of analysis functions
-  const performSpectralAnalysis = async (audioBuffer: AudioBuffer) => {
+  const performSpectralAnalysis = async (_audioBuffer: AudioBuffer) => {
     // Implementation would connect to Python backend for FFT analysis
     return { type: 'spectral', data: [/* frequency data */] };
   };
   
-  const performWaveformAnalysis = async (audioBuffer: AudioBuffer) => {
+  const performWaveformAnalysis = async (_audioBuffer: AudioBuffer) => {
     // Implementation would analyze amplitude characteristics
     return { type: 'waveform', data: [/* amplitude data */] };
   };
   
-  const extractAudioFeatures = async (audioBuffer: AudioBuffer) => {
+  const extractAudioFeatures = async (_audioBuffer: AudioBuffer) => {
     // Implementation would extract MFCCs, onset detection, etc.
     return { type: 'features', data: { /* feature data */ } };
   };
@@ -559,6 +558,27 @@ export default function Editor() {
     });
   }
 
+  // Function to handle selecting an audio clip for analysis
+  function handleSelectForAnalysis(clip: Clip) {
+    if (clip.audio && clip.audio.audioBuffer) {
+      analysis.setSelectedClip(clip);
+      analysis.runAudioAnalysis(clip.audio.audioBuffer, analysis.analysisType);
+      setShowAnalysisPanel(true);
+    }
+  }
+
+  // Function to handle clip context menu
+  function handleClipContextMenu(_e: React.MouseEvent, clip: Clip) {
+    openContextMenu(ContextMenuType.Clip, {}, (params: any) => {
+      switch (params.action) {
+        case 'analyze':
+          handleSelectForAnalysis(clip);
+          break;
+        // ... other context menu actions ...
+      }
+    });
+  }
+
   function handleSortEnd(_: MouseEvent, data: SortData) {
     if (data.destIndex > -1 && data.sourceIndex !== data.destIndex) {
       const newTracks = tracks.slice();
@@ -767,7 +787,7 @@ export default function Editor() {
       flexDirection: "column",
       width: 12,
       backgroundColor: "var(--bg1)",
-      borderLeft: "1px solid var(--border1)",
+      borderLeft: "1px solid var,--border1",
       zIndex: 20,
       inset: "33px 0 11px auto",
     },
@@ -788,17 +808,8 @@ export default function Editor() {
   const [showAnalysisPanel, setShowAnalysisPanel] = useState(false);
   const [analysisTabValue, setAnalysisTabValue] = useState(0);
 
-  // Function to handle selecting an audio clip for analysis
-  function handleSelectForAnalysis(clip: Clip) {
-    if (clip.audio && clip.audio.audioBuffer) {
-      analysis.setSelectedClip(clip);
-      analysis.runAudioAnalysis(clip.audio.audioBuffer, analysis.analysisType);
-      setShowAnalysisPanel(true);
-    }
-  }
-
   // Function to handle analysis tab change
-  const handleAnalysisTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleAnalysisTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setAnalysisTabValue(newValue);
     
     if (analysis.selectedClip?.audio?.audioBuffer) {
@@ -821,18 +832,6 @@ export default function Editor() {
       analysis.setAnalysisType(analysisType);
       analysis.runAudioAnalysis(analysis.selectedClip.audio.audioBuffer, analysisType);
     }
-  };
-
-  // Add analysis options to context menu
-  const extendedContextMenu = (e: React.MouseEvent, clip: Clip) => {
-    openContextMenu(ContextMenuType.Clip, {}, (params: any) => {
-      switch (params.action) {
-        // ...existing actions...
-        case 10: // New analysis option
-          handleSelectForAnalysis(clip);
-          break;
-      }
-    });
   };
 
   return (
@@ -1026,6 +1025,7 @@ export default function Editor() {
                       <Lane
                         dragDataTarget={dragData.target}
                         track={masterTrack}
+                        onClipContextMenu={handleClipContextMenu}
                       />
                     </div>
                   )}
@@ -1036,6 +1036,7 @@ export default function Editor() {
                           className={getTrackClass(idx)}
                           dragDataTarget={dragData.target}
                           track={track}
+                          onClipContextMenu={handleClipContextMenu}
                         />
                       </div>
                     ))}
@@ -1127,7 +1128,6 @@ export default function Editor() {
             <div className="p-2">
               <AudioAnalysisPanel 
                 type={analysis.analysisType} 
-                results={analysis.analysisResults}
                 clip={analysis.selectedClip}
               />
             </div>

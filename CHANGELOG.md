@@ -106,6 +106,17 @@ All notable changes to this project will be documented in this file.
   - `fix-vite`: Installs missing Vite dependencies
   - `fix-electron-path`: Updates the frontend directory path in start-electron.sh
 
+### Added
+- Advanced audio analysis using Python scientific libraries
+- Integration with librosa for MFCC, spectral contrast, and chromagram analysis
+- NumPy data export for research purposes
+- Statistical analysis computed in Python
+- New dependencies: librosa, scipy, numpy, soundfile
+
+### Changed
+- Enhanced AudioAnalysisPanel with Python-powered analysis features
+- Improved data visualization for research use cases
+
 ## How to use the fixes
 1. Run `npm run fix-vite` to install missing Vite dependencies
 2. Run `npm run fix-electron-path` to fix the frontend directory path

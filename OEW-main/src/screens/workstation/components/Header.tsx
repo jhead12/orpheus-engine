@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   FastForward,
   FastRewind,
@@ -12,7 +12,6 @@ import {
   Undo,
   Settings,
   Chat,
-  MoreVert,
   AudiotrackOutlined,
   Extension,
 } from "@mui/icons-material";
@@ -47,7 +46,6 @@ import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
 import { parseDuration } from "../../../services/utils/general";
 import SettingsPanel from "../../../components/settings/SettingsPanel";
-import { SettingsContext } from "../../../services/settings";
 
 const noteValues: { label: string; value: number }[] = [];
 
@@ -83,9 +81,6 @@ export default function Header() {
     updateTimelineSettings,
     snapGridSize,
   } = useContext(WorkstationContext)!;
-
-  // Get settings from context
-  const settingsContext = useContext(SettingsContext);
 
   const [timePosText, setTimePosText] = useState("");
   const [typeCursorPosMode, setTypeCursorPosMode] = useState(false);
@@ -482,7 +477,6 @@ export default function Header() {
     null
   );
   const [pluginsOpen, setPluginsOpen] = useState(false);
-  const [settingsTabValue, setSettingsTabValue] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(2); // Example for notification badge
 
   // Handle settings dialog
@@ -513,26 +507,6 @@ export default function Header() {
   const handleTogglePlugins = () => {
     setPluginsOpen(!pluginsOpen);
   };
-
-  // Define TabPanel component for settings
-  function TabPanel(props: {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }) {
-    const { children, value, index } = props;
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`settings-tabpanel-${index}`}
-        aria-labelledby={`settings-tab-${index}`}
-        style={style.tabPanel}
-      >
-        {value === index && <>{children}</>}
-      </div>
-    );
-  }
 
   return (
     <div className="col-12 position-relative" style={{ zIndex: 19 }}>
@@ -871,7 +845,6 @@ export default function Header() {
       <SettingsPanel
         open={settingsOpen}
         onClose={handleCloseSettings}
-        initialTab={settingsTabValue}
       />
 
       {/* Chat Drawer */}

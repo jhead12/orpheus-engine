@@ -50,7 +50,7 @@ async function installAll() {
   }
 
   // Install frontend dependencies
-  const frontendPath = path.join(process.cwd(), 'orpheus-engine-workstation/frontend');
+  const frontendPath = path.join(process.cwd(), 'workstation/frontend');
   if (fs.existsSync(frontendPath)) {
     console.log('Installing frontend dependencies...');
     runCommand('yarn install', frontendPath);
@@ -59,7 +59,7 @@ async function installAll() {
   }
 
   // Install backend dependencies
-  const backendPath = path.join(process.cwd(), 'orpheus-engine-workstation/backend');
+  const backendPath = path.join(process.cwd(), 'workstation/backend');
   if (fs.existsSync(backendPath)) {
     console.log('Installing backend dependencies...');
     runCommand('yarn install', backendPath);

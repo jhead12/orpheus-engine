@@ -1,22 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWorkstation } from '../contexts/WorkstationContext';
 import { Web3StoragePlugin } from '../plugins/Web3StoragePlugin';
 
-// Example implementation of Ceramic connector
-const createCeramicConnector = () => {
+// Define TypeScript interfaces for improved type safety
+interface CeramicConnector {
+  connect: (ceramic: any) => Promise<void>;
+  createDocument: (data: any) => Promise<string>;
+  loadDocument: (id: string) => Promise<WorkstationData>;
+  queryDocuments: () => Promise<string[]>;
+}
+
+interface WorkstationData {
+  name: string;
+  tracks: any[];
+  [key: string]: any;
+}
+
+interface WorkstationItem {
+  id: string;
+  name: string;
+  dateCreated: string;
+}
+
+/**
+ * Example implementation of Ceramic connector
+ * This is a simple mock implementation for demonstration purposes
+ * @returns A connector for interacting with Ceramic Network
+ */
+const createCeramicConnector = (): CeramicConnector => {
   return {
-    connect: async (ceramic: any) => {
+    connect: async (ceramic: any): Promise<void> => {
       console.log('Connected to Ceramic');
     },
-    createDocument: async (data: any) => {
+    createDocument: async (data: any): Promise<string> => {
       console.log('Creating document in Ceramic', data);
       return `ceramic://doc-${Date.now()}`; // Placeholder
     },
-    loadDocument: async (id: string) => {
+    loadDocument: async (id: string): Promise<WorkstationData> => {
       console.log(`Loading document ${id} from Ceramic`);
       return { name: 'Example Workstation', tracks: [] }; // Placeholder
     },
-    queryDocuments: async () => {
+    queryDocuments: async (): Promise<string[]> => {
       return ['ceramic://doc-1', 'ceramic://doc-2']; // Placeholder
     }
   };
@@ -38,8 +62,8 @@ const createIPFSConnector = () => {
 
 export const Web3Integration: React.FC = () => {
   const workstation = useWorkstation();
-  const [availableWorkstations, setAvailableWorkstations] = React.useState<{ id: string; name: string }[]>([]);
-  const [selectedWorkstationId, setSelectedWorkstationId] = React.useState<string>('');
+  const [availableWorkstations, setAvailableWorkstations] = useState<{ id: string; name: string }[]>([]);
+  const [selectedWorkstationId, setSelectedWorkstationId] = useState<string>('');
 
   useEffect(() => {
     // Create and register Web3 storage plugin

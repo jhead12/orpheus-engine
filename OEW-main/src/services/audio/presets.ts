@@ -19,5 +19,12 @@ export function loadUserPresets() {
 }
 
 export function savePreset(preset: Preset) {
-  // Implementation
+  try {
+    const existingPresets = localStorage.getItem('user-presets');
+    const presets = existingPresets ? JSON.parse(existingPresets) : {};
+    presets[preset.id] = preset;
+    localStorage.setItem('user-presets', JSON.stringify(presets));
+  } catch (error) {
+    console.error('Failed to save preset:', error);
+  }
 }

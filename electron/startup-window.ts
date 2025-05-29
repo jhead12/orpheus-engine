@@ -65,7 +65,8 @@ export class StartupWindow {
                 await this.serviceManager.startAllServices();
                 return { success: true };
             } catch (error) {
-                return { success: false, error: error.message };
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                return { success: false, error: errorMessage };
             }
         });
     }

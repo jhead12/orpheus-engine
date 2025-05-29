@@ -1,7 +1,7 @@
 import React, { CSSProperties, useContext, useEffect, useState } from "react";
 import { Settings } from "@mui/icons-material";
 import { DialogActions, DialogContent, FormControlLabel, Radio as MuiRadio, RadioGroup, RadioProps as MuiRadioProps, Snackbar } from "@mui/material";
-import { PreferencesContext } from "../contexts";
+import { usePreferences } from "../contexts/PreferencesContext";
 import { Dialog } from "./widgets";
 import styled from "styled-components";
 
@@ -75,7 +75,7 @@ export default function Preferences() {
     setShowPreferences,
     showPreferences,
     updatePreferences
-  } = useContext(PreferencesContext) as PreferencesContextType;
+  } = usePreferences();
   const [saved, setSaved] = useState(false);
   const [tabIdx, setTabIdx] = useState(0);
 

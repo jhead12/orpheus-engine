@@ -96,7 +96,7 @@ async function main() {
     }
     
     // Start the backend with the selected port
-    const backendPath = path.join(process.cwd(), 'orpheus-engine-workstation', 'backend');
+    const backendPath = path.join(process.cwd(), 'workstation', 'backend');
     
     log(`📂 Backend directory: ${backendPath}`, colors.blue);
     log(`🎯 Starting backend on port ${targetPort}...`, colors.green);

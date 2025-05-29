@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Directory to search in
-const frontendDir = path.join(__dirname, 'orpheus-engine-workstation', 'frontend', 'src');
+const frontendDir = path.join(__dirname, 'workstation', 'frontend', 'src');
 const absolutePathToFind = '/workspaces/orpheus-engine/OEW-main';
 
 // Function to search files recursively
