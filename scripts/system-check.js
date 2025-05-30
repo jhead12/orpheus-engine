@@ -318,6 +318,83 @@ class SystemChecker {
         }
     }
 
+    async checkGitSubmodules() {
+        this.logHeader('Checking Git Submodules');
+        
+        try {
+            // Check if git is available
+            execSync('git --version', { stdio: 'ignore' });
+            
+            // Check if .gitmodules exists (in root or workstation folder)
+            const rootGitmodules = path.join(process.cwd(), '.gitmodules');
+            const workstationGitmodules = path.join(process.cwd(), 'workstation', '.gitmodules');
+            
+            let gitmodulesPath = null;
+            
+            if (fs.existsSync(rootGitmodules)) {
+                gitmodulesPath = rootGitmodules;
+                this.logSuccess('Found .gitmodules in root directory');
+            } else if (fs.existsSync(workstationGitmodules)) {
+                gitmodulesPath = workstationGitmodules;
+                this.logSuccess('Found .gitmodules in workstation directory');
+            } else {
+                this.logWarning('No .gitmodules file found - project may not use submodules');
+                return;
+            }
+            
+            // Get submodule status to detect initialized/uninitialized modules
+            const submoduleStatus = execSync('git submodule status', { encoding: 'utf8' }).trim();
+            
+            if (!submoduleStatus) {
+                this.logSuccess('No submodules detected in project');
+                return;
+            }
+            
+            const submoduleLines = submoduleStatus.split('\n');
+            const uninitializedModules = [];
+            const initializedModules = [];
+            
+            submoduleLines.forEach(line => {
+                if (line.trim()) {
+                    // Line format: [<status char>]<commit hash> <path> [(<branch>)]
+                    // Status char: '-' = uninitialized, '+' = different commit, ' ' = clean
+                    const statusChar = line[0];
+                    const parts = line.trim().split(' ');
+                    const submodulePath = parts[1];
+                    
+                    if (statusChar === '-') {
+                        uninitializedModules.push(submodulePath);
+                    } else {
+                        initializedModules.push(submodulePath);
+                    }
+                }
+            });
+            
+            if (initializedModules.length > 0) {
+                this.logSuccess(`Initialized submodules: ${initializedModules.join(', ')}`);
+            }
+            
+            if (uninitializedModules.length > 0) {
+                this.logWarning(`Uninitialized submodules detected: ${uninitializedModules.join(', ')}`);
+                this.logWarning('Run: git submodule update --init --recursive');
+                
+                // Initialize and update submodules if needed
+                try {
+                    this.log('Automatically initializing submodules...', colors.blue);
+                    execSync('git submodule update --init --recursive', { stdio: 'inherit' });
+                    this.logSuccess('Submodules initialized successfully');
+                } catch (error) {
+                    this.logError(`Failed to initialize submodules: ${error.message}`);
+                }
+            } else {
+                this.logSuccess('All submodules are initialized');
+            }
+            
+        } catch (error) {
+            this.logWarning(`Git submodule check failed: ${error.message}`);
+        }
+    }
+
     async generateReport() {
         this.logHeader('System Check Summary');
         
@@ -354,6 +431,11 @@ class SystemChecker {
                 recommendationCount++;
             }
             
+            if (this.warnings.some(w => w.includes('Uninitialized submodules'))) {
+                this.log(`${recommendationCount}. Initialize Git submodules: git submodule update --init --recursive`, colors.blue);
+                recommendationCount++;
+            }
+            
             if (this.warnings.some(w => w.includes('Missing required packages'))) {
                 this.log(`${recommendationCount}. Install missing system packages using the commands suggested above`, colors.blue);
                 recommendationCount++;
@@ -378,12 +460,14 @@ class SystemChecker {
         await this.checkNodeVersion();
         await this.checkPackageManagers();
         await this.checkRequiredFiles();
+        await this.checkGitSubmodules();
         await this.checkPythonDependencies();
         await this.checkBackendServices();
         await this.checkSystemPackages();
         await this.checkFFmpeg();
         await this.checkElectron();
         await this.checkPorts();
+        await this.checkGitSubmodules();
         
         const allGood = await this.generateReport();
         

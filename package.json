@@ -62,6 +62,7 @@
     "github:release": "gh release create v$npm_package_version --title \"Release v$npm_package_version\" --notes \"$(cat CHANGELOG.md | sed -n \"/^## \\[$npm_package_version\\]/,/^## /p\" | sed '$ d')\" || echo \"Could not create release. Make sure gh CLI is installed and authenticated.\"",
     "typecheck": "tsc --noEmit",
     "prestart": "npm run system-check && npm run typecheck",
+    "update-submodules": "node scripts/update-submodules.js",
     "setup-symlinks": "node scripts/setup-symlinks.js",
     "presync-versions": "npm run setup-symlinks",
     "prebuild": "npm run setup-symlinks",
