@@ -26,18 +26,39 @@ trap cleanup EXIT INT TERM
 
 echo "Setting up display..."
 export DISPLAY=:99
-Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
-XVFB_PID=$!
-sleep 1
-
-# Setup D-Bus session if needed
-if [ -f "$(dirname "$0")/setup-dbus.sh" ]; then
-  echo "Setting up D-Bus session..."
-  source "$(dirname "$0")/setup-dbus.sh"
+if command -v Xvfb &> /dev/null; then
+  Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
+  XVFB_PID=$!
+  sleep 1
+  echo "Xvfb started with PID: $XVFB_PID"
+else
+  echo "Warning: Xvfb not found, display setup may not work correctly"
 fi
 
+# Set up D-Bus session without relying on system services
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/tmp/dbus-session-bus-socket
+mkdir -p /tmp/dbus-session
+if command -v dbus-daemon &> /dev/null; then
+  dbus-daemon --session --address=$DBUS_SESSION_BUS_ADDRESS --nofork --print-address > /dev/null 2>&1 &
+  DBUS_PID=$!
+  sleep 1
+  echo "D-Bus daemon started with PID: $DBUS_PID"
+else
+  echo "Warning: dbus-daemon not found, some features may not work correctly"
+fi
+
+# Check if workstation/frontend directory exists
+if [ ! -d "workstation/frontend" ]; then
+  echo "Error: workstation/frontend directory not found"
+  echo "Current directory: $(pwd)"
+  echo "Please ensure you're running this script from the project root"
+  exit 1
+fi
+
+cd /Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend
+
 echo "Installing dependencies..."
-npm install
+npm install --legacy-peer-deps
 
 echo "Starting development server..."
 # Check if port 5173 is already in use
@@ -67,6 +88,7 @@ echo "Using Vite executable: $VITE_PATH"
 echo "Starting Vite server..."
 $VITE_PATH --port 5173 &
 VITE_PID=$!
+awescapes start &
 
 # Wait for Vite server with a progress indicator and better timeout handling
 echo "Waiting for Vite server to start (timeout: 60s)..."
@@ -113,7 +135,8 @@ else
 fi
 
 # Start Electron with the provided arguments
-NODE_ENV=development npm run dev -- $args
+cd OEW-main
+npm run electron-dev -- $args
 
 # Cleanup
 echo "Cleaning up..."

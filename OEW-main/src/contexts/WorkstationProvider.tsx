@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { 
   Clip,
@@ -8,6 +7,17 @@ import {
   TimelinePosition,
   TimelineSettings
 } from '../services/types/types';
+
+// Define the ScrollToItem type
+interface ScrollToItem {
+  type: 'track' | 'clip' | 'node' | 'cursor';
+  params: {
+    trackId?: string;
+    clipId?: string;
+    nodeId?: string;
+    alignment?: string;
+  };
+}
 
 interface WorkstationContextType {
   // Add your workstation context properties here

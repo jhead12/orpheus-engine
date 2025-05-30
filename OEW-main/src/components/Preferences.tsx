@@ -158,7 +158,7 @@ export default function Preferences() {
                             <Radio className="m-0" value="system" label="System" />
                           </RadioGroup>
                         </PreferencesRow>
-                        <PreferencesRow>
+                        {/* <PreferencesRow>
                           <label>Color</label>
                           <RadioGroup name="color" onChange={changeColor} row value={preferences.color}>
                             <table style={{textAlign: "left", columnWidth: 90}}>
@@ -178,7 +178,7 @@ export default function Preferences() {
                               </tbody>
                             </table>
                           </RadioGroup>
-                        </PreferencesRow>
+                        </PreferencesRow> */}
                       </div>
                     </div>
                   </div>
@@ -217,6 +217,5 @@ export default function Preferences() {
         </div>
       </Snackbar>
     </>
-  )
+  );
 }
->>>>>>> 987d300 (Fix: Resolve ipcRenderer error in WorkstationProvider)
