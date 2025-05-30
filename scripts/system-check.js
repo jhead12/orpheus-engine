@@ -106,9 +106,9 @@ class SystemChecker {
         const requiredFiles = [
             'package.json',
             'requirements.txt',
-            'workstation/backend/main.py',
-            'workstation/backend/requirements.txt',
-            'workstation/frontend/package.json'
+            'workstation/orpheus-engine-workstation/backend/main.py',
+            'workstation/orpheus-engine-workstation/backend/requirements.txt',
+            'workstation/orpheus-engine-workstation/frontend/package.json'
         ];
 
         for (const file of requiredFiles) {
@@ -123,10 +123,10 @@ class SystemChecker {
 
     async checkBackendServices() {
         this.logHeader('Checking Backend Services');
-        const backendPath = path.join(process.cwd(), 'workstation/backend');
+        const backendPath = path.join(process.cwd(), 'workstation/orpheus-engine-workstation/backend');
         
         if (fs.existsSync(backendPath)) {
-            const servicesPath = path.join(backendPath, 'services');
+            const servicesPath = path.join(backendPath, 'agentic_rag');
             if (fs.existsSync(servicesPath)) {
                 const services = fs.readdirSync(servicesPath)
                     .filter(file => file.endsWith('.py') && file !== '__init__.py');
@@ -137,10 +137,10 @@ class SystemChecker {
                 });
 
                 // Check for MCP service specifically
-                if (services.includes('mcp_service.py')) {
-                    this.logSuccess('MCP service is available');
+                if (services.includes('rag_pipeline.py')) {
+                    this.logSuccess('RAG pipeline service is available');
                 } else {
-                    this.logWarning('MCP service not found in backend/services/');
+                    this.logWarning('RAG pipeline service not found in backend/agentic_rag/');
                 }
             } else {
                 this.logWarning('Backend services directory not found');

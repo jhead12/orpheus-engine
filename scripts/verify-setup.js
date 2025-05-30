@@ -107,7 +107,7 @@ function main() {
     allGood &= checkFile('electron/service-manager.ts', 'Service manager');
     allGood &= checkFile('startup.html', 'Startup UI');
     allGood &= checkFile('OEW-main/package.json', 'DAW package.json');
-    allGood &= checkFile('workstation/backend/config.py', 'Backend configuration');
+    allGood &= checkFile('workstation/orpheus-engine-workstation/backend/config.py', 'Backend configuration');
     
     // Check dependencies
     logHeader('Dependencies');

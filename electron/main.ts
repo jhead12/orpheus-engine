@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { ServiceManager } from './service-manager';
 import { StartupWindow } from './startup-window';
@@ -12,6 +12,7 @@ class OrpheusEngine {
     this.serviceManager = new ServiceManager();
     this.startupWindow = new StartupWindow(this.serviceManager);
     this.registerServices();
+    this.setupIPCHandlers();
   }
 
   private registerServices() {
@@ -85,6 +86,31 @@ class OrpheusEngine {
       port: 7008,
       description: 'Audio Processing Service',
       critical: false
+    });
+  }
+
+  private setupIPCHandlers() {
+    // MCP Analysis handler - placeholder implementation
+    ipcMain.handle('mcp:analyze', async (event, request) => {
+      try {
+        console.log('MCP Analysis requested:', request);
+        
+        // Placeholder implementation - return mock analysis results
+        // In a real implementation, this would process the audio data
+        // and return actual analysis results
+        return {
+          spectralData: [],
+          waveform: [],
+          features: {},
+          statistics: {
+            rmsEnergy: { mean: 0, stdDev: 0 },
+            sampleRate: request.data.sampleRate || 44100
+          }
+        };
+      } catch (error) {
+        console.error('MCP Analysis error:', error);
+        throw error;
+      }
     });
   }
 

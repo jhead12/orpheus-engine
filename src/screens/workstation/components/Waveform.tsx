@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect } from "react";
 
 interface IProps {
   data: number[];
@@ -8,7 +8,6 @@ interface IProps {
 
 export default function Waveform({ data, height = 100, width = 500 }: IProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [scaling, setScaling] = useState({ min: 0, max: 255 });
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;

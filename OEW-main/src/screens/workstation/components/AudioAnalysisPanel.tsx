@@ -1,17 +1,29 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { AudioAnalysisType, Clip } from '../../../services/types/types';
-import { useMCPAnalysis } from '../../../hooks/useMCPAnalysis';
-import { useAI } from '../../../contexts/AIContext';
-import { AnalysisContext } from '../../../contexts/AnalysisContext';
-import { invokePythonAnalysis } from '../../../services/pythonBridge';
+import { useEffect, useRef, useState } from 'react';
+import { AudioAnalysisType, Clip } from '@/services/types/types';
+import { useMCPAnalysis } from '@/hooks/useMCPAnalysis';
+import { useAI } from '@/contexts/AIContext';
+import { invokePythonAnalysis } from '@/services/pythonBridge';
 
 interface AudioAnalysisPanelProps {
   type: AudioAnalysisType;
   clip: Clip | null;
 }
 
+interface AnalysisResults {
+  spectral?: {
+    spectralData?: number[][];
+  };
+  waveform?: {
+    data?: number[];
+  };
+  features?: {
+    mfcc?: number[][];
+    spectralContrast?: number[];
+    chromagram?: number[][];
+  };
+}
+
 export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelProps) {
-  const { analysisResults } = useContext(AnalysisContext)!;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [resolution, setResolution] = useState(1024);
   const [windowSize, setWindowSize] = useState(2048);
@@ -56,7 +68,7 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
   useEffect(() => {
     if (clip?.audio) {
       ai.analyzeAudioFeatures(clip)
-        .then(analysisResults => {
+        .then((analysisResults: AnalysisResults) => {
           if (canvasRef.current) {
             // Render analysis results
             renderAnalysis(analysisResults);
@@ -84,8 +96,8 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
           fmin: 20,
           fmax: 20000
         }
-      }).then(results => {
-        setPythonResults(results);
+      }).then((pythonResults: any) => {
+        setPythonResults(pythonResults);
       });
     }
   }, [clip, type, resolution, windowSize]);
@@ -174,12 +186,11 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
     
     // Use actual spectral data if available
     if (results?.spectralData) {
-      const data = results.spectralData;
-      // Update visualization with real data
+      // Update visualization with results.spectralData directly
     }
   };
   
-  const renderWaveformAnalysis = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, results: any) => {
+  const renderWaveformAnalysis = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, _results: any) => {
     // Draw waveform
     ctx.fillStyle = 'var(--color1)';
     ctx.font = '14px Arial';
@@ -205,7 +216,7 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
   const renderFeatureAnalysis = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, results: any) => {
     if (pythonResults?.features) {
       // Use Python-computed features instead of basic analysis
-      const { mfcc, spectralContrast, chromagram, onsetEnvelope } = pythonResults.features;
+      const { mfcc, spectralContrast, chromagram } = pythonResults.features;
       
       // Draw advanced feature visualizations
       drawMFCC(ctx, mfcc, canvas);
@@ -283,6 +294,66 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
     }
   };
 
+  const drawMFCC = (ctx: CanvasRenderingContext2D, mfcc: number[][], canvas: HTMLCanvasElement) => {
+    const height = canvas.height / 3;
+    const width = canvas.width;
+    const yScale = height / mfcc.length;
+    const xScale = width / mfcc[0].length;
+
+    mfcc.forEach((row, i) => {
+      row.forEach((value, j) => {
+        const intensity = Math.min(Math.max(value, -1), 1);
+        const color = intensity < 0 
+          ? `rgb(0, 0, ${Math.abs(intensity) * 255})`
+          : `rgb(${intensity * 255}, 0, 0)`;
+        
+        ctx.fillStyle = color;
+        ctx.fillRect(j * xScale, i * yScale, xScale, yScale);
+      });
+    });
+  };
+
+  const drawSpectralFeatures = (ctx: CanvasRenderingContext2D, features: number[], canvas: HTMLCanvasElement) => {
+    const height = canvas.height / 3;
+    const width = canvas.width;
+
+    ctx.beginPath();
+    ctx.moveTo(0, height + features[0] * height);
+    
+    features.forEach((value, i) => {
+      ctx.lineTo(i * (width / features.length), height + value * height);
+    });
+    
+    ctx.strokeStyle = 'var(--color1)';
+    ctx.stroke();
+  };
+
+  const drawChromagram = (ctx: CanvasRenderingContext2D, chroma: number[][], canvas: HTMLCanvasElement) => {
+    const height = canvas.height / 3;
+    const width = canvas.width;
+    const noteHeight = height / 12;
+    
+    chroma.forEach((frame, i) => {
+      frame.forEach((value, j) => {
+        ctx.fillStyle = `rgba(255, 165, 0, ${value})`;
+        ctx.fillRect(
+          i * (width / chroma.length),
+          height * 2 + j * noteHeight,
+          width / chroma.length,
+          noteHeight
+        );
+      });
+    });
+  };
+
+  const drawStatistics = (ctx: CanvasRenderingContext2D, stats: any, canvas: HTMLCanvasElement) => {
+    ctx.fillStyle = 'var(--color1)';
+    ctx.font = '12px Arial';
+    Object.entries(stats).forEach(([key, value], i) => {
+      ctx.fillText(`${key}: ${value}`, 10, canvas.height - 20 - (i * 15));
+    });
+  };
+
   const convertToCSV = (results: any) => {
     const headers = ['Timestamp', 'Feature', 'Value', 'Unit'];
     const rows: string[][] = [];
@@ -292,7 +363,7 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
         rows.push([
           new Date().toISOString(),
           feature,
-          value,
+          value.toString(),
           getFeatureUnit(feature)
         ]);
       }

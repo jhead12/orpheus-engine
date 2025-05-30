@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions, shell } from "electron"
-import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "./../src/services/types/types";
-import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "./../src/services/electron/channels" 
+import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "../src/services/types/types";
+import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "../src/services/electron/channels" 
 
 export default class ContextMenuBuilder {
   mainWindow: BrowserWindow;
@@ -117,11 +117,11 @@ export default class ContextMenuBuilder {
 
   buildAutomationModesContextMenu(mode: AutomationMode) {
     const menu: MenuItemConstructorOptions[] = Object.values(AutomationMode).map(value => ({
-      type: "radio",
-      label: value,
+      type: "radio" as const,
+      label: value as string, // Cast to string to satisfy the type requirement
       checked: mode === value,
       click: () => this.mainWindow.webContents.send(SELECT_CONTEXT_MENU_ITEM, { mode: value })
-    }))
+    }));
 
     return menu;
   }

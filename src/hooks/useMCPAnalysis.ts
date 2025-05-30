@@ -3,31 +3,70 @@ import { AudioAnalysisType } from '../services/types/types';
 
 interface MCPAnalysisOptions {
   type: AudioAnalysisType;
-  resolution?: number;
-  windowSize?: number;
+  resolution: number;
+  windowSize: number;
 }
 
-export function useMCPAnalysis(audioData: ArrayBuffer | null, options: MCPAnalysisOptions) {
-  const [results, setResults] = useState<any>(null);
+interface MCPAnalysisResults {
+  spectralData?: number[][];
+  waveform?: number[];
+  features?: Record<string, number>;
+  statistics?: {
+    rmsEnergy: { mean: number; stdDev: number };
+    sampleRate: number;
+  };
+}
+
+interface SerializedAudioData {
+  sampleRate: number;
+  length: number;
+  numberOfChannels: number;
+  channelData: number[][];
+}
+
+interface MCPAnalysisRequest {
+  data: SerializedAudioData;
+  type: AudioAnalysisType;
+  params: {
+    resolution: number;
+    windowSize: number;
+  };
+}
+
+export function useMCPAnalysis(buffer: AudioBuffer | null, options: MCPAnalysisOptions) {
+  const [results, setResults] = useState<MCPAnalysisResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!audioData) return;
+    if (!buffer) return;
 
     const analyze = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
+        // Convert AudioBuffer to serializable format for IPC
+        const channelData: Float32Array[] = [];
+        for (let i = 0; i < buffer.numberOfChannels; i++) {
+          channelData.push(buffer.getChannelData(i));
+        }
+
+        const audioData = {
+          sampleRate: buffer.sampleRate,
+          length: buffer.length,
+          numberOfChannels: buffer.numberOfChannels,
+          channelData: channelData.map(channel => Array.from(channel))
+        };
+
         const response = await window.electron.invoke('mcp:analyze', {
           data: audioData,
           type: options.type,
           params: {
-            resolution: options.resolution || 1024,
-            windowSize: options.windowSize || 2048
+            resolution: options.resolution,
+            windowSize: options.windowSize
           }
-        });
+        } as MCPAnalysisRequest);
 
         setResults(response);
       } catch (err) {
@@ -38,7 +77,7 @@ export function useMCPAnalysis(audioData: ArrayBuffer | null, options: MCPAnalys
     };
 
     analyze();
-  }, [audioData, options.type, options.resolution, options.windowSize]);
+  }, [buffer, options.type, options.resolution, options.windowSize]);
 
   return { results, error, isLoading };
 }

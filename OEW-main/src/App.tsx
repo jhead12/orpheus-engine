@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { ClipboardProvider } from "./contexts/ClipboardProvider";
-import { WorkstationProvider } from "./contexts/WorkstationProvider";
+import { ClipboardProvider } from "./contexts";
+import WorkstationProvider from "./contexts/WorkstationProvider";
 import { MixerProvider } from "./context/MixerContext";
-import { PreferencesProvider } from "./contexts/PreferencesContext";
-import { AudioSearchProvider } from "./contexts/AudioSearchContext";
+import { PreferencesProvider } from "./context/PreferencesContext";
 import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
@@ -40,9 +39,7 @@ function App(): React.ReactElement {
                 element={
                   <ClipboardProvider>
                     <WorkstationProvider>
-                      <AudioSearchProvider>
-                        <Workstation />
-                      </AudioSearchProvider>
+                      <Workstation />
                     </WorkstationProvider>
                   </ClipboardProvider>
                 }

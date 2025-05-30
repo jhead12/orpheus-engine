@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "private": true,
   "workspaces": [
     "orpheus-engine-workstation/*"
@@ -37,17 +37,17 @@
     "start:daw:local": "cd OEW-main && DAW_PORT=3000 npm run dev",
     "start:daw:headless": "sudo -E bash scripts/start-electron.sh --no-sandbox",
     "start:backend": "node scripts/start-backend-smart.js",
-    "start:backend:direct": "cd orpheus-engine-workstation/backend && BACKEND_PORT=5001 DEVELOPMENT=true python main.py",
-    "start:backend:prod": "cd orpheus-engine-workstation/backend && BACKEND_PORT=5001 DEVELOPMENT=false python main.py",
-    "start:monitor-backend": "cd orpheus-engine-workstation/backend && FLASK_APP=monitor_api.py FLASK_ENV=development python -m flask run --port 8000",
+    "start:backend:direct": "cd workstation/orpheus-engine-workstation/backend && BACKEND_PORT=5001 DEVELOPMENT=true python main.py",
+    "start:backend:prod": "cd workstation/orpheus-engine-workstation/backend && BACKEND_PORT=5001 DEVELOPMENT=false python main.py",
+    "start:monitor-backend": "cd workstation/orpheus-engine-workstation/backend && FLASK_APP=monitor_api.py FLASK_ENV=development python -m flask run --port 8000",
     "build": "cd OEW-main && npm install && npm run build",
     "build:electron": "tsc electron/*.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --allowSyntheticDefaultImports --skipLibCheck",
     "build-all": "npm run build:electron && npm run build",
     "test": "npm run test:frontend || echo 'Tests skipped - frontend tests not available'",
     "test:frontend": "cd OEW-main && (npm test || echo 'Skipping tests - not configured')",
     "lint": "npm run lint:frontend",
-    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf OEW-main/node_modules OEW-main/yarn.lock && rm -rf orpheus-engine-workstation/backend/venv && echo 'Installing dependencies...' && yarn install",
-    "clean-only": "echo 'Cleaning workspace (no reinstall)...' && rm -rf node_modules yarn.lock && rm -rf OEW-main/node_modules OEW-main/yarn.lock && rm -rf orpheus-engine-workstation/backend/venv && echo 'Cleanup complete. Run yarn install to reinstall.'",
+    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf OEW-main/node_modules OEW-main/yarn.lock && rm -rf workstation/orpheus-engine-workstation/backend/venv && echo 'Installing dependencies...' && yarn install",
+    "clean-only": "echo 'Cleaning workspace (no reinstall)...' && rm -rf node_modules yarn.lock && rm -rf OEW-main/node_modules OEW-main/yarn.lock && rm -rf workstation/orpheus-engine-workstation/backend/venv && echo 'Cleanup complete. Run yarn install to reinstall.'",
     "lint:frontend": "echo 'Linting frontend via build process...' && cd OEW-main && npm run build",
     "validate": "npm run test && npm run lint",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
@@ -92,6 +92,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.0.0",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",

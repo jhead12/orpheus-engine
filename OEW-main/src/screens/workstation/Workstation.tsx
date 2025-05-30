@@ -1,12 +1,12 @@
-import { useContext, useMemo } from "react"
+import { useMemo } from "react"
 import Editor from "./Editor"
 import { Header, Mixer } from "./components"
 import { PaneResize } from "../../components";
-import { WorkstationContext } from "../../contexts";
+import { useWorkstation } from "../../contexts";
 import { InputPane, PaneResizeData } from "../../components/PaneResize"
 
 export default function Workstation() {
-  const { mixerHeight, setAllowMenuAndShortcuts, setMixerHeight, showMixer } = useContext(WorkstationContext)!;
+  const { mixerHeight, setAllowMenuAndShortcuts, setMixerHeight, showMixer } = useWorkstation();
 
   const panes = useMemo(() => {
     const panes: InputPane[] = [

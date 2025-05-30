@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { Buffer } from "buffer";
-import { v4 } from "uuid"; // Add import for v4 UUID generator
+import { v4 } from "uuid";
 import {
   IconButton,
   SpeedDial,
@@ -33,7 +33,7 @@ import {
 } from "./components";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
-import { WorkstationContext, AnalysisContext } from "../../contexts";
+import { AnalysisContext, useWorkstation } from "../../contexts";
 import {
   Clip,
   ContextMenuType,
@@ -174,7 +174,7 @@ export default function Editor() {
     updateTimelineSettings,
     verticalScale,
     isPlaying,
-  } = useContext(WorkstationContext)!;
+  } = useWorkstation();
   
   const analysis = useContext(AnalysisContext)!;
 
@@ -580,7 +580,7 @@ export default function Editor() {
   }
 
   function handleSortEnd(_: MouseEvent, data: SortData) {
-    if (data.destIndex > -1 && data.sourceIndex !== data.destIndex) {
+    if (data.destIndex !== undefined && data.destIndex > -1 && data.sourceIndex !== data.destIndex) {
       const newTracks = tracks.slice();
       const [removed] = newTracks.splice(data.sourceIndex, 1);
 
