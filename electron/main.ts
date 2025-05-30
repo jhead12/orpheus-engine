@@ -37,12 +37,12 @@ class OrpheusEngine {
       }
     });
 
-    // Frontend Development Server (OEW-main)
+    // Frontend Development Server
     this.serviceManager.registerService({
       name: 'frontend',
       command: 'npm',
       args: ['run', 'dev'],
-      cwd: path.join(rootPath, 'OEW-main'),
+      cwd: path.join(rootPath, 'workstation/frontend'),
       env: { BACKEND_PORT: '5001' },
       port: 5173,
       description: 'Vite Frontend Development Server',
@@ -57,12 +57,12 @@ class OrpheusEngine {
       }
     });
 
-    // DAW/Workstation Service (same as frontend since OEW-main is the DAW)
+    // DAW/Workstation Service
     this.serviceManager.registerService({
       name: 'daw',
       command: 'npm',
       args: ['run', 'dev'],
-      cwd: path.join(rootPath, 'OEW-main'),
+      cwd: path.join(rootPath, 'workstation/frontend'),
       env: { DAW_PORT: '3000' },
       port: 3000,
       description: 'DAW/Electron Development Server',
