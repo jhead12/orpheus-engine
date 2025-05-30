@@ -10,21 +10,24 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./OEW-main/*"]
+      "@/*": ["./workstation/frontend/*"]
     },
     "noImplicitAny": true,
     "sourceMap": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "types": ["node", "electron"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": ["electron", "node"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ]
   },
   "include": [
     "electron/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "OEW-main/**/*.ts",
-    "OEW-main/**/*.tsx",
+    "workstation/frontend/**/*.ts",
+    "workstation/frontend/**/*.tsx",
     "workstation/frontend/src/**/*.ts",
     "workstation/frontend/src/**/*.tsx"
   ],

@@ -8,7 +8,7 @@ export DISPLAY=:99
 export $(dbus-launch)
 
 # Start the application
-cd OEW-main
+cd workstation/frontend
 ELECTRON_DISABLE_SANDBOX=1 \
 ELECTRON_ENABLE_LOGGING=1 \
 ELECTRON_NO_ATTACH_CONSOLE=1 \
