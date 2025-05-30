@@ -56,8 +56,8 @@ export {
   WorkstationContext,
   WorkstationProvider,
   useWorkstation,
-  WorkstationContextType
 };
+export type { WorkstationContextType };
 
 // Re-export all imported types
 export type {
@@ -84,3 +84,4 @@ export {
   AudioSearchProvider,
   type SearchResult 
 } from './AudioSearchContext';
+export { default as PreferencesContext, PreferencesProvider, usePreferences } from './PreferencesContext';

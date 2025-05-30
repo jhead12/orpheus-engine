@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Directory to search in
-const frontendDir = path.join(__dirname, 'orpheus-engine-workstation', 'frontend', 'src');
-const absolutePathToFind = '/workspaces/orpheus-engine/OEW-main';
-const replaceWith = '@orpheus-engine/oew-main';
+const frontendDir = path.join(__dirname, 'workstation', 'frontend', 'src');
+const absolutePathToFind = '/workspaces/orpheus-engine/workstation/frontend';
+const replaceWith = '@orpheus-engine/frontend';
 
 // Function to update files recursively
 function updateFiles(dir) {

@@ -17,8 +17,7 @@ function incrementPatch(version) {
 // Define workspaces to sync
 const workspaces = [
     'workstation/frontend',
-    'workstation/orpheus-engine-workstation/backend',
-    'OEW-main',
+    'workstation/backend',
     'workstation'
 ];
 

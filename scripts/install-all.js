@@ -59,7 +59,7 @@ async function installAll() {
   }
 
   // Install backend dependencies
-  const backendPath = path.join(process.cwd(), 'workstation/orpheus-engine-workstation/backend');
+  const backendPath = path.join(process.cwd(), 'workstation/backend');
   if (fs.existsSync(backendPath)) {
     console.log('Installing backend dependencies...');
     runCommand('yarn install', backendPath);

@@ -106,9 +106,9 @@ class SystemChecker {
         const requiredFiles = [
             'package.json',
             'requirements.txt',
-            'workstation/orpheus-engine-workstation/backend/main.py',
-            'workstation/orpheus-engine-workstation/backend/requirements.txt',
-            'workstation/orpheus-engine-workstation/frontend/package.json'
+            'workstation/backend/main.py',
+            'workstation/backend/requirements.txt',
+            'workstation/frontend/package.json'
         ];
 
         for (const file of requiredFiles) {
@@ -123,7 +123,7 @@ class SystemChecker {
 
     async checkBackendServices() {
         this.logHeader('Checking Backend Services');
-        const backendPath = path.join(process.cwd(), 'workstation/orpheus-engine-workstation/backend');
+        const backendPath = path.join(process.cwd(), 'workstation/backend');
         
         if (fs.existsSync(backendPath)) {
             const servicesPath = path.join(backendPath, 'agentic_rag');
