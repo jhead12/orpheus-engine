@@ -127,7 +127,7 @@ export interface ClipAudio {
  start: TimelinePosition;
  end: TimelinePosition;
   audioBuffer: AudioBuffer | null;
-  buffer: Buffer;
+  buffer: Buffer; // Changed from NodeJS.Buffer to use the global Buffer type
   sourceDuration: number;
   type: string;
 }
@@ -217,7 +217,7 @@ export enum SnapGridSizeOption {
   ThirtySecondBeat = '1/32',
   SixtyFourthBeat = '1/64',
   HundredTwentyEighthBeat = '1/128'
-}
+ }
 
 /**
  * Represents an audio file in the workstation
@@ -227,7 +227,7 @@ export interface WorkstationAudioInputFile {
   name: string;
   path: string;
   duration: number;
-  buffer: Buffer;
+  buffer: Buffer; // Changed from NodeJS.Buffer to use the global Buffer type
   type: string;
 }
 
