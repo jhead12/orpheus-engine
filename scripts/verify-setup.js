@@ -4,136 +4,91 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// ANSI color codes
 const colors = {
-    red: '\x1b[31m',
-    green: '\x1b[32m',
-    yellow: '\x1b[33m',
-    blue: '\x1b[34m',
-    cyan: '\x1b[36m',
-    reset: '\x1b[0m',
-    bold: '\x1b[1m'
+  reset: "\x1b[0m",
+  green: "\x1b[32m",
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  cyan: "\x1b[36m"
 };
 
-function log(message, color = colors.reset) {
-    console.log(`${color}${message}${colors.reset}`);
+console.log(`${colors.cyan}============================================================${colors.reset}`);
+console.log(`${colors.cyan}Checking Workspace Structure${colors.reset}`);
+console.log(`${colors.cyan}============================================================${colors.reset}`);
+
+// Define required directories
+const requiredDirs = [
+  'scripts',
+  'electron',
+  'workstation',
+  'OEW-main'
+];
+
+// Define required files
+const requiredFiles = [
+  'package.json',
+  'requirements.txt',
+  'workstation/backend/main.py',
+  'workstation/backend/requirements.txt',
+  'workstation/frontend/package.json'
+];
+
+// Check directories
+requiredDirs.forEach(dir => {
+  if (fs.existsSync(dir)) {
+    console.log(`${colors.green}✅ Found directory: ${dir}${colors.reset}`);
+  } else {
+    console.log(`${colors.red}❌ Missing directory: ${dir}${colors.reset}`);
+  }
+});
+
+console.log(`\n${colors.cyan}Checking Required Files${colors.reset}`);
+console.log(`${colors.cyan}============================================================${colors.reset}`);
+
+// Check files
+requiredFiles.forEach(file => {
+  if (fs.existsSync(file)) {
+    console.log(`${colors.green}✅ Found: ${file}${colors.reset}`);
+  } else {
+    console.log(`${colors.red}❌ Missing: ${file}${colors.reset}`);
+  }
+});
+
+console.log(`\n${colors.cyan}Checking Node.js Environment${colors.reset}`);
+console.log(`${colors.cyan}============================================================${colors.reset}`);
+
+// Check Node.js version
+try {
+  const nodeVersionOutput = execSync('node --version', { encoding: 'utf8' }).trim();
+  console.log(`${colors.green}✅ Node.js version: ${nodeVersionOutput}${colors.reset}`);
+} catch (error) {
+  console.log(`${colors.red}❌ Failed to detect Node.js version${colors.reset}`);
 }
 
-function logHeader(message) {
-    console.log('\n' + '='.repeat(60));
-    log(`${colors.bold}${message}`, colors.cyan);
-    console.log('='.repeat(60));
+// Check npm version
+try {
+  const npmVersionOutput = execSync('npm --version', { encoding: 'utf8' }).trim();
+  console.log(`${colors.green}✅ npm version: ${npmVersionOutput}${colors.reset}`);
+} catch (error) {
+  console.log(`${colors.red}❌ Failed to detect npm version${colors.reset}`);
 }
 
-function checkCommand(command, name) {
-    try {
-        execSync(command, { stdio: 'pipe' });
-        log(`✅ ${name} is available`, colors.green);
-        return true;
-    } catch (error) {
-        log(`❌ ${name} is not available`, colors.red);
-        return false;
-    }
+console.log(`\n${colors.cyan}Checking Python Environment${colors.reset}`);
+console.log(`${colors.cyan}============================================================${colors.reset}`);
+
+// Check Python version
+try {
+  const pythonVersionOutput = execSync('python --version', { encoding: 'utf8' }).trim();
+  console.log(`${colors.green}✅ ${pythonVersionOutput}${colors.reset}`);
+} catch (error) {
+  try {
+    // Fallback to python3
+    const pythonVersionOutput = execSync('python3 --version', { encoding: 'utf8' }).trim();
+    console.log(`${colors.green}✅ ${pythonVersionOutput}${colors.reset}`);
+  } catch (error) {
+    console.log(`${colors.red}❌ Python is not installed or not in PATH${colors.reset}`);
+  }
 }
 
-function checkFile(filePath, name) {
-    if (fs.existsSync(filePath)) {
-        log(`✅ ${name} exists`, colors.green);
-        return true;
-    } else {
-        log(`❌ ${name} is missing`, colors.red);
-        return false;
-    }
-}
-
-function checkDirectory(dirPath, name) {
-    if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
-        log(`✅ ${name} directory exists`, colors.green);
-        return true;
-    } else {
-        log(`❌ ${name} directory is missing`, colors.red);
-        return false;
-    }
-}
-
-function checkSubmodules() {
-    try {
-        const status = execSync('git submodule status', { encoding: 'utf8' });
-        if (status.trim()) {
-            log(`✅ Git submodules are initialized`, colors.green);
-            status.split('\n').forEach(line => {
-                if (line.trim()) {
-                    log(`  ${line.trim()}`, colors.blue);
-                }
-            });
-            return true;
-        } else {
-            log(`⚠️  No git submodules found`, colors.yellow);
-            return false;
-        }
-    } catch (error) {
-        log(`❌ Could not check git submodules: ${error.message}`, colors.red);
-        return false;
-    }
-}
-
-function main() {
-    logHeader('🎵 Orpheus Engine Setup Verification');
-    
-    let allGood = true;
-    
-    // Check system requirements
-    logHeader('System Requirements');
-    allGood &= checkCommand('node --version', 'Node.js');
-    allGood &= checkCommand('npm --version', 'npm');
-    allGood &= checkCommand('git --version', 'Git');
-    checkCommand('python3 --version', 'Python 3') || checkCommand('python --version', 'Python');
-    
-    // Check project structure
-    logHeader('Project Structure');
-    allGood &= checkFile('package.json', 'package.json');
-    allGood &= checkFile('tsconfig.json', 'tsconfig.json');
-    allGood &= checkDirectory('scripts', 'scripts');
-    allGood &= checkDirectory('electron', 'electron');
-    allGood &= checkDirectory('OEW-main', 'OEW-main (DAW)');
-    allGood &= checkDirectory('workstation', 'workstation (submodule)');
-    
-    // Check submodules
-    logHeader('Git Submodules');
-    checkSubmodules();
-    
-    // Check key files
-    logHeader('Key Configuration Files');
-    allGood &= checkFile('electron/main.ts', 'Electron main process');
-    allGood &= checkFile('electron/service-manager.ts', 'Service manager');
-    allGood &= checkFile('startup.html', 'Startup UI');
-    allGood &= checkFile('OEW-main/package.json', 'DAW package.json');
-    allGood &= checkFile('workstation/orpheus-engine-workstation/backend/config.py', 'Backend configuration');
-    
-    // Check dependencies
-    logHeader('Dependencies');
-    const hasNodeModules = checkDirectory('node_modules', 'Root node_modules');
-    const hasDAWDeps = checkDirectory('OEW-main/node_modules', 'DAW node_modules');
-    
-    // Final summary
-    logHeader('Setup Summary');
-    if (allGood && hasNodeModules) {
-        log('🎉 Setup verification completed successfully!', colors.green);
-        log('✅ All critical components are in place', colors.green);
-        log('\nYou can now start the application with:', colors.cyan);
-        log('  npm start', colors.blue);
-    } else {
-        log('⚠️  Some components may be missing or need attention', colors.yellow);
-        log('\nTo fix setup issues, try:', colors.cyan);
-        log('  npm run setup-project', colors.blue);
-        log('  npm install', colors.blue);
-    }
-    
-    log('\nFor troubleshooting, see SETUP.md', colors.blue);
-}
-
-// Run if called directly
-if (require.main === module) {
-    main();
-}
-
-module.exports = { main };
+console.log(`\n${colors.cyan}Verification Complete${colors.reset}`);

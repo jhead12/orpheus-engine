@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { createFolderStructure } = require('./create-folder-structure');
 
 const colors = {
   reset: "\x1b[0m",
@@ -145,7 +146,7 @@ function checkWorkspaceStructure() {
     const requiredDirs = [
         'scripts',
         'electron',
-        'orpheus-engine-workstation',
+        'workstation',
         'OEW-main'
     ];
     
@@ -194,6 +195,50 @@ function checkAndCreateDirectories() {
   });
 }
 
+function setupProject() {
+  console.log('Setting up project structure...');
+  
+  // Create the required folder structure
+  createFolderStructure();
+  
+  // Check for required files in workstation directory
+  const workstationDir = path.join(process.cwd(), 'workstation');
+  
+  // Simple check to make sure we created the structure correctly
+  if (!fs.existsSync(workstationDir)) {
+    console.error('❌ Failed to create workstation directory');
+    process.exit(1);
+  }
+  
+  // Copy main.py if it doesn't exist
+  const mainPyPath = path.join(workstationDir, 'backend', 'main.py');
+  if (!fs.existsSync(mainPyPath)) {
+    console.log('Creating main.py in backend directory');
+    const mainPyContent = `#!/usr/bin/env python3
+# Simple Flask server for development
+from flask import Flask, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/')
+def hello_world():
+    return jsonify({"status": "ok", "message": "Orpheus Engine Backend is running"})
+
+if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('BACKEND_PORT', 5001))
+    debug = os.environ.get('DEVELOPMENT', 'false').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug)
+`;
+    fs.mkdirSync(path.dirname(mainPyPath), { recursive: true });
+    fs.writeFileSync(mainPyPath, mainPyContent);
+  }
+  
+  console.log('✅ Project setup completed successfully');
+}
+
 function main() {
     logHeader('🎵 Orpheus Engine Project Setup');
     
@@ -211,6 +256,7 @@ function main() {
         setupPython();
         checkWorkspaceStructure();
         checkAndCreateDirectories();
+        setupProject();
         
         logHeader('🎉 Setup Complete!');
         log('Your Orpheus Engine project is now ready!', colors.green);

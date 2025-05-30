@@ -1,6 +1,6 @@
-import { BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions, shell } from "electron"
+import { BrowserWindow, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, shell } from "electron";
 import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "../src/services/types/types";
-import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "../src/services/electron/channels" 
+import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "../src/services/electron/channels";
 
 export default class ContextMenuBuilder {
   mainWindow: BrowserWindow;
@@ -10,7 +10,7 @@ export default class ContextMenuBuilder {
   }
 
   buildContextMenus() {
-    ipcMain.on(OPEN_CONTEXT_MENU, (_, contextMenuType: ContextMenuType, params: Record<string, any>) => {
+    ipcMain.on(OPEN_CONTEXT_MENU, (event: IpcMainEvent, contextMenuType: ContextMenuType, params: Record<string, any>) => {
       let menu: MenuItemConstructorOptions[] = [];
 
       switch (contextMenuType) {
