@@ -1,0 +1,10 @@
+
+[submodule "omi"]
+	path = omi
+	url = https://github.com/jhead12/omi.git
+	branch = main
+
+[submodule "sonobus"]
+	path = sonobus
+	url = https://github.com/jhead12/sonobus.git
+

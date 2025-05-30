@@ -1,11 +1,54 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Track } from '../services/types/types';
 
 interface MixerContextType {
-  // Add your mixer context properties here
-  // Based on the imports in App.tsx
+  masterVolume: number;
+  setMasterVolume: (value: number) => void;
+  updateTrackVolume: (trackId: string, value: number) => void;
+  updateTrackPan: (trackId: string, value: number) => void;
+  soloTrack: (trackId: string) => void;
+  muteTrack: (trackId: string) => void;
 }
 
 const MixerContext = createContext<MixerContextType | undefined>(undefined);
+
+export const MixerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [masterVolume, setMasterVolume] = useState(1);
+
+  // Note: actual track states are managed in WorkstationContext
+  // This context only handles mixer-specific operations
+
+  const updateTrackVolume = (trackId: string, value: number) => {
+    // Implement through WorkstationContext
+  };
+
+  const updateTrackPan = (trackId: string, value: number) => {
+    // Implement through WorkstationContext
+  };
+
+  const soloTrack = (trackId: string) => {
+    // Implement through WorkstationContext
+  };
+
+  const muteTrack = (trackId: string) => {
+    // Implement through WorkstationContext
+  };
+
+  const value: MixerContextType = {
+    masterVolume,
+    setMasterVolume,
+    updateTrackVolume,
+    updateTrackPan,
+    soloTrack,
+    muteTrack,
+  };
+
+  return (
+    <MixerContext.Provider value={value}>
+      {children}
+    </MixerContext.Provider>
+  );
+};
 
 export const useMixer = () => {
   const context = useContext(MixerContext);
@@ -15,12 +58,4 @@ export const useMixer = () => {
   return context;
 };
 
-export const MixerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Implement your mixer state and functions here
-  
-  return (
-    <MixerContext.Provider value={{}}>
-      {children}
-    </MixerContext.Provider>
-  );
-};
+export default MixerProvider;
