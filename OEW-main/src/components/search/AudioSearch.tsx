@@ -6,20 +6,8 @@
  * language and displays the results with confidence scores and timestamps.
  */
 import React, { useState } from 'react';
-import { useAudioSearch } from '../../contexts/AudioSearchContext';
+import { useAudioSearch, SearchResult } from '../../contexts';
 import './AudioSearch.css';
-
-/**
- * Search result interface matching the backend API response structure
- */
-interface SearchResult {
-  id: string;
-  text: string;
-  confidence: number;
-  start_time: number;
-  end_time: number;
-  file_path?: string;
-}
 
 /**
  * Props for the AudioSearch component
@@ -109,7 +97,7 @@ const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
         
         {results.length > 0 ? (
           <ul className="results-list" role="listbox">
-            {results.map((result, index) => (
+            {results.map((result: SearchResult, index: number) => (
               <li 
                 key={result.id || index} 
                 className="result-item"

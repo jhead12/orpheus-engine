@@ -1,5 +1,5 @@
 import { MCPServerService } from '../mcp/MCPServerService';
-import { Track, Clip, TimelinePosition } from '../types/types';
+import { Track, Clip } from '../types/types';
 
 export class AIWorkspaceManager {
   private mcpServer: MCPServerService;
@@ -22,8 +22,7 @@ export class AIWorkspaceManager {
       tracks: tracks.map(t => ({
         id: t.id,
         type: t.type,
-        clips: t.clips,
-        analysis: t.analysis
+        clips: t.clips
       }))
     });
   }

@@ -5,7 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -16,11 +16,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
+    "baseUrl": "../",
     "paths": {
-      "@/*": ["./src/*"],
-      "@orpheus/*": ["./src/*"]
-    }
+      "@/*": ["src/*"],
+      "@orpheus/*": ["src/*"]
+    },
+    "types": ["jest"]
   },
-  "include": ["src"]
+  "include": ["src", "../src/**/*"],
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
 }

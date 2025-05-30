@@ -1,23 +1,72 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getScrollParent } from "../services/utils/general";
 
+// Add the missing getScrollParent function
+function getScrollParent(element: HTMLElement, direction: "vertical" | "horizontal" = "vertical"): HTMLElement | null {
+  const overflowProperty = direction === "horizontal" ? "overflowX" : "overflowY";
+  
+  const isScrollable = (style: CSSStyleDeclaration) => {
+    const overflow = style[overflowProperty as any];
+    return overflow === 'auto' || overflow === 'scroll';
+  };
+
+  let style = window.getComputedStyle(element);
+  let parent = element.parentElement;
+
+  while (parent) {
+    style = window.getComputedStyle(parent);
+    
+    if (isScrollable(style)) {
+      return parent;
+    }
+    
+    parent = parent.parentElement;
+  }
+
+  // If no scrollable parent found, return document.scrollingElement or body as fallback
+  return document.scrollingElement as HTMLElement || document.body;
+}
+
+// Define and export the WindowAutoScrollThresholds interface
+export interface WindowAutoScrollThresholds {
+  top: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  right: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  bottom?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  left?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+}
+
+// Update the interface to add the missing onScroll property
 export interface WindowAutoScrollProps {
   active: boolean;
-  direction?: 'horizontal' | 'vertical';
-  eventType?: string;
-  thresholds?: number[];
+  eventType: string;
+  thresholds: WindowAutoScrollThresholds;
   withinBounds?: boolean;
-  speed?: number | {
-    fast: number;
-    medium: number;
-    slow: number;
-  };
   onScroll?: (by: number, vertical: boolean) => void;
 }
 
-const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
-  const { active, eventType, thresholds, withinBounds, onScroll } = props;
-
+// Implement the WindowAutoScroll component
+export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
+  active,
+  eventType,
+  thresholds,
+  withinBounds,
+  onScroll
+}) => {
   const [windows, setWindows] = useState<{ horizontal: HTMLElement | null; vertical: HTMLElement | null; }>({
     horizontal: null,
     vertical: null
@@ -66,7 +115,7 @@ const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
     }
   }, [
     active, eventType, withinBounds, windows.horizontal, windows.vertical,
-    thresholds?.[0], thresholds?.[1], thresholds?.[2], thresholds?.[3]
+    thresholds?.top, thresholds?.right, thresholds?.bottom, thresholds?.left
   ])
 
   function checkCoords(x: number, y: number) {
@@ -110,8 +159,8 @@ const WindowAutoScroll: React.FC<WindowAutoScrollProps> = (props) => {
       if (!withinBounds || rect.top <= y && y <= rect.bottom) {
         const topDiff = y - rect.top;
         const bottomDiff = rect.bottom - y;
-        const topThresholds = thresholds?.[0] || { fast: 3, medium: 9, slow: 20 };
-        const bottomThresholds = thresholds?.[2] || { fast: 3, medium: 9, slow: 20 };
+        const topThresholds = thresholds?.top || { fast: 3, medium: 9, slow: 20 };
+        const bottomThresholds = thresholds?.bottom || { fast: 3, medium: 9, slow: 20 };
         
         if (topDiff <= (typeof topThresholds === 'number' ? topThresholds : topThresholds.slow) && windows.vertical.scrollTop > 0) {
           let by = 5;

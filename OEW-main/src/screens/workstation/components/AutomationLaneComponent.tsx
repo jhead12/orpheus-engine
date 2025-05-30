@@ -81,7 +81,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
       let points = "";
 
       if (movingNodeIndex.current > -1 && movingNode.current) {
-        const idx = (lane.nodes || []).findIndex(node => node.id === movingNode.current!.id); 
+        const idx = (lane.nodes || []).findIndex((node: AutomationNode) => node.id === movingNode.current!.id); 
         
         if (idx > -1) {
           nodes = nodes.slice();
@@ -192,7 +192,7 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
 
   function handleNodeMove(node: AutomationNode) {
     if (movingNodeIndex.current === -1 || node.id !== movingNode.current?.id)
-      movingNodeIndex.current = (lane.nodes || []).findIndex(n => n.id === node.id);
+      movingNodeIndex.current = (lane.nodes || []).findIndex((n: AutomationNode) => n.id === node.id);
 
     movingNode.current = node;
 
@@ -222,11 +222,11 @@ export default function AutomationLaneComponent({ color, lane, style, track }: I
 
   function setNode(node: AutomationNode) {
     const automationLanes = track.automationLanes.slice();
-    const laneIndex = automationLanes.findIndex(l => l.id === lane.id)
+    const laneIndex = automationLanes.findIndex((l: AutomationLane) => l.id === lane.id)
 
     if (laneIndex !== -1) {
       const nodes = (lane.nodes || []).slice();
-      const nodeIndex = nodes.findIndex(n => n.id === node.id);
+      const nodeIndex = nodes.findIndex((n: AutomationNode) => n.id === node.id);
 
       if (nodeIndex !== -1) {
         if (movingNodeIndex.current > -1 && movingNode.current) {

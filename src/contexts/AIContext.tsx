@@ -1,22 +1,17 @@
-import { createContext, useContext, useEffect } from 'react';
-import { AIWorkspaceManager } from '../services/ai/AIWorkspaceManager';
+import { createContext, useContext } from 'react';
+import { Clip } from '../services/types/types';
 
-const AIContext = createContext<AIWorkspaceManager | null>(null);
-
-export function AIProvider({ children }: { children: React.ReactNode }) {
-  const aiManager = new AIWorkspaceManager();
-
-  return (
-    <AIContext.Provider value={aiManager}>
-      {children}
-    </AIContext.Provider>
-  );
+interface AIContextValue {
+  analyzeAudioFeatures: (clip: Clip) => Promise<any>;
+  suggestArrangement: (clipIds: string[]) => Promise<void>;
 }
 
-export function useAI() {
+const AIContext = createContext<AIContextValue | null>(null);
+
+export const useAI = () => {
   const context = useContext(AIContext);
-  if (!context) {
-    throw new Error('useAI must be used within AIProvider');
-  }
+  if (!context) throw new Error('useAI must be used within AIProvider');
   return context;
-}
+};
+
+export default AIContext;

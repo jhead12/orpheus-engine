@@ -1,5 +1,6 @@
 import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { WorkstationContext } from "../../../contexts";
+// Update the import to point directly to the file exporting WorkstationContext
+import { WorkstationContext } from "../../../contexts/WorkstationContext";
 import { BaseClipComponentProps, TimelinePosition } from "../../../services/types/types";
 import { ClipComponent, Waveform } from "./index";
 import { audioBufferToBuffer, audioContext, reverseAudio } from "../../../services/utils/audio";

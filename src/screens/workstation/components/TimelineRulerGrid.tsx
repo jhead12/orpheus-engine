@@ -1,14 +1,21 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 interface IProps {
-  data: number[];
-  height?: number;
   width?: number;
+  height?: number;
+  beatWidth?: number;
+  beatsPerMeasure?: number;
+  subdivisions?: number;
 }
 
-export default function Waveform({ data, height = 100, width = 500 }: IProps) {
+export default function TimelineRulerGrid({ 
+  width = 1000, 
+  height = 50, 
+  beatWidth = 100,
+  beatsPerMeasure = 4,
+  subdivisions = 4
+}: IProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [scaling, setScaling] = useState({ min: 0, max: 255 });
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -19,23 +26,55 @@ export default function Waveform({ data, height = 100, width = 500 }: IProps) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const step = Math.ceil(data.length / width);
-    const amp = height / 2;
+    // Draw grid lines
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1;
 
-    ctx.beginPath();
-    ctx.moveTo(0, amp);
+    const measureWidth = beatWidth * beatsPerMeasure;
+    const subdivisionWidth = beatWidth / subdivisions;
 
-    for (let i = 0; i < data.length; i += step) {
-      const x = (i / data.length) * width;
-      const y = amp - (data[i] / 255) * amp;
-
-      ctx.lineTo(x, y);
+    // Draw measure lines (thick)
+    for (let x = 0; x < width; x += measureWidth) {
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#555";
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
     }
 
-    ctx.lineTo(width, amp);
-    ctx.strokeStyle = "var(--accent)";
-    ctx.stroke();
-  }, [data, height, width]);
+    // Draw beat lines (medium)
+    for (let x = 0; x < width; x += beatWidth) {
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#444";
+      ctx.moveTo(x, height * 0.3);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+
+    // Draw subdivision lines (thin)
+    for (let x = 0; x < width; x += subdivisionWidth) {
+      ctx.beginPath();
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = "#333";
+      ctx.moveTo(x, height * 0.7);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+
+    // Draw ruler numbers
+    ctx.fillStyle = "#888";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "left";
+    
+    let measureNumber = 1;
+    for (let x = 0; x < width; x += measureWidth) {
+      ctx.fillText(measureNumber.toString(), x + 4, 16);
+      measureNumber++;
+    }
+
+  }, [width, height, beatWidth, beatsPerMeasure, subdivisions]);
 
   return <canvas ref={canvasRef} height={height} width={width} style={{ width: "100%", height: "auto" }} />;
 }
