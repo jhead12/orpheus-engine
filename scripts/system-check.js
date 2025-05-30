@@ -182,6 +182,94 @@ class SystemChecker {
         }
     }
 
+    async checkSystemPackages() {
+        this.logHeader('Checking System Packages');
+        
+        // Only run on Linux systems
+        const isLinux = process.platform === 'linux';
+        if (!isLinux) {
+            this.log('System package checks skipped (not on Linux)', colors.blue);
+            return;
+        }
+        
+        // Check if apt-get is available
+        try {
+            execSync('which apt-get', { stdio: 'ignore' });
+            this.logSuccess('apt-get package manager is available');
+            
+            // Check if sudo is available
+            let hasSudo = false;
+            try {
+                execSync('which sudo', { stdio: 'ignore' });
+                hasSudo = true;
+                this.logSuccess('sudo is available');
+            } catch (error) {
+                this.logWarning('sudo is not available - some installations may require root privileges');
+            }
+            
+            // Check for essential build packages
+            const requiredPackages = [
+                'gcc',
+                'g++',
+                'make',
+                'python3-dev',
+                'build-essential',
+                'cmake',
+                'libopenblas-dev',
+                'libsqlite3-dev',
+                'zlib1g-dev'
+            ];
+            const missingPackages = [];
+            
+            for (const pkg of requiredPackages) {
+                try {
+                    execSync(`dpkg -s ${pkg}`, { stdio: 'ignore' });
+                } catch (error) {
+                    missingPackages.push(pkg);
+                }
+            }
+            
+            // Check for NVIDIA CUDA support
+            let hasCuda = false;
+            try {
+                execSync('nvidia-smi', { stdio: 'ignore' });
+                hasCuda = true;
+                this.logSuccess('NVIDIA GPU detected');
+                
+                // Check for CUDA libraries if GPU is detected
+                try {
+                    execSync('dpkg -s nvidia-cuda-toolkit', { stdio: 'ignore' });
+                    this.logSuccess('CUDA toolkit is installed');
+                } catch (error) {
+                    this.logWarning('NVIDIA GPU detected but CUDA toolkit not installed');
+                    this.logWarning('For GPU acceleration with llama-cpp-python, consider installing: sudo apt install nvidia-cuda-toolkit');
+                }
+            } catch (error) {
+                // No NVIDIA GPU detected - this is not an error
+                this.log('No NVIDIA GPU detected - skipping CUDA checks', colors.blue);
+            }
+            
+            if (missingPackages.length === 0) {
+                this.logSuccess('All required system packages are installed');
+            } else {
+                this.logWarning(`Missing required packages: ${missingPackages.join(', ')}`);
+                this.log(`These packages are needed for building Python extensions like llama-cpp-python and pysqlite3`, colors.blue);
+                
+                const updateCmd = hasSudo ? 'sudo apt-get update' : 'apt-get update';
+                const installCmd = hasSudo ? 
+                    `sudo apt install -y ${missingPackages.join(' ')}` : 
+                    `apt install -y ${missingPackages.join(' ')}`;
+                
+                this.logWarning(`Run the following commands to install missing packages:`);
+                console.log(`  ${updateCmd}`);
+                console.log(`  ${installCmd}`);
+            }
+            
+        } catch (error) {
+            this.log('apt-get package manager not found - system package checks skipped', colors.blue);
+        }
+    }
+    
     async checkFFmpeg() {
         this.logHeader('Checking FFmpeg');
         try {
@@ -254,17 +342,30 @@ class SystemChecker {
         if (this.issues.length === 0 && this.warnings.length === 0) {
             this.logSuccess('Your system looks good! 🎉');
         } else {
+            let recommendationCount = 1;
+            
             if (this.warnings.some(w => w.includes('Python dependency conflicts'))) {
-                this.log('1. Fix Python dependencies: npm run fix-python-deps', colors.blue);
+                this.log(`${recommendationCount}. Fix Python dependencies: npm run fix-python-deps`, colors.blue);
+                recommendationCount++;
             }
+            
             if (this.warnings.some(w => w.includes('MCP package'))) {
-                this.log('2. Install MCP package: pip install mcp', colors.blue);
+                this.log(`${recommendationCount}. Install MCP package: pip install mcp`, colors.blue);
+                recommendationCount++;
             }
+            
+            if (this.warnings.some(w => w.includes('Missing required packages'))) {
+                this.log(`${recommendationCount}. Install missing system packages using the commands suggested above`, colors.blue);
+                recommendationCount++;
+            }
+            
             if (this.warnings.some(w => w.includes('FFmpeg'))) {
-                this.log('3. Install FFmpeg: brew install ffmpeg (macOS) or apt install ffmpeg (Linux)', colors.blue);
+                this.log(`${recommendationCount}. Install FFmpeg: brew install ffmpeg (macOS) or sudo apt install ffmpeg (Linux)`, colors.blue);
+                recommendationCount++;
             }
+            
             if (this.issues.length > 0) {
-                this.log('4. Resolve critical issues before running the application', colors.red);
+                this.log(`${recommendationCount}. Resolve critical issues before running the application`, colors.red);
             }
         }
 
@@ -279,6 +380,7 @@ class SystemChecker {
         await this.checkRequiredFiles();
         await this.checkPythonDependencies();
         await this.checkBackendServices();
+        await this.checkSystemPackages();
         await this.checkFFmpeg();
         await this.checkElectron();
         await this.checkPorts();

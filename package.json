@@ -86,6 +86,8 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.52",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
     "conventional-changelog-cli": "^4.1.0",
     "electron": "^36.3.2",
     "hoopy": "^0.1.4",
