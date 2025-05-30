@@ -13,6 +13,7 @@ class OrpheusEngine {
         this.serviceManager = new service_manager_1.ServiceManager();
         this.startupWindow = new startup_window_1.StartupWindow(this.serviceManager);
         this.registerServices();
+        this.setupIPCHandlers();
     }
     registerServices() {
         const rootPath = path_1.default.join(__dirname, '..');
@@ -35,12 +36,12 @@ class OrpheusEngine {
                 }
             }
         });
-        // Frontend Development Server (OEW-main)
+        // Frontend Development Server
         this.serviceManager.registerService({
             name: 'frontend',
             command: 'npm',
             args: ['run', 'dev'],
-            cwd: path_1.default.join(rootPath, 'OEW-main'),
+            cwd: path_1.default.join(rootPath, 'workstation/frontend'),
             env: { BACKEND_PORT: '5001' },
             port: 5173,
             description: 'Vite Frontend Development Server',
@@ -55,12 +56,12 @@ class OrpheusEngine {
                 }
             }
         });
-        // DAW/Workstation Service (same as frontend since OEW-main is the DAW)
+        // DAW/Workstation Service
         this.serviceManager.registerService({
             name: 'daw',
             command: 'npm',
             args: ['run', 'dev'],
-            cwd: path_1.default.join(rootPath, 'OEW-main'),
+            cwd: path_1.default.join(rootPath, 'workstation/frontend'),
             env: { DAW_PORT: '3000' },
             port: 3000,
             description: 'DAW/Electron Development Server',
@@ -84,6 +85,30 @@ class OrpheusEngine {
             port: 7008,
             description: 'Audio Processing Service',
             critical: false
+        });
+    }
+    setupIPCHandlers() {
+        // MCP Analysis handler - placeholder implementation
+        electron_1.ipcMain.handle('mcp:analyze', async (event, request) => {
+            try {
+                console.log('MCP Analysis requested:', request);
+                // Placeholder implementation - return mock analysis results
+                // In a real implementation, this would process the audio data
+                // and return actual analysis results
+                return {
+                    spectralData: [],
+                    waveform: [],
+                    features: {},
+                    statistics: {
+                        rmsEnergy: { mean: 0, stdDev: 0 },
+                        sampleRate: request.data.sampleRate || 44100
+                    }
+                };
+            }
+            catch (error) {
+                console.error('MCP Analysis error:', error);
+                throw error;
+            }
         });
     }
     async start() {

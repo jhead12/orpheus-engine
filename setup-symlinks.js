@@ -11,8 +11,8 @@ if (!fs.existsSync(nodeModulesPath)) {
 }
 
 // Create the symlink
-const targetPath = path.join(nodeModulesPath, 'oew-main');
-const sourcePath = path.join(__dirname, 'OEW-main');
+const targetPath = path.join(nodeModulesPath, 'frontend');
+const sourcePath = path.join(__dirname, 'workstation/frontend/src');
 
 // Remove existing symlink if it exists
 if (fs.existsSync(targetPath)) {

@@ -4,9 +4,8 @@ const { execSync } = require('child_process');
 
 // Paths
 const nodeModulesPath = path.join(__dirname, '..', 'workstation', 'frontend', 'node_modules');
-const oewPath = path.join(__dirname, '..', 'OEW-main');
 
-// Create a symlink for OEW-main
+// Create symlinks for workstation modules
 const createSymlink = () => {
   try {
     // Ensure node_modules exists
@@ -15,14 +14,9 @@ const createSymlink = () => {
       fs.mkdirSync(nodeModulesPath, { recursive: true });
     }
 
-    // Check if OEW-main directory exists
-    if (!fs.existsSync(oewPath)) {
-      console.error(`Error: ${oewPath} does not exist.`);
-      return;
-    }
-
+    // Setup shared modules path
     const symlinkPath = path.join(nodeModulesPath, '@orpheus-engine');
-    const symlinkTargetPath = path.join(symlinkPath, 'oew-main');
+    const symlinkTargetPath = path.join(symlinkPath, 'shared');
     
     // Create @orpheus-engine directory if it doesn't exist
     if (!fs.existsSync(symlinkPath)) {

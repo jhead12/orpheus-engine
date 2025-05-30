@@ -21,8 +21,7 @@ console.log(`${colors.cyan}=====================================================
 const requiredDirs = [
   'scripts',
   'electron',
-  'workstation',
-  'OEW-main'
+  'workstation'
 ];
 
 // Define required files

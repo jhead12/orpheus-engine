@@ -2,6 +2,16 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+// Check if yarn is available
+function isYarnAvailable() {
+  try {
+    execSync('yarn --version', { stdio: 'pipe' });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 // Helper to run commands safely
 function runCommand(command, cwd = process.cwd()) {
   console.log(`Running: ${command} in ${cwd}`);
@@ -18,36 +28,45 @@ function runCommand(command, cwd = process.cwd()) {
   }
 }
 
-// Fix permissions for npm cache
-function fixNpmPermissions() {
-  console.log('Fixing npm cache permissions...');
+// Fix permissions for package manager caches
+function fixPackageManagerPermissions() {
+  console.log('Fixing package manager cache permissions...');
   const userInfo = execSync('id -u').toString().trim();
   const groupInfo = execSync('id -g').toString().trim();
+  const homedir = process.env.HOME || '/tmp';
   
-  // Replace Codespaces-specific path with local user npm cache path
-  const npmCachePath = process.env.HOME ? `${process.env.HOME}/.npm` : '/tmp/.npm';
+  // Fix npm cache permissions
+  const npmCachePath = `${homedir}/.npm`;
   runCommand(`sudo chown -R ${userInfo}:${groupInfo} "${npmCachePath}" || true`);
 
-  console.log('Fixed npm cache permissions.');
+  // Fix yarn cache permissions if yarn exists
+  if (isYarnAvailable()) {
+    const yarnCachePath = `${homedir}/.yarn`;
+    const yarnConfigPath = `${homedir}/.yarnrc`;
+    const yarnCachePath2 = `${homedir}/.cache/yarn`;
+    
+    runCommand(`sudo chown -R ${userInfo}:${groupInfo} "${yarnCachePath}" || true`);
+    runCommand(`sudo chown -R ${userInfo}:${groupInfo} "${yarnConfigPath}" || true`);
+    runCommand(`sudo chown -R ${userInfo}:${groupInfo} "${yarnCachePath2}" || true`);
+  }
+
+  console.log('Fixed package manager cache permissions.');
 }
 
 // Main installation function
 async function installAll() {
   // Fix permissions first
-  fixNpmPermissions();
+  fixPackageManagerPermissions();
+  
+  // Use yarn if available, otherwise fallback to npm
+  const hasYarn = isYarnAvailable();
+  const installCmd = hasYarn ? 'yarn install' : 'npm install';
   
   // Root project
   console.log('Installing root project dependencies...');
-  runCommand('yarn install');
+  runCommand(installCmd);
   
-  // Install OEW-main dependencies
-  const oewMainPath = path.join(process.cwd(), 'OEW-main');
-  if (fs.existsSync(oewMainPath)) {
-    console.log('Installing OEW-main dependencies...');
-    runCommand('yarn install --legacy-peer-deps', oewMainPath);
-  } else {
-    console.warn('OEW-main directory not found, skipping...');
-  }
+  // We no longer use OEW-main directly, focusing on the workstation structure
 
   // Install frontend dependencies
   const frontendPath = path.join(process.cwd(), 'workstation/frontend');
@@ -77,8 +96,31 @@ async function installAll() {
   console.log('Installation completed successfully!');
 }
 
+// Provide a summary of what was installed
+function showSummary(hasYarn) {
+  console.log('\n' + '='.repeat(60));
+  console.log('🎵 Orpheus Engine Dependencies Installed!');
+  console.log('='.repeat(60));
+  
+  console.log(`\nPackage manager used: ${hasYarn ? 'Yarn' : 'npm'}`);
+  console.log('\nTo start the application:');
+  if (hasYarn) {
+    console.log('  yarn start                # Start the integrated application');
+    console.log('  yarn system-check         # Verify all components are working');
+  } else {
+    console.log('  npm run start             # Start the integrated application');
+    console.log('  npm run system-check      # Verify all components are working');
+  }
+  
+  console.log('\nFor more commands, check the scripts section in package.json');
+}
+
 // Run the installation
-installAll().catch(err => {
-  console.error('Installation failed:', err);
-  process.exit(1);
-});
+installAll()
+  .then(() => {
+    showSummary(isYarnAvailable());
+  })
+  .catch(err => {
+    console.error('Installation failed:', err);
+    process.exit(1);
+  });

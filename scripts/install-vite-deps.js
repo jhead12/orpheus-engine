@@ -66,7 +66,7 @@ function updateElectronScript(correctFrontendPath) {
       
       // Replace the incorrect path in the script
       const updatedContent = scriptContent.replace(
-        /(cd orpheus-engine-workstation\/frontend|cd OEW-main)/g,
+        /(cd orpheus-engine-workstation\/frontend|cd OEW-main|cd workstation\/frontend)/g,
         `cd ${relativePath}`
       );
       

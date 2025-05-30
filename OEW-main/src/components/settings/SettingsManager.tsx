@@ -1,51 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  SettingsStore, 
-  defaultSettings, 
-  loadSettings, 
-  saveSettings,
-  SettingsContext
-} from '../../services/settings';
+import React, { createContext, useContext, ReactNode } from 'react';
 
-interface SettingsProviderProps {
-  children: React.ReactNode;
+interface SettingsContextType {
+  // Add your settings context properties here
 }
 
-export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, setSettings] = useState<SettingsStore>(defaultSettings);
-  const [initialized, setInitialized] = useState(false);
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-  useEffect(() => {
-    const storedSettings = loadSettings();
-    setSettings(storedSettings);
-    setInitialized(true);
-  }, []);
+export const useSettings = () => {
+  const context = useContext(SettingsContext);
+  if (!context) {
+    throw new Error('useSettings must be used within a SettingsProvider');
+  }
+  return context;
+};
 
-  useEffect(() => {
-    if (initialized) {
-      saveSettings(settings);
-    }
-  }, [settings, initialized]);
-
-  const updateSettings = <T extends keyof SettingsStore>(
-    category: T,
-    values: Partial<SettingsStore[T]>
-  ) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        ...values
-      }
-    }));
-  };
-
-  const resetSettings = () => {
-    setSettings(defaultSettings);
-  };
-
+const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Implement your settings state and functions here
+  
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+    <SettingsContext.Provider value={{}}>
       {children}
     </SettingsContext.Provider>
   );

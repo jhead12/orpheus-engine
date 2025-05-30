@@ -1,5 +1,18 @@
 #!/usr/bin/env node
 
+/**
+ * Orpheus Engine Project Setup Script
+ * 
+ * This script prepares the development environment by:
+ * - Checking for and installing Yarn if not present
+ * - Setting up Git submodules
+ * - Installing Node.js dependencies
+ * - Setting up Python environment
+ * - Checking and creating required project structure
+ * 
+ * Run with: `node scripts/setup-project.js` or `npm run setup`
+ */
+
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -14,7 +27,6 @@ const colors = {
 };
 
 const requiredDirectories = [
-  'OEW-main',
   'workstation',
   'scripts',
   'python'
@@ -109,12 +121,14 @@ function setupPython() {
 function fixPermissions() {
     logHeader('Fixing Permissions');
     
+    const homedir = require('os').homedir();
+    const userId = require('os').userInfo().uid;
+    
     // Check if npm permissions need fixing
     try {
-        const npmPath = require('os').homedir() + '/.npm';
+        const npmPath = homedir + '/.npm';
         if (fs.existsSync(npmPath)) {
             const stats = fs.statSync(npmPath);
-            const userId = require('os').userInfo().uid;
             if (stats.uid !== userId) {
                 log('⚠️  npm permissions may need fixing. You can run: sudo chown -R $(id -u):$(id -g) "$HOME/.npm"', colors.yellow);
             } else {
@@ -125,16 +139,71 @@ function fixPermissions() {
         log('ℹ️  Could not check npm permissions', colors.blue);
     }
     
+    // Check if yarn permissions need fixing
+    try {
+        const yarnPath = homedir + '/.yarn';
+        const yarnCachePath = homedir + '/.cache/yarn';
+        
+        if (fs.existsSync(yarnPath)) {
+            const stats = fs.statSync(yarnPath);
+            if (stats.uid !== userId) {
+                log('⚠️  Yarn permissions may need fixing. You can run: sudo chown -R $(id -u):$(id -g) "$HOME/.yarn"', colors.yellow);
+            } else {
+                log('✅ Yarn permissions are correct', colors.green);
+            }
+        }
+        
+        if (fs.existsSync(yarnCachePath)) {
+            const stats = fs.statSync(yarnCachePath);
+            if (stats.uid !== userId) {
+                log('⚠️  Yarn cache permissions may need fixing. You can run: sudo chown -R $(id -u):$(id -g) "$HOME/.cache/yarn"', colors.yellow);
+            } else {
+                log('✅ Yarn cache permissions are correct', colors.green);
+            }
+        }
+    } catch (error) {
+        log('ℹ️  Could not check Yarn permissions', colors.blue);
+    }
+    
     // Make scripts executable (this doesn't require sudo)
     runCommand('find . -type f -name "*.sh" -exec chmod +x {} \\;', 'Make shell scripts executable', { optional: true });
+}
+
+function checkYarnInstallation() {
+    logHeader('Checking for Yarn Package Manager');
+    
+    try {
+        execSync('yarn --version', { stdio: 'pipe' });
+        log('✅ Yarn is already installed', colors.green);
+        return true;
+    } catch (error) {
+        log('🔄 Yarn not found. Installing Yarn...', colors.yellow);
+        try {
+            runCommand('npm install -g yarn', 'Install Yarn globally');
+            log('✅ Yarn has been installed successfully', colors.green);
+            return true;
+        } catch (installError) {
+            log('❌ Failed to install Yarn. You may need to run with sudo or as administrator', colors.red);
+            log('   Try running: sudo npm install -g yarn', colors.yellow);
+            log('   Then run this setup again', colors.yellow);
+            return false;
+        }
+    }
 }
 
 function checkNodeDependencies() {
     logHeader('Checking Node.js Dependencies');
     
+    // Check for Yarn first
+    const hasYarn = checkYarnInstallation();
+    
     if (!fs.existsSync('node_modules')) {
         log('📦 Installing Node.js dependencies...', colors.blue);
-        runCommand('npm install', 'Install Node.js dependencies');
+        if (hasYarn) {
+            runCommand('yarn install', 'Install Node.js dependencies with Yarn');
+        } else {
+            runCommand('npm install', 'Install Node.js dependencies with npm');
+        }
     } else {
         log('✅ Node.js dependencies already installed', colors.green);
     }
@@ -146,8 +215,7 @@ function checkWorkspaceStructure() {
     const requiredDirs = [
         'scripts',
         'electron',
-        'workstation',
-        'OEW-main'
+        'workstation'
     ];
     
     const requiredFiles = [
@@ -261,9 +329,23 @@ function main() {
         logHeader('🎉 Setup Complete!');
         log('Your Orpheus Engine project is now ready!', colors.green);
         log('\nNext steps:', colors.cyan);
-        log('  • Run "npm start" to launch the integrated DAW', colors.blue);
-        log('  • Run "npm run system-check" to verify everything is working', colors.blue);
-        log('  • Run "npm run clear-ports" if you encounter port conflicts', colors.blue);
+        
+        // Determine if we have yarn
+        let hasYarn = false;
+        try {
+            execSync('yarn --version', { stdio: 'pipe' });
+            hasYarn = true;
+        } catch (e) { /* Yarn not installed */ }
+        
+        if (hasYarn) {
+            log('  • Run "yarn start" to launch the integrated DAW', colors.blue);
+            log('  • Run "yarn system-check" to verify everything is working', colors.blue);
+            log('  • Run "yarn clear-ports" if you encounter port conflicts', colors.blue);
+        } else {
+            log('  • Run "npm start" to launch the integrated DAW', colors.blue);
+            log('  • Run "npm run system-check" to verify everything is working', colors.blue);
+            log('  • Run "npm run clear-ports" if you encounter port conflicts', colors.blue);
+        }
         
     } catch (error) {
         log(`\n❌ Setup failed: ${error.message}`, colors.red);

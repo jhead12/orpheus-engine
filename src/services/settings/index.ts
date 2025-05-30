@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
 
 // Define setting categories
 export interface AudioSettings {
@@ -30,7 +30,7 @@ export interface Settings {
 }
 
 // Define default settings
-const defaultSettings: Settings = {
+export const defaultSettings: Settings = {
   audio: {
     inputDevice: 'default',
     outputDevice: 'default',
@@ -52,7 +52,7 @@ const defaultSettings: Settings = {
 };
 
 // Create settings context
-interface SettingsContextType {
+export interface SettingsContextType {
   settings: Settings;
   updateSettings: <T extends keyof Settings>(
     category: T,
@@ -76,79 +76,24 @@ const SETTINGS_STORAGE_KEY = 'orpheus-engine-settings';
 
 // Save settings to local storage
 export const saveSettings = (settings: Settings) => {
-  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  }
 };
 
 // Load settings from local storage
 export const loadSettings = (): Settings => {
   try {
-    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (storedSettings) {
-      return { ...defaultSettings, ...JSON.parse(storedSettings) };
+    if (typeof localStorage !== 'undefined') {
+      const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      if (storedSettings) {
+        return { ...defaultSettings, ...JSON.parse(storedSettings) };
+      }
     }
   } catch (error) {
     console.error('Failed to load settings:', error);
   }
   return defaultSettings;
-};
-
-// Settings provider component
-export const SettingsProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  
-  // Load settings on mount
-  useEffect(() => {
-    setSettings(loadSettings());
-  }, []);
-  
-  // Update settings in a specific category
-  const updateSettings = <T extends keyof Settings>(
-    category: T,
-    newSettings: Partial<Settings[T]>
-  ) => {
-    setSettings(prev => {
-      const updatedSettings = {
-        ...prev,
-        [category]: {
-          ...prev[category],
-          ...newSettings
-        }
-      };
-      saveSettings(updatedSettings);
-      return updatedSettings;
-    });
-  };
-  
-  // Reset all settings or a specific category
-  const resetSettings = (category?: keyof Settings) => {
-    if (category) {
-      setSettings(prev => {
-        const updatedSettings = {
-          ...prev,
-          [category]: defaultSettings[category]
-        };
-        saveSettings(updatedSettings);
-        return updatedSettings;
-      });
-    } else {
-      setSettings(defaultSettings);
-      saveSettings(defaultSettings);
-    }
-  };
-  
-  return (
-    <SettingsContext.Provider
-      value={{
-        settings,
-        updateSettings,
-        resetSettings,
-        saveSettings: () => saveSettings(settings),
-        loadSettings: () => setSettings(loadSettings())
-      }}
-    >
-      {children}
-    </SettingsContext.Provider>
-  );
 };
 
 // Custom hook to use settings

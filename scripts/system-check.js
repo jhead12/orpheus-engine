@@ -63,6 +63,38 @@ class SystemChecker {
             this.logError(`Failed to check Node.js version: ${error.message}`);
         }
     }
+    
+    async checkPackageManagers() {
+        this.logHeader('Checking Package Managers');
+        
+        // Check npm version
+        try {
+            const npmVersion = execSync('npm --version').toString().trim();
+            const npmMajorVersion = parseInt(npmVersion.split('.')[0]);
+            
+            if (npmMajorVersion >= 7) {
+                this.logSuccess(`npm version: ${npmVersion} (meets requirement >=7.0.0)`);
+            } else {
+                this.logWarning(`npm version: ${npmVersion} (recommended >=7.0.0)`);
+            }
+        } catch (error) {
+            this.logError(`Failed to check npm version: ${error.message}`);
+        }
+        
+        // Check yarn availability
+        try {
+            const yarnVersion = execSync('yarn --version').toString().trim();
+            this.logSuccess(`Yarn is installed (version ${yarnVersion})`);
+            
+            // Check if this is Yarn 1.x or Yarn 2+
+            const yarnMajorVersion = parseInt(yarnVersion.split('.')[0]);
+            if (yarnMajorVersion >= 2) {
+                this.log(`Note: You're using Yarn 2+. This project is optimized for Yarn 1.x, but should work with newer versions.`, colors.blue);
+            }
+        } catch (error) {
+            this.logWarning(`Yarn is not installed. Installing it with 'npm install -g yarn' is recommended for this project.`);
+        }
+    }
 
     async checkPythonDependencies() {
         this.logHeader('Checking Python Dependencies');
@@ -243,6 +275,7 @@ class SystemChecker {
         console.log(`${colors.bold}${colors.cyan}🔍 Orpheus Engine System Check${colors.reset}\n`);
         
         await this.checkNodeVersion();
+        await this.checkPackageManagers();
         await this.checkRequiredFiles();
         await this.checkPythonDependencies();
         await this.checkBackendServices();
