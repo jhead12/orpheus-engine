@@ -38,10 +38,10 @@
     "build-all": "npm run build:electron && npm run build --workspace=orpheus-engine-workstation/frontend && npm run build --workspace=orpheus-engine-workstation/backend",
     "test": "npm run test:frontend || echo 'Tests skipped - react-scripts not found'",
     "test:frontend": "cd orpheus-engine-workstation/frontend && (test -f node_modules/.bin/react-scripts && npm test -- --watchAll=false --passWithNoTests || echo 'Skipping tests - react-scripts not installed')",
-    "lint": "npm run lint:frontend",
+    "lint": "npm run lint:frontend --fix",
     "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/yarn.lock && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/yarn.lock && echo 'Installing dependencies...' && yarn install",
     "clean-only": "echo 'Cleaning workspace (no reinstall)...' && rm -rf node_modules yarn.lock && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/yarn.lock && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/yarn.lock && echo 'Cleanup complete. Run yarn install to reinstall.'",
-    "lint:frontend": "echo 'Linting frontend via build process...' && cd orpheus-engine-workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
+    "lint:frontend": "echo 'Linting frontend via build process...' && cd workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "validate": "npm run test && npm run lint",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "release:patch": "npm run release:prepare && npm run version:patch && npm run branch:release && npm run github:release",
@@ -84,6 +84,7 @@
     "ports:kill": "npm run clear-ports all"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.17.52",
     "conventional-changelog-cli": "^4.1.0",
     "electron": "^36.3.2",

@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 // Audio Analysis Context
 interface AudioAnalysisContextType {
   // Add audio analysis context properties here
+  
 }
 
 const AudioAnalysisContext = createContext<AudioAnalysisContextType | undefined>(undefined);
