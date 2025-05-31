@@ -32,8 +32,8 @@ function installViaConda() {
 function installPipWheel() {
   console.log('🔄 Trying to install tokenizers via pip wheel...');
   try {
-    // Direct install pre-built wheel, specify platform and python version
-    execSync('pip install tokenizers==0.13.3 --only-binary=:all: --no-build-isolation', { stdio: 'inherit' });
+    // Direct install pre-built wheel for Python 3.12 compatibility
+    execSync('pip install --only-binary=:all: tokenizers==0.19.1', { stdio: 'inherit' });
     console.log('✅ Successfully installed tokenizers wheel!');
     return true;
   } catch (error) {
@@ -43,10 +43,10 @@ function installPipWheel() {
 }
 
 function installAlternativePackage() {
-  console.log('🔄 Installing an alternative version with similar functionality...');
+  console.log('🔄 Installing compatible transformers and tokenizers versions...');
   try {
-    // Install transformers package which includes tokenizer functionality
-    execSync('pip install transformers==4.31.0', { stdio: 'inherit' });
+    // Install compatible versions that work with Python 3.12
+    execSync('pip install --only-binary=:all: transformers==4.40.0 tokenizers==0.19.1', { stdio: 'inherit' });
     
     // Create a compatibility shim file
     const shimDir = path.join(process.cwd(), 'orpheus-engine-workstation', 'backend', 'agentic_rag');
@@ -77,7 +77,7 @@ except ImportError:
     console.log(`✅ Created tokenizers compatibility shim at ${shimPath}`);
     return true;
   } catch (error) {
-    console.error('❌ Failed to install alternative package:', error.message);
+    console.error('❌ Failed to install compatible packages:', error.message);
     return false;
   }
 }
