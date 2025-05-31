@@ -15,7 +15,9 @@
   "main": "build/electron/main.js",
   "scripts": {
     "dev": "nodemon --exec \"node electron-launch.js\"",
+    "dev:proxy-fix": "node ../scripts/proxy-fallback.js & nodemon --exec \"node electron-launch.js\"",
     "dev:headless": "ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 NODE_ENV=development electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
+    "dev:container": "ELECTRON_DISABLE_GPU=1 ELECTRON_NO_ATTACH_CONSOLE=1 nodemon --exec \"node electron-launch.js --no-sandbox --disable-gpu\"",
     "build": "tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
     "preview": "vite preview",
     "start": "node electron-launch.js",
