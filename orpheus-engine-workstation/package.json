@@ -1,0 +1,10 @@
+{
+  "name": "orpheus-engine-workstation",
+  "version": "4.0.15",
+  "private": true,
+  "description": "Workspace root for orpheus-engine frontend and backend packages.",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
