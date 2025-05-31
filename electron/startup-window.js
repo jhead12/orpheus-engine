@@ -13,6 +13,18 @@ class StartupWindow {
         this.setupIPC();
     }
     create() {
+        // Select icon based on platform
+        let iconPath;
+        switch (process.platform) {
+            case 'win32':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.ico');
+                break;
+            case 'darwin':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.icns');
+                break;
+            default:
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.png');
+        }
         this.window = new electron_1.BrowserWindow({
             width: 800,
             height: 600,
@@ -22,7 +34,7 @@ class StartupWindow {
             center: true,
             show: false,
             title: 'Orpheus Engine - Startup',
-            icon: path_1.default.join(__dirname, '../assets/icons/icon.png'),
+            icon: iconPath,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
