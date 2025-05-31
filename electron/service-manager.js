@@ -92,38 +92,61 @@ class ServiceManager extends events_1.EventEmitter {
         this.emit('service-status-change', status);
     }
     async waitForService(config) {
-        const maxWaitTime = 30000; // 30 seconds
-        const checkInterval = 1000; // 1 second
+        const maxWaitTime = config.name === 'frontend' ? 60000 : 30000;
+        const checkInterval = config.name === 'frontend' ? 2000 : 1000;
         const startTime = Date.now();
+        
+        console.log(`[${config.name}] Starting service check...`);
+
         while (Date.now() - startTime < maxWaitTime) {
-            if (config.healthCheck) {
-                try {
-                    const healthy = await config.healthCheck();
-                    if (healthy)
+            try {
+                if (config.name === 'frontend') {
+                    // Special frontend health check
+                    const response = await fetch(`http://localhost:${config.port}/health`);
+                    if (response.ok && (await response.text()) === 'OK') {
+                        console.log(`[${config.name}] Health check passed`);
                         return;
-                }
-                catch (error) {
-                    // Continue waiting
-                }
-            }
-            else if (config.port) {
-                // Default health check: try to connect to port
-                try {
+                    }
+                } else if (config.healthCheck) {
+                    console.log(`[${config.name}] Running custom health check...`);
+                    const healthy = await config.healthCheck();
+                    if (healthy) {
+                        console.log(`[${config.name}] Health check passed`);
+                        return;
+                    }
+                    console.log(`[${config.name}] Health check failed, will retry...`);
+                } else if (config.port) {
+                    console.log(`[${config.name}] Checking port ${config.port}...`);
                     await this.checkPort(config.port);
+                    console.log(`[${config.name}] Port ${config.port} is available`);
+                    return;
+                } else {
+                    console.log(`[${config.name}] No health check configured, waiting 2s...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                     return;
                 }
-                catch (error) {
-                    // Continue waiting
-                }
-            }
-            else {
-                // No health check, just wait a bit
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                return;
+            } catch (error) {
+                console.log(`[${config.name}] Health check failed:`, error.message);
             }
             await new Promise(resolve => setTimeout(resolve, checkInterval));
         }
-        throw new Error(`Service ${config.name} failed to become ready within ${maxWaitTime}ms`);
+
+        const error = new Error(`Service ${config.name} failed to become ready within ${maxWaitTime}ms`);
+        error.details = {
+            service: config.name,
+            startTime: new Date(startTime).toISOString(),
+            endTime: new Date().toISOString(),
+            attempts: attemptCount,
+            config: {
+                port: config.port,
+                hasHealthCheck: !!config.healthCheck,
+                command: config.command,
+                args: config.args,
+                cwd: config.cwd
+            }
+        };
+        console.error(`[${config.name}] Service start timeout:`, error.details);
+        throw error;
     }
     async findAvailablePort(startPort) {
         for (let port = startPort; port <= startPort + 100; port++) {
@@ -147,17 +170,25 @@ class ServiceManager extends events_1.EventEmitter {
         return new Promise((resolve, reject) => {
             const socket = new net_1.default.Socket();
             socket.setTimeout(2000);
+            
             socket.on('connect', () => {
+                console.log(`Successfully connected to port ${port}`);
                 socket.destroy();
                 resolve();
             });
+            
             socket.on('timeout', () => {
+                console.log(`Connection to port ${port} timed out`);
                 socket.destroy();
-                reject(new Error('Timeout'));
+                reject(new Error(`Connection to port ${port} timed out`));
             });
+            
             socket.on('error', (error) => {
+                console.log(`Error connecting to port ${port}:`, error.message);
                 reject(error);
             });
+            
+            console.log(`Attempting to connect to port ${port}...`);
             socket.connect(port, 'localhost');
         });
     }
