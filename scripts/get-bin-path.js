@@ -6,7 +6,7 @@ function findModuleBin(moduleName) {
     const possibilities = [
         path.join(rootDir, 'node_modules', '.bin', moduleName),
         path.join(rootDir, 'node_modules', moduleName, 'bin', moduleName),
-        path.join(rootDir, 'OEW-main', 'node_modules', '.bin', moduleName),
+        path.join(rootDir, 'workstation/frontend', 'node_modules', '.bin', moduleName),
     ];
 
     for (const binPath of possibilities) {
