@@ -112,6 +112,8 @@ class OrpheusEngine {
         });
     }
     async start() {
+        // Set application name
+        electron_1.app.name = 'Orpheus Engine';
         await electron_1.app.whenReady();
         // Create and show startup window
         this.startupWindow.create();
@@ -155,6 +157,8 @@ class OrpheusEngine {
                 contextIsolation: false,
             },
             titleBarStyle: 'hiddenInset',
+            title: 'Orpheus Engine',
+            icon: path_1.default.join(__dirname, '../assets/icons/icon.png'),
             show: false
         });
         // Load the DAW interface

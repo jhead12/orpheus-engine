@@ -21,6 +21,8 @@ class StartupWindow {
             alwaysOnTop: true,
             center: true,
             show: false,
+            title: 'Orpheus Engine - Startup',
+            icon: path_1.default.join(__dirname, '../assets/icons/icon.png'),
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,

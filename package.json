@@ -1,10 +1,21 @@
 {
   "name": "orpheus-engine",
   "version": "1.0.9",
+  "description": "Digital Audio Workstation",
+  "main": "electron/main.js",
   "private": true,
+  "productName": "Orpheus Engine",
   "workspaces": [
     "workstation/*"
   ],
+  "build": {
+    "appId": "com.orpheus.engine",
+    "productName": "Orpheus Engine",
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "assets/icons/icon.png"
+  },
   "dependencies": {
     "@mui/material": "^7.1.0",
     "@types/lodash": "^4.17.17",
@@ -37,8 +48,15 @@
     "build": "cd workstation/frontend && npm install && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "build:electron": "tsc electron/*.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --allowSyntheticDefaultImports --skipLibCheck",
     "build-all": "npm run build:electron && npm run build --workspace=workstation/frontend && npm run build --workspace=workstation/backend",
-    "test": "npm run test:frontend || echo 'Tests skipped - react-scripts not found'",
-    "test:frontend": "cd workstation/frontend && (test -f node_modules/.bin/react-scripts && npm test -- --watchAll=false --passWithNoTests || echo 'Skipping tests - react-scripts not installed')",
+    "test": "npm run test:frontend || echo 'Tests skipped'",
+    "test:frontend": "cd workstation/frontend && npm test",
+    "test:frontend:watch": "cd workstation/frontend && npm run test:watch",
+    "test:daw": "cd workstation/frontend && npm test -- --dir src/components/daw",
+    "test:audio": "cd workstation/frontend && npm test -- --dir src/services/audio",
+    "test:coverage": "cd workstation/frontend && npm test -- --coverage",
+    "test:clip-manipulation": "cd workstation/frontend && npm test -- src/components/daw/ClipManipulation.test.tsx",
+    "test:audio-export": "cd workstation/frontend && npm test -- src/components/daw/AudioExport.test.tsx",
+    "test:file-operations": "cd workstation/frontend && npm test -- src/components/daw/ProjectFileOperations.test.tsx",
     "lint": "npm run lint:frontend --fix",
     "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf workstation/frontend/node_modules workstation/frontend/yarn.lock && rm -rf workstation/backend/node_modules workstation/backend/yarn.lock && echo 'Installing dependencies...' && yarn install",
     "clean-only": "echo 'Cleaning workspace (no reinstall)...' && rm -rf node_modules yarn.lock && rm -rf workstation/frontend/node_modules workstation/frontend/yarn.lock && rm -rf workstation/backend/node_modules workstation/backend/yarn.lock && echo 'Cleanup complete. Run yarn install to reinstall.'",
@@ -99,6 +117,7 @@
     "electron": "^36.3.2",
     "hoopy": "^0.1.4",
     "jest-runtime": "^30.0.0-beta.3",
+    "sharp": "^0.34.2",
     "typescript": "^5.8.3"
   },
   "resolutions": {
