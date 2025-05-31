@@ -11,6 +11,11 @@ export default function Workstation() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [plugins, setPlugins] = useState<WorkstationPlugin[]>([]);
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
+  // Add the missing state values
+  const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [selectedAutomationPointId, setSelectedAutomationPointId] = useState<string | null>(null);
+  const [selectedAutomationLaneId, setSelectedAutomationLaneId] = useState<string | null>(null);
 
   const workspaceStyle = useMemo(
     () => ({
@@ -90,8 +95,18 @@ export default function Workstation() {
       autoGridSize: 16,
       showTimeRuler: true,
       snapGridSizeOption: 'quarter',
+      
+      // Add missing selection properties
+      selectedClipId,
+      setSelectedClipId,
+      selectedRegionId,
+      setSelectedRegionId,
+      selectedAutomationPointId,
+      setSelectedAutomationPointId,
+      selectedAutomationLaneId,
+      setSelectedAutomationLaneId,
     }),
-    [activeTrack, isPlaying, plugins, selectedTrackId]
+    [activeTrack, isPlaying, plugins, selectedTrackId, selectedClipId, selectedRegionId, selectedAutomationPointId, selectedAutomationLaneId]
   );
 
   return (

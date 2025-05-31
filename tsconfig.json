@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node", "react", "react-dom"],
+    "types": ["node", "react", "react-dom", "jest"],
     "paths": {
       "@/*": ["./src/*"]
     }

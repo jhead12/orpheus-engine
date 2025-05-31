@@ -246,3 +246,29 @@ export enum ContextMenuType {
   Text,
   Track
 }
+
+/**
+ * Interface defining thresholds for automatic scrolling near window edges
+ */
+export interface WindowAutoScrollThresholds {
+  top: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  right: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  bottom?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  left?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+}

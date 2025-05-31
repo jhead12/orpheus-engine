@@ -59,6 +59,10 @@ export function useMCPAnalysis(buffer: AudioBuffer | null, options: MCPAnalysisO
           channelData: channelData.map(channel => Array.from(channel))
         };
 
+        if (!window.electron) {
+          throw new Error("Electron API not available. This feature requires the Electron environment.");
+        }
+
         const response = await window.electron.invoke('mcp:analyze', {
           data: audioData,
           type: options.type,

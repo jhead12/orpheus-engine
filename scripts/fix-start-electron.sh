@@ -27,6 +27,6 @@ echo "Created backup at ${ELECTRON_SCRIPT}.bak"
 RELATIVE_PATH=$(realpath --relative-to="/workspaces/orpheus-engine" "$FRONTEND_DIR")
 
 # Update the path in the script
-sed -i "s|cd orpheus-engine-workstation/frontend|cd $RELATIVE_PATH|g" "$ELECTRON_SCRIPT"
+sed -i "s|cd workstation/frontend|cd $RELATIVE_PATH|g" "$ELECTRON_SCRIPT"
 
 echo "Updated start-electron.sh to use the correct frontend path: $RELATIVE_PATH"

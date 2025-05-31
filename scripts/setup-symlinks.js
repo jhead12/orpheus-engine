@@ -35,6 +35,7 @@ const createSymlink = () => {
     }
     
     // Create the symlink
+    const oewPath = path.join(__dirname, '..', 'workstation', 'frontend', 'src');
     fs.symlinkSync(oewPath, symlinkTargetPath, 'junction');
     console.log(`Created symlink: ${symlinkTargetPath} -> ${oewPath}`);
   } catch (error) {
