@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Find the frontend directory
-const basePath = '/workspaces/orpheus-engine';
-const frontendPath = path.join(basePath, 'orpheus-engine-workstation/frontend');
+const basePath = process.cwd();
+const frontendPath = path.join(basePath, 'workstation/frontend');
 
 console.log('Installing missing Vite dependencies...');
 
@@ -66,7 +66,7 @@ function updateElectronScript(correctFrontendPath) {
       
       // Replace the incorrect path in the script
       const updatedContent = scriptContent.replace(
-        /cd orpheus-engine-workstation\/frontend/g,
+        /(cd orpheus-engine-workstation\/frontend|cd OEW-main|cd workstation\/frontend)/g,
         `cd ${relativePath}`
       );
       

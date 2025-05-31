@@ -1,22 +1,43 @@
-import React, { useEffect } from 'react';
-import { useWorkstation } from '../contexts/WorkstationContext';
+/** @jsx React.createElement */
+/** @jsxRuntime classic */
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useWorkstation, WorkstationContextType } from '../contexts/WorkstationContext';
 import { Web3StoragePlugin } from '../plugins/Web3StoragePlugin';
 
-// Example implementation of Ceramic connector
-const createCeramicConnector = () => {
+// Define TypeScript interfaces for improved type safety
+interface CeramicConnector {
+  connect: (ceramic: any) => Promise<void>;
+  createDocument: (data: any) => Promise<string>;
+  loadDocument: (id: string) => Promise<WorkstationData>;
+  queryDocuments: () => Promise<string[]>;
+}
+   
+interface WorkstationData {
+  name: string;
+  tracks: any[];
+  [key: string]: any;
+}
+
+/**
+ * Example implementation of Ceramic connector
+ * This is a simple mock implementation for demonstration purposes
+ * @returns A connector for interacting with Ceramic Network
+ */
+const createCeramicConnector = (): CeramicConnector => {
   return {
-    connect: async (ceramic: any) => {
+    connect: async (_ceramic: any): Promise<void> => {
       console.log('Connected to Ceramic');
     },
-    createDocument: async (data: any) => {
+    createDocument: async (data: any): Promise<string> => {
       console.log('Creating document in Ceramic', data);
       return `ceramic://doc-${Date.now()}`; // Placeholder
     },
-    loadDocument: async (id: string) => {
+    loadDocument: async (id: string): Promise<WorkstationData> => {
       console.log(`Loading document ${id} from Ceramic`);
       return { name: 'Example Workstation', tracks: [] }; // Placeholder
     },
-    queryDocuments: async () => {
+    queryDocuments: async (): Promise<string[]> => {
       return ['ceramic://doc-1', 'ceramic://doc-2']; // Placeholder
     }
   };
@@ -25,7 +46,7 @@ const createCeramicConnector = () => {
 // Example implementation of IPFS connector
 const createIPFSConnector = () => {
   return {
-    storeFile: async (data: any) => {
+    storeFile: async (_data: any) => {
       console.log('Storing file in IPFS');
       return `ipfs://QmExample${Date.now()}`; // Placeholder
     },
@@ -37,9 +58,9 @@ const createIPFSConnector = () => {
 };
 
 export const Web3Integration: React.FC = () => {
-  const workstation = useWorkstation();
-  const [availableWorkstations, setAvailableWorkstations] = React.useState<{ id: string; name: string }[]>([]);
-  const [selectedWorkstationId, setSelectedWorkstationId] = React.useState<string>('');
+  const workstation: WorkstationContextType = useWorkstation();
+  const [availableWorkstations, setAvailableWorkstations] = useState<{ id: string; name: string }[]>([]);
+  const [selectedWorkstationId, setSelectedWorkstationId] = useState<string>('');
 
   useEffect(() => {
     // Create and register Web3 storage plugin
@@ -56,6 +77,12 @@ export const Web3Integration: React.FC = () => {
   }, [workstation]);
   
   const handleSaveToWeb3 = async () => {
+    if (!workstation.saveWorkstation) {
+      alert('Save functionality not available');
+      return;
+    }
+
+    // We've already checked that the property exists, so it's safe to call without the assertion
     const id = await workstation.saveWorkstation('My Web3 Workstation');
     if (id) {
       console.log(`Saved workstation with ID: ${id}`);
@@ -70,6 +97,12 @@ export const Web3Integration: React.FC = () => {
       return;
     }
     
+    if (!workstation.loadWorkstation) {
+      alert('Load functionality not available');
+      return;
+    }
+    
+    // We've already checked that the property exists, so it's safe to call without the assertion
     const success = await workstation.loadWorkstation(selectedWorkstationId);
     if (success) {
       console.log(`Loaded workstation with ID: ${selectedWorkstationId}`);
@@ -80,6 +113,13 @@ export const Web3Integration: React.FC = () => {
   
   const loadAvailableWorkstations = async () => {
     try {
+      if (!workstation.listWorkstations) {
+        console.warn('List workstations functionality not available');
+        setAvailableWorkstations([]);
+        return;
+      }
+      
+      // We've already checked that the property exists, so it's safe to call without the assertion
       const workstationList = await workstation.listWorkstations();
       
       // More robust implementation with better type handling
@@ -113,37 +153,37 @@ export const Web3Integration: React.FC = () => {
     }
   };
   
-  return (
-    <div>
-      <h2>Web3 Storage Integration</h2>
-      <button onClick={handleSaveToWeb3}>Save to Web3</button>
-      
-      <h3>Load Workstation</h3>
-      <button onClick={loadAvailableWorkstations}>
-        Refresh Workstation List
-      </button>
-      
-      <div>
-        <select 
-          value={selectedWorkstationId}
-          onChange={(e) => setSelectedWorkstationId(e.target.value)}
-          style={{ margin: '10px 0', display: 'block' }}
-        >
-          <option value="">Select a workstation</option>
-          {availableWorkstations.map((ws) => (
-            <option key={ws.id} value={ws.id}>
-              {ws.name}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={handleLoadFromWeb3}
-          disabled={!selectedWorkstationId}
-        >
-          Load Selected Workstation
-        </button>
-      </div>
-    </div>
+  // Use React.createElement instead of JSX to avoid TypeScript compilation issues
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('h2', null, 'Web3 Storage Integration'),
+    React.createElement('button', { onClick: handleSaveToWeb3 }, 'Save to Web3'),
+    React.createElement('h3', null, 'Load Workstation'),
+    React.createElement('button', { onClick: loadAvailableWorkstations }, 'Refresh Workstation List'),
+    React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'select',
+        {
+          value: selectedWorkstationId,
+          onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setSelectedWorkstationId(e.target.value),
+          style: { margin: '10px 0', display: 'block' }
+        },
+        React.createElement('option', { value: '' }, 'Select a workstation'),
+        availableWorkstations.map((ws) =>
+          React.createElement('option', { key: ws.id, value: ws.id }, ws.name)
+        )
+      ),
+      React.createElement(
+        'button',
+        {
+          onClick: handleLoadFromWeb3,
+          disabled: !selectedWorkstationId
+        },
+        'Load Selected Workstation'
+      )
+    )
   );
 };
