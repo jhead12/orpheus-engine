@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 const { execSync } = require('child_process');
-const { existsSync } = require('fs');
-const { join } = require('path');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
 
 const colors = {
     red: '\x1b[31m',
@@ -65,71 +66,168 @@ function checkPipInstallation(pythonCmd) {
     }
 }
 
-function main() {
-    log('🐍 Setting up Python environment for Orpheus Engine...', colors.blue);
+function checkRustInstalled() {
+    try {
+        const rustcVersion = execSync('rustc --version', { stdio: 'pipe' }).toString();
+        log('✅ Rust is already installed:', colors.green, rustcVersion.trim());
+        return true;
+    } catch (error) {
+        log('❌ Rust is not installed or not in PATH', colors.red);
+        return false;
+    }
+}
+
+function updateCargoPath() {
+    const homeDir = os.homedir();
+    const cargoPath = path.join(homeDir, '.cargo', 'bin');
     
-    // Check Python installation
-    const pythonCmd = checkPythonInstallation();
-    if (!pythonCmd) {
-        process.exit(1);
+    log(`Adding ${cargoPath} to PATH...`, colors.blue);
+    
+    // Update the current process environment
+    if (!process.env.PATH.includes(cargoPath)) {
+        process.env.PATH = `${cargoPath}:${process.env.PATH}`;
     }
     
-    // Check pip installation
-    const pipCmd = checkPipInstallation(pythonCmd);
-    if (!pipCmd) {
-        process.exit(1);
+    // Verify that the cargo executable is now in the PATH
+    try {
+        const cargoVersion = execSync('cargo --version', { stdio: 'pipe' }).toString();
+        log('✅ Cargo is now available:', colors.green, cargoVersion.trim());
+        return true;
+    } catch (error) {
+        log('❌ Failed to verify cargo installation:', colors.red, error.message);
+        return false;
     }
-    
-    log(`✅ Found pip: ${pipCmd}`, colors.green);
-    
-    // Check if we're in a virtual environment or if we should create one
-    const backendDir = join(process.cwd(), 'workstation', 'backend');
-    if (existsSync(backendDir)) {
-        const venvDir = join(backendDir, 'venv');
+}
+
+function installRust() {
+    log('Installing Rust via rustup...', colors.blue);
+    try {
+        // Use rustup to install Rust (non-interactive mode)
+        execSync('curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y', { 
+            stdio: 'inherit',
+            shell: '/bin/bash' 
+        });
         
-        if (!existsSync(venvDir)) {
-            log('📦 Creating Python virtual environment...', colors.blue);
-            if (!runCommand(`cd "${backendDir}" && ${pythonCmd} -m venv venv`, 'Create virtual environment')) {
-                log('⚠️  Could not create virtual environment, installing globally', colors.yellow);
-            }
-        } else {
-            log('✅ Virtual environment already exists', colors.green);
-        }
+        // Directly modify PATH instead of using source
+        updateCargoPath();
         
-        // Try to install requirements from backend directory
-        const requirementsPath = join(backendDir, 'requirements.txt');
-        if (existsSync(requirementsPath)) {
-            const installCmd = existsSync(venvDir) 
-                ? `cd "${backendDir}" && source venv/bin/activate && pip install -r requirements.txt`
-                : `${pipCmd} install -r "${requirementsPath}"`;
-            
-            if (!runCommand(installCmd, 'Install Python requirements from backend')) {
-                log('⚠️  Failed to install requirements, trying individual packages...', colors.yellow);
+        // Use bash to run cargo directly from its path
+        const homeDir = os.homedir();
+        const cargoPath = path.join(homeDir, '.cargo', 'bin');
+        const rustcPath = path.join(cargoPath, 'rustc');
+        
+        try {
+            if (fs.existsSync(rustcPath)) {
+                const rustcVersion = execSync(`${rustcPath} --version`, { 
+                    stdio: 'pipe',
+                    shell: '/bin/bash'
+                }).toString();
+                log('✅ Rust is now installed:', colors.green, rustcVersion.trim());
+                return true;
             } else {
-                log('🎉 Python setup completed successfully!', colors.green);
-                return;
+                log(`❌ Rust compiler not found at ${rustcPath}`, colors.red);
             }
+        } catch (error) {
+            log('⚠️ Error checking rustc after installation:', colors.yellow, error.message);
+        }
+        
+        return false;
+    } catch (error) {
+        log('❌ Failed to install Rust:', colors.red, error.message);
+        return false;
+    }
+}
+
+function setupRust() {
+    log('Checking for Rust installation...', colors.blue);
+    let isInstalled = checkRustInstalled();
+    
+    if (!isInstalled) {
+        log('Rust is required for building certain Python packages like tokenizers.', colors.yellow);
+        log('Installing Rust now...', colors.blue);
+        const success = installRust();
+        
+        if (!success) {
+            log('❌ Failed to install Rust automatically.', colors.red);
+            log('⚠️ Will attempt to continue with Python setup, but tokenizers may fail to build.', colors.yellow);
+        } else {
+            // Update PATH to include Cargo bin directory
+            updateCargoPath();
         }
     }
     
-    // Fallback: Install essential packages individually
-    log('📦 Installing essential Python packages...', colors.blue);
-    const packages = [
-        'flask',
-        'flask-cors',
-        'librosa',
-        'numpy',
-        'matplotlib',
-        'pyloudnorm',
-        'requests',
-        'python-dotenv'
-    ];
+    log('✅ Rust setup complete.', colors.green);
+}
+
+function upgradePip() {
+    try {
+        log('Upgrading pip...', colors.blue);
+        execSync('python -m pip install --upgrade pip', { 
+            stdio: 'inherit',
+            shell: '/bin/bash'
+        });
+        log('✅ pip upgraded successfully', colors.green);
+        return true;
+    } catch (error) {
+        log('❌ Failed to upgrade pip:', colors.red, error.message);
+        return false;
+    }
+}
+
+function installPythonDependencies() {
+    try {
+        log('Installing Python dependencies...', colors.blue);
+        
+        // Try to install pre-built wheels first
+        try {
+            execSync('pip install --only-binary=:all: tokenizers', { 
+                stdio: 'inherit',
+                shell: '/bin/bash'
+            });
+        } catch (error) {
+            log('⚠️ Failed to install pre-built tokenizers wheel, will build from source:', colors.yellow, error.message);
+        }
+        
+        // Install other dependencies
+        execSync('pip install huggingface-hub==0.12.0 sentence-transformers==2.2.2', { 
+            stdio: 'inherit',
+            shell: '/bin/bash',
+            env: { ...process.env }
+        });
+        
+        log('🎉 Python dependencies installed successfully!', colors.green);
+        return true;
+    } catch (error) {
+        log('❌ Failed to install Python dependencies:', colors.red, error.message);
+        return false;
+    }
+}
+
+function setupPython() {
+    log('Setting up Python environment...', colors.blue);
     
-    for (const pkg of packages) {
-        runCommand(`${pipCmd} install ${pkg}`, `Install ${pkg}`);
+    // Upgrade pip first
+    upgradePip();
+    
+    // Install Python dependencies
+    if (!installPythonDependencies()) {
+        log('❌ Failed to install all Python dependencies.', colors.red);
+        process.exit(1);
     }
     
-    log('🎉 Python setup completed!', colors.green);
+    log('✅ Python setup complete.', colors.green);
+}
+
+function main() {
+    log('🐍 Starting environment setup for Orpheus Engine...', colors.blue);
+    
+    // First, set up Rust which is needed by Python packages like tokenizers
+    setupRust();
+    
+    // Then proceed with Python setup
+    setupPython();
+    
+    log('🎉 Environment setup completed successfully!', colors.green);
 }
 
 // Run if called directly

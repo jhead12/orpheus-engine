@@ -62,7 +62,8 @@
     "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"/home/codespace/.npm\" || true",
     "start:vite": "cd orpheus-engine-workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
-    "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js",
+    "fix-tokenizers": "node scripts/fix-tokenizers.js",
+    "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
     "fix-vite": "node scripts/install-vite-deps.js",
     "fix-electron-path": "bash scripts/fix-start-electron.sh",
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh"
