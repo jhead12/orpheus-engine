@@ -146,6 +146,18 @@ class OrpheusEngine {
     createMainWindow() {
         if (this.mainWindow !== null)
             return;
+        // Select icon based on platform
+        let iconPath;
+        switch (process.platform) {
+            case 'win32':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.ico');
+                break;
+            case 'darwin':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.icns');
+                break;
+            default:
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.png');
+        }
         this.mainWindow = new electron_1.BrowserWindow({
             width: 1400,
             height: 900,
@@ -158,7 +170,7 @@ class OrpheusEngine {
             },
             titleBarStyle: 'hiddenInset',
             title: 'Orpheus Engine',
-            icon: path_1.default.join(__dirname, '../assets/icons/icon.png'),
+            icon: iconPath,
             show: false
         });
         // Load the DAW interface
