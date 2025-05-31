@@ -115,6 +115,8 @@ class OrpheusEngine {
   }
 
   async start() {
+    // Set application name
+    app.name = 'Orpheus Engine';
     await app.whenReady();
     
     // Create and show startup window
@@ -164,6 +166,8 @@ class OrpheusEngine {
         contextIsolation: false,
       },
       titleBarStyle: 'hiddenInset',
+      title: 'Orpheus Engine',
+      icon: path.join(__dirname, '../assets/icons/icon.png'),
       show: false
     });
 
