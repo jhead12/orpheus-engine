@@ -1,10 +1,11 @@
+import { describe, expect, test } from '@jest/globals';
 import { 
   isValidTrackFileFormat, 
   isValidAudioTrackFileFormat,
   BASE_BEAT_WIDTH,
   BASE_HEIGHT
 } from './utils';
-import { Clip, TimelinePosition } from '../types/types';
+import { Clip, TimelinePosition, ClipAudio, TrackType } from '../types/types';
 
 describe('File format validation', () => {
   test('creates test clip with proper types', () => {
@@ -14,14 +15,18 @@ describe('File format validation', () => {
       start: new TimelinePosition(1, 1, 0),
       end: new TimelinePosition(2, 1, 0),
       muted: false,
-      loopEnd: undefined, // Changed from null to undefined
-      startLimit: undefined,
-      endLimit: undefined,
+      loopEnd: null,
+      startLimit: null,
+      endLimit: null,
+      type: TrackType.Audio,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
+        audioBuffer: {} as AudioBuffer,
         start: new TimelinePosition(1, 1, 0),
-        end: new TimelinePosition(2, 1, 0)
-      }
+        end: new TimelinePosition(2, 1, 0),
+        buffer: new Uint8Array(0) as unknown as Buffer, // Use Uint8Array as a stand-in for Buffer
+        sourceDuration: 0,
+        type: 'audio/wav'
+      } as unknown as ClipAudio // Use unknown to bypass type checking
     };
     
     expect(testClip.id).toBe('test');
@@ -34,14 +39,18 @@ describe('File format validation', () => {
       start: new TimelinePosition(1, 1, 0),
       end: new TimelinePosition(2, 1, 0),
       muted: false,
-      loopEnd: undefined, // Changed from null to undefined
-      startLimit: undefined,
-      endLimit: undefined,
+      loopEnd: null,
+      startLimit: null,
+      endLimit: null,
+      type: TrackType.Audio,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
+        audioBuffer: {} as AudioBuffer,
         start: new TimelinePosition(1, 1, 0),
-        end: new TimelinePosition(2, 1, 0)
-      }
+        end: new TimelinePosition(2, 1, 0),
+        buffer: new Uint8Array(0) as unknown as Buffer,
+        sourceDuration: 0,
+        type: 'audio/wav'
+      } as unknown as ClipAudio
     };
     
     expect(testClip2.id).toBe('test2');
@@ -59,11 +68,18 @@ describe('File format validation', () => {
       start: new TimelinePosition(1, 1, 0),
       end: new TimelinePosition(2, 1, 0),
       muted: false,
+      loopEnd: null,
+      startLimit: null,
+      endLimit: null,
+      type: TrackType.Audio,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
+        audioBuffer: {} as AudioBuffer,
         start: new TimelinePosition(1, 1, 0),
-        end: new TimelinePosition(2, 1, 0)
-      }
+        end: new TimelinePosition(2, 1, 0),
+        buffer: new Uint8Array(0) as unknown as Buffer,
+        sourceDuration: 0,
+        type: 'audio/wav'
+      } as unknown as ClipAudio
     };
     
     expect(testClip3.id).toBe('test3');
@@ -74,7 +90,6 @@ describe('File format validation', () => {
     expect(isValidTrackFileFormat('video/mp4')).toBe(false);
   });
   
-  // @ts-ignore - This directive is used correctly to ignore the intentional error below
   test('test constants', () => {
     expect(BASE_BEAT_WIDTH).toBeDefined();
     expect(BASE_HEIGHT).toBeDefined();

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardContext";
 import WorkstationProvider from "./contexts/WorkstationProvider";
 import { MixerProvider } from "./contexts/MixerContext";
@@ -27,22 +27,22 @@ function App(): React.ReactElement {
   }, []);
 
   return (
-    <Router>
+    <BrowserRouter>
       <PreferencesProvider>
         <ClipboardProvider>
           <WorkstationProvider>
             <MixerProvider>
               <SettingsProvider>
-                <Routes>
-                  <Route path="/" element={<Workstation />} />
-                  <Route path="/preferences" element={<Preferences />} />
-                </Routes>
+                <div className="app">
+                  {window.location.pathname === "/" && <Workstation />}
+                  {window.location.pathname === "/preferences" && <Preferences />}
+                </div>
               </SettingsProvider>
             </MixerProvider>
           </WorkstationProvider>
         </ClipboardProvider>
       </PreferencesProvider>
-    </Router>
+    </BrowserRouter>
   );
 }
 

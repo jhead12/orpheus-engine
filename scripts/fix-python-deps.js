@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
+/**
+ * This script ensures that all required Python dependencies are installed
+ * and properly linked in the system.
+ */
 const { execSync } = require('child_process');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 
 const colors = {
     red: '\x1b[31m',
@@ -182,6 +186,90 @@ function installPythonDeps() {
 }
 
 if (require.main === module) {
+    /**
+ * This script ensures that all required Python dependencies are installed
+ * and properly linked in the system.
+ */
+const { execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+// Define paths
+const rootDir = path.resolve(__dirname, '..');
+const backendDir = path.join(rootDir, 'workstation', 'backend');
+const requirementsPath = path.join(backendDir, 'requirements.txt');
+
+console.log('🔧 Checking Python environment and fixing dependencies...');
+
+try {
+  // Check if Python is installed
+  const pythonVersion = execSync('python3 --version', { encoding: 'utf8' });
+  console.log(`✅ ${pythonVersion.trim()} found`);
+  
+  // Check if pip is installed
+  try {
+    const pipVersion = execSync('pip --version', { encoding: 'utf8' });
+    console.log(`✅ ${pipVersion.trim()}`);
+  } catch (error) {
+    console.log('⚠️ pip not found in PATH, using pip3 instead');
+    try {
+      const pip3Version = execSync('pip3 --version', { encoding: 'utf8' });
+      console.log(`✅ ${pip3Version.trim()}`);
+    } catch (pipError) {
+      console.error('❌ Neither pip nor pip3 is installed. Please install pip first.');
+      process.exit(1);
+    }
+  }
+
+  // Check if requirements file exists
+  if (!fs.existsSync(requirementsPath)) {
+    console.error(`❌ Requirements file not found at: ${requirementsPath}`);
+    process.exit(1);
+  }
+
+  // Install dependencies using pip
+  console.log(`📦 Installing Python dependencies from ${requirementsPath}...`);
+  try {
+    execSync(`pip install -r "${requirementsPath}"`, { 
+      stdio: 'inherit',
+      encoding: 'utf8'
+    });
+  } catch (pipError) {
+    // Try with pip3 if pip fails
+    try {
+      execSync(`pip3 install -r "${requirementsPath}"`, { 
+        stdio: 'inherit',
+        encoding: 'utf8'
+      });
+    } catch (pip3Error) {
+      console.error('❌ Failed to install Python dependencies.');
+      console.error(pip3Error.message);
+      process.exit(1);
+    }
+  }
+  
+  // Verify key dependencies
+  const dependencies = ['flask', 'flask_cors', 'librosa', 'numpy'];
+  console.log('🔍 Verifying installed dependencies...');
+  
+  for (const dep of dependencies) {
+    try {
+      execSync(`python3 -c "import ${dep}; print(f'✅ ${dep} is installed')"`, {
+        stdio: 'inherit',
+        encoding: 'utf8'
+      });
+    } catch (error) {
+      console.error(`❌ Failed to import ${dep}. It might not be installed correctly.`);
+    }
+  }
+  
+  console.log('✅ Python dependencies check complete.');
+} catch (error) {
+  console.error('❌ Error checking Python environment:');
+  console.error(error.message);
+  process.exit(1);
+}
+
     fixPythonDependencies();
     installPythonDeps();
 }

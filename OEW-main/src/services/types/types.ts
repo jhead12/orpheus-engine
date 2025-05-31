@@ -220,6 +220,31 @@ export interface AutomationNode {
   pos: TimelinePosition;
 }
 
+// Define the ClipAudio interface
+export interface ClipAudio {
+  audioBuffer: AudioBuffer;
+  start: TimelinePosition;
+  end: TimelinePosition;
+  buffer: ArrayBuffer | any; // Support both Node.js Buffer and browser ArrayBuffer
+  sourceDuration: number;
+  type: string;
+  sourceUrl?: string;
+  sourceFile?: string;
+}
+
+// Define Buffer interface for compatibility
+export interface Buffer<T extends ArrayBufferLike = ArrayBufferLike> {
+  [index: number]: number;
+  readonly length: number;
+  readonly buffer: T;
+  subarray(begin?: number, end?: number): Buffer;
+  slice(begin?: number, end?: number): Buffer;
+  write(string: string, offset?: number, length?: number, encoding?: string): number;
+  toJSON(): { type: 'Buffer'; data: number[] };
+  equals(otherBuffer: Uint8Array): boolean;
+  // We don't need to define all 99+ methods, just the ones used in the test
+}
+
 // Update existing enums and add new ones
 export enum TrackType {
   Audio = "audio",
