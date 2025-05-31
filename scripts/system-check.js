@@ -156,26 +156,38 @@ class SystemChecker {
     async checkBackendServices() {
         this.logHeader('Checking Backend Services');
         const backendPath = path.join(process.cwd(), 'workstation/backend');
+        const pythonPath = path.join(process.cwd(), 'python');
         
         if (fs.existsSync(backendPath)) {
-            const servicesPath = path.join(backendPath, 'agentic_rag');
-            if (fs.existsSync(servicesPath)) {
-                const services = fs.readdirSync(servicesPath)
-                    .filter(file => file.endsWith('.py') && file !== '__init__.py');
-                
-                this.logSuccess(`Found ${services.length} backend services:`);
-                services.forEach(service => {
+            // Check main backend services
+            const mainServices = fs.readdirSync(backendPath)
+                .filter(file => file.endsWith('.py') && file !== '__init__.py');
+            
+            if (mainServices.length > 0) {
+                this.logSuccess(`Found ${mainServices.length} backend services in workstation/backend:`);
+                mainServices.forEach(service => {
                     console.log(`  - ${service}`);
                 });
+            }
 
-                // Check for MCP service specifically
-                if (services.includes('rag_pipeline.py')) {
-                    this.logSuccess('RAG pipeline service is available');
-                } else {
-                    this.logWarning('RAG pipeline service not found in backend/agentic_rag/');
+            // Check Python core services
+            if (fs.existsSync(pythonPath)) {
+                const pythonServices = fs.readdirSync(pythonPath)
+                    .filter(file => file.endsWith('.py') && file !== '__init__.py');
+                
+                if (pythonServices.length > 0) {
+                    this.logSuccess(`Found ${pythonServices.length} core services in python/:`);
+                    pythonServices.forEach(service => {
+                        console.log(`  - ${service}`);
+                    });
+
+                    // Check for audio analysis specifically
+                    if (pythonServices.includes('audio_analysis.py')) {
+                        this.logSuccess('Audio analysis service is available');
+                    } else {
+                        this.logWarning('Audio analysis service not found in python/');
+                    }
                 }
-            } else {
-                this.logWarning('Backend services directory not found');
             }
         } else {
             this.logError('Backend directory not found');
@@ -276,7 +288,20 @@ class SystemChecker {
             execSync('ffmpeg -version', { stdio: 'ignore' });
             this.logSuccess('FFmpeg is installed and available');
         } catch (error) {
-            this.logWarning('FFmpeg not found in PATH - may need manual installation');
+            this.logWarning('FFmpeg not found in PATH - required for audio processing');
+            this.log('To install FFmpeg, run: npm run install-ffmpeg', colors.blue);
+            
+            const isLinux = process.platform === 'linux';
+            const isMac = process.platform === 'darwin';
+            const isWindows = process.platform === 'win32';
+            
+            if (isMac) {
+                this.log('  macOS: brew install ffmpeg', colors.blue);
+            } else if (isLinux) {
+                this.log('  Linux: sudo apt install ffmpeg (Ubuntu/Debian)', colors.blue);
+            } else if (isWindows) {
+                this.log('  Windows: Download from https://ffmpeg.org/download.html or use Chocolatey', colors.blue);
+            }
         }
     }
 
@@ -441,6 +466,11 @@ class SystemChecker {
                 recommendationCount++;
             }
             
+            if (this.warnings.some(w => w.includes('FFmpeg not found'))) {
+                this.log(`${recommendationCount}. Install FFmpeg: npm run install-ffmpeg`, colors.blue);
+                recommendationCount++;
+            }
+            
             if (this.warnings.some(w => w.includes('FFmpeg'))) {
                 this.log(`${recommendationCount}. Install FFmpeg: brew install ffmpeg (macOS) or sudo apt install ffmpeg (Linux)`, colors.blue);
                 recommendationCount++;
@@ -467,7 +497,6 @@ class SystemChecker {
         await this.checkFFmpeg();
         await this.checkElectron();
         await this.checkPorts();
-        await this.checkGitSubmodules();
         
         const allGood = await this.generateReport();
         

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { 
   Clip,
   TrackType, 
@@ -7,13 +7,20 @@ import {
   TimelinePosition,
   TimelineSettings
 } from '../services/types/types';
-import WorkstationContext, {
-  WorkstationContextType,
-  WorkstationPlugin,
-  WorkstationData,
-  StorageConnector,
-  ScrollToItem
-} from './WorkstationContext';
+
+interface WorkstationContextType {
+  // Add your workstation context properties here
+}
+
+const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
+
+export const useWorkstation = () => {
+  const context = useContext(WorkstationContext);
+  if (!context) {
+    throw new Error('useWorkstation must be used within a WorkstationProvider');
+  }
+  return context;
+};
 
 interface WorkstationProviderProps {
   children: React.ReactNode;
@@ -46,12 +53,7 @@ const WorkstationProvider: React.FC<WorkstationProviderProps> = ({ children }) =
   
   // UI state
   const [allowMenuAndShortcuts, setAllowMenuAndShortcuts] = useState(true);
-  const [showMaster] = useState(true);
-  const [metronome, setMetronome] = useState(false);
-  const [autoGridSize] = useState(16);
-  const [showTimeRuler] = useState(true);
-  const [snapGridSizeOption] = useState("1/4");
-
+  
   // Plugin registration and management
   const registerPlugin = (plugin: WorkstationPlugin) => {
     if (plugins.some(p => p.metadata?.id === plugin.metadata?.id)) {
@@ -222,36 +224,6 @@ const WorkstationProvider: React.FC<WorkstationProviderProps> = ({ children }) =
   const getPlugins = () => plugins;
   const clearPlugins = () => setPlugins([]);
 
-  // Add missing state and stub implementations for required context properties
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
-  const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const [selectedAutomationLaneId, setSelectedAutomationLaneId] = useState<string | null>(null);
-  const [selectedAutomationPointId, setSelectedAutomationPointId] = useState<string | null>(null);
-
-  // Stub implementations for missing methods
-  const deleteTrack = (_trackId: string) => { console.log("deleteTrack called"); };
-  const duplicateTrack = (_trackId: string) => { console.log("duplicateTrack called"); };
-  const getTrackCurrentValue = (_track: Track, _lane: string, _pos?: TimelinePosition) => {
-    // Stub implementation, return a default value (e.g., 0)
-    return 0;
-  };
-  const selectTrack = (trackId: string | null) => setSelectedTrackId(trackId);
-  const selectClip = (clipId: string | null) => setSelectedClipId(clipId);
-  const selectRegion = (regionId: string | null) => setSelectedRegionId(regionId);
-  const selectAutomationLane = (laneId: string | null) => setSelectedAutomationLaneId(laneId);
-  const selectAutomationPoint = (pointId: string | null) => setSelectedAutomationPointId(pointId);
-  const setTrack = (trackId: string, updates: Partial<Track>) => {
-    setTracks(prevTracks => {
-      return prevTracks.map(track => {
-        if (track.id === trackId) {
-          return { ...track, ...updates };
-        }
-        return track;
-      });
-    });
-  };
-
   const contextValue: WorkstationContextType = {
     // Plugin system
     plugins,
@@ -301,31 +273,7 @@ const WorkstationProvider: React.FC<WorkstationProviderProps> = ({ children }) =
     setShowMixer,
     
     // Allow menu shortcuts
-    allowMenuAndShortcuts,
-
-    // Properties for WorkstationContextType
-    deleteTrack,
-    duplicateTrack,
-    getTrackCurrentValue,
-    selectedTrackId,
-    setSelectedTrackId: selectTrack,
-    selectedAutomationPointId,
-    setSelectedAutomationPointId: selectAutomationPoint,
-    selectedClipId,
-    setSelectedClipId: selectClip,
-    selectedRegionId,
-    setSelectedRegionId: selectRegion,
-    selectedAutomationLaneId,
-    setSelectedAutomationLaneId: selectAutomationLane,
-    
-    // Additional properties added to match interface
-    setTrack,
-    showMaster,
-    metronome,
-    setMetronome,
-    autoGridSize,
-    showTimeRuler,
-    snapGridSizeOption
+    allowMenuAndShortcuts
   };
 
   return (

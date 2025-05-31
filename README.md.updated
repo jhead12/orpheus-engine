@@ -1,0 +1,8 @@
+<!-- Temporary file for README update -->
+#### System Health & Maintenance
+- `npm run system-check` - Run comprehensive system health validation
+- `npm run health-check` - Alias for system-check
+- `npm run fix-python-deps` - Automatically resolve Python dependency conflicts
+- `npm run update-submodules` - Update all Git submodules to their latest versions
+- `npm run doctor` - Complete system repair workflow (fix dependencies + health check)
+- `npm run verify-mcp` - Verify MCP (Model Context Protocol) package integration

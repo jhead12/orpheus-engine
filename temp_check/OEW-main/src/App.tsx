@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
+// Fix import paths based on your project structure
 import { ClipboardProvider } from "./contexts/ClipboardContext";
 import WorkstationProvider from "./contexts/WorkstationProvider";
 import { MixerProvider } from "./contexts/MixerContext";
@@ -18,31 +19,38 @@ function App(): React.ReactElement {
 
       if (!relatedTarget || (relatedTarget.tagName !== "INPUT" && relatedTarget.tagName !== "TEXTAREA")) {
         const selection = window.getSelection();
-        if (selection) selection.removeAllRanges();
+        if (selection && selection.rangeCount > 0) {
+          selection.collapseToEnd();
+        }
       }
     }
 
-    document.addEventListener("focusout", handleFocusOut);
-    return () => document.removeEventListener("focusout", handleFocusOut);
+    document.addEventListener("focusout", handleFocusOut, { capture: true });
+    return () => document.removeEventListener("focusout", handleFocusOut, { capture: true });
   }, []);
 
   return (
-    <BrowserRouter>
+    <SettingsProvider>
       <PreferencesProvider>
-        <ClipboardProvider>
-          <WorkstationProvider>
-            <MixerProvider>
-              <SettingsProvider>
-                <div className="app">
-                  {window.location.pathname === "/" && <Workstation />}
-                  {window.location.pathname === "/preferences" && <Preferences />}
-                </div>
-              </SettingsProvider>
-            </MixerProvider>
-          </WorkstationProvider>
-        </ClipboardProvider>
+        <MixerProvider>
+          <Router>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ClipboardProvider>
+                    <WorkstationProvider>
+                      <Workstation />
+                    </WorkstationProvider>
+                  </ClipboardProvider>
+                }
+              />
+            </Routes>
+            <Preferences />
+          </Router>
+        </MixerProvider>
       </PreferencesProvider>
-    </BrowserRouter>
+    </SettingsProvider>
   );
 }
 
