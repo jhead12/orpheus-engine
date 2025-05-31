@@ -7,11 +7,12 @@ console.log('Fixing sentence-transformers compatibility with huggingface_hub...'
 try {
   // Uninstall current versions
   console.log('Uninstalling current packages...');
-  execSync('pip uninstall -y sentence-transformers huggingface-hub', { stdio: 'inherit' });
+  execSync('pip uninstall -y sentence-transformers huggingface-hub transformers tokenizers', { stdio: 'inherit' });
   
-  // Install compatible versions
+  // Install compatible versions for Python 3.12
   console.log('Installing compatible versions...');
-  execSync('pip install huggingface-hub==0.12.0 sentence-transformers==2.2.2', { stdio: 'inherit' });
+  execSync('pip install --only-binary=:all: transformers==4.40.0 tokenizers==0.19.1', { stdio: 'inherit' });
+  execSync('pip install --only-binary=:all: sentence-transformers==2.6.1', { stdio: 'inherit' });
   
   console.log('Fix completed successfully! You should now be able to import sentence_transformers.');
 } catch (error) {
