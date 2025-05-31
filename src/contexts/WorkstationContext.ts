@@ -104,6 +104,17 @@ export interface WorkstationContextType {
   getTrackCurrentValue: (track: Track, lane: string, pos?: TimelinePosition) => number;
   selectedTrackId: string | null;
   setSelectedTrackId: (id: string | null) => void;
+  
+  // Selection properties
+  selectedClipId: string | null;
+  setSelectedClipId: (id: string | null) => void;
+  selectedRegionId: string | null;
+  setSelectedRegionId: (id: string | null) => void;
+  selectedAutomationPointId: string | null;
+  setSelectedAutomationPointId: (id: string | null) => void;
+  selectedAutomationLaneId?: string | null;
+  setSelectedAutomationLaneId?: (id: string | null) => void;
+  
   setTrack: (trackId: string, updates: Partial<Track>) => void;
   showMaster: boolean;
   

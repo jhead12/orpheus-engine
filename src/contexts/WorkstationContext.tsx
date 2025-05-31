@@ -92,6 +92,18 @@ export interface WorkstationContextType {
   loadWorkstation: (id: string) => Promise<boolean>;
   listWorkstations: () => Promise<string[]>;
   createNewWorkstation: (name: string) => void;
+
+  // Selection state
+  selectedTrackId: string | null;
+  setSelectedTrackId: (trackId: string | null) => void;
+  selectedClipId: string | null;
+  setSelectedClipId: (clipId: string | null) => void;
+  selectedRegionId: string | null;
+  setSelectedRegionId: (regionId: string | null) => void;
+  selectedAutomationLaneId: string | null;
+  setSelectedAutomationLaneId: (laneId: string | null) => void;
+  selectedAutomationPointId: string | null;
+  setSelectedAutomationPointId: (pointId: string | null) => void;
 }
 
 // Create the context with null as default

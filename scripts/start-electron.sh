@@ -98,7 +98,6 @@ echo "Vite server started successfully!"
 echo "Application is running. Press Ctrl+C to stop."
 
 # Start Electron with the provided arguments
-cd workstation/frontend
 npm run electron-dev -- $args
 
 # Keep the script running until user presses Ctrl+C

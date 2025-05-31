@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "electron-dev": "concurrently \"VITE_DEV_SERVER_URL=http://localhost:5174 vite\" \"wait-on tcp:5174 && electron ../../electron/main.js\"",
+    "electron-build": "tsc && vite build && electron-builder"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
