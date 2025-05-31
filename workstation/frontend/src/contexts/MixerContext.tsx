@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Track } from '../services/types/types';
+import React, { createContext, useContext, useState, useRef, ReactNode } from 'react';
+import { audioContext } from '../services/utils/audio';
 
 interface MixerContextType {
   masterVolume: number;
@@ -8,39 +8,120 @@ interface MixerContextType {
   updateTrackPan: (trackId: string, value: number) => void;
   soloTrack: (trackId: string) => void;
   muteTrack: (trackId: string) => void;
+  isSolo: (trackId: string) => boolean;
+  isMuted: (trackId: string) => boolean;
+  getTrackGainNode: (trackId: string) => GainNode;
+  getTrackPanNode: (trackId: string) => StereoPannerNode;
 }
 
 const MixerContext = createContext<MixerContextType | undefined>(undefined);
 
-export const MixerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const MixerProvider = ({ children }: { children: ReactNode }) => {
   const [masterVolume, setMasterVolume] = useState(1);
+  const [soloTracks, setSoloTracks] = useState<Set<string>>(new Set());
+  const [mutedTracks, setMutedTracks] = useState<Set<string>>(new Set());
+  const [trackVolumes, setTrackVolumes] = useState<Map<string, number>>(new Map());
+  const [trackPans, setTrackPans] = useState<Map<string, number>>(new Map());
+  
+  // Audio nodes for mixing
+  const masterGainNode = useRef(audioContext.createGain());
+  const trackGainNodes = useRef<Map<string, GainNode>>(new Map());
+  const trackPanNodes = useRef<Map<string, StereoPannerNode>>(new Map());
 
-  // Note: actual track states are managed in WorkstationContext
-  // This context only handles mixer-specific operations
+  // Initialize master gain node
+  React.useEffect(() => {
+    masterGainNode.current.connect(audioContext.destination);
+    return () => {
+      masterGainNode.current.disconnect();
+    };
+  }, []);
 
+  // Update master volume
+  React.useEffect(() => {
+    masterGainNode.current.gain.value = masterVolume;
+  }, [masterVolume]);
+
+  // Create or get track audio nodes
+  const getTrackGainNode = (trackId: string): GainNode => {
+    if (!trackGainNodes.current.has(trackId)) {
+      const gainNode = audioContext.createGain();
+      const panNode = getTrackPanNode(trackId);
+      gainNode.connect(panNode);
+      trackGainNodes.current.set(trackId, gainNode);
+    }
+    return trackGainNodes.current.get(trackId)!;
+  };
+
+  const getTrackPanNode = (trackId: string): StereoPannerNode => {
+    if (!trackPanNodes.current.has(trackId)) {
+      const panNode = audioContext.createStereoPanner();
+      panNode.connect(masterGainNode.current);
+      trackPanNodes.current.set(trackId, panNode);
+    }
+    return trackPanNodes.current.get(trackId)!;
+  };
+
+  // Track controls
   const updateTrackVolume = (trackId: string, value: number) => {
-    // Implement through WorkstationContext
+    setTrackVolumes(prev => new Map(prev).set(trackId, value));
+    const gainNode = getTrackGainNode(trackId);
+    gainNode.gain.value = value;
   };
 
   const updateTrackPan = (trackId: string, value: number) => {
-    // Implement through WorkstationContext
+    setTrackPans(prev => new Map(prev).set(trackId, value));
+    const panNode = getTrackPanNode(trackId);
+    panNode.pan.value = value;
   };
 
   const soloTrack = (trackId: string) => {
-    // Implement through WorkstationContext
+    setSoloTracks(prev => {
+      const next = new Set(prev);
+      if (next.has(trackId)) {
+        next.delete(trackId);
+      } else {
+        next.add(trackId);
+      }
+      return next;
+    });
   };
 
   const muteTrack = (trackId: string) => {
-    // Implement through WorkstationContext
+    setMutedTracks(prev => {
+      const next = new Set(prev);
+      if (next.has(trackId)) {
+        next.delete(trackId);
+      } else {
+        next.add(trackId);
+      }
+      return next;
+    });
   };
 
-  const value: MixerContextType = {
+  const isSolo = (trackId: string): boolean => soloTracks.has(trackId);
+  const isMuted = (trackId: string): boolean => {
+    // Track is muted if explicitly muted or if any track is soloed and this one isn't
+    return mutedTracks.has(trackId) || (soloTracks.size > 0 && !soloTracks.has(trackId));
+  };
+
+  // Update track gains based on solo/mute state
+  React.useEffect(() => {
+    trackGainNodes.current.forEach((gainNode, trackId) => {
+      gainNode.gain.value = isMuted(trackId) ? 0 : (trackVolumes.get(trackId) || 1);
+    });
+  }, [soloTracks, mutedTracks]);
+
+  const value = {
     masterVolume,
     setMasterVolume,
     updateTrackVolume,
     updateTrackPan,
     soloTrack,
     muteTrack,
+    isSolo,
+    isMuted,
+    getTrackGainNode,
+    getTrackPanNode
   };
 
   return (
