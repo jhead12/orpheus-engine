@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream
-import React, { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
-=======
 import React, { useEffect, useState } from "react";
->>>>>>> Stashed changes
+import { BrowserRouter } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardContext";
 import WorkstationProvider from "./contexts/WorkstationProvider"; // Moved from OEW-main
 import { MixerProvider } from "./contexts/MixerContext";
@@ -14,9 +10,6 @@ import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
 import "./styles/App.css";
 
-<<<<<<< Updated upstream
-function App(): React.ReactElement {
-=======
 // Import DAW components
 import AudioRecorderComponent from './components/daw/AudioRecorderComponent';
 import { isElectron } from './utils/electron';
@@ -27,8 +20,6 @@ interface AppProps {
 
 function App({ onReady }: AppProps): React.ReactElement {
   const [isLoaded, setIsLoaded] = useState(false);
-
->>>>>>> Stashed changes
   useEffect(() => {
     // Workaround to the dumb electron bug where blurring inputs with selected text does not make
     // the Electron > Services submenu go back to showing only the 'Development' section
@@ -45,40 +36,15 @@ function App({ onReady }: AppProps): React.ReactElement {
     return () => document.removeEventListener("focusout", handleFocusOut);
   }, []);
 
-<<<<<<< Updated upstream
-  return (
-    <BrowserRouter>
-      <PreferencesProvider>
-        <ClipboardProvider>
-          <WorkstationProvider>
-            <MixerProvider>
-              <SettingsProvider>
-                <div className="app-container">
-                  <header className="app-header">
-                    <h1>Orpheus Engine Workstation</h1>
-                  </header>
-                  <main className="app-main">
-                    <div className="welcome-message">
-                      <h2>Digital Audio Workstation</h2>
-                      <p>Welcome to Orpheus Engine! Your audio production hub is {isLoaded ? "ready" : "loading..."}</p>
-                    </div>
+  useEffect(() => {
+    // Signal that the app is ready once mounted
+    setIsLoaded(true);
+    if (onReady) {
+      onReady();
+    }
+  }, [onReady]);
 
-                    {/* Uncomment when components are ready */}
-                    {/* <section className="main-controls">
-                      <AudioRecorderComponent />
-                    </section> */}
-                  </main>
-                  <footer className="app-footer">
-                    <p>Orpheus Engine v1.0.9</p>
-                  </footer>
-                </div>
-              </SettingsProvider>
-            </MixerProvider>
-          </WorkstationProvider>
-        </ClipboardProvider>
-      </PreferencesProvider>
-    </BrowserRouter>
-=======
+  // Check if we're running in desktop mode
   useEffect(() => {
     // Signal that the app is ready once mounted
     setIsLoaded(true);
@@ -131,7 +97,6 @@ function App({ onReady }: AppProps): React.ReactElement {
         </DAWProvider>
       </MixerProvider>
     </PreferencesProvider>
->>>>>>> Stashed changes
   );
 }
 
