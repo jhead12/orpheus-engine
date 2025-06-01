@@ -60,3 +60,8 @@ yarn-error.log*
 # Environment variables
 .env
 .env.*
+
+# Archives
+*.tar.gz
+*.zip
+archives/
