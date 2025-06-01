@@ -2,15 +2,16 @@
  * Helper script to launch Electron with the proper flags in Codespaces
  */
 
-const { spawn } = require('child_process');
-const { createServer } = require('vite');
+const { spawn, execSync } = require('child_process');
 const electron = require('electron');
 const path = require('path');
 const waitOn = require('wait-on');
-const { execSync } = require('child_process');
 
 async function startViteAndElectron() {
   try {
+    // Import Vite using dynamic import to avoid CJS deprecation warning
+    const { createServer } = await import('vite');
+    
     // Create Vite server
     const server = await createServer({
       configFile: path.resolve(__dirname, 'vite.config.ts'),

@@ -43,7 +43,8 @@
     "test": "npm run test:frontend || echo 'Tests skipped - react-scripts not found'",
     "test:frontend": "cd workstation/frontend && (test -f node_modules/.bin/react-scripts && npm test -- --watchAll=false --passWithNoTests || echo 'Skipping tests - react-scripts not installed')",
     "lint": "npm run lint:frontend",
-    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf workstation/frontend/node_modules workstation/frontend/yarn.lock && rm -rf workstation/backend/node_modules workstation/backend/yarn.lock && echo 'Installing dependencies...' && yarn install",
+    "clean": "echo 'Cleaning workspace...' && rm -rf node_modules yarn.lock && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/yarn.lock && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/yarn.lock && echo 'Installing dependencies...' && yarn install",
+    "clean-only": "echo 'Cleaning workspace (no reinstall)...' && rm -rf node_modules yarn.lock && rm -rf orpheus-engine-workstation/frontend/node_modules orpheus-engine-workstation/frontend/yarn.lock && rm -rf orpheus-engine-workstation/backend/node_modules orpheus-engine-workstation/backend/yarn.lock && echo 'Cleanup complete. Run yarn install to reinstall.'",
     "lint:frontend": "echo 'Linting frontend via build process...' && cd workstation/frontend && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "validate": "npm run test && npm run lint",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
@@ -68,8 +69,8 @@
     "setup-symlinks": "node scripts/setup-symlinks.js",
     "presync-versions": "npm run setup-symlinks",
     "prebuild": "npm run setup-symlinks",
-    "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"/home/codespace/.npm\" || true",
-    "start:vite": "cd orpheus-engine-workstation/frontend && npm run dev",
+    "fix-permissions": "sudo chown -R $(whoami) ~/.npm || true",
+    "start:vite": "cd workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
     "fix-tokenizers": "node scripts/fix-tokenizers.js",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
@@ -78,6 +79,7 @@
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "conventional-changelog-cli": "^4.1.0",
     "electron": "^36.3.1"
   },
