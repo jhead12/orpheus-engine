@@ -44,6 +44,9 @@ async function promptForVersion() {
             rl.close();
             resolve(version.trim());
         });
+    });
+}
+
 async function updateVersion(version) {
     try {
         // Update version in package.json
@@ -62,9 +65,6 @@ async function updateVersion(version) {
 }
 
 async function updateChangelog(version) {
-    const changelogPath = path.join(ROOT_DIR, 'CHANGELOG.md');
-    const date = new Date().toISOString().split('T')[0];
-    const newEntry = `\n## [${version}] - ${date}\n\n### Changed\n- Updated user submodules to latest versions\n\n`;
     const changelogPath = path.join(ROOT_DIR, 'CHANGELOG.md');
     const date = new Date().toISOString().split('T')[0];
     const newEntry = `\n## [${version}] - ${date}\n\n### Changed\n- Updated user submodules to latest versions\n\n`;

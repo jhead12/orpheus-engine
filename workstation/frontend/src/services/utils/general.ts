@@ -115,3 +115,57 @@ export function debounce<T extends (...args: any[]) => any>(
   
   return debouncedFunction;
 }
+
+/**
+ * Mathematical utility functions
+ */
+
+/**
+ * Clamp a value between min and max
+ */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+/**
+ * Linear interpolation between two values
+ */
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+/**
+ * Inverse linear interpolation - find t for a value between a and b
+ */
+export function inverseLerp(a: number, b: number, value: number): number {
+  if (a === b) return 0;
+  return (value - a) / (b - a);
+}
+
+/**
+ * Generate a random number between min and max
+ */
+export function random(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
+/**
+ * Generate a random integer between min and max (inclusive)
+ */
+export function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Convert degrees to radians
+ */
+export function degToRad(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}
+
+/**
+ * Convert radians to degrees
+ */
+export function radToDeg(radians: number): number {
+  return radians * (180 / Math.PI);
+}

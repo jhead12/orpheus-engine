@@ -1,11 +1,51 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Clip, Track } from '../services/types/types';
 
 interface ClipboardContextType {
-  clipboardContent: any;
-  copyToClipboard: (content: any) => void;
+  copyClip: (clip: Clip) => void;
+  copyTrack: (track: Track) => void;
+  getPasteableClip: () => Clip | null;
+  getPasteableTrack: () => Track | null;
+  hasCopiedClip: boolean;
+  hasCopiedTrack: boolean;
 }
 
 const ClipboardContext = createContext<ClipboardContextType | undefined>(undefined);
+
+export const ClipboardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [copiedClip, setCopiedClip] = useState<Clip | null>(null);
+  const [copiedTrack, setCopiedTrack] = useState<Track | null>(null);
+
+  const copyClip = (clip: Clip) => {
+    setCopiedClip({ ...clip, id: Math.random().toString() });
+  };
+
+  const copyTrack = (track: Track) => {
+    setCopiedTrack({ 
+      ...track, 
+      id: Math.random().toString(),
+      clips: track.clips.map(clip => ({ ...clip, id: Math.random().toString() }))
+    });
+  };
+
+  const getPasteableClip = () => copiedClip;
+  const getPasteableTrack = () => copiedTrack;
+
+  const value: ClipboardContextType = {
+    copyClip,
+    copyTrack,
+    getPasteableClip,
+    getPasteableTrack,
+    hasCopiedClip: !!copiedClip,
+    hasCopiedTrack: !!copiedTrack,
+  };
+
+  return (
+    <ClipboardContext.Provider value={value}>
+      {children}
+    </ClipboardContext.Provider>
+  );
+};
 
 export const useClipboard = () => {
   const context = useContext(ClipboardContext);
@@ -15,16 +55,4 @@ export const useClipboard = () => {
   return context;
 };
 
-export const ClipboardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [clipboardContent, setClipboardContent] = useState<any>(null);
-
-  const copyToClipboard = (content: any) => {
-    setClipboardContent(content);
-  };
-
-  return (
-    <ClipboardContext.Provider value={{ clipboardContent, copyToClipboard }}>
-      {children}
-    </ClipboardContext.Provider>
-  );
-};
+export default ClipboardProvider;
