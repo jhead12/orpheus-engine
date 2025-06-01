@@ -227,6 +227,18 @@ function main() {
     // Then proceed with Python setup
     setupPython();
     
+    // Check and install macOS-specific dependencies if on macOS
+    const isMacOS = os.platform() === 'darwin';
+    if (isMacOS) {
+        log('📱 Detected macOS, installing macOS-specific dependencies...', colors.blue);
+        try {
+            execSync('bash scripts/fix-macos-dependencies.sh', { stdio: 'inherit' });
+            log('✅ macOS-specific dependencies installed successfully', colors.green);
+        } catch (error) {
+            log('❌ Failed to install macOS-specific dependencies:', colors.red, error.message);
+        }
+    }
+    
     log('🎉 Environment setup completed successfully!', colors.green);
 }
 
