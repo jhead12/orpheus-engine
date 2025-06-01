@@ -2,9 +2,18 @@
   "name": "orpheus-engine",
   "version": "1.0.15",
   "private": true,
+  "productName": "Orpheus Engine",
   "workspaces": [
     "orpheus-engine-workstation/*"
   ],
+  "build": {
+    "appId": "com.orpheus.engine",
+    "productName": "Orpheus Engine",
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "assets/icons/icon.png"
+  },
   "dependencies": {
     "@mui/material": "^7.1.0",
     "@types/lodash": "^4.17.17",

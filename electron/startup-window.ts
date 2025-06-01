@@ -13,6 +13,19 @@ export class StartupWindow {
     }
 
     create(): BrowserWindow {
+        // Select icon based on platform
+        let iconPath;
+        switch (process.platform) {
+            case 'win32':
+                iconPath = path.join(__dirname, '../assets/icons/icon.ico');
+                break;
+            case 'darwin':
+                iconPath = path.join(__dirname, '../assets/icons/icon.icns');
+                break;
+            default:
+                iconPath = path.join(__dirname, '../assets/icons/icon.png');
+        }
+        
         this.window = new BrowserWindow({
             width: 800,
             height: 600,
@@ -21,6 +34,8 @@ export class StartupWindow {
             alwaysOnTop: true,
             center: true,
             show: false,
+            title: 'Orpheus Engine - Startup',
+            icon: iconPath,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
