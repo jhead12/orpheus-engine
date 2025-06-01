@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine-workstation-frontend",
-  "version": "1.0.9",
+  "version": "1.0.17",
   "description": "Frontend for the Orpheus Engine Workstation, providing a user interface for audio search and retrieval.",
   "main": "src/index.tsx",
   "scripts": {
