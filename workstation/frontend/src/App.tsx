@@ -53,9 +53,24 @@ function App({ onReady }: AppProps): React.ReactElement {
           <WorkstationProvider>
             <MixerProvider>
               <SettingsProvider>
-                <div className="app">
-                  {window.location.pathname === "/" && <Workstation />}
-                  {window.location.pathname === "/preferences" && <Preferences />}
+                <div className="app-container">
+                  <header className="app-header">
+                    <h1>Orpheus Engine Workstation</h1>
+                  </header>
+                  <main className="app-main">
+                    <div className="welcome-message">
+                      <h2>Digital Audio Workstation</h2>
+                      <p>Welcome to Orpheus Engine! Your audio production hub is {isLoaded ? "ready" : "loading..."}</p>
+                    </div>
+
+                    {/* Uncomment when components are ready */}
+                    {/* <section className="main-controls">
+                      <AudioRecorderComponent />
+                    </section> */}
+                  </main>
+                  <footer className="app-footer">
+                    <p>Orpheus Engine v1.0.9</p>
+                  </footer>
                 </div>
               </SettingsProvider>
             </MixerProvider>

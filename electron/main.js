@@ -112,6 +112,8 @@ class OrpheusEngine {
         });
     }
     async start() {
+        // Set application name
+        electron_1.app.name = 'Orpheus Engine';
         await electron_1.app.whenReady();
         // Create and show startup window
         this.startupWindow.create();
@@ -144,6 +146,18 @@ class OrpheusEngine {
     createMainWindow() {
         if (this.mainWindow !== null)
             return;
+        // Select icon based on platform
+        let iconPath;
+        switch (process.platform) {
+            case 'win32':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.ico');
+                break;
+            case 'darwin':
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.icns');
+                break;
+            default:
+                iconPath = path_1.default.join(__dirname, '../assets/icons/icon.png');
+        }
         this.mainWindow = new electron_1.BrowserWindow({
             width: 1400,
             height: 900,
@@ -155,6 +169,8 @@ class OrpheusEngine {
                 contextIsolation: false,
             },
             titleBarStyle: 'hiddenInset',
+            title: 'Orpheus Engine',
+            icon: iconPath,
             show: false
         });
         // Load the DAW interface

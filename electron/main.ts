@@ -115,6 +115,8 @@ class OrpheusEngine {
   }
 
   async start() {
+    // Set application name
+    app.name = 'Orpheus Engine';
     await app.whenReady();
     
     // Create and show startup window
@@ -153,6 +155,19 @@ class OrpheusEngine {
   private createMainWindow() {
     if (this.mainWindow !== null) return;
 
+    // Select icon based on platform
+    let iconPath;
+    switch (process.platform) {
+      case 'win32':
+        iconPath = path.join(__dirname, '../assets/icons/icon.ico');
+        break;
+      case 'darwin':
+        iconPath = path.join(__dirname, '../assets/icons/icon.icns');
+        break;
+      default:
+        iconPath = path.join(__dirname, '../assets/icons/icon.png');
+    }
+
     this.mainWindow = new BrowserWindow({
       width: 1400,
       height: 900,
@@ -164,6 +179,8 @@ class OrpheusEngine {
         contextIsolation: false,
       },
       titleBarStyle: 'hiddenInset',
+      title: 'Orpheus Engine',
+      icon: iconPath,
       show: false
     });
 
