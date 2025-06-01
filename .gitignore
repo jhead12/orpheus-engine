@@ -1,5 +1,6 @@
 # Node
 node_modules/
+**/node_modules/
 dist/
 build/
 coverage/
@@ -13,6 +14,7 @@ __pycache__/
 .Python
 env/
 venv/
+**/venv/
 .env/
 .venv/
 pip-log.txt
@@ -33,8 +35,20 @@ coverage.xml
 chroma_db/
 processed_audio/
 model/
+**/model/
+**/models/
+**/models/*.gguf
+*.gguf
 audio_clips/
 data/
+
+# Large binary files
+*.dylib
+*.so
+*.dll
+**/go-ipfs/
+workstation/backend/models/
+workstation/model/
 
 # Logs
 logs/

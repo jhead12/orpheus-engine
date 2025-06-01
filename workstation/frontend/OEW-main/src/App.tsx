@@ -8,6 +8,14 @@ import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
 import "./styles/App.css";
+import "./styles/daw.css";
+
+// Import DAW components
+import { DAWProvider } from "./contexts/DAWContext";
+import AudioAnalyzer from "./components/daw/AudioAnalyzer";
+import Timeline from "./components/daw/Timeline";
+import MixerControls from "./components/daw/MixerControls";
+import TransportControls from "./components/daw/TransportControls";
 
 function App(): React.ReactElement {
   useEffect(() => {
@@ -32,21 +40,42 @@ function App(): React.ReactElement {
     <SettingsProvider>
       <PreferencesProvider>
         <MixerProvider>
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <ClipboardProvider>
-                    <WorkstationProvider>
-                      <Workstation />
-                    </WorkstationProvider>
-                  </ClipboardProvider>
-                }
-              />
-            </Routes>
-            <Preferences />
-          </Router>
+          <DAWProvider>
+            <Router>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <ClipboardProvider>
+                      <WorkstationProvider>
+                        <div className="app-container">
+                          <div className="daw-container">
+                            <TransportControls />
+                            <Timeline
+                              width={window.innerWidth}
+                              height={100}
+                              position={{ bar: 0, beat: 0, fraction: 0 }}
+                              zoom={1}
+                              onPositionChange={(pos) => {
+                                // Position change handler
+                                console.log("Position changed:", pos);
+                              }}
+                            />
+                            <div className="main-content">
+                              <Workstation />
+                              <AudioAnalyzer width={300} height={200} visualizerType="frequency" />
+                            </div>
+                            <MixerControls />
+                          </div>
+                        </div>
+                      </WorkstationProvider>
+                    </ClipboardProvider>
+                  }
+                />
+              </Routes>
+              <Preferences />
+            </Router>
+          </DAWProvider>
         </MixerProvider>
       </PreferencesProvider>
     </SettingsProvider>
