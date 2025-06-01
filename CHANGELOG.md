@@ -1,3 +1,20 @@
+## [1.0.15](https://github.com/jhead12/orpheus-engine/compare/v1.0.11...v1.0.15) (2025-06-01)
+
+
+### Bug Fixes
+
+* resolve merge conflicts in App.tsx ([7b01ffd](https://github.com/jhead12/orpheus-engine/commit/7b01ffdf785e00953d31de4b61fca576fe14a4ce))
+* resolve merge conflicts in types.ts and improve TimelinePosition class ([edfeaf8](https://github.com/jhead12/orpheus-engine/commit/edfeaf8c4a43e358576023c525cca344977c6ced))
+* resolve tokenizers compilation issues for Python 3.12 ([6593aba](https://github.com/jhead12/orpheus-engine/commit/6593abae54c38dcd2a04bea4a2df50dff81d3a71))
+* update workspace paths from orpheus-engine-workstation to workstation ([7367f10](https://github.com/jhead12/orpheus-engine/commit/7367f1075cbfb5a844aa795173fe4ba57a771515))
+
+
+### Features
+
+* **audio:** implement audio exporting and recording features ([6e4e4d1](https://github.com/jhead12/orpheus-engine/commit/6e4e4d1195113c3dc2fa2a379c76b15d92a42496))
+
+
+
 ## [1.0.14](https://github.com/jhead12/orpheus-engine/compare/v1.0.13...v1.0.14) (2025-05-28)
 
 

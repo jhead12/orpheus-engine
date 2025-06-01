@@ -78,6 +78,7 @@
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "conventional-changelog-cli": "^4.1.0",
     "electron": "^36.3.1"
   },
