@@ -1,0 +1,284 @@
+/* DAW Component Styles */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg1);
+  color: var(--border6);
+}
+
+.daw-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Timeline */
+.timeline-container {
+  width: 100%;
+  height: 100px;
+  background-color: var(--bg2);
+  border-bottom: 1px solid var(--border1);
+  user-select: none;
+}
+
+/* Main content area */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Audio analyzer */
+.audio-analyzer-container {
+  width: 300px;
+  background-color: var(--bg4);
+  border-left: 1px solid var(--border1);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.audio-analyzer {
+  background-color: var(--bg3);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Mixer controls */
+.mixer-container {
+  width: 100%;
+  background-color: var(--bg2);
+  border-top: 1px solid var(--border1);
+  display: flex;
+  flex-direction: column;
+}
+
+.mixer-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border1);
+}
+
+.mixer-tracks {
+  display: flex;
+  padding: 8px;
+  overflow-x: auto;
+  height: 150px;
+}
+
+.mixer-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  background-color: var(--bg3);
+  border-radius: 4px;
+  margin-right: 4px;
+  padding: 8px;
+}
+
+.track-name {
+  font-size: 12px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.track-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.volume-slider {
+  height: 80px;
+  margin-bottom: 8px;
+}
+
+.vertical-slider {
+  appearance: none;
+  height: 100%;
+  width: 8px;
+  background: var(--bg5);
+  border-radius: 4px;
+  transform: rotate(180deg);
+}
+
+.vertical-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 8px;
+  background: var(--color1);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.track-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.track-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background-color: var(--bg4);
+  color: var(--border6);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.track-button:hover {
+  background-color: var(--bg5);
+}
+
+.track-button.active {
+  background-color: var(--color1);
+  color: var(--bg1);
+}
+
+.control-button {
+  background-color: var(--bg4);
+  color: var(--border6);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: 16px;
+}
+
+.control-button:hover {
+  background-color: var(--bg5);
+}
+
+.control-button.active {
+  background-color: var(--color1);
+  color: var(--bg1);
+}
+
+.tempo-control {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.tempo-control label {
+  margin-right: 8px;
+}
+
+.tempo-control input {
+  width: 50px;
+  background-color: var(--bg4);
+  color: var(--border6);
+  border: 1px solid var(--border1);
+  border-radius: 4px;
+  padding: 4px;
+  text-align: right;
+}
+
+.tempo-control span {
+  margin-left: 4px;
+}
+
+.toggle-mixer-button {
+  background-color: var(--bg4);
+  color: var(--border6);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: auto;
+}
+
+.toggle-mixer-button:hover {
+  background-color: var(--bg5);
+}
+
+/* Transport Controls */
+.transport-controls {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg3);
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border1);
+}
+
+.transport-section {
+  display: flex;
+  align-items: center;
+  margin-right: 24px;
+}
+
+.position-display {
+  min-width: 150px;
+}
+
+.position-label {
+  margin-right: 8px;
+}
+
+.position-value {
+  font-family: monospace;
+  font-size: 14px;
+  background-color: var(--bg4);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.transport-button {
+  background-color: var(--bg4);
+  color: var(--border6);
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  margin-right: 4px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.transport-button:hover {
+  background-color: var(--bg5);
+}
+
+.transport-button.active {
+  background-color: var(--color1);
+  color: var(--bg1);
+}
+
+.tempo-label {
+  margin-right: 8px;
+}
+
+.tempo-input {
+  width: 50px;
+  background-color: var(--bg4);
+  color: var(--border6);
+  border: 1px solid var(--border1);
+  border-radius: 4px;
+  padding: 4px;
+  text-align: right;
+}
+
+.tempo-unit {
+  margin-left: 8px;
+}

@@ -178,18 +178,19 @@ function installPythonDependencies() {
     try {
         log('Installing Python dependencies...', colors.blue);
         
-        // Try to install pre-built wheels first
+        // Try to install pre-built wheels first for all relevant packages
         try {
-            execSync('pip install --only-binary=:all: tokenizers', { 
+            execSync('pip install --only-binary=:all: tokenizers==0.19.1 transformers==4.40.0 sentence-transformers==2.6.1', {
                 stdio: 'inherit',
                 shell: '/bin/bash'
             });
+            log('✅ Installed tokenizers, transformers, and sentence-transformers from binary wheels', colors.green);
         } catch (error) {
-            log('⚠️ Failed to install pre-built tokenizers wheel, will build from source:', colors.yellow, error.message);
+            log('⚠️ Failed to install pre-built wheels for tokenizers/transformers/sentence-transformers, will build from source:', colors.yellow, error.message);
         }
         
         // Install other dependencies
-        execSync('pip install huggingface-hub==0.12.0 sentence-transformers==2.2.2', { 
+        execSync('pip install huggingface-hub==0.12.0', { 
             stdio: 'inherit',
             shell: '/bin/bash',
             env: { ...process.env }

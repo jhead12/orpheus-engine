@@ -24,7 +24,10 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "fix-vite": "npm install --save-dev @vitejs/plugin-react",
-    "fix-electron-path": "node scripts/fix-electron-path.js"
+    "fix-electron-path": "node scripts/fix-electron-path.js",
+    "fix-macos-tokenizers": "python ./scripts/fix-tokenizers-macos.py",
+    "fix-dependencies": "bash ./scripts/fix-dependencies.sh",
+    "setup-python": "npm run fix-dependencies"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

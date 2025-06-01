@@ -1,233 +1,27 @@
-import React, { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
-import { AudioService } from '../services/AudioService';
-import { ClipService } from '../services/daw/clipService';
-import { AudioExporter } from '../services/audio/audioExporter';
-import { Track, Clip, TimelinePosition, TrackType } from '../types/types';
-import { audioContext } from '../services/utils/audio';
-import { useMixer } from './MixerContext';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface DAWContextType {
-  audioService: AudioService;
-  clipService: ClipService;
-  audioExporter: AudioExporter;
-  isReady: boolean;
-  currentTrack: Track | null;
-  currentClip: Clip | null;
-  tracks: Track[];
-  clips: Map<string, Clip[]>;
-  playbackPosition: TimelinePosition;
-  isPlaying: boolean;
-  isRecording: boolean;
-  setCurrentTrack: (track: Track | null) => void;
-  setCurrentClip: (clip: Clip | null) => void;
-  addTrack: (name: string, type: TrackType) => Track;
-  removeTrack: (trackId: string) => void;
-  addClip: (trackId: string, clip: Clip) => void;
-  removeClip: (trackId: string, clipId: string) => void;
-  startPlayback: (startPosition?: TimelinePosition) => void;
-  stopPlayback: () => void;
-  startRecording: (trackId: string, deviceId?: string) => Promise<void>;
-  stopRecording: () => Promise<Clip | null>;
-  exportProject: (options?: any) => Promise<void>;
+interface TimelinePosition {
+  bar: number;
+  beat: number;
+  fraction: number;
 }
 
-const DAWContext = createContext<DAWContextType | undefined>(undefined);
-
-export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isReady, setIsReady] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
-  const [currentClip, setCurrentClip] = useState<Clip | null>(null);
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [clips, setClips] = useState<Map<string, Clip[]>>(new Map());
-  const [playbackPosition, setPlaybackPosition] = useState(new TimelinePosition());
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-
-  const mixer = useMixer();
-  const audioServiceRef = useRef<AudioService>(new AudioService());
-  const clipServiceRef = useRef<ClipService>(new ClipService());
-  const audioExporterRef = useRef<AudioExporter>(new AudioExporter());
-  const playbackIntervalRef = useRef<number | null>(null);
-
-  // Initialize audio context and services
-  useEffect(() => {
-    const initAudio = async () => {
-      try {
-        await audioContext.resume();
-        setIsReady(true);
-      } catch (error) {
-        console.error('Failed to initialize audio context:', error);
-      }
-    };
-
-    initAudio();
-
-    return () => {
-      // Cleanup
-      if (playbackIntervalRef.current) {
-        window.clearInterval(playbackIntervalRef.current);
-      }
-      audioServiceRef.current.dispose();
-    };
-  }, []);
-
-  // Track management
-  const addTrack = (name: string, type: TrackType): Track => {
-    const track: Track = {
-      id: crypto.randomUUID(),
-      name,
-      type,
-      clips: [],
-      mute: false,
-      solo: false,
-      volume: 1,
-      pan: 0
-    };
-    setTracks(prev => [...prev, track]);
-    setClips(prev => new Map(prev).set(track.id, []));
-    return track;
+interface DAWContextType {
+  audioService: {
+    getWaveformData: () => Promise<Float32Array>;
+    getFrequencyData: () => Promise<Float32Array>;
   };
+  isPlaying: boolean;
+  togglePlayback: () => void;
+  currentPosition: TimelinePosition;
+  setPosition: (position: TimelinePosition) => void;
+  tempo: number;
+  setTempo: (tempo: number) => void;
+  timeSignature: { beats: number, noteValue: number };
+  setTimeSignature: (timeSignature: { beats: number, noteValue: number }) => void;
+}
 
-  const removeTrack = (trackId: string) => {
-    setTracks(prev => prev.filter(t => t.id !== trackId));
-    setClips(prev => {
-      const next = new Map(prev);
-      next.delete(trackId);
-      return next;
-    });
-  };
-
-  // Clip management
-  const addClip = (trackId: string, clip: Clip) => {
-    setClips(prev => {
-      const next = new Map(prev);
-      const trackClips = next.get(trackId) || [];
-      next.set(trackId, [...trackClips, clip]);
-      return next;
-    });
-  };
-
-  const removeClip = (trackId: string, clipId: string) => {
-    setClips(prev => {
-      const next = new Map(prev);
-      const trackClips = next.get(trackId) || [];
-      next.set(trackId, trackClips.filter(c => c.id !== clipId));
-      return next;
-    });
-  };
-
-  // Playback control
-  const startPlayback = (startPosition?: TimelinePosition) => {
-    if (startPosition) {
-      setPlaybackPosition(startPosition);
-    }
-
-    // Schedule all clips that start after the current position
-    tracks.forEach(track => {
-      const trackClips = clips.get(track.id) || [];
-      trackClips.forEach(clip => {
-        if (clip.start.compareTo(playbackPosition) >= 0) {
-          const gainNode = mixer.getTrackGainNode(track.id);
-          const startOffset = clip.start.toSeconds() - playbackPosition.toSeconds();
-          audioServiceRef.current.play(clip.data.type === 'audio' ? clip.data.buffer : null, clip.id, {
-            start: startOffset,
-            onEnded: () => {
-              // Handle clip end
-            }
-          });
-        }
-      });
-    });
-
-    setIsPlaying(true);
-
-    // Start playback timer - update 30 times per second
-    playbackIntervalRef.current = window.setInterval(() => {
-      setPlaybackPosition(prev => prev.add(0, 0, 16)); // 480 ticks/beat / 30 fps ≈ 16 ticks/frame
-    }, 1000/30);
-  };
-
-  const stopPlayback = () => {
-    if (playbackIntervalRef.current) {
-      window.clearInterval(playbackIntervalRef.current);
-      playbackIntervalRef.current = null;
-    }
-    audioServiceRef.current.stop(); // Stop all playing sources
-    setIsPlaying(false);
-  };
-
-  // Recording control
-  const startRecording = async (trackId: string, deviceId?: string) => {
-    if (!isReady) throw new Error('Audio system not ready');
-    
-    try {
-      await audioServiceRef.current.startRecording({ deviceId });
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Failed to start recording:', error);
-      throw error;
-    }
-  };
-
-  const stopRecording = async (): Promise<Clip | null> => {
-    if (!isRecording) return null;
-
-    try {
-      const recordedBuffer = await audioServiceRef.current.stop();
-      setIsRecording(false);
-
-      if (recordedBuffer && currentTrack) {
-        const clip = clipServiceRef.current.createClip(currentTrack.id, {
-          type: 'audio',
-          buffer: recordedBuffer,
-          waveform: [] // Generate waveform data
-        });
-        addClip(currentTrack.id, clip);
-        return clip;
-      }
-    } catch (error) {
-      console.error('Failed to stop recording:', error);
-    }
-
-    return null;
-  };
-
-  // Project export
-  const exportProject = async (options: any = {}) => {
-    // Implement project export using audioExporterRef
-  };
-
-  const value = {
-    audioService: audioServiceRef.current,
-    clipService: clipServiceRef.current,
-    audioExporter: audioExporterRef.current,
-    isReady,
-    currentTrack,
-    currentClip,
-    tracks,
-    clips,
-    playbackPosition,
-    isPlaying,
-    isRecording,
-    setCurrentTrack,
-    setCurrentClip,
-    addTrack,
-    removeTrack,
-    addClip,
-    removeClip,
-    startPlayback,
-    stopPlayback,
-    startRecording,
-    stopRecording,
-    exportProject
-  };
-
-  return (
-    <DAWContext.Provider value={value}>
-      {children}
-    </DAWContext.Provider>
-  );
-};
+const DAWContext = createContext<DAWContextType | null>(null);
 
 export const useDAW = () => {
   const context = useContext(DAWContext);
@@ -235,6 +29,111 @@ export const useDAW = () => {
     throw new Error('useDAW must be used within a DAWProvider');
   }
   return context;
+};
+
+export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState<TimelinePosition>({ bar: 0, beat: 0, fraction: 0 });
+  const [tempo, setTempo] = useState(120);
+  const [timeSignature, setTimeSignature] = useState({ beats: 4, noteValue: 4 });
+  const [audioContext] = useState(() => new (window.AudioContext || (window as any).webkitAudioContext)());
+  const [analyser] = useState(() => audioContext.createAnalyser());
+
+  const audioService = {
+    getWaveformData: async () => {
+      const dataArray = new Float32Array(analyser.frequencyBinCount);
+      analyser.getFloatTimeDomainData(dataArray);
+      return dataArray;
+    },
+    getFrequencyData: async () => {
+      const dataArray = new Float32Array(analyser.frequencyBinCount);
+      analyser.getFloatFrequencyData(dataArray);
+      return dataArray;
+    }
+  };
+
+  const togglePlayback = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const setPosition = (pos: TimelinePosition) => {
+    setCurrentPosition(pos);
+  };
+
+  useEffect(() => {
+    // Connect audio nodes
+    analyser.connect(audioContext.destination);
+    
+    return () => {
+      // Cleanup audio context
+      analyser.disconnect();
+      audioContext.close();
+    };
+  }, []);
+
+  // Update playhead position when playing
+  useEffect(() => {
+    let animationId: number;
+    let lastTimestamp = 0;
+    
+    const updatePlayhead = (timestamp: number) => {
+      if (isPlaying) {
+        if (lastTimestamp) {
+          const elapsed = timestamp - lastTimestamp;
+          const beatsPerSecond = tempo / 60;
+          const fractionPerMs = beatsPerSecond / 1000;
+          
+          // Calculate new position
+          let newFraction = currentPosition.fraction + elapsed * fractionPerMs;
+          let newBeat = currentPosition.beat;
+          let newBar = currentPosition.bar;
+          
+          // Handle overflow
+          if (newFraction >= 1) {
+            newBeat += Math.floor(newFraction);
+            newFraction = newFraction % 1;
+          }
+          
+          if (newBeat >= timeSignature.beats) {
+            newBar += Math.floor(newBeat / timeSignature.beats);
+            newBeat = newBeat % timeSignature.beats;
+          }
+          
+          setCurrentPosition({ bar: newBar, beat: newBeat, fraction: newFraction });
+        }
+        lastTimestamp = timestamp;
+        animationId = requestAnimationFrame(updatePlayhead);
+      } else {
+        lastTimestamp = 0;
+      }
+    };
+    
+    if (isPlaying) {
+      animationId = requestAnimationFrame(updatePlayhead);
+    }
+    
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [isPlaying, currentPosition, tempo, timeSignature]);
+
+  return (
+    <DAWContext.Provider value={{
+      audioService,
+      isPlaying,
+      togglePlayback,
+      currentPosition,
+      setPosition,
+      tempo,
+      setTempo,
+      timeSignature,
+      setTimeSignature
+    }}>
+      {children}
+    </DAWContext.Provider>
+  );
 };
 
 export default DAWProvider;

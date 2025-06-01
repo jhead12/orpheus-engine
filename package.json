@@ -74,6 +74,7 @@
     "start:vite": "cd workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
     "fix-tokenizers": "node scripts/fix-tokenizers.js",
+    "fix-tokenizers-macos": "python3 scripts/fix-tokenizers-macos.py",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
     "fix-vite": "node scripts/install-vite-deps.js",
     "fix-electron-path": "bash scripts/fix-start-electron.sh",
