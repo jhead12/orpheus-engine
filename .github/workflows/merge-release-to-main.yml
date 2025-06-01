@@ -5,14 +5,19 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version to merge (e.g., v1.0.8)'
+        description: 'The version to merge (e.g., v2.0.0 or v2.0.0-alpha.1)'
         required: true
-        default: 'v1.0.8'
+      target:
+        description: 'Target branch (main/develop)'
+        required: true
+        default: 'main'
   
   # Automatically trigger when a release branch is pushed
   push:
     branches:
       - 'release/v*'
+      - 'release/v*-alpha'
+      - 'release/v*-beta'
 
 jobs:
   merge-to-main:

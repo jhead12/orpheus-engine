@@ -1,0 +1,72 @@
+name: Version Transition
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_version:
+        description: 'Current version (e.g., 2.0.0-alpha.1)'
+        required: true
+      to_version:
+        description: 'Target version (e.g., 2.0.0-beta.1 or 2.0.0)'
+        required: true
+      type:
+        description: 'Transition type (alpha-to-beta/beta-to-stable)'
+        required: true
+
+jobs:
+  transition:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          
+      - name: Create transition branch
+        run: |
+          git checkout -b transition/v${{ github.event.inputs.from_version }}-to-v${{ github.event.inputs.to_version }}
+          
+      - name: Update version
+        run: |
+          npm version ${{ github.event.inputs.to_version }} --no-git-tag-version
+          git add package.json
+          git commit -m "chore(release): transition from v${{ github.event.inputs.from_version }} to v${{ github.event.inputs.to_version }}"
+          
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          TITLE="Version Transition: v${{ github.event.inputs.from_version }} → v${{ github.event.inputs.to_version }}"
+          BODY="This PR transitions the version from v${{ github.event.inputs.from_version }} to v${{ github.event.inputs.to_version }}"
+          
+          if [[ "${{ github.event.inputs.type }}" == "beta-to-stable" ]]; then
+            TARGET="main"
+          else
+            TARGET="develop"
+          fi
+          
+          gh pr create \
+            --title "$TITLE" \
+            --body "$BODY" \
+            --base "$TARGET" \
+            --head "$BRANCH_NAME"
