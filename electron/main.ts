@@ -44,12 +44,12 @@ class OrpheusEngine {
       args: ['run', 'dev'],
       cwd: path.join(rootPath, 'workstation/frontend'),
       env: { BACKEND_PORT: '5001' },
-      port: 5173,
+      port: 5174, // Updated from 5173 to 5174
       description: 'Vite Frontend Development Server',
       critical: false,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:5173');
+          const response = await fetch('http://localhost:5174');
           return response.ok;
         } catch {
           return false;
@@ -185,7 +185,14 @@ class OrpheusEngine {
     });
 
     // Load the DAW interface
-    this.mainWindow.loadURL('http://localhost:3000');
+    if (process.env.NODE_ENV === 'development') {
+      this.mainWindow.loadURL('http://localhost:3000');
+      this.mainWindow.webContents.openDevTools();
+    } else {
+      // In production, load the built frontend
+      const distPath = path.join(__dirname, '../workstation/frontend/dist/index.html');
+      this.mainWindow.loadFile(distPath);
+    }
 
     this.mainWindow.once('ready-to-show', () => {
       this.mainWindow?.show();
@@ -195,11 +202,6 @@ class OrpheusEngine {
     this.mainWindow.on('closed', () => {
       this.mainWindow = null;
     });
-
-    // Open DevTools in development
-    if (process.env.NODE_ENV === 'development') {
-      this.mainWindow.webContents.openDevTools();
-    }
   }
 
   private async cleanup() {
