@@ -620,7 +620,7 @@ export default function Editor() {
     if (dragData.items.length === 0) {
       if (cmdCtrlPressedBeforeWheel.current || pinch) {
         if (e.shiftKey || pinch || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) {
-          let delta =
+          const delta =
             Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
 
           if (Math.abs(delta) > 2) {

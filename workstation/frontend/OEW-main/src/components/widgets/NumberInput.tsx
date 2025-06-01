@@ -150,7 +150,7 @@ export default function NumberInput(props: IProps) {
   }
 
   function handleConfirm() {
-    let value = clamp(getTextValue(), props.min ?? -Infinity, props.max ?? Infinity);
+    const value = clamp(getTextValue(), props.min ?? -Infinity, props.max ?? Infinity);
 
     setDisableClickAndDrag(false);
     setText(value.toString());

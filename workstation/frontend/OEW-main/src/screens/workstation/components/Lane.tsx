@@ -182,7 +182,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
   }
 
   function setClip(clip: Clip) {
-    let clips = track.clips.slice();
+    const clips = track.clips.slice();
     const index = clips.findIndex(c => c.id === clip.id)
  
     if (index > -1) {
