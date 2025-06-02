@@ -1088,6 +1088,13 @@
     "@types/node" "*"
     "@types/responselike" "^1.0.0"
 
+"@types/electron@^1.4.38":
+  version "1.4.38"
+  resolved "https://registry.npmjs.org/@types/electron/-/electron-1.4.38.tgz"
+  integrity sha512-Cu6laqBamT6VSPi0LLlF9vE9Os8EbTaI/5eJSsd7CPoLUG3Znjh04u9TxMhQYPF1wGFM14Z8TFQ2914JZ+rGLg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/estree@^1.0.0", "@types/estree@1.0.7":
   version "1.0.7"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.7.tgz"
@@ -2255,12 +2262,17 @@ dunder-proto@^1.0.1:
     es-errors "^1.3.0"
     gopd "^1.2.0"
 
+electron-is-dev@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/electron-is-dev/-/electron-is-dev-3.0.1.tgz"
+  integrity sha512-8TjjAh8Ec51hUi3o4TaU0mD3GMTOESi866oRNavj9A3IQJ7pmv+MJVmdZBFGw4GFT36X7bkqnuDNYvkQgvyI8Q==
+
 electron-to-chromium@^1.5.160:
   version "1.5.161"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.161.tgz"
   integrity sha512-hwtetwfKNZo/UlwHIVBlKZVdy7o8bIZxxKs0Mv/ROPiQQQmDgdm5a+KvKtBsxM8ZjFzTaCeLoodZ8jiBE3o9rA==
 
-electron@^36.2.0, electron@^36.3.1, electron@^36.3.2:
+electron@^36.2.0, electron@^36.3.1:
   version "36.3.2"
   resolved "https://registry.npmjs.org/electron/-/electron-36.3.2.tgz"
   integrity sha512-v0/j7n22CL3OYv9BIhq6JJz2+e1HmY9H4bjTk8/WzVT9JwVX/T/21YNdR7xuQ6XDSEo9gP5JnqmjOamE+CUY8Q==
