@@ -55,7 +55,7 @@ if [ ! -d "workstation/frontend" ]; then
   exit 1
 fi
 
-cd /Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend
+cd /Volumes/PRO-BLADE/Github/orpheus-engine
 
 echo "Installing dependencies..."
 npm install --legacy-peer-deps
@@ -135,8 +135,8 @@ else
 fi
 
 # Start Electron with the provided arguments
-cd OEW-main
-npm run electron-dev -- $args
+cd /Volumes/PRO-BLADE/Github/orpheus-engine
+npm run start:electron -- $args
 
 # Cleanup
 echo "Cleaning up..."

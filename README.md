@@ -156,7 +156,7 @@ The application components will be available at:
 ### Component Overview
 
 The application consists of three main parts:
-1. **Frontend (OEW-Main)**: Electron/React application for the DAW interface
+1. **Frontend**: Electron/React/Vite application for the DAW interface
 2. **Python RAG Backend**: AI-powered audio analysis and processing
 3. **TypeScript Backend**: Audio file management and real-time processing
 
@@ -166,7 +166,7 @@ To run components individually:
 
 ```bash
 # Frontend only (Electron + Vite)
-npm run start:frontend
+npm run start:vite
 
 # Python RAG Backend only
 npm run start:backend
@@ -203,12 +203,13 @@ npm run build
 
 ```
 orpheus-engine-workstation/
-├── OEW-main/           # Frontend Electron/React application
-├── backend/            # TypeScript and Python backends
-│   ├── src/           # TypeScript backend source
-│   └── agentic_rag/   # Python RAG backend
-├── data/              # Audio files and test data
-└── chroma_db/         # Vector database for audio analysis
+├── frontend/          # Main Electron/React/Vite frontend application
+├── backend/          # TypeScript and Python backends
+│   ├── src/         # TypeScript backend source
+│   └── agentic_rag/ # Python RAG backend
+├── shared/          # Shared types and utilities
+├── data/            # Audio files and test data
+└── chroma_db/       # Vector database for audio analysis
 ```
 
 ### Hot Reloading
@@ -256,14 +257,14 @@ npm run release:major  # For major release
 
 ## Project Structure
 - `orpheus-engine-workstation/` – Main project directory
-  - `OEW-main/` – Electron/Vite frontend app
+  - `frontend/` – Electron/Vite frontend app
   - `backend/` – TypeScript and Python backends
     - `src/` – TypeScript backend source
     - `agentic_rag/` – Python RAG backend
+  - `shared/` – Shared types and utilities
   - `data/` – Audio files and data
   - `chroma_db/` – ChromaDB vector database
   - `ffmpeg/` – Local ffmpeg binaries
-- `gpuaudio-sdk/` – Omi device SDK integration
 - `scripts/` – Project management scripts
 - `utils/` – Shared utilities
 

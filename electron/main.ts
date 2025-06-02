@@ -120,7 +120,17 @@ class OrpheusEngine {
     await app.whenReady();
     
     // Create and show startup window
-    this.startupWindow.create();
+    const startupWin = this.startupWindow.create();
+    
+    // Check if --display-startup flag is passed
+    const displayStartup = process.argv.includes('--display-startup');
+    
+    if (displayStartup) {
+      // Start services automatically after startup window is shown
+      startupWin.once('ready-to-show', async () => {
+        await this.serviceManager.startAllServices();
+      });
+    }
     
     // Set up service manager event listeners
     this.serviceManager.on('startup-complete', () => {

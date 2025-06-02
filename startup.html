@@ -4,6 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orpheus Engine - Starting Up</title>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // DOM elements
+            const overallProgress = document.getElementById('overall-progress-fill');
+            const overallStatus = document.getElementById('overall-status');
+            const servicesContainer = document.getElementById('services-container');
+            const footerStatus = document.getElementById('footer-status');
+            
+            let services = [];
+            let completedServices = 0;
+            
+            // Get service statuses on load
+            window.electronAPI.getServiceStatuses().then(statuses => {
+                services = statuses;
+                renderServices();
+                // Start services automatically
+                window.electronAPI.startServices();
+            });
+            
+            // Update UI when service status changes
+            window.electronAPI.onServiceStatusChange((event, status) => {
+                // Find and update the service
+                const index = services.findIndex(s => s.name === status.name);
+                if (index !== -1) {
+                    services[index] = status;
+                    
+                    if (status.status === 'running' && services[index].status !== 'running') {
+                        completedServices++;
+                    }
+                    
+                    // Update progress percentage
+                    const totalServices = services.length;
+                    const percentage = (completedServices / totalServices) * 100;
+                    overallProgress.style.width = `${percentage}%`;
+                    
+                    // Update overall status text
+                    overallStatus.textContent = `Starting services (${completedServices}/${totalServices})`;
+                    
+                    renderServices();
+                }
+            });
+            
+            // Handle startup complete
+            window.electronAPI.onStartupComplete((event) => {
+                overallStatus.textContent = 'All services started successfully!';
+                overallProgress.style.width = '100%';
+                footerStatus.innerHTML = 'Launching Orpheus Engine...';
+            });
+            
+            function renderServices() {
+                servicesContainer.innerHTML = '';
+                
+                services.forEach(service => {
+                    const serviceItem = document.createElement('div');
+                    serviceItem.className = `service-item ${service.status}`;
+                    
+                    serviceItem.innerHTML = `
+                        <div class="service-info">
+                            <div class="service-name">${service.name}</div>
+                            <div class="service-description">${service.description || 'Service'}</div>
+                            ${service.port ? `<div class="service-port">Port: ${service.port}</div>` : ''}
+                        </div>
+                        <div class="service-status">
+                            <div class="status-icon ${service.status}"></div>
+                            <div class="status-text">${service.status}</div>
+                        </div>
+                    `;
+                    
+                    servicesContainer.appendChild(serviceItem);
+                });
+            }
+        });
+    </script>
     <style>
         * {
             margin: 0;
