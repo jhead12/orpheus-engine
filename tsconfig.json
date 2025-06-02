@@ -57,7 +57,9 @@
     "**/node_modules",
     "**/dist",
     "**/build",
-    "workstation/frontend/OEW-main/**/*"
+    "workstation/frontend/OEW-main/**/*",
+    "**/*.bak",
+    "**/*.bak/**/*"
   ]
 }
 >>>>>>> 4d2c561 (Fix TypeScript compilation errors across the workstation)

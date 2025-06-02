@@ -30,6 +30,9 @@ coverage.xml
 *.swp
 *.swo
 .DS_Store
+*.bak
+**/*.bak
+**/*.bak/
 
 # Project specific
 chroma_db/
