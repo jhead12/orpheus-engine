@@ -101,8 +101,8 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
   }
 
   drawArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
-    let start = this.polarToCartesian(x, y, radius, endAngle);
-    let end = this.polarToCartesian(x, y, radius, startAngle);
+    const start = this.polarToCartesian(x, y, radius, endAngle);
+    const end = this.polarToCartesian(x, y, radius, startAngle);
     let largeArcFlag;
 
     if (endAngle >= startAngle)
@@ -230,7 +230,7 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
   }
 
   polarToCartesian(cx: number, cy: number, radius: number, angleInDegrees: number) {
-    var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
     return {x: cx + radius * Math.cos(angleInRadians), y: cy + radius * Math.sin(angleInRadians)};
   }
 

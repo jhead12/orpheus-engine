@@ -200,7 +200,7 @@ function shadeColor(hex: string, percent: number): string {
   // Remove '#' if present
   hex = hex.replace(/^#/, "");
   // Parse r, g, b
-  let num = parseInt(hex, 16);
+  const num = parseInt(hex, 16);
   let r = (num >> 16) & 0xff;
   let g = (num >> 8) & 0xff;
   let b = num & 0xff;
@@ -332,7 +332,7 @@ export function removeClipOverlap(a: Clip, b: Clip) {
 }
 
 export function removeAllClipOverlap(clips: Clip[], priority?: Clip) {
-  let newClips: Clip[] = [];
+  const newClips: Clip[] = [];
 
   for (let i = 0; i < clips.length; i++) {
     let slices = [clips[i]];
@@ -409,7 +409,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
       let repetition = Math.floor(posDistancePastEnd / width);
       
       if (Math.abs(posDistancePastEnd % width) > 1e-9) {
-        let { measures, beats, fraction } = calculateMeasuresBeatsFraction(width * repetition);
+        const { measures, beats, fraction } = calculateMeasuresBeatsFraction(width * repetition);
 
         newClip = copyClip(clipAtPos(addTimeValues(clip.end, measures, beats, fraction), clip));
         newClip.start = pos.copy();
@@ -420,7 +420,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
       }
 
       if (repetition < numRepetitions) {
-        let { measures, beats, fraction } = TimelinePosition.measureMargin(width * repetition);
+        const { measures, beats, fraction } = TimelinePosition.measureMargin(width * repetition);
         const newPos = new TimelinePosition(
           clip.end.bar + measures,
           clip.end.beat + beats,

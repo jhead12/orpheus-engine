@@ -128,7 +128,7 @@ export default function Header() {
           const clips = [];
 
           for (let j = 0; j < newTracks[i].clips.length; j++) {
-            let clip = { ...newTracks[i].clips[j] };
+            const clip = { ...newTracks[i].clips[j] };
 
             if (clip.type === TrackType.Audio && clip.audio) {
               const originalTempo = TimelinePosition.timelineSettings.tempo;

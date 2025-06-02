@@ -211,7 +211,7 @@ export default class ContextMenuBuilder {
 
   buildDefaultContextMenu(selectedText: string) {
     const trimmed = selectedText.trim();
-    let menu: MenuItemConstructorOptions[] = []
+    const menu: MenuItemConstructorOptions[] = []
 
     if (process.platform === "darwin" && trimmed.length > 0) {
       menu.push(

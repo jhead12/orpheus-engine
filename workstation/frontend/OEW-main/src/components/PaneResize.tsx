@@ -172,7 +172,7 @@ export default function PaneResize(props: IProps) {
         const min = getAbsoluteSize(newPanes[idx].min ?? 10)!;
         const max = getAbsoluteSize(newPanes[idx].max ?? availableSize)!;
         const movement = direction === "vertical" ? e.movementY : e.movementX;
-        let tempNewSize = newTempPanes[idx].size + movement;
+        const tempNewSize = newTempPanes[idx].size + movement;
         let newSize = Math.min(max, Math.max(min, tempNewSize, 0), availableSize);
 
         if (nextIdx > -1) {
@@ -241,7 +241,7 @@ export default function PaneResize(props: IProps) {
             totalPaneSize += newPanes[i].size;
         
           if (!(totalPaneSize < prevContainerSize.current - 1 && totalPaneSize < containerSize)) {
-            let panesToStretch = newPanes.filter(pane => {
+            const panesToStretch = newPanes.filter(pane => {
               if (!pane.fixed) {
                 if (containerSize < totalPaneSize) {
                   if (pane.size > getAbsoluteSize(pane.min ?? 10)!)

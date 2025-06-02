@@ -83,8 +83,8 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
 
   useEffect(() => {
     if (active) {
-      let horizontal = ref.current ? getScrollParent(ref.current, "horizontal") : null;
-      let vertical = ref.current ? getScrollParent(ref.current, "vertical") : null;
+      const horizontal = ref.current ? getScrollParent(ref.current, "horizontal") : null;
+      const vertical = ref.current ? getScrollParent(ref.current, "vertical") : null;
 
       setWindows({ horizontal, vertical });
     }
