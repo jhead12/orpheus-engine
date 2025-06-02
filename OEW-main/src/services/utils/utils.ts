@@ -1,8 +1,7 @@
-import { 
-  AutomationLane, 
-  AutomationLaneEnvelope, 
-  AutomationMode, 
-  Clip, 
+import {
+  AutomationLane,
+  AutomationLaneEnvelope,
+  Clip,
   TimelinePosition, 
   TimelineSettings, 
   TimeSignature, 
@@ -124,6 +123,7 @@ export function formatVolume(val: number) {
   return `${val === -Infinity ? "-∞" : +val.toFixed(1)} dB`;
 }
 
+<<<<<<< HEAD
 export function getBaseTrack(id = v4()) : Track {
   return {
     id, 
@@ -192,6 +192,8 @@ export function getBaseMasterTrack() : Track {
   }
 }
 
+=======
+>>>>>>> 378d52c (update)
 export function getLaneColor(lanes: AutomationLane[], idx: number, baseColor: string) : string {
   return shadeColor(baseColor, lanes.length === 1 ? 0.15 : -0.3 / (lanes.length - 1) * idx + 0.15);
 }

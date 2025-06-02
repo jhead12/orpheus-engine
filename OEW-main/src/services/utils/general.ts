@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import React from "react";
 
 export function clamp(value: number, min: number, max: number) {
+=======
+// Clamp a value between min and max
+export function clamp(value: number, min: number, max: number): number {
+>>>>>>> 378d52c (update)
   return Math.min(Math.max(value, min), max);
 }
 

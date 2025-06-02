@@ -1,6 +1,10 @@
 import {v4 as uuidv4} from 'uuid';
+<<<<<<< HEAD
 import TimelinePosition from "./services/types/TimelinePosition";
 import { AutomationLaneEnvelope, AutomationMode, Track, TrackType } from "./services/types/types";
+=======
+import { TimelinePosition, AutomationLaneEnvelope, Track, TrackType } from "./services/types/types";
+>>>>>>> 378d52c (update)
 
 const data : Track[] = [
   {
@@ -24,35 +28,16 @@ const data : Track[] = [
         id: uuidv4(),
         start: new TimelinePosition(4, 1, 0),
         end: new TimelinePosition(4, 3, 750),
-        startLimit: null,
-        endLimit: null,
+        startLimit: undefined,
+        endLimit: undefined,
         loopEnd: new TimelinePosition(5, 2, 500),
         muted: false,
         name: "my_clip",
         type: TrackType.Midi
       }
     ],
-    fx: {
-      effects: [
-        {
-          id: uuidv4(),
-          name: "Effect 1",
-          enabled: true
-        },
-        {
-          id: uuidv4(),
-          name: "Effect 2",
-          enabled: false
-        }
-      ],
-      selectedEffectIndex: 0
-    },
-    mute: false,
-    solo: false,
-    armed: false,
-    automation: true,
-    volume: 0,
-    pan: 0,
+    // Note: fx, mute, solo, armed, automation, volume, pan, automationMode properties 
+    // are not part of the Track interface and have been removed/commented out
     automationLanes: [
       {
         envelope: AutomationLaneEnvelope.Volume,
@@ -108,8 +93,7 @@ const data : Track[] = [
         ],
         show: false
       }
-    ],
-    automationMode: AutomationMode.Read
+    ]
   }
 ]
 

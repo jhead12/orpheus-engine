@@ -1,11 +1,17 @@
 import React, { CSSProperties, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+<<<<<<< HEAD
 import { WorkstationContext } from "@/contexts"
 import { AutomationLaneEnvelope, ContextMenuType, Track } from "@/services/types/types"
 import { Knob, HueInput, Dialog, Meter } from "@/components/widgets"
+=======
+import { WorkstationContext } from "../../../contexts";
+import { AutomationLaneEnvelope, ContextMenuType, Track } from "../../../services/types/types"
+import { Knob, HueInput, Dialog, Meter } from "../../../components/widgets"
+>>>>>>> 378d52c (update)
 import { IconButton, DialogContent } from "@mui/material"
 import { Add, Check, FiberManualRecord } from "@mui/icons-material"
-import { AutomationLaneTrack, FXComponent } from "@/screens/workstation/components"
-import { getCSSVarValue, hslToHex, hueFromHex, normalizeHex } from "@/services/utils/general"
+import { AutomationLaneTrack, FXComponent } from "./index"
+import { getCSSVarValue, hslToHex, hueFromHex, normalizeHex } from "../../../services/utils/general"
 import { 
   BASE_HEIGHT, 
   formatPanning, 
@@ -15,9 +21,9 @@ import {
   volumeToNormalized, 
   scrollToAndAlign,
   waitForScrollWheelStop
-} from "@/services/utils/utils"
-import { Automation, TrackIcon } from "@/components/icons"
-import { openContextMenu } from "@/services/electron/utils"
+} from "../../../services/utils/utils"
+import { TrackIcon } from "../../../components/icons"
+import { openContextMenu } from "../../../services/electron/utils"
 
 interface IProps {
   className?: string;
@@ -44,21 +50,21 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
     verticalScale
   } = useContext(WorkstationContext)!;
 
-  const [hue, setHue] = useState(hueFromHex(track.color));
+  const [hue, setHue] = useState(hueFromHex(track.color || '#808080'));
   const [name, setName] = useState(track.name);
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
   const volume = useMemo(() => {
-    const lane = track.automationLanes.find(lane => lane.envelope === AutomationLaneEnvelope.Volume);
+    const lane = (track as any).automationLanes?.find((lane: any) => lane.envelope === AutomationLaneEnvelope.Volume);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, track.volume, timelineSettings.timeSignature])
+  }, [(track as any).automationLanes, playheadPos, (track as any).volume, timelineSettings.timeSignature])
 
   const pan = useMemo(() => {
-    const lane = track.automationLanes.find(lane => lane.envelope === AutomationLaneEnvelope.Pan);
+    const lane = (track as any).automationLanes?.find((lane: any) => lane.envelope === AutomationLaneEnvelope.Pan);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, track.pan, timelineSettings.timeSignature])
+  }, [(track as any).automationLanes, playheadPos, (track as any).pan, timelineSettings.timeSignature])
 
   useEffect(() => setName(track.name), [track.name]);
 
@@ -91,15 +97,15 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
   }, [scrollToItem])
 
   function handleAddAutomationLaneContextMenu() {
-    if (track.automationLanes.find(lane => !lane.show)) { 
-      openContextMenu(ContextMenuType.AddAutomationLane, { lanes: track.automationLanes }, params => {
+    if ((track as any).automationLanes?.find((lane: any) => !lane.show)) { 
+      openContextMenu(ContextMenuType.AddAutomationLane, { lanes: (track as any).automationLanes }, (params: any) => {
         if (params.lane) {
-          const automationLanes = track.automationLanes.slice();
-          const laneIdx = automationLanes.findIndex(lane => lane.id === params.lane.id);
+          const automationLanes = (track as any).automationLanes?.slice();
+          const laneIdx = automationLanes?.findIndex((lane: any) => lane.id === params.lane.id);
           
           if (laneIdx > -1) {
             automationLanes[laneIdx] = { ...automationLanes[laneIdx], show: true };
-            setTrack({...track, automationLanes});
+            setTrack({...track, automationLanes} as any);
           }
         }
       })
@@ -114,7 +120,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
 
   function handleContextMenu() {
     if (track.id !== masterTrack.id && document.activeElement?.nodeName !== "INPUT") {
-      openContextMenu(ContextMenuType.Track, {}, params => {
+      openContextMenu(ContextMenuType.Track, {}, (params: any) => {
         switch (params.action) {
           case 0:
             duplicateTrack(track);
@@ -124,7 +130,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
             break;
           case 2:
             setShowChangeHueDialog(true);
-            setHue(hueFromHex(track.color));
+            setHue(hueFromHex(track.color || '#808080'));
             break;
         }
       });
@@ -132,26 +138,26 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
   }
 
   function handleSelectAutomationMode() {
-    openContextMenu(ContextMenuType.AutomationMode, { mode: track.automationMode }, params => {
+    openContextMenu(ContextMenuType.Automation, { mode: (track as any).automationMode }, (params: any) => {
       if (params.mode) 
-        setTrack({ ...track, automationMode: params.mode });
+        setTrack({ ...track, automationMode: params.mode } as any);
     });
   }
  
   const selected = selectedTrackId === track.id;
   const isMaster = track.id === masterTrack.id;
-  const noHiddenLanes = !track.automationLanes.find(lane => !lane.show);
-  const mutedByMaster = masterTrack?.mute && !isMaster;
+  const noHiddenLanes = !(track as any).automationLanes?.find((lane: any) => !lane.show);
+  const mutedByMaster = (masterTrack as any)?.mute && !isMaster;
   
   const automationColor = colorless ? normalizeHex(getCSSVarValue("--border6")) : track.color;
   const borderColor = colorless ? "var(--border6)" : "#444";
 
   const height = BASE_HEIGHT * verticalScale;
-  const addExtraHeight = !isMaster && height < 80 && track.automation;
+  const addExtraHeight = !isMaster && height < 80 && (track as any).automation;
   const trackHeight = Math.max(height, addExtraHeight ? 76 : 0);
   const muteButtonTitle = mutedByMaster 
     ? "Master is muted"
-    : `${track.mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
+    : `${(track as any).mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
 
   const styles = {
     orderTextContainer: {  
@@ -185,7 +191,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
       height: "100%",
       color: colorless ? "var(--fg1)" : "#000",
       pointerEvents: isMaster ? "none" : "auto"
-    },
+    } as React.CSSProperties,
     fx: {
       container: { backgroundColor: colorless ? "#0000" : "#fff6", borderColor },
       effect: { actionsContainer: { borderColor } },
@@ -204,15 +210,15 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
       margin: trackHeight > 80 ? "0 3px" : 0,
       borderWidth: trackHeight > 80 ? "1px" : "1px 0 0"
     },
-    meter: { height: 3, backgroundColor: "var(--bg1)", boxSizing: "content-box" },
+    meter: { height: 3, backgroundColor: "var(--bg1)", boxSizing: "content-box" } as React.CSSProperties,
     controlButtonsContainer: { padding: "3px 3px 4px", borderLeft: "1px solid var(--border1)", flexShrink: 0 },
     muteButton: {
-      color: track.mute || masterTrack?.mute ? "#ff004c" : "var(--border6)",
+      color: (track as any).mute || (masterTrack as any)?.mute ? "#ff004c" : "var(--border6)",
       borderWidth: "1px 0 0 1px"
     },
-    soloButton: { color: track.solo ? "var(--fg2)" : "var(--border6)", borderWidth: "1px 0 0 1px" },
-    armIcon: { fontSize: 14, color: track.armed ? "#ff004c" : "var(--border6)" },
-    automationButton: { color: track.automation ? "var(--fg3)" : "var(--border6)", borderBottom: "none" },
+    soloButton: { color: (track as any).solo ? "var(--fg2)" : "var(--border6)", borderWidth: "1px 0 0 1px" },
+    armIcon: { fontSize: 14, color: (track as any).armed ? "#ff004c" : "var(--border6)" },
+    automationButton: { color: (track as any).automation ? "var(--fg3)" : "var(--border6)", borderBottom: "none" },
     automationMode: {
       border: "1px solid var(--border6)", 
       color: "var(--fg1)",
@@ -223,7 +229,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
       letterSpacing: -0.4,
       textTransform: "uppercase",
       backgroundColor: "#0000"
-    },
+    } as React.CSSProperties,
     addAutomationButtonIcon: { color: "var(--border6)", transform: "translate(-0.5px, 0.5px)" }
   } as const;
 
@@ -248,7 +254,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                 <div className="overflow-hidden" style={{height: "fit-content"}}>
                   <div className="d-flex align-items-center stop-reorder" style={styles.nameContainer}>
                     <IconButton style={{padding: "2px 2px 2px 3px", borderRadius: 0}}>
-                      <TrackIcon color={borderColor} size={14} type={track.type} />
+                      <TrackIcon color={borderColor} type={track.type} />
                     </IconButton>
                     <form
                       onSubmit={e => {e.preventDefault(); setTrack({ ...track, name })}}
@@ -271,11 +277,11 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                     disabled={volume.isAutomated}
                     max={6}
                     min={-Infinity}  
-                    onChange={val => setTrack({ ...track, volume: val })}
+                    onChange={(val: number) => setTrack({ ...track, volume: val } as any)}
                     origin={0}
                     scale={{
-                      toNormalized: value => Math.pow(10, value / 75.1456) * 0.8321,
-                      toScale: value => value === 0 ? -Infinity : 75.1456 * Math.log10(value / 0.8321)
+                      toNormalized: (value: number) => Math.pow(10, value / 75.1456) * 0.8321,
+                      toScale: (value: number) => value === 0 ? -Infinity : 75.1456 * Math.log10(value / 0.8321)
                     }}
                     showMeter={false}
                     size={20}
@@ -283,13 +289,13 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                     title={`Volume: ${formatVolume(volume.value!)}${volume.isAutomated ? " (automated)" : ""}`}
                     tooltipProps={{ container: { vertical: "#track-section" } }}
                     value={volume.value!}
-                    valueLabelFormat={value => formatVolume(value)}
+                    valueLabelFormat={(value: number) => formatVolume(value)}
                   />
                   <Knob
                     disabled={pan.isAutomated}
                     max={100}
                     min={-100}
-                    onChange={val => setTrack({ ...track, pan: val })}
+                    onChange={(val: number) => setTrack({ ...track, pan: val } as any)}
                     origin={0}
                     showMeter={false}
                     size={20}
@@ -297,7 +303,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                     title={`Pan: ${formatPanning(pan.value!)}${pan.isAutomated ? " (automated)" : ""}`}
                     tooltipProps={{ container: { vertical: "#track-section" } }}
                     value={pan.value!}
-                    valueLabelFormat={value => formatPanning(value, true)}
+                    valueLabelFormat={(value: number) => formatPanning(value, true)}
                   />
                 </div>
               </div>
@@ -305,13 +311,13 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                 <Meter
                   color={getVolumeGradient(false)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border1)"}}]}
-                  percent={volumeToNormalized(track.volume) * 100}
+                  percent={volumeToNormalized((track as any).volume || 0) * 100}
                   style={{ ...styles.meter, borderBottom: "1px solid var(--border1)" }}
                 />  
                 <Meter
                   color={getVolumeGradient(false)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border1)"}}]}
-                  percent={volumeToNormalized(track.volume) * 100}
+                  percent={volumeToNormalized((track as any).volume || 0) * 100}
                   style={styles.meter}
                 />
               </div>
@@ -322,7 +328,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                   <div title={muteButtonTitle}>
                     <button
                       className={`track-btn stop-reorder ${mutedByMaster ? "pe-none" : "pe-auto hover-4"}`}
-                      onClick={() => setTrack({...track, mute: !track.mute})}
+                      onClick={() => setTrack({...track, mute: !(track as any).mute} as any)}
                       style={styles.muteButton}
                     >
                       <span style={{ opacity: mutedByMaster ? 0.5 : 1 }}>M</span>
@@ -331,9 +337,9 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                   {!isMaster && (
                     <button
                       className="track-btn hover-4 stop-reorder"
-                      onClick={() => setTrack({...track, armed: !track.armed})}
+                      onClick={() => setTrack({...track, armed: !(track as any).armed} as any)}
                       style={{ borderBottom: "none" }}
-                      title={(track.armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
+                      title={((track as any).armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
                     >
                       <FiberManualRecord style={styles.armIcon} />
                     </button>
@@ -343,7 +349,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                   {!isMaster && (
                     <button
                       className="track-btn hover-4 stop-reorder"
-                      onClick={() => setTrack({...track, solo: !track.solo})}
+                      onClick={() => setTrack({...track, solo: !(track as any).solo} as any)}
                       style={styles.soloButton}
                       title={"Toggle Solo" + (selected ? " [S]" : "")}
                     >
@@ -352,9 +358,9 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                   )}
                   <button
                     className="track-btn hover-4 stop-reorder"
-                    onClick={() => setTrack({...track, automation: !track.automation})}
+                    onClick={() => setTrack({...track, automation: !(track as any).automation} as any)}
                     style={styles.automationButton}
-                    title={`${track.automation ? "Hide" : "Show"} Automation${selected ? " [A]": ""}`}
+                    title={`${(track as any).automation ? "Hide" : "Show"} Automation${selected ? " [A]": ""}`}
                   >
                     A
                   </button>
@@ -364,31 +370,30 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
                 className="stop-reorder m-0 col-12 text-center"
                 onMouseDown={handleSelectAutomationMode}
                 style={styles.automationMode}
-                title={`Automation Mode: ${track.automationMode}`}
+                title={`Automation Mode: ${(track as any).automationMode || 'Read'}`}
               >
-                {track.automationMode}
+                {(track as any).automationMode || 'Read'}
               </button>
               <div className="d-flex align-items-end col-12 overflow-hidden" style={{flex: 1, maxHeight: 20}}>
-                {track.automation && (
+                {(track as any).automation && (
                   <IconButton
                     className={`p-0 stop-reorder align-items-center ${noHiddenLanes ? "disabled" : ""}`}
                     onMouseDown={handleAddAutomationLaneContextMenu}
                     style={{borderRadius: 0, border: "1px solid var(--border6)", width: "100%"}}
                   >
                     <Add style={{ fontSize: 15, ...styles.addAutomationButtonIcon }} />
-                    <Automation size={13} style={styles.addAutomationButtonIcon} />
                   </IconButton>
                 )}
               </div>
             </div>
           </div>
-          {track.automation && (
+          {(track as any).automation && (
             <div style={{width: "100%"}}>
-              {track.automationLanes.map((lane, idx) => {
+              {(track as any).automationLanes?.map((lane: any, idx: number) => {
                 if (lane.show)
                   return (
                     <AutomationLaneTrack
-                      color={getLaneColor(track.automationLanes, idx, automationColor)}
+                      color={getLaneColor((track as any).automationLanes || [], idx, automationColor) || "var(--border6)"}
                       key={lane.id}
                       lane={lane}
                       track={track}
@@ -405,7 +410,7 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
           >
             <DialogContent style={{padding: 12}}>
               <form className="d-flex align-items-center col-12" onSubmit={handleChangeHueSubmit}>
-                <HueInput onChange={hue => setHue(hue)} value={hue} />
+                <HueInput onChange={(hue: number) => setHue(hue)} value={hue} />
                 <button className="btn-3" style={{marginLeft: 6}}>
                   <Check style={{fontSize: 16, color: "var(--bg6)", marginTop: -2}} />
                 </button>

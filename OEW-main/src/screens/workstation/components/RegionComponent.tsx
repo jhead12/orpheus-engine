@@ -1,11 +1,17 @@
 import React, { Component, ContextType, RefObject, createRef } from "react";
+<<<<<<< HEAD
 import { WorkstationContext } from "@/contexts";
 import { Region, TimelinePosition, TimelineSettings } from "@/services/types/types";
 import WindowAutoScroll, { WindowAutoScrollProps } from "@/components/WindowAutoScroll";
+=======
+import { WorkstationContext } from "../../../contexts";
+import { Region, TimelinePosition, TimelineSettings } from "../../../services/types/types";
+import WindowAutoScroll, { default as WindowAutoScrollProps } from "@/components/WindowAutoScroll";
+>>>>>>> 378d52c (update)
 import { flushSync } from "react-dom";
 
 interface IProps {
-  autoScroll?: Partial<WindowAutoScrollProps>;
+  autoScroll?: Partial<typeof WindowAutoScrollProps>;
   children?: React.ReactNode;
   onContextMenu?: (e: MouseEvent) => void;
   onSetRegion: (region: Region | null) => void;
@@ -138,7 +144,7 @@ export default class RegionComponent extends Component<IProps, IState> {
     this.resize(e.movementX, this.state.resizeEdge);
   }
 
-  handleResizeStart(e: React.MouseEvent, edge: "start" | "end") {
+  handleResizeStart(_e: React.MouseEvent, edge: "start" | "end") {
     document.addEventListener("mousemove", this.handleResize);
     document.addEventListener("mouseup", this.handleResizeStop);
     document.body.style.cursor = "ew-resize";
@@ -147,7 +153,7 @@ export default class RegionComponent extends Component<IProps, IState> {
     this.setState({ resizeEdge: edge, resizing: true, temp: this.state.region });
   }
 
-  handleResizeStop(e: MouseEvent) {
+  handleResizeStop() {
     document.removeEventListener("mousemove", this.handleResize);
     document.removeEventListener("mouseup", this.handleResizeStop);
     document.body.style.cursor = "";
@@ -216,8 +222,7 @@ export default class RegionComponent extends Component<IProps, IState> {
         <WindowAutoScroll
           {...this.props.autoScroll}
           active={this.state.isCreatingNewRegion || this.state.resizing}
-          direction="horizontal"
-          onScroll={by => this.resize(by, this.state.resizeEdge)}
+          onScroll={(by: number) => this.resize(by, this.state.resizeEdge)}
         />
         <div
           ref={this.ref}

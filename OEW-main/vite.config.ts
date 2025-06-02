@@ -13,7 +13,13 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+<<<<<<< HEAD
       "@": path.resolve(__dirname, "./src")
+=======
+      "@": path.resolve(__dirname, "./src"),
+      "@orpheus": path.resolve(__dirname, "./src"),
+      "@orpheus-engine": path.resolve(__dirname, "..")
+>>>>>>> 378d52c (update)
     }
   },
   server: {
