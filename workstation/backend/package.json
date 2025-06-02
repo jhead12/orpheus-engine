@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine-backend",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "private": true,
   "description": "Backend services for Orpheus Engine, including monitoring and future integrations (Helia, Ceramic, etc.)",
   "main": "monitor_api.py",

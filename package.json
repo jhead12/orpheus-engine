@@ -38,7 +38,8 @@
     "start:rag-backend": "cd workstation/backend/agentic_rag && FLASK_APP=main.py FLASK_ENV=development python -m flask run --port 5001",
     "start:audio-backend": "cd workstation/backend && FLASK_APP=main.py FLASK_ENV=development flask run --port 7008",
     "start:monitor-backend": "cd workstation/backend && FLASK_APP=monitor_api.py FLASK_ENV=development python -m flask run --port 8000",
-    "start:electron": "npx electron . --display-startup",
+    "build:electron": "cd workstation/frontend/OEW-main && tsc",
+    "start:electron": "npm run build:electron && npx electron workstation/frontend/OEW-main",
     "build": "cd workstation/frontend && npm install && NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "build-all": "npm run build --workspace=workstation/frontend && npm run build --workspace=workstation/backend",
     "test": "npm run test:frontend || echo 'Tests skipped - react-scripts not found'",
@@ -78,7 +79,8 @@
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
     "fix-vite": "node scripts/install-vite-deps.js",
     "fix-electron-path": "bash scripts/fix-start-electron.sh",
-    "fix-vite-path": "bash scripts/fix-vite-not-found.sh"
+    "fix-vite-path": "bash scripts/fix-vite-not-found.sh",
+    "system-check": "node scripts/system-check.js"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
@@ -100,5 +102,5 @@
     "node": ">=16.0.0",
     "npm": ">=7.0.0"
   },
-  "main": "workstation/frontend/main.js"
+  "main": "workstation/frontend/OEW-main/electron/main.js"
 }
