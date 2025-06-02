@@ -4,254 +4,192 @@ export enum AudioAnalysisType {
   Features = "features"
 }
 
+export enum TrackType {
+  Audio = "audio",
+  MIDI = "midi",
+  Bus = "bus"
+}
+
 export interface TimeSignature {
   beats: number;
   noteValue: number;
 }
 
 export interface TimelineSettings {
-  horizontalScale: number;
-  timeSignature: {
-    beats: number;
-    noteValue: number;
-  };
   tempo: number;
+  timeSignature: TimeSignature;
+  snap: boolean;
+  snapUnit: 'beat' | 'bar' | 'sixteenth';
 }
 
-export interface TimelineSpan {
-  measures: number;
-  beats: number;
-  fraction: number;
-}
-
-export interface DirectionalTimelineSpan extends TimelineSpan {
-  sign: number;
-}
-
-export enum AutomationLaneEnvelope {
-  Volume = "volume",
-  Pan = "pan",
-  Tempo = "tempo"
-}
-
-export class TimelinePosition {
-  bar: number;
-  beat: number;
-  sixteenth: number;
-  static start: TimelinePosition = new TimelinePosition();
-  
-  static max(a: TimelinePosition, b: TimelinePosition): TimelinePosition {
-    return a.toMargin() > b.toMargin() ? a : b;
-  }
-  
-  static min(a: TimelinePosition, b: TimelinePosition): TimelinePosition {
-    return a.toMargin() < b.toMargin() ? a : b;
-  }
-  
-  static fromMargin(_margin: number): TimelinePosition {
-    // Implementation would depend on how margins relate to timeline positions
-    return new TimelinePosition();
-  }
-  
-  static fromSixteenths(_sixteenths: number): TimelinePosition {
-    // Convert sixteenths to bar/beat/sixteenth position
-    return new TimelinePosition();
-  }
-  
-  static fromSpan(_span: number): TimelinePosition {
-    // Convert span to TimelinePosition
-    return new TimelinePosition();
-  }
-  
-  static measureMargin(_width: number): { measures: number; beats: number; fraction: number } {
-    // Implementation would calculate measures, beats, fraction from width
-    return { measures: 0, beats: 0, fraction: 0 };
-  }
-  
-  static fractionToSpan(_fraction: number): number {
-    // Convert fraction to span
-    return 0;
-  }
-  
-  static durationToSpan(_duration: number): number {
-    // Convert duration to span
-    return 0;
-  }
-  
-  constructor(bar?: number, beat?: number, sixteenth?: number) {
-    this.bar = bar || 0;
-    this.beat = beat || 0;
-    this.sixteenth = sixteenth || 0;
-  }
-  
-  copy(): TimelinePosition {
-    return new TimelinePosition(this.bar, this.beat, this.sixteenth);
-  }
-  
-  snap(_snapSize: number, _direction?: string): TimelinePosition {
-    // Now accepts only one argument (snapSize) with an optional direction
-    return this; 
-  }
-  
-  toMargin(): number {
-    return 0; // Implementation would depend on how positions relate to margins
-  }
-  
-  compareTo(_other: TimelinePosition): number {
-    // Implementation to compare positions
-    return 0;
-  }
-  
-  equals(_other: TimelinePosition): boolean {
-    // Implementation to check equality
-    return false;
-  }
-  
-  translate(_delta: { measures: number; beats: number; fraction: number; sign?: number }, _round?: boolean): TimelinePosition {
-    // Implementation to translate position by delta
-    return this;
-  }
-  
-  diff(_other: TimelinePosition): { measures: number; beats: number; fraction: number; sign: number } {
-    // Implementation to calculate difference between positions
-    return { measures: 0, beats: 0, fraction: 0, sign: 0 };
-  }
-  
-  toSixteenths(): number {
-    // Implementation to convert to sixteenths
-    return 0;
-  }
-}
-
-// Define the WindowAutoScrollThresholds interface
-export interface WindowAutoScrollThresholds {
-  top: {
-    slow: number;
-    medium: number;
-    fast: number;
-  };
-  right: {
-    slow: number;
-    medium: number;
-    fast: number;
-  };
-  bottom?: {
-    slow: number;
-    medium: number;
-    fast: number;
-  };
-  left?: {
-    slow: number;
-    medium: number;
-    fast: number;
-  };
-}
-
-// Define the Track interface
 export interface Track {
   id: string;
   name: string;
-  automationLanes: AutomationLane[];
-  clips: Clip[];
-  color: string;
-  effects: any[];
-  expanded: boolean;
-  pan: number;
-  solo: boolean;
-  muted: boolean;
-  mute: boolean;
   type: TrackType;
+  clips: Clip[];
+  mute: boolean;
+  solo: boolean;
   volume: number;
-  fx: {
-    preset: any;
-    effects: any[];
-    selectedEffectIndex: number;
-  };
-  armed: boolean;
-  automation?: boolean;
-  automationMode?: AutomationMode;
+  pan: number;
 }
 
-// Define the Clip interface
+export interface AudioData {
+  type: 'audio';
+  buffer: AudioBuffer;
+  waveform: number[];
+}
+
+export interface MIDIData {
+  type: 'midi';
+  notes: MIDINote[];
+}
+
+export interface MIDINote {
+  pitch: number;
+  velocity: number;
+  start: TimelinePosition;
+  duration: TimelinePosition;
+}
+
 export interface Clip {
   id: string;
-  name: string;
+  trackId: string;
   start: TimelinePosition;
-  end: TimelinePosition;
-  type?: string;
-  audio?: {
-    audioBuffer: AudioBuffer;
-    start: TimelinePosition;
-    end: TimelinePosition;
-    // Other audio properties as needed
+  length: TimelinePosition;
+  data: AudioData | MIDIData;
+  fadeIn?: number;  // Fade in time in seconds
+  fadeOut?: number; // Fade out time in seconds
+  gain?: number;    // Volume multiplier
+  effects?: Array<{ type: string, parameters: Record<string, any> }>;
+  metadata?: Record<string, any>;
+}
+
+export class TimelinePosition {
+  static defaultSettings: TimelineSettings = {
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    snap: true,
+    snapUnit: 'beat'
   };
-  muted?: boolean;
-  loopEnd?: TimelinePosition;
-  startLimit?: TimelinePosition;
-  endLimit?: TimelinePosition;
-}
 
-// Define the TimelineSettings interface
-export interface TimelineSettings {
-  horizontalScale: number;
-  timeSignature: {
-    beats: number;
-    noteValue: number;
-  };
-}
+  constructor(
+    public bar: number = 0,
+    public beat: number = 0,
+    public tick: number = 0
+  ) {}
 
-// Define the AutomationLane interface
-export interface AutomationLane {
-  id: string;
-  label: string;
-  envelope: AutomationLaneEnvelope;
-  enabled: boolean;
-  minValue: number;
-  maxValue: number;
-  nodes: AutomationNode[];
-  show: boolean;
-  expanded: boolean;
-}
+  /**
+   * Add an offset to this position and return a new position
+   */
+  add(bars: number, beats: number, ticks: number): TimelinePosition {
+    let resultTick = this.tick + ticks;
+    let resultBeat = this.beat + beats;
+    let resultBar = this.bar + bars;
+    
+    // Handle tick overflow
+    if (resultTick >= 480) { // Assuming 480 ticks per beat
+      resultBeat += Math.floor(resultTick / 480);
+      resultTick %= 480;
+    }
+    
+    // Handle beat overflow
+    if (resultBeat >= 4) { // Assuming 4 beats per bar
+      resultBar += Math.floor(resultBeat / 4);
+      resultBeat %= 4;
+    }
+    
+    return new TimelinePosition(resultBar, resultBeat, resultTick);
+  }
 
-// Define the AutomationNode interface
-export interface AutomationNode {
-  id: string;
-  value: number;
-  pos: TimelinePosition;
-}
+  /**
+   * Create a copy of this position
+   */
+  copy(): TimelinePosition {
+    return new TimelinePosition(this.bar, this.beat, this.tick);
+  }
 
-// Update existing enums and add new ones
-export enum TrackType {
-  Audio = "audio",
-  Midi = "midi",
-  Sequencer = "sequencer",
-  Master = "master"
-}
+  /**
+   * Compare this position to another
+   * Returns -1 if this < other, 0 if equal, 1 if this > other
+   */
+  compareTo(other: TimelinePosition): number {
+    if (this.bar !== other.bar) return this.bar - other.bar;
+    if (this.beat !== other.beat) return this.beat - other.beat;
+    return this.tick - other.tick;
+  }
 
-export enum AutomationMode {
-  Read = "Read",
-  Latch = "Latch",
-  Touch = "Touch",
-  Write = "Write"
-}
+  /**
+   * Check if two positions are equal
+   */
+  equals(other: TimelinePosition): boolean {
+    return this.bar === other.bar && 
+           this.beat === other.beat && 
+           this.tick === other.tick;
+  }
 
-// Add the ContextMenuType enum
-export enum ContextMenuType {
-  Clip = "clip",
-  Region = "region",
-  Track = "track",
-  Lane = "lane",
-  Node = "node",
-  Text = "text",
-  FXChainPreset = "fxChainPreset",
-  AddAutomationLane = "addAutomationLane",
-  Automation = "automation"
-}
+  /**
+   * Convert position to total number of ticks
+   */
+  toTicks(): number {
+    return (this.bar * 4 * 480) + (this.beat * 480) + this.tick;
+  }
 
-// Define the Region interface
-export interface Region {
-  start: TimelinePosition;
-  end: TimelinePosition;
-}
+  /**
+   * Convert position to seconds based on tempo
+   */
+  toSeconds(tempo: number = TimelinePosition.defaultSettings.tempo): number {
+    const ticksPerSecond = (tempo * 480) / 60; // 480 ticks per beat
+    return this.toTicks() / ticksPerSecond;
+  }
 
-// Add other enums and types needed...
+  /**
+   * Create a position from a number of seconds
+   */
+  static fromSeconds(seconds: number, tempo: number = TimelinePosition.defaultSettings.tempo): TimelinePosition {
+    const ticksPerSecond = (tempo * 480) / 60;
+    const totalTicks = Math.round(seconds * ticksPerSecond);
+    
+    const bars = Math.floor(totalTicks / (4 * 480));
+    let remainingTicks = totalTicks % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    return new TimelinePosition(bars, beats, remainingTicks);
+  }
+
+  /**
+   * Create a position from total number of ticks
+   */
+  static fromTicks(ticks: number): TimelinePosition {
+    const bars = Math.floor(ticks / (4 * 480));
+    let remainingTicks = ticks % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    return new TimelinePosition(bars, beats, remainingTicks);
+  }
+
+  /**
+   * Add two positions together
+   */
+  static add(a: TimelinePosition, b: TimelinePosition): TimelinePosition {
+    return a.add(b.bar, b.beat, b.tick);
+  }
+
+  /**
+   * Subtract two positions
+   */
+  static subtract(a: TimelinePosition, b: TimelinePosition): TimelinePosition {
+    const totalTicks = Math.max(0, a.toTicks() - b.toTicks());
+    return TimelinePosition.fromTicks(totalTicks);
+  }
+
+  /**
+   * Compare two positions
+   */
+  static compare(a: TimelinePosition, b: TimelinePosition): number {
+    return a.compareTo(b);
+  }
+}

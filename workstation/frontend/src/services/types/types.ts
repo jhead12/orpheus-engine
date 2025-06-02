@@ -7,7 +7,8 @@ export enum AudioAnalysisType {
 export enum TrackType {
   Audio = "audio",
   MIDI = "midi",
-  Bus = "bus"
+  Bus = "bus",
+  Master = "master"
 }
 
 export interface TimeSignature {
@@ -20,6 +21,7 @@ export interface TimelineSettings {
   timeSignature: TimeSignature;
   snap: boolean;
   snapUnit: 'beat' | 'bar' | 'sixteenth';
+  horizontalScale: number;
 }
 
 export interface Track {
@@ -31,6 +33,8 @@ export interface Track {
   solo: boolean;
   volume: number;
   pan: number;
+  color?: string;
+  automationLanes?: AutomationLane[];
 }
 
 export interface AudioData {
@@ -62,6 +66,17 @@ export interface Clip {
   gain?: number;    // Volume multiplier
   effects?: Array<{ type: string, parameters: Record<string, any> }>;
   metadata?: Record<string, any>;
+  // Legacy properties for compatibility
+  name?: string;
+  end?: TimelinePosition;
+  loopEnd?: TimelinePosition;
+  startLimit?: TimelinePosition;
+  endLimit?: TimelinePosition;
+  type?: TrackType;
+  audio?: {
+    start: TimelinePosition;
+    end: TimelinePosition;
+  };
 }
 
 export class TimelinePosition {
@@ -69,7 +84,8 @@ export class TimelinePosition {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: 'beat'
+    snapUnit: 'beat',
+    horizontalScale: 1
   };
 
   constructor(
@@ -135,6 +151,68 @@ export class TimelinePosition {
   }
 
   /**
+   * Convert to margin for timeline display
+   */
+  toMargin(): number {
+    return this.toTicks();
+  }
+
+  /**
+   * Convert to sixteenths
+   */
+  toSixteenths(): number {
+    return (this.bar * 4 * 4) + (this.beat * 4) + Math.floor(this.tick / 120);
+  }
+
+  /**
+   * Create position from margin
+   */
+  static fromMargin(margin: number): TimelinePosition {
+    return TimelinePosition.fromTicks(margin);
+  }
+
+  /**
+   * Create position from sixteenths
+   */
+  static fromSixteenths(sixteenths: number): TimelinePosition {
+    const bars = Math.floor(sixteenths / 16);
+    let remainingSixteenths = sixteenths % 16;
+    
+    const beats = Math.floor(remainingSixteenths / 4);
+    remainingSixteenths = remainingSixteenths % 4;
+    
+    const ticks = remainingSixteenths * 120; // 120 ticks per sixteenth
+    
+    return new TimelinePosition(bars, beats, ticks);
+  }
+
+  /**
+   * Calculate measure margin from values
+   */
+  static measureMargin(value: number): { measures: number; beats: number; fraction: number } {
+    const bars = Math.floor(value / (4 * 480));
+    let remainingTicks = value % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
+    
+    return { measures: bars, beats, fraction };
+  }
+
+  /**
+   * Static timeline settings (for backward compatibility)
+   */
+  static timelineSettings: TimelineSettings = {
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    snap: true,
+    snapUnit: 'beat',
+    horizontalScale: 1
+  };
+
+  /**
    * Convert position to seconds based on tempo
    */
   toSeconds(tempo: number = TimelinePosition.defaultSettings.tempo): number {
@@ -192,4 +270,115 @@ export class TimelinePosition {
   static compare(a: TimelinePosition, b: TimelinePosition): number {
     return a.compareTo(b);
   }
+
+  /**
+   * Snap position to grid
+   */
+  snap(gridSize: number): TimelinePosition {
+    if (gridSize <= 0) return this.copy();
+    
+    // Convert to total ticks
+    const totalTicks = this.toTicks();
+    
+    // Calculate grid size in ticks (assuming gridSize is in beats)
+    const gridTicks = gridSize * 480; // 480 ticks per beat
+    
+    // Snap to nearest grid
+    const snappedTicks = Math.round(totalTicks / gridTicks) * gridTicks;
+    
+    return TimelinePosition.fromTicks(snappedTicks);
+  }
+
+  /**
+   * Translate position by delta
+   */
+  translate(delta: { measures: number; beats: number; fraction: number; sign: number }, applySnap?: boolean): TimelinePosition {
+    // Convert current position to total ticks
+    let totalTicks = this.toTicks();
+    
+    // Calculate delta in ticks
+    const deltaTicks = (
+      (delta.measures * 4 * 480) + 
+      (delta.beats * 480) + 
+      (delta.fraction * 120) // assuming fraction is in sixteenths, 480/4 = 120 ticks per sixteenth
+    ) * delta.sign;
+    
+    // Apply translation
+    totalTicks += deltaTicks;
+    
+    // Ensure non-negative
+    totalTicks = Math.max(0, totalTicks);
+    
+    // Create new position
+    let newPosition = TimelinePosition.fromTicks(totalTicks);
+    
+    // Apply snapping if requested
+    if (applySnap) {
+      newPosition = newPosition.snap(1); // Default snap to beat
+    }
+    
+    return newPosition;
+  }
+
+  /**
+   * Calculate difference between positions
+   */
+  diff(other: TimelinePosition): { measures: number; beats: number; fraction: number; sign: number } {
+    const thisTicks = this.toTicks();
+    const otherTicks = other.toTicks();
+    const diffTicks = thisTicks - otherTicks;
+    const sign = Math.sign(diffTicks);
+    const absDiffTicks = Math.abs(diffTicks);
+    
+    // Convert back to measures, beats, fraction
+    const measures = Math.floor(absDiffTicks / (4 * 480));
+    let remainingTicks = absDiffTicks % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
+    
+    return { measures, beats, fraction, sign };
+  }
+}
+
+// Automation types
+export enum AutomationLaneEnvelope {
+  Volume = "volume",
+  Pan = "pan",
+  Send = "send",
+  Filter = "filter"
+}
+
+export enum AutomationMode {
+  Off = "off",
+  Read = "read",
+  Write = "write",
+  Touch = "touch"
+}
+
+export interface AutomationNode {
+  id: string;
+  pos: TimelinePosition;
+  value: number;
+  curve?: number; // For bezier curves
+}
+
+export interface AutomationLane {
+  id: string;
+  label: string;
+  envelope: AutomationLaneEnvelope;
+  enabled: boolean;
+  minValue: number;
+  maxValue: number;
+  nodes: AutomationNode[];
+  show: boolean;
+  expanded: boolean;
+}
+
+// Window scroll thresholds
+export interface WindowAutoScrollThresholds {
+  right: { slow: number; medium: number; fast: number };
+  left: { slow: number; medium: number; fast: number };
 }
