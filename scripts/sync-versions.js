@@ -1,3 +1,4 @@
+// filepath: /Volumes/PRO-BLADE/Github/orpheus-engine/scripts/sync-versions.js
 const fs = require('fs');
 const path = require('path');
 
