@@ -32,8 +32,8 @@ workspaces.forEach(workspace => {
             
             try {
                 const packageJson = JSON.parse(packageContent);
-                // Use root version instead of incrementing
-                packageJson.version = rootVersion;
+                // Increment patch version based on current version
+                packageJson.version = incrementPatch(packageJson.version || '0.0.0');
                 fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2) + '\n');
                 console.log(`✅ Updated ${workspace}/package.json to version ${packageJson.version}`);
             } catch (parseError) {
@@ -57,9 +57,10 @@ try {
         
         try {
             const workstationPackage = JSON.parse(packageContent);
-            workstationPackage.version = rootVersion;
+            // Increment patch version based on current version
+            workstationPackage.version = incrementPatch(workstationPackage.version || '0.0.0');
             fs.writeFileSync(workstationPath, JSON.stringify(workstationPackage, null, 2) + '\n');
-            console.log(`✅ Updated orpheus-engine-workstation/package.json to version ${rootVersion}`);
+            console.log(`✅ Updated orpheus-engine-workstation/package.json to version ${workstationPackage.version}`);
         } catch (parseError) {
             console.error(`❌ Error parsing orpheus-engine-workstation/package.json:`, parseError.message);
             console.log('File content:', packageContent);
@@ -70,4 +71,5 @@ try {
 } catch (error) {
     console.error(`❌ Error processing orpheus-engine-workstation/package.json:`, error.message);
 }
+
 console.log('✨ Version sync complete!');
