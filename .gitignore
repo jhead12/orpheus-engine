@@ -64,4 +64,24 @@ yarn-error.log*
 # Archives
 *.tar.gz
 *.zip
-archives/
+archives/# Large model files
+*.gguf
+*.bin
+*.pt
+*.pth
+*.onnx
+*.dylib
+*.so
+
+# Python virtual environments
+**/venv/
+**/env/
+**/.env/
+**/.venv/
+**/ENV/
+
+# Archives
+*.tar.gz
+*.tgz
+*.zip
+*.rar
