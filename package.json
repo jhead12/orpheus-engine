@@ -69,7 +69,7 @@
     "presync-versions": "npm run setup-symlinks",
     "prebuild": "npm run setup-symlinks",
     "fix-permissions": "sudo chown -R $(id -u):$(id -g) \"/home/codespace/.npm\" || true",
-    "start:vite": "cd orpheus-engine-workstation/frontend && npm run dev",
+    "start:vite": "cd workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
     "fix-tokenizers": "node scripts/fix-tokenizers.js",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",

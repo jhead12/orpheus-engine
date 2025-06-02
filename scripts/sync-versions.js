@@ -33,8 +33,8 @@ workspaces.forEach(workspace => {
             
             try {
                 const packageJson = JSON.parse(packageContent);
-                // Increment patch version based on current version
-                packageJson.version = incrementPatch(packageJson.version || '0.0.0');
+                // Use root version for consistency across packages
+                packageJson.version = rootVersion;
                 fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2) + '\n');
                 console.log(`✅ Updated ${workspace}/package.json to version ${packageJson.version}`);
             } catch (parseError) {
@@ -49,28 +49,7 @@ workspaces.forEach(workspace => {
     }
 });
 
-// Also update the workstation root package.json
-try {
-    const workstationPath = path.join(__dirname, '..', 'orpheus-engine-workstation', 'package.json');
-    if (fs.existsSync(workstationPath)) {
-        console.log('Updating orpheus-engine-workstation/package.json...');
-        const packageContent = fs.readFileSync(workstationPath, 'utf8');
-        
-        try {
-            const workstationPackage = JSON.parse(packageContent);
-            // Increment patch version based on current version
-            workstationPackage.version = incrementPatch(workstationPackage.version || '0.0.0');
-            fs.writeFileSync(workstationPath, JSON.stringify(workstationPackage, null, 2) + '\n');
-            console.log(`✅ Updated orpheus-engine-workstation/package.json to version ${workstationPackage.version}`);
-        } catch (parseError) {
-            console.error(`❌ Error parsing orpheus-engine-workstation/package.json:`, parseError.message);
-            console.log('File content:', packageContent);
-        }
-    } else {
-        console.log('⚠️ Workstation package.json not found');
-    }
-} catch (error) {
-    console.error(`❌ Error processing orpheus-engine-workstation/package.json:`, error.message);
-}
+// NOTE: We don't update orpheus-engine-workstation since it's not a valid workspace path
+// Only the packages defined in the workspaces array above should be synchronized
 
 console.log('✨ Version sync complete!');
