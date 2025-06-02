@@ -1,6 +1,6 @@
 {
   "name": "orpheus-engine",
-  "version": "1.0.17",
+  "version": "1.0.16",
   "private": true,
   "productName": "Orpheus Engine",
   "workspaces": [
