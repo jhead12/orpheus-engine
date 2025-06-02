@@ -24,6 +24,14 @@
     "types": ["jest"]
   },
   "include": ["src", "../src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/*.bak/**",
+    "../src/**/*.bak/**",
+    "../src/components.bak/**",
+    "../src/services.bak/**",
+    "../src/contexts.bak/**"
+  ],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]
