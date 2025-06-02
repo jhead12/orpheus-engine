@@ -53,7 +53,7 @@
     "release:minor": "npm run release:prepare && npm run version:minor && npm run branch:release && npm run github:release",
     "release:major": "npm run release:prepare && npm run version:major && npm run branch:release && npm run github:release",
     "run-from-subdir": "node -e \"console.log('Running script from root directory: ' + process.argv[1]); require('child_process').spawnSync('npm', ['run', process.argv[1]], {stdio: 'inherit', cwd: '/workspaces/orpheus-engine'});\"",
-    "release:prepare": "git checkout typescript-compilation-fixes && git pull origin typescript-compilation-fixes",
+    "release:prepare": "git checkout main && git pull origin main && git merge develop",
     "version:patch": "npm run validate && npm run changelog && npm version patch --no-git-tag-version -m 'chore(release): %s' && git add package.json && git commit -m \"chore(release): v$npm_package_version\" && git tag -a \"v$npm_package_version\" -m \"Release v$npm_package_version\" && git push && git push origin \"v$npm_package_version\"",
     "version:minor": "npm run validate && npm run changelog && npm version minor --no-git-tag-version -m 'chore(release): %s' && git add package.json && git commit -m \"chore(release): v$npm_package_version\" && git tag -a \"v$npm_package_version\" -m \"Release v$npm_package_version\" && git push && git push origin \"v$npm_package_version\"",
     "version:major": "(npm run validate || true) && npm run changelog && npm version major --no-git-tag-version -m 'chore(release): %s' && git add package.json && git commit -m \"chore(release): v$npm_package_version\" && git tag -a \"v$npm_package_version\" -m \"Release v$npm_package_version\" && git push && git push origin \"v$npm_package_version\"",
