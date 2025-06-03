@@ -5,8 +5,8 @@
  * from different sources (clips, multiple clips, timeline sections).
  */
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AudioExporter, ExportOptions } from './audioExporter';
-import { Clip, TimelinePosition } from '../types/types';
+import { AudioExporter } from './audioExporter';
+import { Clip, TimelinePosition, ExportOptions } from '../types/types';
 
 // Mock the electron APIs that we need
 vi.mock('../../services/electron/utils', () => ({

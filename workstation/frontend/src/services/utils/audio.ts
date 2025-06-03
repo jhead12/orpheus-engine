@@ -96,7 +96,9 @@ export function createAudioBufferFromPCM(
   numChannels: number,
   sampleRate: number
 ): AudioBuffer {
-  const buffer = audioContext.createBuffer(numChannels, pcmData[0].length, sampleRate);
+  // Get the length from the appropriate source
+  const bufferLength = Array.isArray(pcmData) ? pcmData[0].length : pcmData.length;
+  const buffer = audioContext.createBuffer(numChannels, bufferLength, sampleRate);
   
   if (Array.isArray(pcmData)) {
     // Multi-channel data

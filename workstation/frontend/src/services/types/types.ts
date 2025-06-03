@@ -514,3 +514,32 @@ export enum WaveformLODLevel {
   Medium = "medium", 
   Low = "low"
 }
+
+// Export interfaces for audio processing
+export interface ExportOptions {
+  format?: 'wav' | 'mp3' | 'ogg' | 'flac';
+  sampleRate?: number;
+  bitDepth?: 16 | 24 | 32;
+  bitRate?: number;
+  normalize?: boolean;
+  metadata?: Record<string, any>;
+  // Cloud storage options
+  cloudProvider?: 'local' | 'ipfs' | 'aws-s3' | 'google-cloud' | 'azure-blob' | 'dropbox' | 'cloudflare-r2';
+  folderPath?: string;
+  makePublic?: boolean;
+  // Quality settings for consistency with plugin options
+  quality?: 'low' | 'medium' | 'high' | 'lossless';
+}
+
+export interface ExportResult {
+  filePath: string;
+  duration: number;
+  format: string;
+  metadata?: Record<string, any>;
+}
+
+export interface IPFSExportResult {
+  cid: string;
+  url: string;
+  format: string;
+}

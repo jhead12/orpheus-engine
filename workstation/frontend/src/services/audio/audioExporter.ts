@@ -1,18 +1,5 @@
-import { Clip, TimelinePosition } from '../types/types';
-
-export interface ExportOptions {
-  format?: 'wav' | 'mp3' | 'ogg' | 'flac';
-  sampleRate?: number;
-  bitDepth?: 16 | 24 | 32;
-  bitRate?: number;
-  normalize?: boolean;
-}
-
-export interface ExportResult {
-  filePath: string;
-  duration: number;
-  format: string;
-}
+import { Clip, TimelinePosition, ExportOptions, ExportResult, IPFSExportResult } from '../types/types';
+import type { IPFSUploadOptions, IPFSUploadResult } from '../storage/ipfsClient';
 
 export class AudioExporter {
   /**
@@ -207,8 +194,11 @@ export class AudioExporter {
    * Show save dialog to get output file path
    */
   private async showSaveDialog(format: string) {
-    if (typeof window.electron !== 'undefined') {
-      return window.electron.showSaveDialog({
+    // Import the electronAPI from utils to access the typed API
+    const { electronAPI } = await import('../electron/utils');
+    
+    try {
+      return electronAPI.showSaveDialog({
         title: 'Export Audio',
         defaultPath: `export.${format}`,
         filters: [
@@ -216,8 +206,10 @@ export class AudioExporter {
           { name: 'All Files', extensions: ['*'] }
         ]
       });
+    } catch (error) {
+      console.error('Failed to show save dialog:', error);
+      return null;
     }
-    return null;
   }
   
   /**
@@ -272,5 +264,229 @@ export class AudioExporter {
     await new Promise(resolve => setTimeout(resolve, 100));
     
     return Promise.resolve();
+  }
+
+  /**
+   * Export a clip to IPFS storage
+   */
+  async exportClipToIPFS(clip: Clip, options: ExportOptions = {}): Promise<IPFSExportResult | null> {
+    try {
+      // Create offline audio context for rendering
+      const offlineContext = this.createOfflineContext(
+        (clip.data as any).buffer.duration, 
+        options.sampleRate || 44100
+      );
+      
+      // Set up the audio graph for rendering
+      const source = offlineContext.createBufferSource();
+      source.buffer = (clip.data as any).buffer;
+      
+      const gainNode = offlineContext.createGain();
+      source.connect(gainNode);
+      gainNode.connect(offlineContext.destination);
+      
+      // Start rendering
+      source.start();
+      const renderedBuffer = await offlineContext.startRendering();
+      
+      // Process rendered buffer based on options
+      if (options.normalize) {
+        this.normalizeAudioBuffer(renderedBuffer);
+      }
+      
+      // Convert buffer to binary data for IPFS upload
+      // In a real implementation, this would use proper encoding based on format option
+      const audioData = new ArrayBuffer(0); // Placeholder for actual audio encoding
+      
+      // Upload to IPFS
+      const { IPFSClient } = await import('../storage/ipfsClient');
+      const ipfsResult = await IPFSClient.uploadBuffer(audioData, {
+        filename: `${clip.id}.${options.format || 'wav'}`,
+        metadata: options.metadata
+      });
+      
+      return {
+        cid: ipfsResult.cid,
+        url: ipfsResult.url,
+        format: options.format || 'wav'
+      };
+    } catch (error) {
+      console.error('Error exporting clip to IPFS:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Export multiple clips to IPFS storage
+   */
+  async exportMultipleClipsToIPFS(clips: Clip[], options: ExportOptions = {}): Promise<IPFSExportResult | null> {
+    try {
+      // Calculate total duration needed
+      let endTime = 0;
+      clips.forEach(clip => {
+        const clipEnd = TimelinePosition.toSeconds(clip.start) + (clip.data as any).buffer.duration;
+        if (clipEnd > endTime) {
+          endTime = clipEnd;
+        }
+      });
+      
+      // Create offline context
+      const offlineContext = this.createOfflineContext(
+        endTime,
+        options.sampleRate || 44100
+      );
+      
+      // Add each clip to the context
+      clips.forEach(clip => {
+        const source = offlineContext.createBufferSource();
+        source.buffer = (clip.data as any).buffer;
+        
+        const gainNode = offlineContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(offlineContext.destination);
+        
+        source.start(TimelinePosition.toSeconds(clip.start));
+      });
+      
+      // Render audio
+      const renderedBuffer = await offlineContext.startRendering();
+      
+      // Process rendered buffer based on options
+      if (options.normalize) {
+        this.normalizeAudioBuffer(renderedBuffer);
+      }
+      
+      // Convert buffer to binary data for IPFS upload
+      // In a real implementation, this would use proper encoding based on format option
+      const audioData = new ArrayBuffer(0); // Placeholder for actual audio encoding
+      
+      // Upload to IPFS
+      const { IPFSClient } = await import('../storage/ipfsClient');
+      const ipfsResult = await IPFSClient.uploadBuffer(audioData, {
+        filename: `export.${options.format || 'wav'}`,
+        metadata: options.metadata
+      });
+      
+      return {
+        cid: ipfsResult.cid,
+        url: ipfsResult.url,
+        format: options.format || 'wav'
+      };
+    } catch (error) {
+      console.error('Error exporting clips to IPFS:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Export a clip to cloud storage
+   */
+  async exportClipToCloud(clip: Clip, options: ExportOptions = {}): Promise<{ url: string; id: string } | null> {
+    try {
+      // Create offline audio context for rendering
+      const offlineContext = this.createOfflineContext(
+        (clip.data as any).buffer.duration, 
+        options.sampleRate || 44100
+      );
+      
+      // Set up the audio graph for rendering
+      const source = offlineContext.createBufferSource();
+      source.buffer = (clip.data as any).buffer;
+      
+      const gainNode = offlineContext.createGain();
+      source.connect(gainNode);
+      gainNode.connect(offlineContext.destination);
+      
+      // Start rendering
+      source.start();
+      const renderedBuffer = await offlineContext.startRendering();
+      
+      // Process rendered buffer based on options
+      if (options.normalize) {
+        this.normalizeAudioBuffer(renderedBuffer);
+      }
+      
+      // Convert buffer to binary data for cloud upload
+      const audioData = new ArrayBuffer(0); // Placeholder for actual audio encoding
+      
+      // Upload to cloud storage
+      const { CloudStorageClient } = await import('../storage/cloudStorageClient');
+      const cloudResult = await CloudStorageClient.uploadBuffer(audioData, {
+        filename: `${clip.id}.${options.format || 'wav'}`,
+        metadata: options.metadata,
+        folderPath: options.folderPath,
+        makePublic: options.makePublic
+      });
+      
+      return {
+        url: cloudResult.url,
+        id: cloudResult.id
+      };
+    } catch (error) {
+      console.error('Error exporting clip to cloud storage:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Export multiple clips to cloud storage
+   */
+  async exportMultipleClipsToCloud(clips: Clip[], options: ExportOptions = {}): Promise<{ url: string; id: string } | null> {
+    try {
+      // Calculate total duration needed
+      let endTime = 0;
+      clips.forEach(clip => {
+        const clipEnd = TimelinePosition.toSeconds(clip.start) + (clip.data as any).buffer.duration;
+        if (clipEnd > endTime) {
+          endTime = clipEnd;
+        }
+      });
+      
+      // Create offline context
+      const offlineContext = this.createOfflineContext(
+        endTime,
+        options.sampleRate || 44100
+      );
+      
+      // Add each clip to the context
+      clips.forEach(clip => {
+        const source = offlineContext.createBufferSource();
+        source.buffer = (clip.data as any).buffer;
+        
+        const gainNode = offlineContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(offlineContext.destination);
+        
+        source.start(TimelinePosition.toSeconds(clip.start));
+      });
+      
+      // Render audio
+      const renderedBuffer = await offlineContext.startRendering();
+      
+      // Process rendered buffer based on options
+      if (options.normalize) {
+        this.normalizeAudioBuffer(renderedBuffer);
+      }
+      
+      // Convert buffer to binary data for cloud upload
+      const audioData = new ArrayBuffer(0); // Placeholder for actual audio encoding
+      
+      // Upload to cloud storage
+      const { CloudStorageClient } = await import('../storage/cloudStorageClient');
+      const cloudResult = await CloudStorageClient.uploadBuffer(audioData, {
+        filename: `export.${options.format || 'wav'}`,
+        metadata: options.metadata,
+        folderPath: options.folderPath,
+        makePublic: options.makePublic
+      });
+      
+      return {
+        url: cloudResult.url,
+        id: cloudResult.id
+      };
+    } catch (error) {
+      console.error('Error exporting clips to cloud storage:', error);
+      return null;
+    }
   }
 }

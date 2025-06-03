@@ -115,8 +115,8 @@ describe('ClipService', () => {
     expect(effectsClip.id).toBe(testClip.id);
     expect(effectsClip.effects).toEqual(effects);
     expect(effectsClip.effects).toHaveLength(2);
-    expect(effectsClip.effects[0].type).toBe('eq');
-    expect(effectsClip.effects[1].type).toBe('reverb');
+    expect(effectsClip.effects![0].type).toBe('eq');
+    expect(effectsClip.effects![1].type).toBe('reverb');
   });
   
   test('should add metadata to a clip', () => {
@@ -131,8 +131,8 @@ describe('ClipService', () => {
     
     expect(metadataClip.id).toBe(testClip.id);
     expect(metadataClip.metadata).toEqual(metadata);
-    expect(metadataClip.metadata.name).toBe('Vocal Take 1');
-    expect(metadataClip.metadata.tags).toContain('vocals');
+    expect(metadataClip.metadata!.name).toBe('Vocal Take 1');
+    expect(metadataClip.metadata!.tags).toContain('vocals');
   });
   
   test('should adjust clip gain', () => {

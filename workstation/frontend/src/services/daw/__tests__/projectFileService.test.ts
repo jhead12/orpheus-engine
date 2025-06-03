@@ -45,7 +45,27 @@ vi.mock('../../electron/utils', () => ({
 
 describe('ProjectFileService', () => {
   let projectFileService: ProjectFileService;
-  let mockProject;
+  let mockProject: {
+    name: string;
+    tracks: {
+      id: string;
+      name: string;
+      type: string;
+      clips: {
+        id: string;
+        trackId: string;
+        start: TimelinePosition;
+        length: TimelinePosition;
+        data: {
+          type: string;
+          buffer: AudioBuffer;
+          waveform: any[];
+        };
+      }[];
+    }[];
+    tempo: number;
+    timeSignature: { numerator: number; denominator: number };
+  };
   
   beforeEach(() => {
     // Initialize project file service

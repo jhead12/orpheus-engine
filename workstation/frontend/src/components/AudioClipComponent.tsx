@@ -1,8 +1,8 @@
 import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { WorkstationContext } from "../../contexts/WorkstationContext";
-import { BaseClipComponentProps, TimelinePosition, TrackType, WaveformLODLevel } from "../../types";
+import { useWorkstation } from "../contexts/WorkstationContext";
+import { BaseClipComponentProps, TimelinePosition, TrackType, WaveformLODLevel } from "../services/types/types";
 import { ClipComponent, Waveform } from ".";
-import { audioBufferToBuffer, audioContext, reverseAudio } from "../../services/utils/audio";
+import { audioBufferToBuffer, audioContext, reverseAudio } from "../services/utils/audio";
 
 export const WAVEFORM_CHUNK_SIZE = 2048;
 

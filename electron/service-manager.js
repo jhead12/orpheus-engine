@@ -95,10 +95,12 @@ class ServiceManager extends events_1.EventEmitter {
         const maxWaitTime = config.name === 'frontend' ? 60000 : 30000;
         const checkInterval = config.name === 'frontend' ? 2000 : 1000;
         const startTime = Date.now();
+        let attemptCount = 0;
         
         console.log(`[${config.name}] Starting service check...`);
 
         while (Date.now() - startTime < maxWaitTime) {
+            attemptCount++;
             try {
                 if (config.name === 'frontend') {
                     // Special frontend health check

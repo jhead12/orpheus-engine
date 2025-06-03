@@ -1,12 +1,18 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { ServiceManager } from './service-manager';
 import { StartupWindow } from './startup-window';
+import { 
+  getBackendUrl, 
+  getFrontendUrl, 
+  getViteUrl, 
+  getHealthCheckUrl 
+} from '../workstation/frontend/OEW-main/src/config/environment';
 
 class OrpheusEngine {
   private serviceManager: ServiceManager;
   private startupWindow: StartupWindow;
-  private mainWindow: BrowserWindow | null = null;
+  private mainWindow: Electron.BrowserWindow | null = null;
 
   constructor() {
     this.serviceManager = new ServiceManager();
@@ -29,7 +35,7 @@ class OrpheusEngine {
       critical: true,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:5001/health');
+          const response = await fetch(getHealthCheckUrl('backend'));
           return response.ok;
         } catch {
           return false;
@@ -49,7 +55,7 @@ class OrpheusEngine {
       critical: false,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:5174');
+          const response = await fetch(getHealthCheckUrl('vite'));
           return response.ok;
         } catch {
           return false;
@@ -69,7 +75,7 @@ class OrpheusEngine {
       critical: true,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:3000');
+          const response = await fetch(getFrontendUrl());
           return response.ok;
         } catch {
           return false;
@@ -90,6 +96,21 @@ class OrpheusEngine {
   }
 
   private setupIPCHandlers() {
+    // Dialog handlers
+    ipcMain.handle('dialog:showSaveDialog', async (event, options) => {
+      if (this.mainWindow) {
+        return await dialog.showSaveDialog(this.mainWindow, options);
+      }
+      return await dialog.showSaveDialog(options);
+    });
+
+    ipcMain.handle('dialog:showOpenDialog', async (event, options) => {
+      if (this.mainWindow) {
+        return await dialog.showOpenDialog(this.mainWindow, options);
+      }
+      return await dialog.showOpenDialog(options);
+    });
+
     // MCP Analysis handler - placeholder implementation
     ipcMain.handle('mcp:analyze', async (event, request) => {
       try {
@@ -185,8 +206,7 @@ class OrpheusEngine {
       minHeight: 700,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
-        contextIsolation: false,
+        nodeIntegration: true
       },
       titleBarStyle: 'hiddenInset',
       title: 'Orpheus Engine',
@@ -196,7 +216,7 @@ class OrpheusEngine {
 
     // Load the DAW interface
     if (process.env.NODE_ENV === 'development') {
-      this.mainWindow.loadURL('http://localhost:3000');
+      this.mainWindow.loadURL(getFrontendUrl());
       this.mainWindow.webContents.openDevTools();
     } else {
       // In production, load the built frontend

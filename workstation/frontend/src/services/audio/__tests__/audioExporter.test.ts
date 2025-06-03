@@ -217,7 +217,7 @@ describe('AudioExporter', () => {
       format: 'wav',
       sampleRate: 44100,
       bitDepth: 16,
-      cloudProvider: 'aws-s3',
+      cloudProvider: 'azure-blob',
       folderPath: 'audio/exports',
       makePublic: true,
       metadata: {

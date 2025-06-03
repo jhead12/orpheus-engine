@@ -209,76 +209,167 @@
   background-color: var(--bg5);
 }
 
-/* Transport Controls */
+/* Transport Controls - FL Studio Style */
 .transport-controls {
   display: flex;
   align-items: center;
-  background-color: var(--bg3);
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--border1);
+  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+  padding: 4px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  height: 48px;
+  gap: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .transport-section {
   display: flex;
   align-items: center;
-  margin-right: 24px;
+  gap: 4px;
 }
 
-.position-display {
-  min-width: 150px;
+.main-controls {
+  flex: 0 0 auto;
 }
 
-.position-label {
-  margin-right: 8px;
+.tempo-section {
+  flex: 0 0 auto;
+  margin-left: 16px;
 }
 
-.position-value {
-  font-family: monospace;
-  font-size: 14px;
-  background-color: var(--bg4);
-  padding: 4px 8px;
-  border-radius: 4px;
+.position-section {
+  flex: 1;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.transport-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #555;
+  margin: 0 8px;
 }
 
 .transport-button {
-  background-color: var(--bg4);
-  color: var(--border6);
-  border: none;
-  border-radius: 4px;
-  width: 32px;
-  height: 32px;
-  margin-right: 4px;
-  font-size: 18px;
+  background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+  color: #e0e0e0;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.15s ease;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .transport-button:hover {
-  background-color: var(--bg5);
+  background: linear-gradient(180deg, #5a5a5a 0%, #3a3a3a 100%);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3);
 }
 
-.transport-button.active {
-  background-color: var(--color1);
-  color: var(--bg1);
+.transport-button:active {
+  transform: translateY(0);
+  box-shadow: 
+    inset 0 1px 2px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-.tempo-label {
-  margin-right: 8px;
+.play-button.active {
+  background: linear-gradient(180deg, #1ed760 0%, #0fa849 100%);
+  color: white;
+  border-color: #0fa849;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 8px rgba(30, 215, 96, 0.4);
+}
+
+.record-button.recording {
+  background: linear-gradient(180deg, #ff4444 0%, #cc0000 100%);
+  color: white;
+  border-color: #cc0000;
+  animation: recordPulse 1s infinite;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 8px rgba(255, 68, 68, 0.4);
+}
+
+.loop-button.active {
+  background: linear-gradient(180deg, #ff69b4 0%, #c8418a 100%);
+  color: white;
+  border-color: #c8418a;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 8px rgba(255, 105, 180, 0.4);
+}
+
+.add-track-button {
+  background: linear-gradient(180deg, #ff69b4 0%, #c8418a 100%);
+  color: white;
+  border-color: #c8418a;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.time-signature-display,
+.tempo-display {
+  display: flex;
+  align-items: center;
+}
+
+.time-sig-select {
+  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+  color: #ff69b4;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 50px;
+  text-align: center;
 }
 
 .tempo-input {
-  width: 50px;
-  background-color: var(--bg4);
-  color: var(--border6);
-  border: 1px solid var(--border1);
+  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+  color: #ff69b4;
+  border: 1px solid #1a1a1a;
   border-radius: 4px;
-  padding: 4px;
-  text-align: right;
+  padding: 4px 8px;
+  width: 60px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-.tempo-unit {
-  margin-left: 8px;
+.position-display {
+  background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 4px 12px;
+  margin-right: 8px;
+}
+
+.position-value {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #ff69b4;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+@keyframes recordPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
 }

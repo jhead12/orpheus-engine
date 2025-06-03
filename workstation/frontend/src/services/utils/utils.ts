@@ -290,9 +290,7 @@ export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Cl
 
   if (newClip.loopEnd && newClip.end && newClip.loopEnd.compareTo(newClip.end) <= 0)
     newClip.loopEnd = undefined;
-
-  //TimelinePosition.timelineSettings = temp;
-
+    
   return newClip;
 }
 

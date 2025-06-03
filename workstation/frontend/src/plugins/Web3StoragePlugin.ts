@@ -1,4 +1,4 @@
-import type { StorageConnector, PluginMetadata, WorkstationPlugin, WorkstationData } from '../contexts/WorkstationContext';
+import type { StorageConnector, PluginMetadata, WorkstationPlugin, WorkstationData } from '../../../shared/packages/contexts/src/index';
 
 interface CeramicDBConnector {
   connect: (ceramic: any) => Promise<void>;
@@ -18,6 +18,10 @@ interface IPFSConnector {
 }
 
 export class Web3StoragePlugin implements WorkstationPlugin {
+  id: string = 'web3-storage';
+  name: string = 'Web3 Storage Plugin';
+  version: string = '1.0.0';
+  
   metadata: PluginMetadata = {
     id: 'web3-storage-plugin',
     name: 'Web3 Storage Plugin',

@@ -22,14 +22,32 @@ Object.defineProperty(global.navigator, 'mediaDevices', {
   configurable: true
 });
 
-// Mock MediaRecorder
-global.MediaRecorder = vi.fn().mockImplementation(() => ({
-  start: vi.fn(),
-  stop: vi.fn(),
-  state: 'inactive',
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-}));
+// Mock MediaRecorder with event handling
+let dataAvailableHandler: ((e: any) => void) | null = null;
+let stopHandler: (() => void) | null = null;
+
+// Create the mock constructor with proper typing
+const MediaRecorderMock = vi.fn().mockImplementation(() => {
+  return {
+    start: vi.fn(),
+    stop: vi.fn(),
+    state: 'inactive',
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    set ondataavailable(handler: (e: any) => void) {
+      dataAvailableHandler = handler;
+    },
+    set onstop(handler: () => void) {
+      stopHandler = handler;
+    }
+  };
+}) as any;
+
+// Add the static isTypeSupported method to the mock constructor
+(MediaRecorderMock as any).isTypeSupported = vi.fn().mockReturnValue(true);
+
+// Assign the mock to global.MediaRecorder with type assertion
+global.MediaRecorder = MediaRecorderMock as unknown as typeof MediaRecorder;
 
 describe('AudioRecorder', () => {
   let audioRecorder: AudioRecorder;
@@ -40,6 +58,8 @@ describe('AudioRecorder', () => {
   
   afterEach(() => {
     vi.clearAllMocks();
+    dataAvailableHandler = null;
+    stopHandler = null;
   });
   
   test('should initialize with default settings', () => {
@@ -61,17 +81,19 @@ describe('AudioRecorder', () => {
     Object.defineProperty(mockDataAvailable, 'data', { value: mockBlob });
     
     // Simulate recording stop by calling event handlers directly
-    const startRecordingPromise = audioRecorder.stopRecording();
+    const stopRecordingPromise = audioRecorder.stopRecording();
     
     // Trigger the dataavailable event handler
-    const dataAvailableHandler = vi.mocked(MediaRecorder).mock.instances[0].addEventListener.mock.calls[0][1];
-    dataAvailableHandler(mockDataAvailable);
+    if (dataAvailableHandler) {
+      dataAvailableHandler(mockDataAvailable);
+    }
     
     // Trigger the stop event handler
-    const stopHandler = vi.mocked(MediaRecorder).mock.instances[0].addEventListener.mock.calls[1][1];
-    stopHandler();
+    if (stopHandler) {
+      stopHandler();
+    }
     
-    const recordingData = await startRecordingPromise;
+    const recordingData = await stopRecordingPromise;
     
     expect(audioRecorder.isRecording).toBe(false);
     expect(recordingData).toBeDefined();

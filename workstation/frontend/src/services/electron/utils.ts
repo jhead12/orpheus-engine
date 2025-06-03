@@ -17,6 +17,8 @@ interface ElectronAPI {
   quit: () => void;
   reload: () => void;
   toggleDevTools: () => void;
+  readFile: (path: string) => Promise<string>;
+  writeFile: (path: string, content: string) => Promise<void>;
 }
 
 // This is replaced at runtime with the actual electron API exposed by the preload script
@@ -45,3 +47,23 @@ export function openContextMenu<T>(
 export function isElectron(): boolean {
   return !!(window && window.process && window.process.type);
 }
+
+// Mock implementation for testing/development
+export const electronAPIMock: ElectronAPI = {
+  openFile: async () => [],
+  saveFile: async () => null,
+  showOpenDialog: async () => ({ canceled: true, filePaths: [] }),
+  showSaveDialog: async () => ({ canceled: true, filePath: '' }),
+  showMessageBox: async () => ({ response: 0, checkboxChecked: false }),
+  platform: () => 'darwin',
+  addRecentDocument: () => {},
+  setTitle: () => {},
+  openContextMenu: () => {},
+  quit: () => {},
+  reload: () => {},
+  toggleDevTools: () => {},
+  readFile: async () => '',
+  writeFile: async () => {}
+};
+
+export const isElectronMock = () => false;

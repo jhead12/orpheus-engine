@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
   openDirectory: () => ipcRenderer.invoke('dialog:openDirectory'),
   saveFile: (content: string) => ipcRenderer.invoke('dialog:saveFile', content),
+  showSaveDialog: (options: any) => ipcRenderer.invoke('dialog:showSaveDialog', options),
+  showOpenDialog: (options: any) => ipcRenderer.invoke('dialog:showOpenDialog', options),
   
   // App lifecycle
   quitApp: () => ipcRenderer.send('app:quit'),

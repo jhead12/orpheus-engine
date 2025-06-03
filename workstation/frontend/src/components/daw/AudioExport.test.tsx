@@ -92,7 +92,7 @@ describe('AudioExporter - Audio Export Functionality', () => {
     });
     
     expect(result).toBeDefined();
-    expect(result.filePath).toBe('/path/to/export/output.wav');
+    expect(result!.filePath).toBe('/path/to/export/output.wav');
     expect(mockOfflineAudioContext.startRendering).toHaveBeenCalled();
   });
   
@@ -104,7 +104,7 @@ describe('AudioExporter - Audio Export Functionality', () => {
     });
     
     expect(result).toBeDefined();
-    expect(result.filePath).toBe('/path/to/export/output.wav'); // We're using the mock return value
+    expect(result!.filePath).toBe('/path/to/export/output.wav'); // We're using the mock return value
     expect(mockOfflineAudioContext.startRendering).toHaveBeenCalled();
   });
   
@@ -120,7 +120,7 @@ describe('AudioExporter - Audio Export Functionality', () => {
     });
     
     expect(result).toBeDefined();
-    expect(result.filePath).toBe('/path/to/export/output.wav');
+    expect(result!.filePath).toBe('/path/to/export/output.wav');
     expect(mockOfflineAudioContext.startRendering).toHaveBeenCalled();
   });
   
@@ -140,7 +140,7 @@ describe('AudioExporter - Audio Export Functionality', () => {
     );
     
     expect(result).toBeDefined();
-    expect(result.filePath).toBe('/path/to/export/output.wav');
+    expect(result!.filePath).toBe('/path/to/export/output.wav');
     expect(mockOfflineAudioContext.startRendering).toHaveBeenCalled();
   });
   

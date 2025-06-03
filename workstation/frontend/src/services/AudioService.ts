@@ -26,15 +26,21 @@ export class AudioService {
       await this.setupAnalyser();
     }
 
-    if (this.context.state === 'suspended') {
+    // By this point, this.context should be non-null due to the previous check
+    // but we'll add a defensive check anyway
+    if (this.context && this.context.state === 'suspended') {
       try {
-        await this.context.resume();
+        // We already checked that this.context is not null
+        const context = this.context;
+        await context.resume();
       } catch (error) {
         console.warn('Failed to resume AudioContext:', error);
       }
     }
 
-    return this.context;
+    // The context is guaranteed to be non-null at this point
+    // We use a null assertion operator to let TypeScript know this
+    return this.context!;
   }
 
   /**

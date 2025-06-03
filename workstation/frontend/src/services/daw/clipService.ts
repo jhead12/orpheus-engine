@@ -1,4 +1,5 @@
 import { Clip, AudioData, MIDIData, TimelinePosition, TrackType } from '../types/types';
+import { v4 as uuidv4 } from 'uuid';
 
 export class ClipService {
   private currentClip: Clip | null = null;
@@ -8,7 +9,7 @@ export class ClipService {
    */
   createClip(trackId: string, data: AudioData | MIDIData): Clip {
     return {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       trackId,
       start: new TimelinePosition(0, 0, 0),
       length: data.type === 'audio' ? 
@@ -50,7 +51,7 @@ export class ClipService {
 
       const leftClip = {
         ...clip,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         length: TimelinePosition.fromSeconds(leftDuration),
         data: {
           ...audioData,
@@ -61,7 +62,7 @@ export class ClipService {
 
       const rightClip = {
         ...clip,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         start: splitPosition,
         length: TimelinePosition.fromSeconds(rightDuration),
         data: {
@@ -91,7 +92,7 @@ export class ClipService {
 
       const leftClip = {
         ...clip,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         length: TimelinePosition.fromSeconds(leftDuration),
         data: {
           ...midiData,
@@ -101,7 +102,7 @@ export class ClipService {
 
       const rightClip = {
         ...clip,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         start: splitPosition,
         length: TimelinePosition.fromSeconds(rightDuration),
         data: {
@@ -172,7 +173,7 @@ export class ClipService {
   duplicateClip(clip: Clip): Clip {
     return {
       ...clip,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       data: clip.data.type === 'audio' ?
         { ...clip.data, buffer: this.cloneAudioBuffer(clip.data.buffer) } :
         { ...clip.data, notes: [...clip.data.notes] }
@@ -265,5 +266,85 @@ export class ClipService {
    */
   private cloneAudioBuffer(buffer: AudioBuffer): AudioBuffer {
     return this.createAudioBufferSlice(buffer, 0, buffer.duration);
+  }
+
+  /**
+   * Merge multiple clips into one
+   */
+  mergeClips(clips: Clip[]): Clip {
+    if (clips.length === 0) {
+      throw new Error('Cannot merge empty clips array');
+    }
+
+    // Find earliest start and latest end
+    let earliestStart = clips[0].start;
+    let latestEnd = TimelinePosition.add(clips[0].start, clips[0].length);
+
+    for (let i = 1; i < clips.length; i++) {
+      const clip = clips[i];
+      if (TimelinePosition.compare(clip.start, earliestStart) < 0) {
+        earliestStart = clip.start;
+      }
+
+      const clipEnd = TimelinePosition.add(clip.start, clip.length);
+      if (TimelinePosition.compare(clipEnd, latestEnd) > 0) {
+        latestEnd = clipEnd;
+      }
+    }
+
+    const totalLength = TimelinePosition.subtract(latestEnd, earliestStart);
+
+    // Create a new merged clip
+    if (clips[0].data.type === 'audio') {
+      const audioData = clips[0].data as AudioData;
+      return {
+        id: uuidv4(),
+        trackId: clips[0].trackId,
+        start: earliestStart,
+        length: totalLength,
+        data: {
+          ...audioData,
+          // In a real implementation, audio buffers would be merged here
+          buffer: audioData.buffer
+        }
+      };
+    } else {
+      // Handle MIDI data merging
+      const midiData = clips[0].data as MIDIData;
+      return {
+        id: uuidv4(),
+        trackId: clips[0].trackId,
+        start: earliestStart,
+        length: totalLength,
+        data: {
+          ...midiData
+        }
+      };
+    }
+  }
+
+  /**
+   * Quantize clip to the nearest beat division
+   */
+  quantizeClip(clip: Clip, division: number): Clip {
+    // Convert to ticks for easier math
+    const startInTicks = clip.start.bar * 4 * 480 + clip.start.beat * 480 + clip.start.tick;
+    const divisionInTicks = division * 480;
+
+    // Round to nearest division
+    const quantizedTicks = Math.round(startInTicks / divisionInTicks) * divisionInTicks;
+
+    // Convert back to bar/beat/tick
+    const bars = Math.floor(quantizedTicks / (4 * 480));
+    const remainingTicks = quantizedTicks - (bars * 4 * 480);
+    const beats = Math.floor(remainingTicks / 480);
+    const ticks = remainingTicks - (beats * 480);
+
+    const quantizedPosition = new TimelinePosition(bars, beats, ticks);
+
+    return {
+      ...clip,
+      start: quantizedPosition
+    };
   }
 }

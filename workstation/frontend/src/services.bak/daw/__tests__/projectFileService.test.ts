@@ -43,15 +43,38 @@ vi.mock('../../electron/utils', () => ({
   isElectron: vi.fn().mockReturnValue(true)
 }));
 
+// Define the project type interface
+interface MockProject {
+  name: string;
+  tracks: Array<{
+    id: string;
+    name: string;
+    type: string;
+    clips: Array<{
+      id: string;
+      trackId: string;
+      start: TimelinePosition;
+      length: TimelinePosition;
+      data: {
+        type: string;
+        buffer: AudioBuffer;
+        waveform: number[];
+      };
+    }>;
+  }>;
+  tempo: number;
+  timeSignature: { numerator: number; denominator: number };
+}
+
 describe('ProjectFileService', () => {
   let projectFileService: ProjectFileService;
-  let mockProject;
+  let mockProject: MockProject;
   
   beforeEach(() => {
     // Initialize project file service
     projectFileService = new ProjectFileService();
     
-    // Create a mock project
+    // Create a mock project with proper typing
     mockProject = {
       name: 'New Project',
       tracks: [

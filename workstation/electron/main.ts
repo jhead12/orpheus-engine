@@ -2,6 +2,12 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { ServiceManager } from './service-manager';
 import { StartupWindow } from './startup-window';
+import { 
+  getBackendUrl, 
+  getFrontendUrl, 
+  getViteUrl, 
+  getHealthCheckUrl 
+} from '../frontend/OEW-main/src/config/environment';
 
 class OrpheusEngine {
   private serviceManager: ServiceManager;
@@ -29,7 +35,7 @@ class OrpheusEngine {
       critical: true,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:5001/health');
+          const response = await fetch(getHealthCheckUrl('backend'));
           return response.ok;
         } catch {
           return false;
@@ -49,7 +55,7 @@ class OrpheusEngine {
       critical: false,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:5173');
+          const response = await fetch(getHealthCheckUrl('vite'));
           return response.ok;
         } catch {
           return false;
@@ -69,7 +75,7 @@ class OrpheusEngine {
       critical: true,
       healthCheck: async () => {
         try {
-          const response = await fetch('http://localhost:3000');
+          const response = await fetch(getHealthCheckUrl('frontend'));
           return response.ok;
         } catch {
           return false;
@@ -185,7 +191,7 @@ class OrpheusEngine {
     });
 
     // Load the DAW interface
-    this.mainWindow.loadURL('http://localhost:3000');
+    this.mainWindow.loadURL(getFrontendUrl());
 
     this.mainWindow.once('ready-to-show', () => {
       this.mainWindow?.show();
