@@ -10,6 +10,8 @@ Dependencies:
     - flask-cors: Cross-Origin Resource Sharing support
     - librosa: Audio analysis library
     - numpy: Numerical computing library
+    - graphene: GraphQL framework for Python
+    - flask-graphql: GraphQL integration for Flask
 
 Installation:
     pip install -r requirements.txt
@@ -227,32 +229,39 @@ class AudioAnalyzer:
         return export_path
 """)
 
-# Import the audio_analysis module
+# Import the enhanced audio analyzer
 try:
-    from audio_analysis import AudioAnalyzer
+    from audio_analyzer import EnhancedAudioAnalyzer as AudioAnalyzer
+    print("Successfully imported EnhancedAudioAnalyzer")
 except ImportError as e:
-    print(f"Error importing AudioAnalyzer: {e}")
-    # Define a simple AudioAnalyzer class as fallback
-    class AudioAnalyzer:
-        def __init__(self, sample_rate=44100):
-            self.sample_rate = sample_rate
-            
-        def analyze_audio(self, audio_data, analysis_types=None):
-            return {
-                "message": "AudioAnalyzer could not be imported.",
-                "analysis_types": analysis_types,
-                "audio_length": len(audio_data),
-                "sample_rate": self.sample_rate
-            }
-            
-        def export_analysis(self, format='json', filename_prefix='analysis'):
-            # Define export directory
-            export_dir = os.path.join(os.path.dirname(__file__), 'analysis_exports')
-            os.makedirs(export_dir, exist_ok=True)
-            export_path = os.path.join(export_dir, f"{filename_prefix}.{format}")
-            with open(export_path, 'w') as f:
-                f.write("Placeholder analysis output")
-            return export_path
+    print(f"Error importing EnhancedAudioAnalyzer: {e}")
+    # Try to import from the basic audio_analysis module
+    try:
+        from audio_analysis import AudioAnalyzer
+        print("Using basic AudioAnalyzer as fallback")
+    except ImportError as e2:
+        print(f"Error importing basic AudioAnalyzer: {e2}")
+        # Define a simple AudioAnalyzer class as fallback
+        class AudioAnalyzer:
+            def __init__(self, sample_rate=44100):
+                self.sample_rate = sample_rate
+                
+            def analyze_audio(self, audio_data, analysis_types=None):
+                return {
+                    "message": "AudioAnalyzer could not be imported.",
+                    "analysis_types": analysis_types,
+                    "audio_length": len(audio_data),
+                    "sample_rate": self.sample_rate
+                }
+                
+            def export_analysis(self, format='json', filename_prefix='analysis'):
+                # Define export directory
+                export_dir = os.path.join(os.path.dirname(__file__), 'analysis_exports')
+                os.makedirs(export_dir, exist_ok=True)
+                export_path = os.path.join(export_dir, f"{filename_prefix}.{format}")
+                with open(export_path, 'w') as f:
+                    f.write("Placeholder analysis output")
+                return export_path
 
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -273,6 +282,23 @@ EXPORT_DIR = os.path.join(os.path.dirname(__file__), 'analysis_exports')
 if not os.path.exists(EXPORT_DIR):
     os.makedirs(EXPORT_DIR)
 
+# Register GraphQL Blueprint
+try:
+    import sys
+    import os
+    # Add project root directory to path for proper imports
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    
+    # Use local import with renamed directory
+    from graphql_api.views import graphql_blueprint
+    app.register_blueprint(graphql_blueprint, url_prefix='/api')
+    print("GraphQL API registered at /api/graphql")
+except ImportError as e:
+    print(f"Failed to load GraphQL API: {e}")
+    print("GraphQL API not available - install graphene and flask-graphql to enable")
+
 @app.route('/')
 def hello_world():
     return jsonify({"status": "ok", "message": "Orpheus Engine Backend is running"})
@@ -280,6 +306,48 @@ def hello_world():
 @app.route('/health')
 def health_check():
     return jsonify({"status": "healthy"})
+
+@app.route('/api/info')
+def api_info():
+    """Get information about available API endpoints and features"""
+    return jsonify({
+        "api_version": "2.0",
+        "service": "Orpheus Engine Enhanced Audio Analysis Backend",
+        "endpoints": {
+            "/": "Basic status check",
+            "/health": "Health check endpoint",
+            "/api/info": "This endpoint - API documentation",
+            "/analyze": "Enhanced audio analysis with multiple analysis types",
+            "/analyze/similarity": "Compare two audio files for similarity",
+            "/analyze/batch": "Batch analysis of multiple audio files",
+            "/analyze/realtime": "Real-time audio analysis for streaming",
+            "/analyze/fingerprint": "Generate audio fingerprint for similarity matching",
+            "/analyze/visualize": "Generate visualization data (spectrogram, waveform, chromagram)",
+            "/exports/<filename>": "Download analysis export files"
+        },
+        "analysis_types": {
+            "spectral": "MFCC, spectral centroid, rolloff, bandwidth, contrast, zero crossing rate",
+            "rhythm": "Tempo detection, beat tracking, onset detection, rhythm stability",
+            "harmonic": "Chroma features, harmonic/percussive separation, tonnetz",
+            "dynamics": "RMS energy, dynamic range, peak analysis, loudness estimation",
+            "quality": "SNR estimation, clipping detection, frequency response analysis",
+            "fingerprint": "Audio fingerprinting for similarity analysis"
+        },
+        "export_formats": ["json", "txt", "html", "csv"],
+        "visualization_types": ["spectrogram", "waveform", "chromagram"],
+        "features": [
+            "Enhanced spectral analysis with MFCC features",
+            "Advanced rhythm and tempo detection",
+            "Harmonic content analysis",
+            "Audio quality assessment",
+            "Similarity comparison between audio files",
+            "Batch processing capabilities",
+            "Real-time analysis support",
+            "Multiple export formats",
+            "Audio visualization data generation",
+            "Audio fingerprinting for matching"
+        ]
+    })
 
 @app.route('/analyze', methods=['POST'])
 def analyze_audio():
@@ -292,8 +360,11 @@ def analyze_audio():
         if file.filename == '':
             return jsonify({"error": "No file selected"}), 400
             
-        # Get analysis types from request
-        analysis_types = request.form.get('analysis_types', 'spectral,dynamics,musical,technical,recording').split(',')
+        # Get analysis types from request (enhanced options)
+        analysis_types = request.form.get('analysis_types', 'spectral,rhythm,harmonic,dynamics').split(',')
+        
+        # Get export formats
+        export_formats = request.form.get('export_formats', 'json,txt').split(',')
         
         # Save uploaded file temporarily
         temp_path = os.path.join(EXPORT_DIR, 'temp_' + file.filename)
@@ -304,24 +375,44 @@ def analyze_audio():
             audio_data, sr = librosa.load(temp_path)
             analyzer = AudioAnalyzer(sample_rate=sr)
             
-            # Run analysis
+            # Run enhanced analysis
             results = analyzer.analyze_audio(
                 audio_data=audio_data,
                 analysis_types=analysis_types
             )
             
-            # Export in all formats
+            # Export in requested formats
             filename_prefix = os.path.splitext(file.filename)[0]
             exports = {}
-            for format in ['txt', 'json', 'html']:
-                path = analyzer.export_analysis(format=format, filename_prefix=filename_prefix)
-                exports[format] = os.path.basename(path)
+            
+            for format in export_formats:
+                if format in ['txt', 'json', 'html', 'csv']:
+                    try:
+                        path = analyzer.export_analysis(format=format, filename_prefix=filename_prefix)
+                        exports[format] = os.path.basename(path)
+                    except Exception as e:
+                        exports[format] = f"Error: {str(e)}"
+            
+            # Generate fingerprint for future similarity comparisons
+            fingerprint = None
+            try:
+                fingerprint = analyzer.generate_fingerprint(audio_data, sr)
+                fingerprint_filename = f"{filename_prefix}_fingerprint.json"
+                fingerprint_path = os.path.join(EXPORT_DIR, fingerprint_filename)
+                
+                with open(fingerprint_path, 'w') as f:
+                    json.dump(fingerprint, f, cls=NumpyEncoder, indent=2)
+                exports['fingerprint'] = fingerprint_filename
+            except Exception as e:
+                print(f"Warning: Could not generate fingerprint: {e}")
             
             return jsonify({
                 "status": "success",
-                "message": "Analysis completed successfully",
+                "message": "Enhanced analysis completed successfully",
                 "results": results,
-                "exports": exports
+                "exports": exports,
+                "analysis_types": analysis_types,
+                "features_extracted": len(results.keys()) if isinstance(results, dict) else 0
             })
             
         finally:
@@ -344,6 +435,297 @@ def get_export(filename):
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 404
+
+@app.route('/analyze/similarity', methods=['POST'])
+def analyze_similarity():
+    """Compare two audio files for similarity"""
+    try:
+        # Check if both files were uploaded
+        if 'file1' not in request.files or 'file2' not in request.files:
+            return jsonify({"error": "Two files must be provided (file1 and file2)"}), 400
+        
+        file1 = request.files['file1']
+        file2 = request.files['file2']
+        
+        if file1.filename == '' or file2.filename == '':
+            return jsonify({"error": "Both files must be selected"}), 400
+        
+        # Save uploaded files temporarily
+        temp_path1 = os.path.join(EXPORT_DIR, 'temp1_' + file1.filename)
+        temp_path2 = os.path.join(EXPORT_DIR, 'temp2_' + file2.filename)
+        file1.save(temp_path1)
+        file2.save(temp_path2)
+        
+        try:
+            # Load and analyze both audio files
+            audio1, sr1 = librosa.load(temp_path1)
+            audio2, sr2 = librosa.load(temp_path2)
+            
+            analyzer = AudioAnalyzer()
+            
+            # Generate fingerprints for both files
+            fingerprint1 = analyzer.generate_fingerprint(audio1, sr1)
+            fingerprint2 = analyzer.generate_fingerprint(audio2, sr2)
+            
+            # Calculate similarity
+            similarity = analyzer.compare_fingerprints(fingerprint1, fingerprint2)
+            
+            return jsonify({
+                "status": "success",
+                "similarity": float(similarity),
+                "file1": file1.filename,
+                "file2": file2.filename,
+                "message": f"Similarity analysis completed. Files are {similarity*100:.1f}% similar."
+            })
+            
+        finally:
+            # Clean up temp files
+            for temp_path in [temp_path1, temp_path2]:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                    
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/analyze/batch', methods=['POST'])
+def analyze_batch():
+    """Analyze multiple audio files in batch"""
+    try:
+        # Check if files were uploaded
+        if 'files' not in request.files:
+            return jsonify({"error": "No files provided"}), 400
+        
+        files = request.files.getlist('files')
+        if not files or all(f.filename == '' for f in files):
+            return jsonify({"error": "No files selected"}), 400
+        
+        # Get analysis types from request
+        analysis_types = request.form.get('analysis_types', 'spectral,rhythm,harmonic').split(',')
+        
+        results = []
+        
+        for file in files:
+            if file.filename == '':
+                continue
+                
+            # Save uploaded file temporarily
+            temp_path = os.path.join(EXPORT_DIR, 'temp_batch_' + file.filename)
+            file.save(temp_path)
+            
+            try:
+                # Load and analyze audio
+                audio_data, sr = librosa.load(temp_path)
+                analyzer = AudioAnalyzer(sample_rate=sr)
+                
+                # Run analysis
+                analysis = analyzer.analyze_audio(
+                    audio_data=audio_data,
+                    analysis_types=analysis_types
+                )
+                
+                results.append({
+                    "filename": file.filename,
+                    "status": "success",
+                    "analysis": analysis
+                })
+                
+            except Exception as e:
+                results.append({
+                    "filename": file.filename,
+                    "status": "error",
+                    "error": str(e)
+                })
+                
+            finally:
+                # Clean up temp file
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+        
+        return jsonify({
+            "status": "success",
+            "message": f"Batch analysis completed for {len(results)} files",
+            "results": results
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/analyze/realtime', methods=['POST'])
+def analyze_realtime():
+    """Analyze audio data in real-time (for streaming applications)"""
+    try:
+        # Get analysis parameters
+        chunk_size = int(request.form.get('chunk_size', 1024))
+        sample_rate = int(request.form.get('sample_rate', 44100))
+        analysis_types = request.form.get('analysis_types', 'spectral,dynamics').split(',')
+        
+        # Check if audio data was provided
+        if 'audio_data' not in request.files:
+            return jsonify({"error": "No audio data provided"}), 400
+        
+        file = request.files['audio_data']
+        
+        # Save and load audio data
+        temp_path = os.path.join(EXPORT_DIR, 'temp_realtime.wav')
+        file.save(temp_path)
+        
+        try:
+            audio_data, sr = librosa.load(temp_path, sr=sample_rate)
+            analyzer = AudioAnalyzer(sample_rate=sr)
+            
+            # Perform lightweight analysis suitable for real-time
+            results = {}
+            
+            if 'spectral' in analysis_types:
+                spectral_centroid = librosa.feature.spectral_centroid(y=audio_data, sr=sr)[0]
+                results['spectral_centroid'] = float(np.mean(spectral_centroid))
+                
+            if 'dynamics' in analysis_types:
+                rms = librosa.feature.rms(y=audio_data)[0]
+                results['rms_energy'] = float(np.mean(rms))
+                results['peak_amplitude'] = float(np.max(np.abs(audio_data)))
+            
+            if 'rhythm' in analysis_types:
+                tempo, _ = librosa.beat.beat_track(y=audio_data, sr=sr)
+                results['tempo'] = float(tempo)
+            
+            return jsonify({
+                "status": "success",
+                "message": "Real-time analysis completed",
+                "results": results,
+                "chunk_size": chunk_size,
+                "sample_rate": sample_rate
+            })
+            
+        finally:
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/analyze/fingerprint', methods=['POST'])
+def generate_fingerprint():
+    """Generate audio fingerprint for similarity matching"""
+    try:
+        # Check if file was uploaded
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        # Save uploaded file temporarily
+        temp_path = os.path.join(EXPORT_DIR, 'temp_fingerprint_' + file.filename)
+        file.save(temp_path)
+        
+        try:
+            # Load and analyze audio
+            audio_data, sr = librosa.load(temp_path)
+            analyzer = AudioAnalyzer(sample_rate=sr)
+            
+            # Generate fingerprint
+            fingerprint = analyzer.generate_fingerprint(audio_data, sr)
+            
+            # Save fingerprint for future comparisons
+            fingerprint_filename = f"{os.path.splitext(file.filename)[0]}_fingerprint.json"
+            fingerprint_path = os.path.join(EXPORT_DIR, fingerprint_filename)
+            
+            with open(fingerprint_path, 'w') as f:
+                json.dump(fingerprint, f, cls=NumpyEncoder, indent=2)
+            
+            return jsonify({
+                "status": "success",
+                "message": "Fingerprint generated successfully",
+                "filename": file.filename,
+                "fingerprint": fingerprint,
+                "fingerprint_file": fingerprint_filename
+            })
+            
+        finally:
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/analyze/visualize', methods=['POST'])
+def generate_visualization():
+    """Generate audio visualization data (spectrogram, waveform, etc.)"""
+    try:
+        # Check if file was uploaded
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        # Get visualization type
+        viz_type = request.form.get('type', 'spectrogram')
+        
+        # Save uploaded file temporarily
+        temp_path = os.path.join(EXPORT_DIR, 'temp_viz_' + file.filename)
+        file.save(temp_path)
+        
+        try:
+            # Load audio
+            audio_data, sr = librosa.load(temp_path)
+            
+            results = {}
+            
+            if viz_type == 'spectrogram':
+                # Generate spectrogram
+                stft = librosa.stft(audio_data)
+                spectrogram = np.abs(stft)
+                results['spectrogram'] = spectrogram.tolist()
+                results['frequencies'] = librosa.fft_frequencies(sr=sr).tolist()
+                results['times'] = librosa.frames_to_time(np.arange(spectrogram.shape[1]), sr=sr).tolist()
+                
+            elif viz_type == 'waveform':
+                # Generate waveform data
+                results['waveform'] = audio_data.tolist()
+                results['time'] = np.linspace(0, len(audio_data)/sr, len(audio_data)).tolist()
+                
+            elif viz_type == 'chromagram':
+                # Generate chromagram
+                chroma = librosa.feature.chroma_stft(y=audio_data, sr=sr)
+                results['chromagram'] = chroma.tolist()
+                results['pitch_classes'] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+                results['times'] = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr).tolist()
+            
+            return jsonify({
+                "status": "success",
+                "message": f"{viz_type.title()} generated successfully",
+                "visualization_type": viz_type,
+                "data": results
+            })
+            
+        finally:
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 if __name__ == '__main__':
     import os

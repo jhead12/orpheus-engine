@@ -27,6 +27,10 @@ uvicorn>=0.17.0
 fastapi>=0.95.0
 requests>=2.28.0
 python-dotenv>=0.21.0
+graphene==3.4.3
+flask-graphql==2.0.0
+graphql-core==3.2.6
+graphql-relay==3.1.0
 
 # Visualization and dashboard
 IPython>=8.0.0
@@ -41,3 +45,8 @@ boto3>=1.28.0
 # Utilities
 numpy>=1.22.0
 scipy>=1.8.0
+
+# GraphQL
+graphene>=3.0.0
+graphene-file-upload>=1.3.0
+flask-graphql>=2.0.1
