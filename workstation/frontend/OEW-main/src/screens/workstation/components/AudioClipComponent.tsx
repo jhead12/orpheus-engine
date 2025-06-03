@@ -6,6 +6,7 @@ import { ClipComponent, Waveform } from "./index";
 import { audioBufferToBuffer, audioContext, reverseAudio } from "../../../services/utils/audio";
 import { CHUNK_SIZE as WAVEFORM_CHUNK_SIZE, WaveformProps } from "./Waveform";
 import { ResizeDNRData } from "../../../components/DNR";
+import type { WaveformLevelsOfDetail } from '../../../../shared/types/audio';
 
 interface AudioClipWaveformProps extends WaveformProps {
   copyFrom?: { canvas: HTMLCanvasElement };
@@ -43,15 +44,12 @@ function AudioClipWaveform({ copyFrom, data, height, offset, width, ...rest }: A
   )
 }
 
-type WaveformLODLevel = 'ultraLow' | 'low' | 'medium' | 'high';
-type WaveformLODs = { [level in WaveformLODLevel]: Float32Array[] };
-
 function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: BaseClipComponentProps) {
   const { timelineSettings } = useContext(WorkstationContext)!;
 
   const [copyFrom, setCopyFrom] = useState<{ canvas: HTMLCanvasElement }>();
   const [spriteOffset, setSpriteOffset] = useState(0);
-  const [waveformLevelsOfDetail, setWaveformLevelsOfDetail] = useState<WaveformLODs | null>(null);
+  const [waveformLevelsOfDetail, setWaveformLevelsOfDetail] = useState<WaveformLevelsOfDetail | null>(null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 

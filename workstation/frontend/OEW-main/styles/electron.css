@@ -1,0 +1,62 @@
+.electron-workstation {
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg1, #1e1e1e);
+}
+
+.daw-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.transport-controls {
+  background: var(--bg2, #2d2d2d);
+  border-bottom: 1px solid var(--border1, #444);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  z-index: 100;
+}
+
+.timeline-container {
+  background: var(--bg1, #1e1e1e);
+  border-bottom: 1px solid var(--border1, #444);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Electron-specific window controls */
+.electron-workstation .title-bar {
+  -webkit-app-region: drag;
+  height: 32px;
+  background: var(--bg3, #333);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.electron-workstation .title-bar button {
+  -webkit-app-region: no-drag;
+}
+
+/* Audio analyzer in Electron mode */
+.audio-analyzer-container {
+  background: var(--bg2, #2d2d2d);
+  border-left: 1px solid var(--border1, #444);
+  padding: 16px;
+  min-width: 300px;
+}
+
+.audio-analyzer {
+  border-radius: 4px;
+  background: var(--bg1, #1e1e1e);
+}

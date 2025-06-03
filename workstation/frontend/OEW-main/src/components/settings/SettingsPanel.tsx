@@ -16,6 +16,7 @@ import AudioSettings from './tabs/AudioSettings.js';
 import MIDISettings from './tabs/MIDISettings.js';
 import InterfaceSettings from './tabs/InterfaceSettings.js';
 import PluginSettings from './tabs/PluginSettings.js';
+import ColorSettings from './tabs/ColorSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,6 +56,13 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
   const [tabValue, setTabValue] = useState(initialTab);
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
+  // Update tab when initialTab changes or dialog opens
+  React.useEffect(() => {
+    if (open) {
+      setTabValue(initialTab);
+    }
+  }, [open, initialTab]);
+
   const handleChangeTab = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -93,8 +101,9 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
           <Tab label="General" id="settings-tab-0" aria-controls="settings-tabpanel-0" />
           <Tab label="Audio" id="settings-tab-1" aria-controls="settings-tabpanel-1" />
           <Tab label="MIDI" id="settings-tab-2" aria-controls="settings-tabpanel-2" />
-          <Tab label="Interface" id="settings-tab-3" aria-controls="settings-tabpanel-3" />
-          <Tab label="Plugins" id="settings-tab-4" aria-controls="settings-tabpanel-4" />
+          <Tab label="Colors" id="settings-tab-3" aria-controls="settings-tabpanel-3" />
+          <Tab label="Interface" id="settings-tab-4" aria-controls="settings-tabpanel-4" />
+          <Tab label="Plugins" id="settings-tab-5" aria-controls="settings-tabpanel-5" />
         </Tabs>
         
         <DialogContent dividers>
@@ -111,10 +120,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </TabPanel>
           
           <TabPanel value={tabValue} index={3}>
-            <InterfaceSettings />
+            <ColorSettings />
           </TabPanel>
           
           <TabPanel value={tabValue} index={4}>
+            <InterfaceSettings />
+          </TabPanel>
+          
+          <TabPanel value={tabValue} index={5}>
             <PluginSettings />
           </TabPanel>
         </DialogContent>

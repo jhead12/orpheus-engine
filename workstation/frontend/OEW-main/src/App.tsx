@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardContext";
-import WorkstationProvider from "./contexts/WorkstationProvider";
+import { WorkstationProvider } from "./contexts/WorkstationContext";
 import { MixerProvider } from "./contexts/MixerContext";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
 import Workstation from "./components/Workstation";
@@ -19,6 +19,13 @@ import TransportControls from "./components/daw/TransportControls";
 
 function App(): React.ReactElement {
   useEffect(() => {
+    // Initialize Electron integration
+    if (window.electronAPI) {
+      console.log('🚀 Orpheus Engine Workstation - Electron Mode');
+      console.log('Platform:', window.orpheusAPI?.platform);
+      console.log('Version:', window.electronAPI.getVersion?.());
+    }
+
     // Workaround to the dumb electron bug where blurring inputs with selected text does not make
     // the Electron > Services submenu go back to showing only the 'Development' section
     function handleFocusOut(e: FocusEvent) {
@@ -41,14 +48,14 @@ function App(): React.ReactElement {
       <PreferencesProvider>
         <MixerProvider>
           <DAWProvider>
-            <Router>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <ClipboardProvider>
-                      <WorkstationProvider>
-                        <div className="app-container">
+            <WorkstationProvider>
+              <Router>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <ClipboardProvider>
+                        <div className="app-container electron-workstation">
                           <div className="daw-container">
                             <TransportControls />
                             <Timeline
@@ -57,7 +64,6 @@ function App(): React.ReactElement {
                               position={{ bar: 0, beat: 0, fraction: 0 }}
                               zoom={1}
                               onPositionChange={(pos) => {
-                                // Position change handler
                                 console.log("Position changed:", pos);
                               }}
                             />
@@ -68,13 +74,13 @@ function App(): React.ReactElement {
                             <MixerControls />
                           </div>
                         </div>
-                      </WorkstationProvider>
-                    </ClipboardProvider>
-                  }
-                />
-              </Routes>
-              <Preferences />
-            </Router>
+                      </ClipboardProvider>
+                    }
+                  />
+                </Routes>
+                <Preferences />
+              </Router>
+            </WorkstationProvider>
           </DAWProvider>
         </MixerProvider>
       </PreferencesProvider>

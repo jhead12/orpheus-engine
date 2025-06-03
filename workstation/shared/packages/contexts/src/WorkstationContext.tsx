@@ -27,6 +27,39 @@ export interface TimelineSettings {
   horizontalScale: number;
 }
 
+// Storage and Plugin types
+export interface StorageConnector {
+  type: string;
+  save: (data: any) => Promise<string>;
+  load: (id: string) => Promise<any>;
+  list: () => Promise<string[]>;
+  delete: (id: string) => Promise<boolean>;
+}
+
+export interface PluginMetadata {
+  id: string;
+  name: string;
+  version: string;
+  category?: 'storage' | 'blockchain' | 'dapp' | 'utility' | 'export' | 'cloud' | 'local';
+  supportedFormats?: string[];
+  tags?: string[];
+  author?: string;
+  description?: string;
+  homepage?: string;
+  license?: string;
+  icon?: string;
+}
+
+export interface WorkstationData {
+  name: string;
+  tracks: Track[];
+  timelineSettings?: TimelineSettings;
+  timestamp?: number;
+  id?: string;
+  metadata?: Record<string, any>;
+  [key: string]: any;
+}
+
 export class TimelinePosition {
   static defaultSettings: TimelineSettings = {
     tempo: 120,

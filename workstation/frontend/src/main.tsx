@@ -30,8 +30,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <App onReady={() => {
           // Only notify in electron environment
-          if (window.electron) {
-            window.electron.send('app-ready');
+          if (window.electronAPI) {
+            window.electronAPI.send('app-ready');
           }
         }} />
       </BrowserRouter>

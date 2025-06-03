@@ -1,160 +1,63 @@
 import { EventEmitter } from 'events';
 import { MCPServerService } from '../mcp/MCPServerService';
-import { Clip, Track, AudioAnalysisType } from '../types/types';
+import type { RagQuery, RagResult, RagContext } from '../../../../shared/types/ragResult';
+import type { AudioSegment } from '../../../../shared/types/audioSegment';
+import type { Clip, Track } from '../types/types';
 
-export interface RagQuery {
-  text: string;
-  context?: {
-    audioClips?: Clip[];
-    tracks?: Track[];
-    projectState?: any;
-  };
-  requiresRealTimeAnalysis?: boolean;
-}
+export class RagService {
+  private baseUrl: string;
 
-// Add enhanced context interface
-interface EnhancedRagContext {
-  audioClips?: Clip[];
-  tracks?: Track[];
-  projectState?: any;
-  audioAnalysis?: any[];
-}
-
-export interface RagResponse {
-  answer: string;
-  confidence: number;
-  sources: string[];
-  suggestions?: {
-    type: 'arrangement' | 'mixing' | 'effects' | 'composition';
-    actions: any[];
-  };
-  audioSegments?: {
-    clipId: string;
-    startTime: number;
-    endTime: number;
-    relevanceScore: number;
-  }[];
-}
-
-export class RagService extends EventEmitter {
-  private mcpService: MCPServerService;
-  private ragBackendUrl: string;
-
-  constructor() {
-    super();
-    this.mcpService = new MCPServerService({
-      onMessage: this.handleMCPMessage.bind(this),
-      capabilities: [
-        'audioAnalysis',
-        'midiGeneration', 
-        'mixingAssistant',
-        'arrangementSuggestions',
-        'ragQuery',
-        'contextualSearch'
-      ]
-    });
-    this.ragBackendUrl = process.env.BACKEND_URL || 'http://localhost:5001';
+  constructor(baseUrl: string = 'http://localhost:7008') {
+    this.baseUrl = baseUrl;
   }
 
-  async queryWithContext(query: RagQuery): Promise<RagResponse> {
+  async query(ragQuery: RagQuery): Promise<RagResult> {
     try {
-      // First, check if we need additional context from audio analysis
-      const needsAnalysis = await this.assessContextNeed(query);
-      
-      let enhancedContext: EnhancedRagContext = { ...query.context };
+      const response = await fetch(`${this.baseUrl}/api/rag/query`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ragQuery),
+      });
 
-      if (needsAnalysis && query.context?.audioClips) {
-        // Perform real-time audio analysis
-        const analysisResults = await this.analyzeAudioClips(query.context.audioClips);
-        enhancedContext.audioAnalysis = analysisResults;
+      if (!response.ok) {
+        throw new Error(`RAG query failed: ${response.statusText}`);
       }
 
-      // Send to RAG backend
-      const response = await fetch(`${this.ragBackendUrl}/rag/query`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: query.text,
-          context: enhancedContext,
-          requiresAnalysis: needsAnalysis
-        })
-      });
-
-      const ragResult = await response.json();
-
-      // Process through MCP for additional AI insights
-      const mcpEnhanced = await this.mcpService.send({
-        type: 'enhanceRagResponse',
-        query: query.text,
-        response: ragResult,
-        context: enhancedContext
-      });
-
-      return {
-        answer: ragResult.answer,
-        confidence: ragResult.confidence || 0.8,
-        sources: ragResult.sources || [],
-        suggestions: mcpEnhanced.suggestions,
-        audioSegments: ragResult.audioSegments
-      };
-
+      return await response.json();
     } catch (error) {
-      console.error('RAG query failed:', error);
+      console.error('RAG Service error:', error);
       throw error;
     }
   }
 
-  private async assessContextNeed(query: RagQuery): Promise<boolean> {
-    // Use MCP to determine if additional context is needed
-    const assessment = await this.mcpService.send({
-      type: 'assessContextNeed',
-      query: query.text,
-      availableContext: Object.keys(query.context || {})
-    });
-
-    return assessment.needsAdditionalContext;
-  }
-
-  private async analyzeAudioClips(clips: Clip[]): Promise<any[]> {
-    const analysisPromises = clips.map(clip => 
-      this.mcpService.send({
-        type: 'audioAnalysis',
-        clipId: clip.id,
-        analysisType: 'comprehensive' as AudioAnalysisType,
-        clip: {
+  async searchAudio(query: string, audioClips?: Clip[]): Promise<AudioSegment[]> {
+    const ragQuery: RagQuery = {
+      text: query,
+      context: {
+        audioClips: audioClips?.map(clip => ({
           id: clip.id,
-          audio: clip.data,
-          start: clip.start,
-          end: clip.end
-        }
-      })
-    );
+          name: clip.name,
+          duration: clip.audio?.audioBuffer?.duration,
+          transcription: clip.metadata?.transcription,
+        })),
+      },
+      requiresRealTimeAnalysis: true,
+    };
 
-    return await Promise.all(analysisPromises);
+    const result = await this.query(ragQuery);
+    return result.audioSegments || [];
   }
 
-  private handleMCPMessage(message: any) {
-    this.emit('mcp-message', message);
-    
-    switch(message.type) {
-      case 'analysisComplete':
-        this.emit('analysis-complete', message.data);
-        break;
-      case 'suggestionReady':
-        this.emit('suggestion-ready', message.data);
-        break;
-    }
-  }
+  async analyzeContext(context: RagContext): Promise<RagResult> {
+    const ragQuery: RagQuery = {
+      text: 'Analyze current project context',
+      context,
+      requiresRealTimeAnalysis: false,
+    };
 
-  // Search through audio library using RAG
-  async searchAudioLibrary(query: string): Promise<any[]> {
-    const response = await fetch(`${this.ragBackendUrl}/audio/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    });
-
-    return await response.json();
+    return await this.query(ragQuery);
   }
 }
 

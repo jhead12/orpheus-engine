@@ -22,7 +22,7 @@ interface ElectronAPI {
 }
 
 // This is replaced at runtime with the actual electron API exposed by the preload script
-export const electronAPI = (window.electron as unknown) as ElectronAPI;
+export const electronAPI = (window.electronAPI as unknown) as ElectronAPI;
 
 /**
  * Opens a context menu of the specified type

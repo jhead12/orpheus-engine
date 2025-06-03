@@ -3,10 +3,15 @@ export {
   WorkstationProvider, 
   useWorkstation,
   TrackType,
-  TimelinePosition,
   AudioAnalysisType,
-  TimelineSettings,
-  TimeSignature
 } from './WorkstationContext';
 
-export type { WorkstationContextType } from './WorkstationContext';
+export type {
+  TimelinePosition,
+  TimelineSettings,
+  TimeSignature,
+  StorageConnector,
+  PluginMetadata,
+  WorkstationPlugin,
+  WorkstationData
+} from './WorkstationContext';

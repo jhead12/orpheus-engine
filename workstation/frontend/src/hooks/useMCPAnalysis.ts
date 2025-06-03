@@ -59,7 +59,7 @@ export function useMCPAnalysis(buffer: AudioBuffer | null, options: MCPAnalysisO
           channelData: channelData.map(channel => Array.from(channel))
         };
 
-        const response = await window.electron.invoke('mcp:analyze', {
+        const response = await window.electronAPI?.invoke('mcp:analyze', {
           data: audioData,
           type: options.type,
           params: {

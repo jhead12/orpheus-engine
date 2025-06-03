@@ -18,49 +18,55 @@ if (process.argv.includes('--headless')) {
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    width: 1200,
+    height: 800,
+    minWidth: 800,
+    minHeight: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      devTools: !app.isPackaged,
-      offscreen: process.argv.includes('--headless'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      sandbox: false
     },
-    fullscreen: true
+    title: 'Orpheus Engine Workstation',
+    show: false
   });
 
   if (app.isPackaged) {
-    console.log('Loading packaged app from file');
-    mainWindow.loadFile(path.join(__dirname, '../src/index.html'));
+    console.log('📦 Loading packaged Orpheus Engine Workstation');
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   } else {
     const viteUrl = "http://localhost:5174";
-    console.log(`🎵 Loading Orpheus Engine DAW from: ${viteUrl}`);
+    console.log(`🎵 Loading Orpheus Engine Workstation from: ${viteUrl}`);
     
-    // Add error handling for loading the URL
     mainWindow.loadURL(viteUrl).then(() => {
-      console.log('✅ DAW loaded successfully');
+      console.log('✅ Workstation loaded successfully');
     }).catch((error) => {
-      console.error('❌ Failed to load DAW:', error);
+      console.error('❌ Failed to load workstation:', error);
     });
     
     mainWindow.webContents.openDevTools();
-    
-    // Add listener for when the page finishes loading
-    mainWindow.webContents.once('did-finish-load', () => {
-      console.log('🚀 DAW interface is ready');
-    });
-    
-    // Add listener for any loading errors
-    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
-      console.error(`❌ Page failed to load: ${errorCode} - ${errorDescription}`);
-    });
   }
 
+  // Show window when ready
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+    console.log('🚀 Orpheus Engine Workstation is ready');
+  });
+
+  // Initialize menu and context menus
   const menuBuilder = new MenuBuilder(mainWindow);
   const contextMenuBuilder = new ContextMenuBuilder(mainWindow);
 
   menuBuilder.buildMenu();
   contextMenuBuilder.buildContextMenus();
   buildHandlers(mainWindow);
+  
+  // Setup audio analysis handlers
+  setupAudioAnalysisHandlers();
+
+  return mainWindow;
 }
 
 // Add these handlers for the preload script
@@ -73,26 +79,13 @@ ipcMain.handle('app:getUserDataPath', (_, subFolder) => {
 });
 
 app.whenReady().then(() => {
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      sandbox: false,
-    },
-  });
-
-  if (process.getuid && process.getuid() === 0) {
-    app.commandLine.appendSwitch('no-sandbox');
-  }
-
-  createWindow()
+  createWindow();
 
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0)
-      createWindow()
-  })
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
 })
 
 app.on('window-all-closed', function () {

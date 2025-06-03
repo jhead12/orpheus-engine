@@ -14,6 +14,7 @@ import {
   Chat,
   AudiotrackOutlined,
   Extension,
+  Palette,
 } from "@mui/icons-material";
 import {
   IconButton,
@@ -472,6 +473,7 @@ export default function Header() {
 
   // New state for UI features
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
   const [audioMenuAnchorEl, setAudioMenuAnchorEl] = useState<null | HTMLElement>(
     null
@@ -481,11 +483,18 @@ export default function Header() {
 
   // Handle settings dialog
   const handleOpenSettings = () => {
+    setSettingsInitialTab(0); // General tab
     setSettingsOpen(true);
   };
 
   const handleCloseSettings = () => {
     setSettingsOpen(false);
+  };
+
+  // Handle colors/theme settings - open settings panel on Colors tab
+  const handleOpenColorSettings = () => {
+    setSettingsInitialTab(3); // Colors tab (index 3)
+    setSettingsOpen(true);
   };
 
   // Handle chat drawer
@@ -792,6 +801,15 @@ export default function Header() {
             </Badge>
           </IconButton>
 
+          {/* Colors/Theme Button */}
+          <IconButton
+            className="btn-1 mx-1 hover-1"
+            onClick={handleOpenColorSettings}
+            title="Colors & Theme"
+          >
+            <Palette style={{ fontSize: 18, color: "var(--border6)" }} />
+          </IconButton>
+
           {/* Settings Button */}
           <IconButton
             className="btn-1 mx-1 hover-1"
@@ -845,6 +863,7 @@ export default function Header() {
       <SettingsPanel
         open={settingsOpen}
         onClose={handleCloseSettings}
+        initialTab={settingsInitialTab}
       />
 
       {/* Chat Drawer */}
