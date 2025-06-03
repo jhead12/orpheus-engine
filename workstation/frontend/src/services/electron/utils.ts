@@ -1,7 +1,7 @@
 /**
  * Utilities for interacting with Electron
  */
-import { ContextMenuType } from '../types/types';
+import { ContextMenuType } from '../../services/types/types';
 
 // Define the electron API interface
 interface ElectronAPI {
@@ -20,7 +20,7 @@ interface ElectronAPI {
 }
 
 // This is replaced at runtime with the actual electron API exposed by the preload script
-export const electronAPI = window.electronAPI as ElectronAPI;
+export const electronAPI = (window.electron as unknown) as ElectronAPI;
 
 /**
  * Opens a context menu of the specified type

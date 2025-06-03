@@ -80,13 +80,15 @@
     "fix-vite": "node scripts/install-vite-deps.js",
     "fix-electron-path": "bash scripts/fix-start-electron.sh",
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh",
-    "system-check": "node scripts/system-check.js"
+    "system-check": "node scripts/system-check.js",
+      "update-submodules": "git submodule update --init --recursive"
+
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
     "@types/electron": "^1.4.38",
     "@types/jest": "^29.5.14",
-    "@types/node": "^20.17.55",
+    "@types/node": "^20.17.57",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
     "conventional-changelog-cli": "^4.1.0",

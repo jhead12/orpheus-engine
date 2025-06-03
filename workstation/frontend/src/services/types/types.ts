@@ -35,6 +35,14 @@ export interface Track {
   pan: number;
   color?: string;
   automationLanes?: AutomationLane[];
+  expanded?: boolean;
+  effects?: Effect[];
+  fx?: {
+    preset: any;
+    effects: any[];
+    selectedEffectIndex: number;
+  };
+  armed?: boolean;
 }
 
 export interface AudioData {
@@ -55,6 +63,16 @@ export interface MIDINote {
   duration: TimelinePosition;
 }
 
+// Legacy audio interface for backward compatibility
+export interface LegacyAudioData {
+  audioBuffer?: AudioBuffer;
+  buffer?: ArrayBuffer | Uint8Array;
+  type?: string;
+  sourceDuration?: number;
+  start: TimelinePosition;
+  end: TimelinePosition;
+}
+
 export interface Clip {
   id: string;
   trackId: string;
@@ -64,6 +82,7 @@ export interface Clip {
   fadeIn?: number;  // Fade in time in seconds
   fadeOut?: number; // Fade out time in seconds
   gain?: number;    // Volume multiplier
+  mute?: boolean;   // Whether the clip is muted
   effects?: Array<{ type: string, parameters: Record<string, any> }>;
   metadata?: Record<string, any>;
   // Legacy properties for compatibility
@@ -73,10 +92,7 @@ export interface Clip {
   startLimit?: TimelinePosition;
   endLimit?: TimelinePosition;
   type?: TrackType;
-  audio?: {
-    start: TimelinePosition;
-    end: TimelinePosition;
-  };
+  audio?: LegacyAudioData;
 }
 
 export class TimelinePosition {
@@ -93,6 +109,20 @@ export class TimelinePosition {
     public beat: number = 0,
     public tick: number = 0
   ) {}
+
+  // Legacy property for compatibility
+  get sixteenth(): number {
+    return Math.floor(this.tick / 120); // 120 ticks per sixteenth
+  }
+
+  set sixteenth(value: number) {
+    this.tick = value * 120; // 120 ticks per sixteenth
+  }
+
+  // Legacy property for compatibility
+  get fraction(): number {
+    return this.sixteenth;
+  }
 
   /**
    * Add an offset to this position and return a new position
@@ -158,6 +188,13 @@ export class TimelinePosition {
   }
 
   /**
+   * Calculate margin difference between two positions
+   */
+  diffInMargin(other: TimelinePosition): number {
+    return this.toMargin() - other.toMargin();
+  }
+
+  /**
    * Convert to sixteenths
    */
   toSixteenths(): number {
@@ -184,6 +221,13 @@ export class TimelinePosition {
     const ticks = remainingSixteenths * 120; // 120 ticks per sixteenth
     
     return new TimelinePosition(bars, beats, ticks);
+  }
+
+  /**
+   * Create position from span (diff result)
+   */
+  static fromSpan(span: { measures: number; beats: number; fraction: number }): TimelinePosition {
+    return new TimelinePosition(span.measures, span.beats, span.fraction * 120); // Convert fraction to ticks
   }
 
   /**
@@ -218,6 +262,21 @@ export class TimelinePosition {
   toSeconds(tempo: number = TimelinePosition.defaultSettings.tempo): number {
     const ticksPerSecond = (tempo * 480) / 60; // 480 ticks per beat
     return this.toTicks() / ticksPerSecond;
+  }
+
+  /**
+   * Static method to convert position to seconds
+   */
+  static toSeconds(position: TimelinePosition, tempo: number = TimelinePosition.defaultSettings.tempo): number {
+    return position.toSeconds(tempo);
+  }
+
+  /**
+   * Static method to add seconds to position
+   */
+  static addSeconds(position: TimelinePosition, seconds: number, tempo: number = TimelinePosition.defaultSettings.tempo): TimelinePosition {
+    const additionalTicks = Math.round(seconds * (tempo * 480) / 60);
+    return TimelinePosition.fromTicks(position.toTicks() + additionalTicks);
   }
 
   /**
@@ -348,7 +407,8 @@ export enum AutomationLaneEnvelope {
   Volume = "volume",
   Pan = "pan",
   Send = "send",
-  Filter = "filter"
+  Filter = "filter",
+  Tempo = "tempo"
 }
 
 export enum AutomationMode {
@@ -379,6 +439,78 @@ export interface AutomationLane {
 
 // Window scroll thresholds
 export interface WindowAutoScrollThresholds {
+  top: { slow: number; medium: number; fast: number };
   right: { slow: number; medium: number; fast: number };
+  bottom: { slow: number; medium: number; fast: number };
   left: { slow: number; medium: number; fast: number };
+}
+
+// Region interface for defining time ranges
+export interface Region {
+  start: TimelinePosition;
+  end: TimelinePosition;
+}
+
+// Context menu types
+export enum ContextMenuType {
+  Clip = "clip",
+  Region = "region",
+  Track = "track",
+  Lane = "lane",
+  Node = "node",
+  Text = "text",
+  FXChainPreset = "fxChainPreset",
+  AddAutomationLane = "addAutomationLane",
+  Automation = "automation"
+}
+
+// Base effect interface
+export interface BaseEffect {
+  id: string;
+  name: string;
+  type: string;
+  enabled: boolean;
+  bypass?: boolean;
+}
+
+// Effect interface with parameters
+export interface Effect extends BaseEffect {
+  parameters: Record<string, any>;
+}
+
+// Missing properties for clips
+export interface WorkstationPlugin {
+  id: string;
+  name: string;
+  version: string;
+}
+
+export interface WorkstationContextType {
+  tracks: Track[];
+  play: () => void;
+  stop: () => void;
+  record: () => void;
+  addTrack: (type: TrackType) => void;
+  removeTrack: (id: string) => void;
+  addClip: (trackId: string, clip: Clip) => void;
+  removeClip: (trackId: string, clipId: string) => void;
+  timelineSettings: TimelineSettings;
+  currentPosition: TimelinePosition;
+  playheadPos: TimelinePosition;
+  isPlaying: boolean;
+  isRecording: boolean;
+}
+
+// Base clip component props
+export interface BaseClipComponentProps {
+  clip: Clip;
+  color?: string;
+  onContextMenu?: (e: React.MouseEvent, clip: Clip) => void;
+}
+
+// Waveform LOD level
+export enum WaveformLODLevel {
+  High = "high",
+  Medium = "medium", 
+  Low = "low"
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Track } from '../../types/types';
+import { Track } from '../../services/types/types';
 import { Box, Slider, IconButton, Typography } from '@mui/material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';

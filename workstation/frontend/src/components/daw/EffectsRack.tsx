@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { BaseEffect } from '../../types/types';
+import { BaseEffect } from '../../services/types/types';
 
 interface EffectsRackProps {
   effects: BaseEffect[];

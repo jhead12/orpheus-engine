@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { Track, Clip, TimelinePosition, TimelineSettings } from '../types/types';
+import { Track, Clip, TimelinePosition, TimelineSettings } from '../services/types/types';
 
 export interface WorkstationPlugin {
   id: string;

@@ -63,7 +63,9 @@ export function clipAtPos(to: TimelinePosition, clip: Clip) : Clip {
   const { measures, beats, fraction, sign } = to.diff(clip.start);
 
   newClip.start = newClip.start.translate({ measures, beats, fraction, sign });
-  newClip.end = newClip.end.translate({ measures, beats, fraction, sign });
+  if (newClip.end) {
+    newClip.end = newClip.end.translate({ measures, beats, fraction, sign });
+  }
 
   if (newClip.startLimit)
     newClip.startLimit = newClip.startLimit.translate({ measures, beats, fraction, sign });
@@ -90,10 +92,10 @@ export function copyClip(clip: Clip): Clip {
     ...clip,
     id: v4(),
     start: clip.start.copy(),
-    end: clip.end.copy(),
-    loopEnd: clip.loopEnd ? clip.loopEnd.copy() : null,
-    startLimit: clip.startLimit ? clip.startLimit.copy() : null,
-    endLimit: clip.endLimit ? clip.endLimit.copy() : null
+    end: clip.end ? clip.end.copy() : undefined,
+    loopEnd: clip.loopEnd ? clip.loopEnd.copy() : undefined,
+    startLimit: clip.startLimit ? clip.startLimit.copy() : undefined,
+    endLimit: clip.endLimit ? clip.endLimit.copy() : undefined
   }
 
   if (newClip.type === TrackType.Audio && newClip.audio) {
@@ -110,6 +112,11 @@ export function copyClip(clip: Clip): Clip {
 export function clipsOverlap(a: Clip, b: Clip): boolean {
   const aEnd = a.loopEnd || a.end;
   const bEnd = b.loopEnd || b.end;
+
+  // Return false if either clip doesn't have an end position
+  if (!aEnd || !bEnd) {
+    return false;
+  }
 
   return (
     a.start.compareTo(bEnd) < 0 && aEnd.compareTo(b.start) > 0 ||
@@ -138,7 +145,6 @@ export function getBaseTrack(id = v4()) : Track {
     mute: false,
     solo: false,
     armed: false,
-    automation: false,
     volume: 0,
     pan: 0,
     automationLanes: [
@@ -164,8 +170,7 @@ export function getBaseTrack(id = v4()) : Track {
         show: false, 
         expanded: true, 
       }
-    ],
-    automationMode: AutomationMode.Read
+    ]
   }
 }
 
@@ -179,7 +184,7 @@ export function getBaseMasterTrack() : Track {
     color: "var(--border6)", 
     armed: true,
     automationLanes: [
-      ...baseTrack.automationLanes,
+      ...(baseTrack.automationLanes || []),
       {
         id: v4(), 
         label: "Tempo", 
@@ -266,10 +271,10 @@ export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Cl
   const newClip = {
     ...clip,
     start: preservePosMargin(clip.start, settings),
-    end: preservePosMargin(clip.end, settings),
-    startLimit: clip.startLimit ? preservePosMargin(clip.startLimit, settings, false) : null,
-    endLimit: clip.endLimit ? preservePosMargin(clip.endLimit, settings, false) : null,
-    loopEnd: clip.loopEnd ? preservePosMargin(clip.loopEnd, settings) : null
+    end: clip.end ? preservePosMargin(clip.end, settings) : undefined,
+    startLimit: clip.startLimit ? preservePosMargin(clip.startLimit, settings, false) : undefined,
+    endLimit: clip.endLimit ? preservePosMargin(clip.endLimit, settings, false) : undefined,
+    loopEnd: clip.loopEnd ? preservePosMargin(clip.loopEnd, settings) : undefined
   };
   
   if (newClip.type === TrackType.Audio && newClip.audio) {
@@ -283,8 +288,8 @@ export function preserveClipMargins(clip: Clip, settings: TimelineSettings) : Cl
   //const temp = TimelinePosition.timelineSettings;
   //TimelinePosition.timelineSettings = settings;
 
-  if (newClip.loopEnd && newClip.loopEnd.compareTo(newClip.end) <= 0)
-    newClip.loopEnd = null;
+  if (newClip.loopEnd && newClip.end && newClip.loopEnd.compareTo(newClip.end) <= 0)
+    newClip.loopEnd = undefined;
 
   //TimelinePosition.timelineSettings = temp;
 
@@ -295,10 +300,10 @@ export function preserveTrackMargins(track: Track, settings: TimelineSettings) {
   return {
     ...track, 
     clips: track.clips.map(clip => preserveClipMargins(clip, settings)),
-    automationLanes: track.automationLanes.map(lane => ({
+    automationLanes: track.automationLanes?.map(lane => ({
       ...lane, 
       nodes: lane.nodes.map(node => ({...node, pos: preservePosMargin(node.pos, settings)}))
-    }))
+    })) ?? []
   };
 }
 
@@ -322,7 +327,12 @@ export function preservePosMargin(pos: TimelinePosition, settings: TimelineSetti
 }
 
 export function removeClipOverlap(a: Clip, b: Clip) {
-  const endSlices = sliceClip(a, b.loopEnd || b.end);
+  const bEnd = b.loopEnd || b.end;
+  if (!bEnd) {
+    return [a]; // Return original clip if b has no end position
+  }
+  
+  const endSlices = sliceClip(a, bEnd);
   const startSlices = sliceClip(endSlices[0], b.start);
 
   endSlices.splice(0, 1);
@@ -369,6 +379,11 @@ export function scrollToAndAlign(
 }
 
 export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
+  // Early return if clip.end is undefined since the function logic depends on it
+  if (!clip.end) {
+    return [clip];
+  }
+  
   if (pos.compareTo(clip.start) > 0 && pos.compareTo(clip.loopEnd || clip.end) < 0) {
     const clips: Clip[] = [];
     let newClip = { ...clip };
@@ -377,7 +392,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
       newClip.loopEnd = pos.copy();
     } else {
       newClip.end = pos.copy();
-      newClip.loopEnd = null;
+      newClip.loopEnd = undefined;
     }
 
     clips.push(newClip);
@@ -388,43 +403,44 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
     if (pos.compareTo(clip.end) < 0) {
       newClip = copyClip(clip);
       newClip.start = pos.copy();
-      newClip.loopEnd = null;
+      newClip.loopEnd = undefined;
       clips.push(newClip);
 
-      if (clip.loopEnd && clip.loopEnd.compareTo(clip.end) > 0) {
+      if (clip.loopEnd && clip.end && clip.loopEnd.compareTo(clip.end) > 0) {
         newClip = copyClip(clipAtPos(clip.end, clip));
         
         if (loopWidth > width) {
           newClip.loopEnd = clip.loopEnd.copy();
         } else {
           newClip.end = clip.loopEnd.copy();
-          newClip.loopEnd = null;
+          newClip.loopEnd = undefined;
         }
 
         clips.push(newClip);
       }
-    } else if (clip.loopEnd && clip.loopEnd.compareTo(clip.end) > 0) {
+    } else if (clip.loopEnd && clip.end && clip.loopEnd.compareTo(clip.end) > 0) {
       const posDistancePastEnd = pos.toMargin() - clip.end.toMargin();
       const numRepetitions = Math.ceil(Math.round((loopWidth / width) * 1e9) / 1e9);
       let repetition = Math.floor(posDistancePastEnd / width);
       
-      if (Math.abs(posDistancePastEnd % width) > 1e-9) {
+      if (Math.abs(posDistancePastEnd % width) > 1e-9 && clip.end) {
         const { measures, beats, fraction } = calculateMeasuresBeatsFraction(width * repetition);
 
         newClip = copyClip(clipAtPos(addTimeValues(clip.end, measures, beats, fraction), clip));
         newClip.start = pos.copy();
-        newClip.loopEnd = null;
+        newClip.loopEnd = undefined;
         clips.push(newClip);
 
         repetition++;
       }
 
-      if (repetition < numRepetitions) {
+      if (repetition < numRepetitions && clip.end) {
         const { measures, beats, fraction } = TimelinePosition.measureMargin(width * repetition);
+        const clipEnd = clip.end; // Store reference to avoid repeated null checks
         const newPos = new TimelinePosition(
-          clip.end.bar + measures,
-          clip.end.beat + beats,
-          clip.end.sixteenth + fraction
+          clipEnd.bar + measures,
+          clipEnd.beat + beats,
+          clipEnd.sixteenth + fraction
         );
         newClip = copyClip(clipAtPos(newPos, clip));
         
@@ -432,7 +448,7 @@ export function sliceClip(clip: Clip, pos: TimelinePosition): Clip[] {
           newClip.loopEnd = new TimelinePosition(clip.loopEnd.bar, clip.loopEnd.beat, clip.loopEnd.sixteenth);
         } else {
           newClip.end = new TimelinePosition(clip.loopEnd.bar, clip.loopEnd.beat, clip.loopEnd.sixteenth);
-          newClip.loopEnd = null;
+          newClip.loopEnd = undefined;
         }
 
         clips.push(newClip);

@@ -10,15 +10,21 @@ describe('File format validation', () => {
   test('creates test clip with proper types', () => {
     const testClip: Clip = {
       id: 'test',
-      name: 'Test Clip',
+      trackId: 'track-1',
       start: new TimelinePosition(1, 1, 0),
+      length: new TimelinePosition(1, 0, 0),
+      data: {
+        type: 'audio',
+        buffer: {} as AudioBuffer,
+        waveform: []
+      },
+      // Legacy properties for backward compatibility
+      name: 'Test Clip',
       end: new TimelinePosition(2, 1, 0),
-      muted: false,
-      loopEnd: undefined, // Changed from null to undefined
+      loopEnd: undefined,
       startLimit: undefined,
       endLimit: undefined,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
         start: new TimelinePosition(1, 1, 0),
         end: new TimelinePosition(2, 1, 0)
       }
@@ -30,15 +36,21 @@ describe('File format validation', () => {
   test('validates audio track file formats', () => {
     const testClip2: Clip = {
       id: 'test2',
-      name: 'Test Clip 2',
+      trackId: 'track-2',
       start: new TimelinePosition(1, 1, 0),
+      length: new TimelinePosition(1, 0, 0),
+      data: {
+        type: 'audio',
+        buffer: {} as AudioBuffer,
+        waveform: []
+      },
+      // Legacy properties for backward compatibility
+      name: 'Test Clip 2',
       end: new TimelinePosition(2, 1, 0),
-      muted: false,
-      loopEnd: undefined, // Changed from null to undefined
+      loopEnd: undefined,
       startLimit: undefined,
       endLimit: undefined,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
         start: new TimelinePosition(1, 1, 0),
         end: new TimelinePosition(2, 1, 0)
       }
@@ -55,12 +67,18 @@ describe('File format validation', () => {
   test('validates track file formats', () => {
     const testClip3: Clip = {
       id: 'test3',
-      name: 'Test Clip 3',
+      trackId: 'track-3',
       start: new TimelinePosition(1, 1, 0),
+      length: new TimelinePosition(1, 0, 0),
+      data: {
+        type: 'audio',
+        buffer: {} as AudioBuffer,
+        waveform: []
+      },
+      // Legacy properties for backward compatibility
+      name: 'Test Clip 3',
       end: new TimelinePosition(2, 1, 0),
-      muted: false,
       audio: {
-        audioBuffer: {} as AudioBuffer, // Mock AudioBuffer instead of null
         start: new TimelinePosition(1, 1, 0),
         end: new TimelinePosition(2, 1, 0)
       }

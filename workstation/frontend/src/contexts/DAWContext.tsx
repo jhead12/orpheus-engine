@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useRef, useEffect, ReactNod
 import { AudioService } from '../services/AudioService';
 import { ClipService } from '../services/daw/clipService';
 import { AudioExporter } from '../services/audio/audioExporter';
-import { Track, Clip, TimelinePosition, TrackType } from '../types/types';
+import { Track, Clip, TimelinePosition, TrackType } from '../services/types/types';
 import { audioContext } from '../services/utils/audio';
 import { useMixer } from './MixerContext';
 
@@ -29,6 +29,10 @@ interface DAWContextType {
   startRecording: (trackId: string, deviceId?: string) => Promise<void>;
   stopRecording: () => Promise<Clip | null>;
   exportProject: (options?: any) => Promise<void>;
+  // Additional missing properties
+  togglePlayback: () => void;
+  currentPosition: TimelinePosition;
+  setPosition: (position: TimelinePosition) => void;
 }
 
 const DAWContext = createContext<DAWContextType | undefined>(undefined);
@@ -161,7 +165,7 @@ export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!isReady) throw new Error('Audio system not ready');
     
     try {
-      await audioServiceRef.current.startRecording({ deviceId });
+      await audioServiceRef.current.startRecording();
       setIsRecording(true);
     } catch (error) {
       console.error('Failed to start recording:', error);
@@ -173,7 +177,7 @@ export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!isRecording) return null;
 
     try {
-      const recordedBuffer = await audioServiceRef.current.stop();
+      const recordedBuffer = await audioServiceRef.current.stopRecording();
       setIsRecording(false);
 
       if (recordedBuffer && currentTrack) {
@@ -195,6 +199,19 @@ export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Project export
   const exportProject = async (options: any = {}) => {
     // Implement project export using audioExporterRef
+  };
+
+  // Additional methods for compatibility
+  const togglePlayback = () => {
+    if (isPlaying) {
+      stopPlayback();
+    } else {
+      startPlayback();
+    }
+  };
+
+  const setPosition = (position: TimelinePosition) => {
+    setPlaybackPosition(position);
   };
 
   const value = {
@@ -219,7 +236,10 @@ export const DAWProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     stopPlayback,
     startRecording,
     stopRecording,
-    exportProject
+    exportProject,
+    togglePlayback,
+    currentPosition: playbackPosition,
+    setPosition
   };
 
   return (

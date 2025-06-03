@@ -1,6 +1,6 @@
 import React, { memo, useContext, useEffect, useMemo, useRef, useState, forwardRef } from "react";
 import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../../contexts";
-import { AutomationLane, Clip, ContextMenuType, TimelinePosition, Track, TrackType, WorkstationAudioInputFile } from "../../../services/types/types";
+import { AutomationLane, Clip, ContextMenuType, TimelinePosition, Track, TrackType, WorkstationAudioInputFile } from "../../../services/types";
 import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
 import { AudioClipComponent, AutomationLaneComponent, ClipComponent, RegionComponent } from "./index";
 import { electronAPI, openContextMenu } from "../../../services/electron/utils";

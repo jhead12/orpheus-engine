@@ -6,7 +6,7 @@ import {
   Region,
   TimelinePosition,
   TimelineSettings
-} from '../types/types';
+} from '../services/types/types';
 
 interface WorkstationContextType {
   tracks: Track[];
@@ -30,7 +30,8 @@ const defaultTimelineSettings: TimelineSettings = {
     noteValue: 4
   },
   snap: true,
-  snapUnit: 'beat'
+  snapUnit: 'beat',
+  horizontalScale: 1
 };
 
 const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);

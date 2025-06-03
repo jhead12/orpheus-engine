@@ -41,7 +41,7 @@ import {
   Track,
   TrackType,
   AudioAnalysisType,
-} from "../../services/types/types";
+} from "../../services/types";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,

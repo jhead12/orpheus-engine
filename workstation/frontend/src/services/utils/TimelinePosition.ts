@@ -42,7 +42,13 @@ export class TimelinePosition {
     const fraction = (margin % (4 * horizontalScale)) / horizontalScale;
     return { measures, beats, fraction };
   }
-  static timelineSettings: TimelineSettings = { timeSignature: { beats: 4, noteValue: 4 }, tempo: 120, horizontalScale: 1 };
+  static timelineSettings: TimelineSettings = { 
+    timeSignature: { beats: 4, noteValue: 4 }, 
+    tempo: 120, 
+    horizontalScale: 1,
+    snap: true,
+    snapUnit: 'beat'
+  };
   translate(diff: { measures: number; beats: number; fraction: number; sign: number }, preserveMargin: boolean): TimelinePosition {
     return new TimelinePosition(this.measures + diff.measures * diff.sign, this.beats + diff.beats * diff.sign, this.fraction + diff.fraction * diff.sign);
   }

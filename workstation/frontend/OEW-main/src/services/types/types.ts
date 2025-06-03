@@ -1,3 +1,7 @@
+// Re-export all types from consolidated-types.ts
+export * from './consolidated-types';
+
+// The following enum definitions are preserved for backward compatibility
 export enum AudioAnalysisType {
   Spectral = "spectral",
   Waveform = "waveform",
@@ -62,6 +66,74 @@ export interface Clip {
   gain?: number;    // Volume multiplier
   effects?: Array<{ type: string, parameters: Record<string, any> }>;
   metadata?: Record<string, any>;
+}
+
+export enum ContextMenuType {
+  Clip = "clip",
+  Region = "region",
+  Track = "track",
+  Lane = "lane",
+  Node = "node",
+  Text = "text",
+  FXChainPreset = "fxChainPreset",
+  AddAutomationLane = "addAutomationLane",
+  Automation = "automation"
+}
+
+export enum AutomationLaneEnvelope {
+  Volume = "volume",
+  Pan = "pan",
+  Send = "send",
+  Filter = "filter"
+}
+
+export enum AutomationMode {
+  Off = "off",
+  Read = "read",
+  Write = "write",
+  Touch = "touch"
+}
+
+export enum SnapGridSizeOption {
+  None = 0,
+  Auto = 1,
+  HundredTwentyEighthBeat = 2,
+  SixtyFourthBeat = 3,
+  ThirtySecondBeat = 4,
+  SixteenthBeat = 5,
+  EighthBeat = 6,
+  QuarterBeat = 7,
+  HalfBeat = 8,
+  Beat = 9
+}
+
+export interface AutomationNode {
+  id: string;
+  pos: TimelinePosition;
+  value: number;
+  curve?: number; // For bezier curves
+}
+
+export interface AutomationLane {
+  id: string;
+  label: string;
+  envelope: AutomationLaneEnvelope;
+  enabled: boolean;
+  minValue: number;
+  maxValue: number;
+  nodes: AutomationNode[];
+  show: boolean;
+  expanded: boolean;
+}
+
+export interface Region {
+  start: TimelinePosition;
+  end: TimelinePosition;
+}
+
+export interface WindowAutoScrollThresholds {
+  right: { slow: number; medium: number; fast: number };
+  left: { slow: number; medium: number; fast: number };
 }
 
 export class TimelinePosition {

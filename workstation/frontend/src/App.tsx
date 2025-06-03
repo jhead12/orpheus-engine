@@ -8,6 +8,8 @@ import { DAWProvider } from "./contexts/DAWContext";
 import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
+import { ApolloWrapper } from "./apollo/ApolloWrapper";
+import { AudioLibrary } from "./components/AudioLibrary";
 import "./styles/App.css";
 
 // Import DAW components
@@ -57,46 +59,54 @@ function App({ onReady }: AppProps): React.ReactElement {
   const isDesktopMode = isElectron();
 
   return (
-    <PreferencesProvider>
-      <MixerProvider>
-        <DAWProvider>
-          {isDesktopMode ? (
-            <section className="workstation-container">
-              <Workstation isDesktopMode={true} />
-            </section>
-          ) : (
-            <ClipboardProvider>
-              <WorkstationProvider>
-                <SettingsProvider>
-                  <div className="app-container">
-                    <header className="app-header">
-                      <h1>Orpheus Engine Workstation</h1>
-                    </header>
-                    <main className="app-main">
-                      <div className="welcome-message">
-                        <h2>Digital Audio Workstation</h2>
-                        <p>Welcome to Orpheus Engine! Your audio production hub is {isLoaded ? "ready" : "loading..."}</p>
-                      </div>
+    <ApolloWrapper>
+      <PreferencesProvider>
+        <MixerProvider>
+          <DAWProvider>
+            {isDesktopMode ? (
+              <section className="workstation-container">
+                <Workstation isDesktopMode={true} />
+              </section>
+            ) : (
+              <ClipboardProvider>
+                <WorkstationProvider>
+                  <SettingsProvider>
+                    <div className="app-container">
+                      <header className="app-header">
+                        <h1>Orpheus Engine Workstation</h1>
+                      </header>
+                      <main className="app-main">
+                        <div className="welcome-message">
+                          <h2>Digital Audio Workstation</h2>
+                          <p>Welcome to Orpheus Engine! Your audio production hub is {isLoaded ? "ready" : "loading..."}</p>
+                        </div>
 
-                      <section className="main-controls">
-                        <AudioRecorderComponent />
-                      </section>
-                      
-                      <section className="workstation-container">
-                        <Workstation />
-                      </section>
-                    </main>
-                    <footer className="app-footer">
-                      <p>Orpheus Engine v1.0.9</p>
-                    </footer>
-                  </div>
-                </SettingsProvider>
-              </WorkstationProvider>
-            </ClipboardProvider>
-          )}
-        </DAWProvider>
-      </MixerProvider>
-    </PreferencesProvider>
+                        <section className="main-controls">
+                          <AudioRecorderComponent />
+                        </section>
+                        
+                        <section className="workstation-container">
+                          <Workstation />
+                        </section>
+                        
+                        {/* Audio Library Section */}
+                        <section className="audio-library-container">
+                          <h2>Audio Library</h2>
+                          <AudioLibrary />
+                        </section>
+                      </main>
+                      <footer className="app-footer">
+                        <p>Orpheus Engine v1.0.9</p>
+                      </footer>
+                    </div>
+                  </SettingsProvider>
+                </WorkstationProvider>
+              </ClipboardProvider>
+            )}
+          </DAWProvider>
+        </MixerProvider>
+      </PreferencesProvider>
+    </ApolloWrapper>
   );
 }
 

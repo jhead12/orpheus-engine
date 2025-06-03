@@ -1,51 +1,17 @@
 import React, { createContext, useContext } from 'react';
-import { Track, Clip, TimelinePosition, TimelineSettings } from '../services/types/types';
+import { 
+  Track, 
+  Clip, 
+  TimelinePosition, 
+  TimelineSettings,
+  WorkstationPlugin,
+  WorkstationContextType 
+} from '../services/types';
 
-export interface WorkstationPlugin {
-  id: string;
-  name: string;
-  version: string;
-  initialize?: (workstation: any) => void;
-  cleanup?: () => void;
-  metadata?: {
-    id: string;
-    name: string;
-    author?: string;
-    description?: string;
-  };
-  storageConnector?: any;
-}
+// Create the context with a default undefined value
+export const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
 
-export interface WorkstationContextType {
-  // Plugin Management
-  plugins: WorkstationPlugin[];
-  registerPlugin: (plugin: WorkstationPlugin) => void;
-  unregisterPlugin: (pluginId: string) => void;
-  getPlugin: (pluginId: string) => WorkstationPlugin | undefined;
-  hasPlugin: (pluginId: string) => boolean;
-  getPlugins: () => WorkstationPlugin[];
-  clearPlugins: () => void;
-
-  // Timeline & Playback
-  playheadPos: TimelinePosition;
-  setPlayheadPos: (pos: TimelinePosition) => void;
-  isPlaying: boolean;
-  setIsPlaying: (playing: boolean) => void;
-  timelineSettings: TimelineSettings;
-  updateTimelineSettings: (settings: TimelineSettings) => void;
-
-  // Track Management
-  tracks: Track[];
-  setTracks: (tracks: Track[]) => void;
-  addTrack: (type: string) => void;
-  deleteTrack: (id: string) => void;
-  masterTrack: Track;
-
-  // Other essential properties...
-  // ...existing code...
-}
-
-const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
+// No need to redefine interfaces already defined in consolidated-types.ts
 
 export const useWorkstation = () => {
   const context = useContext(WorkstationContext);

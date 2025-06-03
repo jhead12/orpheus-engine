@@ -1,6 +1,8 @@
 import { Clip, AudioData, MIDIData, TimelinePosition, TrackType } from '../types/types';
 
 export class ClipService {
+  private currentClip: Clip | null = null;
+
   /**
    * Create a new clip
    */
@@ -175,6 +177,61 @@ export class ClipService {
         { ...clip.data, buffer: this.cloneAudioBuffer(clip.data.buffer) } :
         { ...clip.data, notes: [...clip.data.notes] }
     };
+  }
+
+  /**
+   * Add fade in/out to a clip
+   */
+  addFades(clip: Clip, fadeIn: number, fadeOut: number): Clip {
+    return {
+      ...clip,
+      fadeIn,
+      fadeOut
+    };
+  }
+
+  /**
+   * Apply effects to a clip
+   */
+  applyEffects(clip: Clip, effects: Array<{ type: string, parameters: Record<string, any> }>): Clip {
+    return {
+      ...clip,
+      effects
+    };
+  }
+
+  /**
+   * Add metadata to a clip
+   */
+  addMetadata(clip: Clip, metadata: Record<string, any>): Clip {
+    return {
+      ...clip,
+      metadata
+    };
+  }
+
+  /**
+   * Adjust clip gain
+   */
+  adjustGain(clip: Clip, gain: number): Clip {
+    return {
+      ...clip,
+      gain
+    };
+  }
+
+  /**
+   * Get current clip
+   */
+  getCurrentClip(): Clip | null {
+    return this.currentClip;
+  }
+
+  /**
+   * Set current clip
+   */
+  setCurrentClip(clip: Clip | null): void {
+    this.currentClip = clip;
   }
 
   /**

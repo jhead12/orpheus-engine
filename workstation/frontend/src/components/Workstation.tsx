@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDAW } from '../contexts/DAWContext';
 import AudioClipEditor from './editor/AudioClipEditor';
-import { Track, TimelinePosition } from '../types/types';
+import { Track, TimelinePosition, Clip } from '../services/types/types';
 import { audioService } from '../services/audio/audioService';
 
 interface WorkstationProps {

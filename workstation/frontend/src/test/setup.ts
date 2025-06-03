@@ -1,5 +1,6 @@
 // Test setup file for audio testing
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock Web Audio API
 class MockAudioContext {
@@ -38,18 +39,19 @@ class MockAudioContext {
 class MockMediaRecorder {
   start = vi.fn();
   stop = vi.fn();
-  ondataavailable = null;
-  onstop = null;
+  ondataavailable: ((event: any) => void) | null = null;
+  onstop: ((event: any) => void) | null = null;
   state = 'inactive';
+  stream: any;
   
-  constructor(stream) {
+  constructor(stream: any) {
     this.stream = stream;
   }
   
   // Simulate data generation
-  simulateDataAvailable(data) {
+  simulateDataAvailable(data: any) {
     if (this.ondataavailable) {
-      this.ondataavailable(new Event('dataavailable', { data }));
+      this.ondataavailable({ data } as any);
     }
   }
   
@@ -60,13 +62,17 @@ class MockMediaRecorder {
       this.onstop(new Event('stop'));
     }
   }
+
+  static isTypeSupported(type: string): boolean {
+    return true;
+  }
 }
 
 // Define MediaStream mock
 class MockMediaStream {
-  tracks = [];
+  tracks: any[] = [];
   
-  addTrack(track) {
+  addTrack(track: any) {
     this.tracks.push(track);
   }
   
@@ -75,14 +81,14 @@ class MockMediaStream {
   }
   
   getAudioTracks() {
-    return this.tracks.filter(track => track.kind === 'audio');
+    return this.tracks.filter((track: any) => track.kind === 'audio');
   }
 }
 
 // Set up global mocks
-global.AudioContext = MockAudioContext;
-global.MediaRecorder = MockMediaRecorder;
-global.MediaStream = MockMediaStream;
+(global as any).AudioContext = MockAudioContext;
+(global as any).MediaRecorder = MockMediaRecorder;
+(global as any).MediaStream = MockMediaStream;
 
 // Mock getUserMedia
 Object.defineProperty(global.navigator, 'mediaDevices', {

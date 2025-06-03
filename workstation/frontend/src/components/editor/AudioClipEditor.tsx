@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDAW } from '../../contexts/DAWContext';
-import { Clip } from '../../types/types';
+import { Clip, AudioData } from '../../services/types/types';
 
 interface AudioClipEditorProps {
   clip?: Clip;
@@ -13,8 +13,13 @@ const AudioClipEditor: React.FC<AudioClipEditorProps> = ({ clip, onSave }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
+  // Type guard to check if clip data is AudioData
+  const isAudioClip = (clip?: Clip): clip is Clip & { data: AudioData } => {
+    return clip?.data?.type === 'audio';
+  };
+
   useEffect(() => {
-    if (clip?.data?.buffer && canvasRef.current) {
+    if (isAudioClip(clip) && canvasRef.current) {
       drawWaveform(clip.data.buffer);
     }
   }, [clip]);
@@ -50,10 +55,10 @@ const AudioClipEditor: React.FC<AudioClipEditorProps> = ({ clip, onSave }) => {
     ctx.stroke();
   };
 
-  const handlePlay = () => {
-    if (!clip?.data?.buffer) return;
+  const handlePlay = async () => {
+    if (!isAudioClip(clip)) return;
     setIsPlaying(true);
-    audioService.play(clip.data.buffer, { onEnded: () => setIsPlaying(false) });
+    await audioService.play(clip.data.buffer, 'clip-player', { onEnded: () => setIsPlaying(false) });
   };
 
   const handleStop = () => {
@@ -81,7 +86,7 @@ const AudioClipEditor: React.FC<AudioClipEditorProps> = ({ clip, onSave }) => {
         />
         <div 
           className="playhead"
-          style={{ left: `${(currentTime / (clip?.data?.buffer?.duration || 1)) * 100}%` }}
+          style={{ left: `${(currentTime / (isAudioClip(clip) ? clip.data.buffer.duration : 1)) * 100}%` }}
         />
       </div>
 
