@@ -4,14 +4,14 @@ Integrates with existing backend ports and service manager
 """
 
 import graphene
-from graphene import ObjectType, String, ID, Float, Int, List, Field, Boolean, Mutation, InputObjectType
+from graphene import ObjectType, String, ID, Float, Int, List as GrapheneList, Field, Boolean, Mutation, InputObjectType
 import json
 import os
 import sys
 import importlib
 import subprocess
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import requests
 import threading
 import time

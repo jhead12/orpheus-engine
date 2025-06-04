@@ -1,10 +1,10 @@
 # Orpheus Engine
 
-**Version 1.0.17** - Professional AI-Powered Digital Audio Workstation
+**Version 1.0.18** - Professional AI-Powered Digital Audio Workstation
 
 Orpheus Engine integrates the Omi device with AI to streamline music creation in your preferred DAW (Digital Audio Workstation). Use the Omi device as a recorder and AI assistant to manage DAW sessions, audio files, and creative workflows seamlessly.
 
-## 🆕 What's New in v1.0.17
+## 🆕 What's New in v1.0.18
 
 ### Recent Features & Improvements
 - **✨ Complete TypeScript Error Resolution**: Achieved 100% TypeScript compilation success with zero errors across the entire codebase

@@ -68,7 +68,7 @@
     "branch:hotfix": "git checkout main && git checkout -b hotfix/$npm_config_name",
     "branch:cleanup": "git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -r git branch -d",
     "branch:release": "git branch | grep -q \"release/v$npm_package_version\" && echo \"Branch release/v$npm_package_version already exists\" || git checkout -b release/v$npm_package_version",
-    "github:release": "gh release create v$npm_package_version --title \"Release v$npm_package_version\" --notes \"$(cat CHANGELOG.md | sed -n \"/^## \\[$npm_package_version\\]/,/^## /p\" | sed '$ d')\" || echo \"Could not create release. Make sure gh CLI is installed and authenticated.\"",
+    "github:release": "node scripts/test-gh-cli.js && gh release create v$npm_package_version --title \"Release v$npm_package_version\" --notes \"$(cat CHANGELOG.md | sed -n \"/^## \\[$npm_package_version\\]/,/^## /p\" | sed '$ d')\" 2>/dev/null || echo \"Could not create GitHub release. Make sure gh CLI is installed and authenticated.\"",
     "typecheck": "tsc --noEmit",
     "prestart": "npm run typecheck",
     "setup-symlinks": "node scripts/setup-symlinks.js",
