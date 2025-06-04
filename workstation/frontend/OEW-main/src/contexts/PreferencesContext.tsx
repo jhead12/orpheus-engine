@@ -62,6 +62,8 @@ interface PreferencesContextType {
 
 const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
 
+export { PreferencesContext };
+
 const STORAGE_KEY = 'orpheus-engine-preferences';
 
 export const PreferencesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

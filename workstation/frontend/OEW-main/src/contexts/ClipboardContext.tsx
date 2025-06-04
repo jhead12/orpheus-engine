@@ -12,6 +12,8 @@ interface ClipboardContextType {
 
 const ClipboardContext = createContext<ClipboardContextType | undefined>(undefined);
 
+export { ClipboardContext };
+
 export const ClipboardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [copiedClip, setCopiedClip] = useState<Clip | null>(null);
   const [copiedTrack, setCopiedTrack] = useState<Track | null>(null);

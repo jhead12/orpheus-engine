@@ -1,0 +1,72 @@
+.transport-controls {
+  display: flex;
+  align-items: center;
+  background-color: #2a2a2a;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.transport-buttons {
+  display: flex;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.transport-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: #444;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transport-button:hover {
+  background-color: #555;
+}
+
+.transport-button.recording {
+  background-color: #f44336;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+.tempo-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tempo-control label {
+  color: #eee;
+  font-weight: bold;
+}
+
+.tempo-control input[type="number"] {
+  width: 50px;
+  background-color: #333;
+  border: 1px solid #444;
+  border-radius: 3px;
+  color: #eee;
+  padding: 5px;
+}
+
+.tempo-control input[type="range"] {
+  width: 120px;
+}

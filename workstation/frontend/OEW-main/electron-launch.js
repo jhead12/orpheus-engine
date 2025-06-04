@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const electronPath = require('electron');
 const http = require('http');
+const fs = require('fs');
 
 // Function to check if Vite server is running
 function waitForVite(port = 5174, timeout = 30000) {
@@ -58,8 +59,61 @@ function startVite() {
   return viteProcess;
 }
 
+// Ensure electron directory exists
+function ensureDirectoryStructure() {
+  const electronDir = path.join(process.cwd(), 'electron');
+  
+  if (!fs.existsSync(electronDir)) {
+    console.log('Creating electron directory...');
+    fs.mkdirSync(electronDir, { recursive: true });
+  }
+  
+  // Check for main.js file and create if it doesn't exist
+  const mainJsPath = path.join(electronDir, 'main.js');
+  if (!fs.existsSync(mainJsPath)) {
+    console.log('Creating basic main.js file...');
+    const mainJsContent = `
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  mainWindow.loadURL('http://localhost:5174');
+  
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
+}
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', function () {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
+
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit();
+});
+`;
+    fs.writeFileSync(mainJsPath, mainJsContent);
+  }
+}
+
 async function launchElectron() {
   try {
+    // Ensure the directory structure exists
+    ensureDirectoryStructure();
+    
     // Start Vite if not running in packaged mode
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       const viteProcess = startVite();
@@ -74,7 +128,7 @@ async function launchElectron() {
     console.log('🚀 Starting Electron...');
     
     // Add necessary flags for running Electron locally
-    const args = process.argv.slice(2);
+    const args = ['.'].concat(process.argv.slice(2));
     if (!args.includes('--no-sandbox')) {
       args.push('--no-sandbox');
     }
@@ -83,7 +137,7 @@ async function launchElectron() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
 
     // Launch Electron with the proper flags
-    const electronProcess = spawn(electronPath, ['.'].concat(args), {
+    const electronProcess = spawn(electronPath, args, {
       stdio: 'inherit',
       env: process.env
     });

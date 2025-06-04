@@ -1,0 +1,109 @@
+.track-manager {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.tracks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.track {
+  background-color: #2a2a2a;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.track-name {
+  font-weight: bold;
+  color: #eee;
+}
+
+.track-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.track-control-button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 3px;
+  color: #eee;
+  background-color: #444;
+  cursor: pointer;
+}
+
+.track-control-button.active {
+  background-color: #ff4081;
+}
+
+.track-control-button.remove {
+  background-color: #f44336;
+}
+
+.track-parameters {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.parameter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parameter label {
+  color: #ccc;
+  width: 50px;
+}
+
+.parameter input[type="range"] {
+  width: 100px;
+}
+
+.parameter .value {
+  color: #eee;
+  width: 30px;
+  text-align: right;
+}
+
+.track-content {
+  height: 80px;
+  background-color: #333;
+  position: relative;
+  border-radius: 3px;
+}
+
+.audio-clip {
+  position: absolute;
+  top: 10px;
+  height: 60px;
+  border-radius: 3px;
+  color: #222;
+  padding: 5px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.add-track-button {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background-color: #5d5dff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -5,13 +5,10 @@ import {
   defaultSettings,
   saveSettings as saveSettingsToStorage,
   loadSettings as loadSettingsFromStorage
-} from '../../services/settings/index';
+} from './index';
 
-interface SettingsProviderProps {
-  children: React.ReactNode;
-}
-
-export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
+// Settings provider component
+export const SettingsProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [settings, setSettings] = useState<SettingsStore>(defaultSettings);
   
   // Load settings on mount

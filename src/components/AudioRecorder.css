@@ -1,0 +1,49 @@
+.audio-recorder {
+  background-color: #2a2a2a;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.device-selector {
+  margin-bottom: 15px;
+}
+
+.device-selector select {
+  width: 100%;
+  padding: 8px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+.recording-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.record-button, .stop-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.record-button {
+  background-color: #ff4081;
+  color: white;
+}
+
+.stop-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.recording-time {
+  font-family: monospace;
+  font-size: 18px;
+  color: #ff4081;
+}

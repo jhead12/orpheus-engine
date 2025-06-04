@@ -1,0 +1,274 @@
+/* Main DAW Layout */
+.workstation {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Header */
+.workstation-header {
+  height: 60px;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #444;
+}
+
+/* Transport Controls */
+.transport-controls {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  padding: 8px 16px;
+  border-bottom: 1px solid #444;
+}
+
+.transport-section {
+  display: flex;
+  align-items: center;
+}
+
+.main-controls {
+  flex: 1;
+}
+
+.tempo-section {
+  display: flex;
+  margin: 0 16px;
+}
+
+.position-section {
+  width: 120px;
+  text-align: right;
+}
+
+.transport-button {
+  background: #444;
+  border: none;
+  border-radius: 4px;
+  color: #e0e0e0;
+  margin-right: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.transport-button:hover {
+  background: #555;
+}
+
+.transport-button.active {
+  background: #00af5b;
+  color: white;
+}
+
+.transport-button.record-button {
+  color: #ff3333;
+}
+
+.transport-button.record-button.recording {
+  background: #ff3333;
+  color: white;
+}
+
+.transport-divider {
+  width: 1px;
+  height: 24px;
+  background: #555;
+  margin: 0 8px;
+}
+
+.time-signature-display select,
+.tempo-display input {
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 4px 8px;
+  width: 60px;
+}
+
+.bpm-label {
+  margin-left: 4px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.position-display {
+  font-family: monospace;
+  font-size: 16px;
+  background: #444;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Track List */
+.tracks-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.track {
+  border-bottom: 1px solid #444;
+}
+
+.track.selected .track-header {
+  background-color: #3a3a3a;
+}
+
+.track-header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background-color: #2d2d2d;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.track-color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.track-name {
+  flex: 1;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-controls {
+  display: flex;
+  align-items: center;
+}
+
+.track-button {
+  width: 24px;
+  height: 24px;
+  background: #444;
+  border: none;
+  border-radius: 3px;
+  color: #e0e0e0;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.track-button.active {
+  background: #00af5b;
+  color: white;
+}
+
+.track-button:first-of-type.active {
+  background: #ff3333;
+}
+
+/* Clips */
+.track-content {
+  position: relative;
+  background: rgba(50, 50, 50, 0.5);
+}
+
+.audio-clip {
+  position: absolute;
+  height: calc(100% - 8px);
+  margin: 4px 0;
+  background: #0068a3;
+  border-radius: 3px;
+  cursor: move;
+}
+
+.audio-clip .waveform {
+  width: 100%;
+  height: 100%;
+}
+
+/* Automation Lanes */
+.automation-lane {
+  height: 60px;
+  background: rgba(40, 40, 40, 0.8);
+  position: relative;
+  border-bottom: 1px solid #444;
+}
+
+.automation-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #00af5b;
+  border-radius: 50%;
+  margin-left: -4px;
+  margin-top: -4px;
+  cursor: pointer;
+}
+
+.automation-line {
+  position: absolute;
+  height: 2px;
+  background: #00af5b;
+  pointer-events: none;
+}
+
+/* Timeline Ruler */
+.timeline-ruler {
+  height: 30px;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #444;
+  position: relative;
+}
+
+.timeline-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.marker {
+  position: absolute;
+  height: 100%;
+  border-left: 1px solid #555;
+  font-size: 10px;
+  color: #aaa;
+  padding-left: 2px;
+}
+
+.marker.beat {
+  height: 50%;
+  bottom: 0;
+  border-left: 1px solid #444;
+}
+
+.playhead {
+  position: absolute;
+  height: 100%;
+  border-left: 2px solid #ff3333;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Volume slider */
+.volume-slider {
+  height: 24px;
+  width: 80px;
+  margin-left: 8px;
+}
+
+.volume-slider input {
+  width: 100%;
+  height: 100%;
+}

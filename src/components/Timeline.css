@@ -1,0 +1,44 @@
+.timeline-container {
+  width: 100%;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.timeline-ruler {
+  display: flex;
+  height: 20px;
+  position: relative;
+  background-color: #2a2a2a;
+  border-bottom: 1px solid #444;
+}
+
+.timeline-mark {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  border-right: 1px solid #444;
+}
+
+.timeline-mark-label {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  font-size: 10px;
+  color: #888;
+}
+
+.timeline {
+  height: 20px;
+  background-color: #333;
+  position: relative;
+  cursor: pointer;
+}
+
+.timeline-cursor {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #ff2d7f;
+  z-index: 5;
+}

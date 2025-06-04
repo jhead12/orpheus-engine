@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { AudioAnalysisType, Clip } from '@/services/types/types';
-import { useMCPAnalysis } from '@/hooks/useMCPAnalysis';
-import { useAI } from '@/contexts/AIContext';
-import { invokePythonAnalysis } from '@/services/pythonBridge';
+import { AudioAnalysisType, Clip } from '../../../services/types/consolidated-types';
+import { useMCPAnalysis } from '../../../hooks/useMCPAnalysis';
+import { useAI } from '../../../contexts/AIContext';
+import { invokePythonAnalysis } from '../../../services/pythonBridge';
 
 interface AudioAnalysisPanelProps {
   type: AudioAnalysisType;
