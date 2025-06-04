@@ -183,3 +183,13 @@ export function hslToHex(h: number, s: number, l: number): string {
   };
   return `#${f(0)}${f(8)}${f(4)}`;
 }
+
+/**
+ * Adjusts seconds value for measure-based time display
+ * This function might be used to align time display with musical measures
+ */
+export function measureSeconds(seconds: number): number {
+  // For now, return the input as-is. This can be enhanced later
+  // to align with measure boundaries if needed
+  return seconds;
+}

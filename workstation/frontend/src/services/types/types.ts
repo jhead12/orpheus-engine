@@ -4,6 +4,18 @@ export enum AudioAnalysisType {
   Features = "features"
 }
 
+export enum SnapGridSizeOption {
+  Auto = "auto",
+  Beat = "beat",
+  HalfBeat = "half-beat",
+  QuarterBeat = "quarter-beat",
+  EighthBeat = "eighth-beat",
+  SixteenthBeat = "sixteenth-beat",
+  ThirtySecondBeat = "thirty-second-beat",
+  Bar = "bar",
+  HalfBar = "half-bar"
+}
+
 export enum TrackType {
   Audio = "audio",
   MIDI = "midi",
@@ -124,6 +136,18 @@ export class TimelinePosition {
     return this.sixteenth;
   }
 
+  // Legacy property for compatibility (measures = bar)
+  get measure(): number {
+    return this.bar;
+  }
+
+  /**
+   * Convert position to fraction (for grid calculations)
+   */
+  toFraction(): number {
+    return this.toSixteenths();
+  }
+
   /**
    * Add an offset to this position and return a new position
    */
@@ -226,23 +250,32 @@ export class TimelinePosition {
   /**
    * Create position from span (diff result)
    */
-  static fromSpan(span: { measures: number; beats: number; fraction: number }): TimelinePosition {
-    return new TimelinePosition(span.measures, span.beats, span.fraction * 120); // Convert fraction to ticks
+  static fromSpan(span: { measures: number; beats: number; fraction: number }): TimelinePosition;
+  static fromSpan(span: number): TimelinePosition;
+  static fromSpan(span: { measures: number; beats: number; fraction: number } | number): TimelinePosition {
+    if (typeof span === 'number') {
+      // Convert span value to position (assuming span is in beats)
+      return TimelinePosition.fromTicks(span * 480);
+    } else {
+      // Convert span object to position
+      return new TimelinePosition(span.measures, span.beats, span.fraction * 120); // Convert fraction to ticks
+    }
   }
 
   /**
-   * Calculate measure margin from values
+   * Convert fraction to span (for grid calculations)
    */
-  static measureMargin(value: number): { measures: number; beats: number; fraction: number } {
-    const bars = Math.floor(value / (4 * 480));
-    let remainingTicks = value % (4 * 480);
-    
-    const beats = Math.floor(remainingTicks / 480);
-    remainingTicks = remainingTicks % 480;
-    
-    const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
-    
-    return { measures: bars, beats, fraction };
+  static fractionToSpan(fraction: number): number {
+    // Convert fraction (in sixteenths) to span in beats
+    return fraction / 4; // 4 sixteenths per beat
+  }
+
+  /**
+   * Convert duration to span (for grid calculations)
+   */
+  static durationToSpan(duration: number): number {
+    // Convert duration (in ticks) to span in beats
+    return duration / 480; // 480 ticks per beat
   }
 
   /**

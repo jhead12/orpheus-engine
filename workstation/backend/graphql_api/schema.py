@@ -182,5 +182,23 @@ class AddAudioFile(graphene.Mutation):
 class Mutation(ObjectType):
     add_audio_file = AddAudioFile.Field()
 
-# Create the schema
-schema = graphene.Schema(query=Query, mutation=Mutation)
+# Import plugin system
+try:
+    from .plugins import PluginQuery, PluginMutation
+    
+    # Extend Query and Mutation with plugin functionality
+    class ExtendedQuery(Query, PluginQuery):
+        pass
+    
+    class ExtendedMutation(Mutation, PluginMutation):
+        pass
+    
+    # Create the schema with plugin support
+    schema = graphene.Schema(query=ExtendedQuery, mutation=ExtendedMutation)
+    print("✓ GraphQL schema created with plugin support")
+    
+except ImportError as e:
+    print(f"⚠ Warning: Plugin system not available: {e}")
+    # Fallback to basic schema without plugins
+    schema = graphene.Schema(query=Query, mutation=Mutation)
+    print("✓ GraphQL schema created without plugin support")

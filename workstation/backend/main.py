@@ -729,6 +729,50 @@ def generate_visualization():
 
 if __name__ == '__main__':
     import os
+    
+    # Get port configuration from environment
     port = int(os.environ.get('BACKEND_PORT', 5001))
     debug = os.environ.get('DEVELOPMENT', 'false').lower() == 'true'
+    
+    # Initialize plugin system
+    try:
+        from graphql_api.plugins import plugin_manager
+        print(f"✓ Plugin system initialized. Next available port: {plugin_manager.next_port}")
+    except ImportError:
+        print("⚠ Plugin system not available")
+    
+    # Add plugin status endpoint
+    @app.route('/api/system/status')
+    def system_status():
+        """Get system and plugin status"""
+        try:
+            from graphql_api.plugins import plugin_manager
+            plugins = plugin_manager.list_plugins()
+            
+            return jsonify({
+                "status": "running",
+                "backend_port": port,
+                "plugin_count": len(plugins),
+                "next_plugin_port": plugin_manager.next_port,
+                "plugins": [
+                    {
+                        "id": p.get('id'),
+                        "name": p.get('name'),
+                        "status": p.get('status'),
+                        "port": p.get('backend_port')
+                    } for p in plugins
+                ]
+            })
+        except Exception as e:
+            return jsonify({
+                "status": "running",
+                "backend_port": port,
+                "plugin_system": "unavailable",
+                "error": str(e)
+            })
+    
+    print(f"🚀 Starting Orpheus Engine Backend on port {port}")
+    if debug:
+        print("🔧 Debug mode enabled")
+    
     app.run(host='0.0.0.0', port=port, debug=debug)

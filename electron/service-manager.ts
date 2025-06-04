@@ -1,4 +1,3 @@
-
 import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
@@ -14,6 +13,8 @@ export interface ServiceConfig {
     healthCheck?: () => Promise<boolean>;
     description: string;
     critical: boolean; // If true, app won't start without this service
+    pluginId?: string; // Optional: ID of the plugin this service belongs to
+    type?: 'system' | 'plugin'; // Service type
 }
 
 export interface ServiceStatus {
@@ -49,16 +50,18 @@ export class ServiceManager extends EventEmitter {
         this.emit('startup-begin');
         
         for (const config of this.configs) {
-            try {
+            if (config.critical) {
                 await this.startService(config);
-            } catch (error) {
-                console.error(`Failed to start ${config.name}:`, error);
-                if (config.critical) {
-                    throw new Error(`Critical service ${config.name} failed to start`);
-                }
             }
         }
-
+        
+        // Start non-critical services
+        for (const config of this.configs) {
+            if (!config.critical) {
+                await this.startService(config);
+            }
+        }
+        
         this.emit('startup-complete');
     }
 
@@ -222,5 +225,128 @@ export class ServiceManager extends EventEmitter {
             }
         }
         this.services.clear();
+    }
+
+    async startPluginService(pluginId: string, config: ServiceConfig): Promise<boolean> {
+        try {
+            console.log(`Starting plugin service: ${config.name} for plugin ${pluginId}`);
+            
+            // Register the plugin service
+            this.registerService({
+                ...config,
+                pluginId,
+                type: 'plugin',
+                critical: false // Plugin services are never critical
+            });
+            
+            // Start the service
+            await this.startService(config);
+            
+            const status = this.statuses.get(config.name);
+            const success = status?.status === 'running';
+            
+            if (success) {
+                this.emit('plugin-service-started', { pluginId, serviceName: config.name });
+            }
+            
+            return success;
+        } catch (error) {
+            console.error(`Failed to start plugin service for ${pluginId}:`, error);
+            return false;
+        }
+    }
+
+    async stopService(serviceName: string): Promise<void> {
+        const child = this.services.get(serviceName);
+        if (child) {
+            child.kill();
+            this.services.delete(serviceName);
+            
+            const status = this.statuses.get(serviceName);
+            if (status) {
+                status.status = 'stopped';
+                this.emit('service-status-change', status);
+            }
+        }
+    }
+
+    async stopPluginService(pluginId: string): Promise<boolean> {
+        try {
+            // Find services for this plugin
+            const pluginServices = this.configs.filter(config => config.pluginId === pluginId);
+            
+            for (const config of pluginServices) {
+                await this.stopService(config.name);
+                this.emit('plugin-service-stopped', { pluginId, serviceName: config.name });
+            }
+            
+            // Remove plugin services from configs
+            this.configs = this.configs.filter(config => config.pluginId !== pluginId);
+            
+            return true;
+        } catch (error) {
+            console.error(`Failed to stop plugin services for ${pluginId}:`, error);
+            return false;
+        }
+    }
+
+    getPluginServices(pluginId: string): ServiceStatus[] {
+        return Array.from(this.statuses.values())
+            .filter(status => {
+                const config = this.configs.find(c => c.name === status.name);
+                return config?.pluginId === pluginId;
+            });
+    }
+
+    getAllPluginServices(): Record<string, ServiceStatus[]> {
+        const pluginServices: Record<string, ServiceStatus[]> = {};
+        
+        for (const config of this.configs) {
+            if (config.pluginId && config.type === 'plugin') {
+                if (!pluginServices[config.pluginId]) {
+                    pluginServices[config.pluginId] = [];
+                }
+                
+                const status = this.statuses.get(config.name);
+                if (status) {
+                    pluginServices[config.pluginId].push(status);
+                }
+            }
+        }
+        
+        return pluginServices;
+    }
+
+    async checkPluginHealth(pluginId: string): Promise<boolean> {
+        const pluginServices = this.getPluginServices(pluginId);
+        
+        if (pluginServices.length === 0) {
+            return false; // No services means plugin is not running
+        }
+        
+        // Check if all plugin services are running
+        const allRunning = pluginServices.every(service => service.status === 'running');
+        
+        if (!allRunning) {
+            return false;
+        }
+        
+        // Perform health checks if configured
+        for (const service of pluginServices) {
+            const config = this.configs.find(c => c.name === service.name);
+            if (config?.healthCheck) {
+                try {
+                    const healthy = await config.healthCheck();
+                    if (!healthy) {
+                        return false;
+                    }
+                } catch (error) {
+                    console.error(`Health check failed for ${service.name}:`, error);
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     }
 }
