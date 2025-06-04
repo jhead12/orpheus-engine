@@ -77,8 +77,7 @@
     "fix-permissions": "sudo chown -R $(whoami) ~/.npm || true",
     "start:vite": "cd workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
-      "fix-python-deps": "node scripts/fix-python-deps.js",
-
+    "fix-python-deps": "node scripts/fix-python-deps.js",
     "fix-tokenizers": "node scripts/fix-tokenizers.js",
     "fix-tokenizers-macos": "python3 scripts/fix-tokenizers-macos.py",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
@@ -90,8 +89,9 @@
     "update-submodules": "git submodule update --init --recursive"
   },
   "devDependencies": {
-    "@testing-library/react": "^16.3.0",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/electron": "^1.4.38",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.57",
     "@types/react": "^18.3.12",

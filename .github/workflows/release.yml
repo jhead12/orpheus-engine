@@ -1,5 +1,6 @@
 name: Release Workflow
-
+permissions:
+  contents: write
 on:
   push:
     branches: [main]
@@ -12,9 +13,14 @@ on:
         description: 'Release version (e.g., 2.0.0)'
         required: true
       type:
-        description: 'Release type (stable/pre-release)'
+        description: 'Release type'
         required: true
-        default: 'stable'
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
         
 jobs:
   release:
@@ -47,7 +53,16 @@ jobs:
         run: |
           git checkout main
           git pull origin main
-          npm run release:${{ github.event.inputs.release_type }}
+          # Map the input type to the correct npm script
+          if [ "${{ github.event.inputs.type }}" = "patch" ]; then
+            npm run release:patch
+          elif [ "${{ github.event.inputs.type }}" = "minor" ]; then
+            npm run release:minor
+          elif [ "${{ github.event.inputs.type }}" = "major" ]; then
+            npm run release:major
+          else
+            npm run release:patch
+          fi
           
       - name: Push Tags
         run: |

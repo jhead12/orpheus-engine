@@ -23,7 +23,7 @@
     },
     "sourceMap": true,
     "jsxImportSource": "react",
-    "types": ["node"],
+    "types": ["node", "electron"],
     "typeRoots": [
       "./node_modules/@types",
       "./types"
