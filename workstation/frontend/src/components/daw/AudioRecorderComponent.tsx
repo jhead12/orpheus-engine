@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDAW } from '../../contexts/DAWContext';
-import { Button, Box, FormControl, InputLabel, Select, MenuItem, Typography } from '@mui/material';
+import { Button, Box, FormControl, InputLabel, Select, MenuItem, Typography, SelectChangeEvent } from '@mui/material';
 
 interface AudioRecorderComponentProps {
   onRecordingComplete?: (audioBlob: Blob) => void;
@@ -49,10 +49,7 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
     };
   }, []);
 
-  // Handle device selection
-  const handleDeviceChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedDeviceId(event.target.value as string);
-  };
+  // No longer needed handleDeviceChange - we handle directly in onChange
 
   // Start recording
   const startRecording = useCallback(async () => {
@@ -85,8 +82,55 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
       
       // Notify parent component
       if (onRecordingComplete && recordedBuffer) {
-        const newClip = clipService.createClip('recording', { buffer: recordedBuffer });
-        onRecordingComplete(newClip);
+        // Create proper AudioData structure
+        const audioData = {
+          type: 'audio' as const,
+          buffer: recordedBuffer,
+          waveform: Array.from(recordedBuffer.getChannelData(0)).slice(0, 1000) // Sample first 1000 points for waveform
+        };
+        
+        const newClip = clipService.createClip('recording', audioData);
+        
+        // Convert AudioBuffer to Blob for the callback
+        const audioContext = new AudioContext();
+        const numberOfChannels = recordedBuffer.numberOfChannels;
+        const length = recordedBuffer.length * numberOfChannels * 2; // 16-bit
+        const arrayBuffer = new ArrayBuffer(44 + length);
+        const view = new DataView(arrayBuffer);
+        
+        // Simple WAV header
+        const writeString = (offset: number, string: string) => {
+          for (let i = 0; i < string.length; i++) {
+            view.setUint8(offset + i, string.charCodeAt(i));
+          }
+        };
+        
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + length, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, numberOfChannels, true);
+        view.setUint32(24, recordedBuffer.sampleRate, true);
+        view.setUint32(28, recordedBuffer.sampleRate * numberOfChannels * 2, true);
+        view.setUint16(32, numberOfChannels * 2, true);
+        view.setUint16(34, 16, true);
+        writeString(36, 'data');
+        view.setUint32(40, length, true);
+        
+        // Convert audio data to 16-bit PCM
+        let offset = 44;
+        for (let i = 0; i < recordedBuffer.length; i++) {
+          for (let channel = 0; channel < numberOfChannels; channel++) {
+            const sample = Math.max(-1, Math.min(1, recordedBuffer.getChannelData(channel)[i]));
+            view.setInt16(offset, sample * 0x7FFF, true);
+            offset += 2;
+          }
+        }
+        
+        const audioBlob = new Blob([arrayBuffer], { type: 'audio/wav' });
+        onRecordingComplete(audioBlob);
       }
     } catch (error) {
       console.error('Failed to stop recording:', error);
@@ -111,42 +155,60 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
     }
   }, [isRecording]);
 
-  const drawWaveform = () => {
+  const drawWaveform = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const draw = () => {
-      const data = audioService.getWaveformData();
-      // Draw waveform logic here
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.beginPath();
-      ctx.strokeStyle = '#646cff';
-      ctx.lineWidth = 2;
-      
-      const sliceWidth = canvas.width / data.length;
-      let x = 0;
-      
-      for (let i = 0; i < data.length; i++) {
-        const v = data[i] / 128.0;
-        const y = (v * canvas.height) / 2;
+    const draw = async () => {
+      try {
+        const dataPromise = audioService.getWaveformData();
+        const data = await dataPromise;
+        // Draw waveform logic here
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
+        ctx.beginPath();
+        ctx.strokeStyle = '#646cff';
+        ctx.lineWidth = 2;
+        
+        if (data.length > 0) {
+          const sliceWidth = canvas.width / data.length;
+          let x = 0;
+          
+          for (let i = 0; i < data.length; i++) {
+            const v = data[i] / 128.0;
+            const y = (v * canvas.height) / 2;
+            
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+            x += sliceWidth;
+          }
+          
+          ctx.lineTo(canvas.width, canvas.height / 2);
         }
-        x += sliceWidth;
+        ctx.stroke();
+        
+        animationRef.current = requestAnimationFrame(draw);
+      } catch (error) {
+        console.warn('Failed to draw waveform:', error);
+        // Fallback to drawing a flat line
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = '#646cff';
+        ctx.lineWidth = 2;
+        ctx.moveTo(0, canvas.height / 2);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+        
+        animationRef.current = requestAnimationFrame(draw);
       }
-      
-      ctx.lineTo(canvas.width, canvas.height / 2);
-      ctx.stroke();
-      
-      animationRef.current = requestAnimationFrame(draw);
     };
     
     draw();
@@ -164,7 +226,7 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
           <Select
             labelId="audio-device-label"
             value={selectedDeviceId}
-            onChange={handleDeviceChange}
+            onChange={(event) => setSelectedDeviceId(event.target.value)}
             disabled={isRecording}
             label="Audio Input"
             data-testid="audio-device-select"
