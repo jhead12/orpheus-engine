@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import MultiSourceRecorderComponent from './MultiSourceRecorderComponent';
@@ -117,10 +118,18 @@ describe('MultiSourceRecorderComponent', () => {
   });
   
   test('starts and stops recording', async () => {
-    // Mock implementation to make sources available
-    (MultiSourceRecorder as unknown as vi.Mock).mockImplementation(() => ({
+    // Reset mocks to avoid issues
+    vi.clearAllMocks();
+    
+    // Use beforeEach setup to provide mock implementation with one source
+    const mockMultiSourceRecorderInstance = {
       activeSources: [
-        { deviceId: 'default', isRecording: false, label: 'Default Microphone' }
+        { 
+          deviceId: 'default', 
+          isRecording: false, 
+          label: 'Default Microphone', 
+          recorder: new AudioRecorder() 
+        }
       ],
       isRecording: false,
       syncEnabled: false,
@@ -132,7 +141,7 @@ describe('MultiSourceRecorderComponent', () => {
         new Blob([], { type: 'audio/webm' })
       ]),
       dispose: vi.fn()
-    }));
+    };
     
     const mockOnRecordingsComplete = vi.fn();
     render(<MultiSourceRecorderComponent onRecordingsComplete={mockOnRecordingsComplete} />);

@@ -44,7 +44,9 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
       }
       // Only stop recording on cleanup, don't dispose the service
       if (isRecording) {
-        audioService.stop();
+        audioService.stopRecording().catch(err => 
+          console.error('Error while stopping recording on cleanup:', err)
+        );
       }
     };
   }, []);
@@ -76,7 +78,7 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
         setTimer(null);
       }
       
-      const recordedBuffer = await audioService.stop();
+      const recordedBuffer = await audioService.stopRecording();
       setIsRecording(false);
       setRecordingDuration(0);
       
@@ -86,7 +88,7 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
         const audioData = {
           type: 'audio' as const,
           buffer: recordedBuffer,
-          waveform: Array.from(recordedBuffer.getChannelData(0)).slice(0, 1000) // Sample first 1000 points for waveform
+          waveform: Array.from(recordedBuffer.getChannelData(0)).slice(0, 1000).map(Number) // Sample first 1000 points for waveform and ensure they are numbers
         };
         
         const newClip = clipService.createClip('recording', audioData);
@@ -164,8 +166,7 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
 
     const draw = async () => {
       try {
-        const dataPromise = audioService.getWaveformData();
-        const data = await dataPromise;
+        const data = await audioService.getWaveformData();
         // Draw waveform logic here
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);

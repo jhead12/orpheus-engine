@@ -262,7 +262,4 @@ const MultiSourceRecorderComponent: React.FC<MultiSourceRecorderComponentProps> 
   );
 };
 
-// Import at the top
-import { AudioRecorder } from '../../services/audio/audioRecorder';
-
 export default MultiSourceRecorderComponent;
