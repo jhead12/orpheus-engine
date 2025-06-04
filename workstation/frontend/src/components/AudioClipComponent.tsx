@@ -1,15 +1,33 @@
-import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useWorkstation } from "../contexts/WorkstationContext";
-import { BaseClipComponentProps, TimelinePosition, TrackType, WaveformLODLevel } from "../services/types/types";
-import { ClipComponent, Waveform } from ".";
+import { TimelinePosition, TrackType, WaveformLODLevel, Clip, Track } from "../services/types/types";
+import Waveform from "../../OEW-main/src/screens/workstation/components/Waveform";
 import { audioBufferToBuffer, audioContext, reverseAudio } from "../services/utils/audio";
-import type { WaveformLevelsOfDetail } from '../../shared/types/audio';
+import { AudioExportPluginManager } from "../services/plugins/PluginManager";
+import { ExportPluginOptions } from "../services/plugins/types";
 
 export const WAVEFORM_CHUNK_SIZE = 2048;
 
+// Define WaveformLevelsOfDetail interface locally
+interface WaveformLevelsOfDetail {
+  ultraLow: Float32Array[];
+  low: Float32Array[];
+  medium: Float32Array[];
+  high: Float32Array[];
+}
+
+// Define AudioClipComponentProps interface
+interface AudioClipComponentProps {
+  clip: Clip;
+  height: number;
+  onChangeLane: (clip: Clip, track: Track) => void;
+  onSetClip: (clip: Clip) => void;
+  track: Track;
+}
+
 interface AudioClipWaveformProps {
   copyFrom?: { canvas: HTMLCanvasElement };
-  data?: Float32Array[];
+  data?: Float32Array[] | null;
   height: number;
   offset: number;
   width: number;
@@ -61,20 +79,26 @@ function AudioClipWaveform({ copyFrom, data, height, offset, width, onDraw, offs
   );
 }
 
-function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: BaseClipComponentProps) {
-  const { timelineSettings } = useContext(WorkstationContext)!;
+function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: AudioClipComponentProps) {
+  const { timelineSettings } = useWorkstation();
 
   const [copyFrom, setCopyFrom] = useState<{ canvas: HTMLCanvasElement }>();
   const [spriteOffset, setSpriteOffset] = useState(0);
   const [waveformLevelsOfDetail, setWaveformLevelsOfDetail] = useState<WaveformLevelsOfDetail | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [pluginManager] = useState(() => new AudioExportPluginManager());
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const clipAudio = clip.audio!;
   const audioWidth = clipAudio.end.diffInMargin(clipAudio.start);
 
-  const url = useMemo(() => (
-    URL.createObjectURL(new Blob([clipAudio.buffer], { type: clipAudio.type }))
-  ), [clipAudio.buffer]);
+  const url = useMemo(() => {
+    if (clipAudio.buffer) {
+      return URL.createObjectURL(new Blob([clipAudio.buffer], { type: clipAudio.type }));
+    }
+    return '';
+  }, [clipAudio.buffer, clipAudio.type]);
 
   useEffect(() => {
     if (audioWidth > WAVEFORM_CHUNK_SIZE) {
@@ -103,7 +127,12 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
   }, [timelineSettings, clip.start]);
 
   useEffect(() => {
-    if (audioRef.current) {
+    // Initialize export plugins on component mount
+    pluginManager.loadPlugins().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (audioRef.current && clipAudio.sourceDuration) {
       const duration = TimelinePosition.fromSpan(clipAudio.end.diff(clipAudio.start)).toSeconds();
       let playbackRate = clipAudio.sourceDuration / duration;
 
@@ -150,21 +179,28 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
   }
 
   async function loadAudioData() {
-    if (!clipAudio.audioBuffer) {
-      const ab = new ArrayBuffer(clipAudio.buffer.length);
-      const view = new Uint8Array(ab);
+    if (!clipAudio.audioBuffer && clipAudio.buffer) {
+      let arrayBuffer: ArrayBuffer;
       
-      for (let i = 0; i < clipAudio.buffer.length; i++) {
-        view[i] = clipAudio.buffer[i];
+      if (clipAudio.buffer instanceof ArrayBuffer) {
+        arrayBuffer = clipAudio.buffer;
+      } else if (clipAudio.buffer instanceof Uint8Array) {
+        const buffer = clipAudio.buffer.buffer;
+        arrayBuffer = buffer instanceof ArrayBuffer 
+          ? buffer.slice(clipAudio.buffer.byteOffset, clipAudio.buffer.byteOffset + clipAudio.buffer.byteLength)
+          : new ArrayBuffer(0);
+      } else {
+        console.error('Unsupported buffer type');
+        return;
       }
 
       try {
-        const audioBuffer = await audioContext.decodeAudioData(ab);
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
         onSetClip({ ...clip, audio: { ...clipAudio, audioBuffer } });
       } catch (error) {
         console.error('Failed to decode audio data:', error);
       }
-    } else {
+    } else if (clipAudio.audioBuffer) {
       const data = clipAudio.audioBuffer.getChannelData(0);
       setWaveformLevelsOfDetail({
         ultraLow: downsampleWaveformData(clipAudio.audioBuffer, Math.floor(data.length / 25000)),
@@ -185,6 +221,127 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
     setSpriteOffset(-pos.diffInMargin(clipAudio.start));
   }
 
+  // Export functionality
+  const handleExportToLocal = async () => {
+    if (!clipAudio.audioBuffer) return;
+    
+    setIsExporting(true);
+    try {
+      const result = await pluginManager.export(clip, {
+        storage: { provider: 'local' },
+        audioFormat: 'wav',
+        quality: 'high',
+        metadata: {
+          title: `Clip_${clip.id}`,
+          artist: 'Orpheus Engine',
+          album: track.name
+        }
+      });
+      console.log('Local export completed:', result);
+      alert(`Export successful! File saved locally.`);
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert(`Export failed: ${error}`);
+    } finally {
+      setIsExporting(false);
+      setShowExportMenu(false);
+    }
+  };
+
+  const handleExportToCloud = async () => {
+    if (!clipAudio.audioBuffer) return;
+    
+    setIsExporting(true);
+    try {
+      const result = await pluginManager.export(clip, {
+        storage: { 
+          provider: 'aws-s3',
+          bucket: 'orpheus-audio-exports',
+          path: 'clips'
+        },
+        audioFormat: 'wav',
+        quality: 'high',
+        metadata: {
+          title: `Clip_${clip.id}`,
+          artist: 'Orpheus Engine',
+          album: track.name
+        }
+      });
+      console.log('Cloud export completed:', result);
+      alert(`Export successful! File uploaded to cloud: ${result.url}`);
+    } catch (error) {
+      console.error('Cloud export failed:', error);
+      alert(`Cloud export failed: ${error}`);
+    } finally {
+      setIsExporting(false);
+      setShowExportMenu(false);
+    }
+  };
+
+  const handleExportToIPFS = async () => {
+    if (!clipAudio.audioBuffer) return;
+    
+    setIsExporting(true);
+    try {
+      const result = await pluginManager.export(clip, {
+        storage: { provider: 'ipfs' },
+        audioFormat: 'wav',
+        quality: 'high',
+        metadata: {
+          title: `Clip_${clip.id}`,
+          artist: 'Orpheus Engine',
+          album: track.name
+        }
+      });
+      console.log('IPFS export completed:', result);
+      alert(`Export successful! IPFS Hash: ${result.ipfsHash}`);
+    } catch (error) {
+      console.error('IPFS export failed:', error);
+      alert(`IPFS export failed: ${error}`);
+    } finally {
+      setIsExporting(false);
+      setShowExportMenu(false);
+    }
+  };
+
+  const handleExportWithStoryProtocol = async () => {
+    if (!clipAudio.audioBuffer) return;
+    
+    setIsExporting(true);
+    try {
+      const result = await pluginManager.export(clip, {
+        storage: { provider: 'ipfs' },
+        blockchain: {
+          storyProtocol: {
+            enabled: true,
+            registerIP: true,
+            licenseTerms: 'CC BY-SA 4.0',
+            metadata: {
+              title: `Audio Clip ${clip.id}`,
+              creator: 'Orpheus Engine User',
+              license: 'Creative Commons Attribution-ShareAlike 4.0'
+            }
+          }
+        },
+        audioFormat: 'wav',
+        quality: 'lossless',
+        metadata: {
+          title: `Clip_${clip.id}`,
+          artist: 'Orpheus Engine',
+          album: track.name
+        }
+      });
+      console.log('Story Protocol export completed:', result);
+      alert(`Export successful! IP registered on Story Protocol. ID: ${result.storyProtocolId}`);
+    } catch (error) {
+      console.error('Story Protocol export failed:', error);
+      alert(`Story Protocol export failed: ${error}`);
+    } finally {
+      setIsExporting(false);
+      setShowExportMenu(false);
+    }
+  };
+
   const waveformProps = (height: number, isCopy: boolean) => ({ 
     copyFrom: isCopy ? copyFrom : undefined,
     data: waveformData, 
@@ -195,16 +352,180 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
     width: audioWidth
   });
   
+  // Simple wrapper component that implements the expected interface
+  const SimpleClipComponent = ({ 
+    automationSprite, 
+    clip, 
+    height, 
+    onChangeLane, 
+    onResize, 
+    onSetClip, 
+    sprite, 
+    track 
+  }: {
+    automationSprite?: (height: number) => React.ReactNode;
+    clip: Clip;
+    height: number;
+    onChangeLane: (clip: Clip, track: Track) => void;
+    onResize: (data: { edge: { x: string }, coords: { startX: number } }) => void;
+    onSetClip: (clip: Clip) => void;
+    sprite?: (height: number) => React.ReactNode;
+    track: Track;
+  }) => {
+    return (
+      <div 
+        style={{ 
+          height, 
+          position: 'relative', 
+          border: '1px solid #ccc', 
+          borderRadius: '4px',
+          overflow: 'hidden'
+        }}
+        onDoubleClick={() => setShowExportMenu(!showExportMenu)}
+      >
+        {sprite && sprite(height)}
+        {automationSprite && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.5 }}>
+            {automationSprite(height)}
+          </div>
+        )}
+        
+        {/* Export Menu */}
+        {showExportMenu && (
+          <div 
+            style={{
+              position: 'absolute',
+              top: height + 5,
+              left: 0,
+              background: '#fff',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              padding: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              zIndex: 1000,
+              minWidth: '200px'
+            }}
+          >
+            <div style={{ marginBottom: '8px', fontWeight: 'bold', fontSize: '12px' }}>
+              Export Audio Clip
+            </div>
+            
+            <button 
+              onClick={handleExportToLocal}
+              disabled={isExporting || !clipAudio.audioBuffer}
+              style={{
+                display: 'block',
+                width: '100%',
+                margin: '4px 0',
+                padding: '6px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '3px',
+                background: '#f5f5f5',
+                cursor: 'pointer',
+                fontSize: '11px'
+              }}
+            >
+              📁 Export Locally
+            </button>
+            
+            <button 
+              onClick={handleExportToCloud}
+              disabled={isExporting || !clipAudio.audioBuffer}
+              style={{
+                display: 'block',
+                width: '100%',
+                margin: '4px 0',
+                padding: '6px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '3px',
+                background: '#f5f5f5',
+                cursor: 'pointer',
+                fontSize: '11px'
+              }}
+            >
+              ☁️ Export to Cloud
+            </button>
+            
+            <button 
+              onClick={handleExportToIPFS}
+              disabled={isExporting || !clipAudio.audioBuffer}
+              style={{
+                display: 'block',
+                width: '100%',
+                margin: '4px 0',
+                padding: '6px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '3px',
+                background: '#f5f5f5',
+                cursor: 'pointer',
+                fontSize: '11px'
+              }}
+            >
+              🌐 Export to IPFS
+            </button>
+            
+            <button 
+              onClick={handleExportWithStoryProtocol}
+              disabled={isExporting || !clipAudio.audioBuffer}
+              style={{
+                display: 'block',
+                width: '100%',
+                margin: '4px 0',
+                padding: '6px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '3px',
+                background: '#f5f5f5',
+                cursor: 'pointer',
+                fontSize: '11px'
+              }}
+            >
+              🔗 Register IP (Story Protocol)
+            </button>
+            
+            <button 
+              onClick={() => setShowExportMenu(false)}
+              style={{
+                display: 'block',
+                width: '100%',
+                margin: '8px 0 4px 0',
+                padding: '6px 12px',
+                border: '1px solid #999',
+                borderRadius: '3px',
+                background: '#e0e0e0',
+                cursor: 'pointer',
+                fontSize: '11px'
+              }}
+            >
+              Cancel
+            </button>
+            
+            {isExporting && (
+              <div style={{ 
+                textAlign: 'center', 
+                fontSize: '11px', 
+                color: '#666',
+                marginTop: '8px',
+                fontStyle: 'italic'
+              }}>
+                Exporting...
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
-      <ClipComponent
-        automationSprite={height => <AudioClipWaveform {...waveformProps(height, true)} />}
+      <SimpleClipComponent
+        automationSprite={(height: number) => <AudioClipWaveform {...waveformProps(height, true)} />}
         clip={clip}
         height={height}
         onChangeLane={onChangeLane}
         onResize={onResize}
         onSetClip={onSetClip}
-        sprite={height => <AudioClipWaveform {...waveformProps(height, false)} />}
+        sprite={(height: number) => <AudioClipWaveform {...waveformProps(height, false)} />}
         track={track}
       />
       <audio ref={audioRef} src={url} />

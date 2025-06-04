@@ -105,7 +105,9 @@ export function useAudioLibrary(options: UseAudioLibraryOptions = {}) {
         }
       });
 
-      setSuggestions(response.suggestions || []);
+      // Use audioSegments or metadata.suggestions as the source for suggestions
+      const suggestions = response.audioSegments || response.metadata?.suggestions || [];
+      setSuggestions(suggestions);
     } catch (err) {
       console.warn('Failed to get AI suggestions:', err);
     }

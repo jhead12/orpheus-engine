@@ -4,14 +4,19 @@ import { Box, Typography, List, ListItem, ListItemText, ListItemIcon, CircularPr
 import { AudioFile as AudioFileIcon } from '@mui/icons-material';
 import '../../styles/AudioLibrary.css';
 
-// Define interfaces for the audio file and library data
+// Import the AudioFile type from the hook to ensure consistency
 interface AudioFile {
   id: string;
   filename: string;
-  type: string;
-  description?: string;
-  usage?: string;
   path: string;
+  metadata?: any;
+  aiAnalysis?: {
+    genre: string;
+    mood: string;
+    key: string;
+    bpm: number;
+    tags: string[];
+  };
 }
 
 interface AudioLibraryData {
@@ -24,24 +29,23 @@ interface AudioLibraryData {
 }
 
 export function AudioLibrary() {
-  const { loading, error, library, files } = useAudioLibrary();
+  const { loading, error, audioFiles } = useAudioLibrary();
 
   if (loading) return <Box display="flex" justifyContent="center"><CircularProgress /></Box>;
-  if (error) return <Box p={2}><Typography color="error">Error loading audio library: {error.message}</Typography></Box>;
-  if (!library) return <Box p={2}><Typography>No audio library found</Typography></Box>;
+  if (error) return <Box p={2}><Typography color="error">Error loading audio library: {error}</Typography></Box>;
 
   return (
     <Box p={2}>
       <Typography variant="h5" gutterBottom>Audio Library</Typography>
-      <Typography variant="subtitle1">{library.description}</Typography>
+      <Typography variant="subtitle1">Your audio collection</Typography>
       
       <Box mt={2}>
         <Typography variant="h6">Audio Files</Typography>
-        {files.length === 0 ? (
+        {audioFiles.length === 0 ? (
           <Typography variant="body2">No audio files available</Typography>
         ) : (
           <List>
-            {files.map((file: AudioFile, index: number) => (
+            {audioFiles.map((file: AudioFile, index: number) => (
               <ListItem key={file.id || index.toString()} divider>
                 <ListItemIcon>
                   <AudioFileIcon />
@@ -51,9 +55,9 @@ export function AudioLibrary() {
                   secondary={
                     <>
                       <Typography component="span" variant="body2" color="textPrimary">
-                        {file.type.toUpperCase()}
+                        {file.aiAnalysis?.genre?.toUpperCase() || 'AUDIO'}
                       </Typography>
-                      {' — '}{file.description || 'No description'}
+                      {' — '}{file.aiAnalysis?.mood || 'No analysis available'}
                     </>
                   }
                 />

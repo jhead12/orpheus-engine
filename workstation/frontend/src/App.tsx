@@ -99,7 +99,7 @@ function App({ onReady }: AppProps): React.ReactElement {
                     }}
                   />
                   <div className="main-content">
-                    <Workstation isDesktopMode={true} />
+                    <Workstation isDesktopMode={isDesktopMode} />
                     <AudioAnalyzer width={300} height={200} visualizerType="frequency" />
                   </div>
                   <MixerControls />
@@ -132,7 +132,7 @@ function App({ onReady }: AppProps): React.ReactElement {
             </section>
             
             <section className="workstation-container">
-              <Workstation />
+              <Workstation isDesktopMode={isDesktopMode} />
             </section>
             
             {/* Audio Library Section */}
@@ -177,7 +177,7 @@ function App({ onReady }: AppProps): React.ReactElement {
                         </section>
                         
                         <section className="workstation-container">
-                          <Workstation />
+                          <Workstation isDesktopMode={isDesktopMode} />
                         </section>
                         
                         {/* Audio Library Section */}
