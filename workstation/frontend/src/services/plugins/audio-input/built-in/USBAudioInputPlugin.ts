@@ -143,10 +143,11 @@ export class USBAudioInputPlugin implements AudioInputPlugin {
           deviceId: { exact: this.currentDevice.id },
           sampleRate: { ideal: this.config.sampleRate },
           channelCount: { ideal: this.config.channels.length },
-          latency: { ideal: 0.01 }, // 10ms
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false,
+          // latency property was causing a TypeScript error - removing it
+          // The latency will be handled at the stream level
         },
       };
 

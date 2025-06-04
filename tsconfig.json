@@ -18,11 +18,12 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./workstation/frontend/*"]
+      "@/*": ["./workstation/frontend/src/*"],
+      "@/workstation/*": ["./workstation/*"]
     },
     "sourceMap": true,
     "jsxImportSource": "react",
-    "types": ["electron", "node"],
+    "types": ["node"],
     "typeRoots": [
       "./node_modules/@types",
       "./types"
@@ -30,11 +31,12 @@
   },
   "include": [
     "electron/**/*.ts",
-    "scripts/**/*",
+    "scripts/**/*.ts",
     "workstation/frontend/**/*.ts",
     "workstation/frontend/**/*.tsx",
     "workstation/frontend/src/**/*.ts",
-    "workstation/frontend/src/**/*.tsx"
+    "workstation/frontend/src/**/*.tsx",
+    "workstation/electron/**/*.ts"
   ],
   "exclude": [
     "node_modules",

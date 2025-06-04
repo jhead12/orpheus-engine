@@ -17,11 +17,14 @@
   "dependencies": {
     "@mui/material": "^7.1.0",
     "@types/lodash": "^4.17.17",
+    "@types/uuid": "^10.0.0",
     "axios": "1.9.0",
     "concurrently": "^8.2.2",
     "electron-is-dev": "^3.0.1",
+    "lodash": "^4.17.21",
     "path": "^0.12.7",
-    "react-resize-detector": "^12.0.2"
+    "react-resize-detector": "^12.0.2",
+    "uuid": "^11.1.0"
   },
   "scripts": {
     "setup-python": "node scripts/setup-python.js",
@@ -82,24 +85,30 @@
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh",
     "fix-npm-deps": "node scripts/fix-npm-deps.js",
     "system-check": "node scripts/system-check.js",
-      "update-submodules": "git submodule update --init --recursive"
-
+    "update-submodules": "git submodule update --init --recursive"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
-    "@types/electron": "^1.4.38",
+    "@testing-library/dom": "^10.4.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.57",
-    "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.5.0",
     "conventional-changelog-cli": "^4.1.0",
-    "electron": "^36.3.1"
+    "electron": "^36.3.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.19",
+    "vitest": "^1.2.1"
   },
   "resolutions": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "vite": "^5.4.19",
+    "vitest": "^1.2.1",
+    "@vitejs/plugin-react": "^4.5.0"
   },
   "engines": {
     "node": ">=16.0.0",

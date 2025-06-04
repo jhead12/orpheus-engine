@@ -342,6 +342,21 @@ export class TimelinePosition {
   }
 
   /**
+   * Calculate measure margin from values
+   */
+  static measureMargin(value: number): { measures: number; beats: number; fraction: number } {
+    const bars = Math.floor(value / (4 * 480));
+    let remainingTicks = value % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
+    
+    return { measures: bars, beats, fraction };
+  }
+
+  /**
    * Add two positions together
    */
   static add(a: TimelinePosition, b: TimelinePosition): TimelinePosition {
