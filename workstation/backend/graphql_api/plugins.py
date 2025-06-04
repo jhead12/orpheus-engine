@@ -48,7 +48,7 @@ class PluginMetadata(ObjectType):
     license = String()
     repository = String()
     documentation = String()
-    keywords = List(String)
+    keywords = GrapheneList(String)
     created_at = String()
     updated_at = String()
 
@@ -66,22 +66,22 @@ class Plugin(ObjectType):
     description = String()
     category = Field(PluginCategory, required=True)
     status = Field(PluginStatus, required=True)
-    capabilities = List(PluginCapability)
-    configuration = List(PluginConfiguration)
+    capabilities = GrapheneList(PluginCapability)
+    configuration = GrapheneList(PluginConfiguration)
     metadata = Field(PluginMetadata)
-    supported_formats = List(String)
+    supported_formats = GrapheneList(String)
     backend_port = Int()  # Port where plugin backend service runs
     api_endpoint = String()  # Full API endpoint URL
     health_check_url = String()  # Health check endpoint
     last_health_check = String()
-    dependencies = List(String)
-    tags = List(String)
+    dependencies = GrapheneList(String)
+    tags = GrapheneList(String)
 
 class PluginInstallResult(ObjectType):
     success = Boolean(required=True)
     plugin = Field(Plugin)
     error = String()
-    warnings = List(String)
+    warnings = GrapheneList(String)
     install_log = String()
 
 class PluginHealthStatus(ObjectType):
@@ -264,14 +264,14 @@ class InstallPluginInput(InputObjectType):
     source = String(required=True)
     name = String()
     category = String()
-    config = List(PluginConfigInput)
+    config = GrapheneList(PluginConfigInput)
 
 # Queries
 class PluginQuery(ObjectType):
-    plugins = List(Plugin, category=String(), status=String())
+    plugins = GrapheneList(Plugin, category=String(), status=String())
     plugin = Field(Plugin, id=ID(required=True))
     plugin_health = Field(PluginHealthStatus, plugin_id=ID(required=True))
-    available_ports = List(Int)
+    available_ports = GrapheneList(Int)
     
     def resolve_plugins(self, info, category=None, status=None):
         """Get all plugins, optionally filtered"""
