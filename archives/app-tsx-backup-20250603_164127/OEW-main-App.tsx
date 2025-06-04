@@ -1,45 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardContext";
 import { WorkstationProvider } from "./contexts/WorkstationContext";
 import { MixerProvider } from "./contexts/MixerContext";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
-import { DAWProvider } from "./contexts/DAWContext";
-import Workstation from "./screens/workstation/Workstation";
+import Workstation from "./components/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
 import "./styles/App.css";
 import "./styles/daw.css";
 
 // Import DAW components
+import { DAWProvider } from "./contexts/DAWContext";
 import AudioAnalyzer from "./components/daw/AudioAnalyzer";
 import Timeline from "./components/daw/Timeline";
 import MixerControls from "./components/daw/MixerControls";
 import TransportControls from "./components/daw/TransportControls";
-import { TimelinePosition } from "./services/types/types";
 
-interface AppProps {
-  onReady?: () => void;
-}
-
-function App({ onReady }: AppProps = {}): React.ReactElement {
-  const [isLoaded, setIsLoaded] = useState(false);
-
+function App(): React.ReactElement {
   useEffect(() => {
     // Initialize Electron integration
     if (window.electronAPI) {
       console.log('🚀 Orpheus Engine Workstation - Electron Mode');
       console.log('Platform:', window.orpheusAPI?.platform);
-      
-      // Get version safely
-      if (window.electronAPI.getVersion) {
-        window.electronAPI.getVersion().then(version => {
-          console.log('Version:', version);
-        }).catch(err => console.warn('Could not get Electron version:', err));
-      }
+      console.log('Version:', window.electronAPI.getVersion?.());
     }
 
-    // Workaround for Electron bug with input focus and text selection
+    // Workaround to the dumb electron bug where blurring inputs with selected text does not make
+    // the Electron > Services submenu go back to showing only the 'Development' section
     function handleFocusOut(e: FocusEvent) {
       const relatedTarget = e.relatedTarget as HTMLElement;
 
@@ -54,14 +42,6 @@ function App({ onReady }: AppProps = {}): React.ReactElement {
     document.addEventListener("focusout", handleFocusOut, { capture: true });
     return () => document.removeEventListener("focusout", handleFocusOut, { capture: true });
   }, []);
-
-  useEffect(() => {
-    // Signal that the app is ready once mounted
-    setIsLoaded(true);
-    if (onReady) {
-      onReady();
-    }
-  }, [onReady]);
 
   return (
     <SettingsProvider>

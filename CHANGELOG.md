@@ -1,3 +1,32 @@
+## 1.0.17 (2025-06-04)
+
+
+### Bug Fixes
+
+* resolve merge conflicts in App.tsx ([7b01ffd](https://github.com/jhead12/orpheus-engine/commit/7b01ffdf785e00953d31de4b61fca576fe14a4ce))
+* resolve merge conflicts in types.ts and improve TimelinePosition class ([edfeaf8](https://github.com/jhead12/orpheus-engine/commit/edfeaf8c4a43e358576023c525cca344977c6ced))
+* resolve tokenizers compilation issues for Python 3.12 ([6593aba](https://github.com/jhead12/orpheus-engine/commit/6593abae54c38dcd2a04bea4a2df50dff81d3a71))
+* restore orpheus-engine-workstation submodule and remove invalid ffmpeg submodule reference ([77d267d](https://github.com/jhead12/orpheus-engine/commit/77d267d3c15948adb1c1722f30cdb73e3d360bf1))
+* update release:prepare script to merge from typescript-compilation-fixes ([c485b1c](https://github.com/jhead12/orpheus-engine/commit/c485b1c7d823854eb76e6f52180e61cb353138bc))
+* update sync-versions script to use root version and remove incorrect paths ([d1f635c](https://github.com/jhead12/orpheus-engine/commit/d1f635ca2e3565a7f114ad3b52e3787c3259ac6e))
+* update tokenizers and dependencies to prevent build errors on macOS ([8c88293](https://github.com/jhead12/orpheus-engine/commit/8c88293fcd7f52d576cc2c90d29b64a9045209b0))
+* update workspace paths from orpheus-engine-workstation to workstation ([7367f10](https://github.com/jhead12/orpheus-engine/commit/7367f1075cbfb5a844aa795173fe4ba57a771515))
+
+
+### Features
+
+* add ESLint configuration and update dependencies; refactor variable declarations to use const ([645bc00](https://github.com/jhead12/orpheus-engine/commit/645bc00be2fe28ff6cd8557f840c7368a77caf24))
+* add Lane, SidePanel, and SidePanel.test components ([53084aa](https://github.com/jhead12/orpheus-engine/commit/53084aa2358cdceb075a3701be0df6f6b116b1e5))
+* Add macOS-specific Python dependency fixes ([0460271](https://github.com/jhead12/orpheus-engine/commit/0460271a29dc16bf49fa4ff61f55c24c80a74fc6))
+* **audio:** implement audio exporting and recording features ([6e4e4d1](https://github.com/jhead12/orpheus-engine/commit/6e4e4d1195113c3dc2fa2a379c76b15d92a42496))
+* Enhance PreferencesContext with color scheme and custom color adjustments ([bbee97e](https://github.com/jhead12/orpheus-engine/commit/bbee97e9f5a37edc100a55ef8d43cca2028d1791))
+* implement complete Electron integration ([1212fd3](https://github.com/jhead12/orpheus-engine/commit/1212fd3ec43f5f913f3ca33001e8d8994a413092))
+* implement complete Electron integration ([29cf709](https://github.com/jhead12/orpheus-engine/commit/29cf7097aecb2556491fe6e35a92c5c2c5c534cb))
+* Implement Workstation component with header, timeline, track list, and mixer ([ad68728](https://github.com/jhead12/orpheus-engine/commit/ad6872874ca19772c9e704f10b3965aea5201a4e))
+* Initial commit with orpheus-engine-workstation v1.0.5 ([144d012](https://github.com/jhead12/orpheus-engine/commit/144d012c9ea8fddf33eba5727af9aec44de98843))
+
+
+
 ## 1.0.17 (2025-06-03)
 
 

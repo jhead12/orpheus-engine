@@ -80,6 +80,7 @@
     "fix-vite": "node scripts/install-vite-deps.js",
     "fix-electron-path": "bash scripts/fix-start-electron.sh",
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh",
+    "fix-npm-deps": "node scripts/fix-npm-deps.js",
     "system-check": "node scripts/system-check.js",
       "update-submodules": "git submodule update --init --recursive"
 
