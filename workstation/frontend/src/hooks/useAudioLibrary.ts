@@ -1,75 +1,56 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { AudioFile } from '../../shared/types/audio';
 import { ragService } from '../services/ai/RagService';
 
-const GET_AUDIO_LIBRARY = gql`
-  query GetAudioLibrary {
-    audioLibrary {
-      description
-      location
-      files {
-        id
-        filename
-        type
-        description
-        usage
-        path
-      }
-      supported_formats
-    }
-  }
-`;
-
-const GET_AUDIO_FILES = gql`
-  query GetAudioFiles {
-    audioFiles {
-      id
-      filename
-      type
-      description
-      usage
-      path
-      size
-      duration
-      created_at
-      updated_at
-    }
-  }
-`;
+interface RagService {
+  query: (query: string) => Promise<any>;
+  // Add the methods that are being called
+  searchAudioLibrary?: (query: string) => Promise<AudioFile[]>;
+  queryWithContext?: (context: any) => Promise<any>;
+}
 
 interface AudioFile {
   id: string;
-  filename: string;
+  name: string; // Changed from 'filename' to 'name'
   path: string;
-  metadata?: any;
-  aiAnalysis?: {
-    genre: string;
-    mood: string;
-    key: string;
-    bpm: number;
-    tags: string[];
-  };
+  duration: number;
 }
 
-interface UseAudioLibraryOptions {
-  enableAIAnalysis?: boolean;
-  autoSuggest?: boolean;
+interface RAGService {
+  queryWithContext?: (query: string, context: string) => Promise<AudioFile[]>;
 }
 
-export function useAudioLibrary(options: UseAudioLibraryOptions = {}) {
+export function useAudioLibrary() {
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [ragService] = useState<RAGService>({});
+
+  const searchFiles = async (query: string) => {
+    if (ragService.queryWithContext) {
+      const results = await ragService.queryWithContext(query, 'audio');
+      return results.map(file => file.name); // Use 'name' instead of 'filename'
+    }
+    return [];
+  };
+
+  const searchByDescription = async (description: string) => {
+    if (ragService.queryWithContext) {
+      const results = await ragService.queryWithContext(description, 'description');
+      return results.map(file => file.name); // Use 'name' instead of 'filename'
+    }
+    return [];
+  };
 
   // AI-powered search function
   const searchWithAI = useCallback(async (query: string) => {
     setLoading(true);
     try {
-      const results = await ragService.searchAudioLibrary(query);
-      const enhancedResults = await Promise.all(
-        results.map(async (file) => {
-          if (options.enableAIAnalysis) {
+      if (ragService.searchAudioLibrary) {
+        const results = await ragService.searchAudioLibrary(query);
+        const enhancedResults = await Promise.all(
+          results.map(async (file) => {
             const analysis = await ragService.queryWithContext({
               text: `Analyze this audio file: ${file.filename}`,
               context: { audioFile: file }
@@ -79,37 +60,33 @@ export function useAudioLibrary(options: UseAudioLibraryOptions = {}) {
               ...file,
               aiAnalysis: analysis.audioSegments?.[0] || null
             };
-          }
-          return file;
-        })
-      );
-      
-      setAudioFiles(enhancedResults);
+          })
+        );
+        
+        setAudioFiles(enhancedResults);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Search failed');
     } finally {
       setLoading(false);
     }
-  }, [options.enableAIAnalysis]);
+  }, []);
 
   // Get AI suggestions for current selection
   const getAISuggestions = useCallback(async (selectedFiles: AudioFile[]) => {
-    if (!options.autoSuggest) return;
-
     try {
-      const response = await ragService.queryWithContext({
-        text: 'Suggest related audio files and creative combinations',
-        context: {
-          selectedFiles,
-          currentLibrary: audioFiles
-        }
-      });
-
-      setSuggestions(response.suggestions || []);
+      if (ragService.queryWithContext) {
+        const context = selectedFiles.map((file: any) => ({
+          name: file.name,
+          metadata: file
+        }));
+        const results = await ragService.queryWithContext(context);
+        setSuggestions(results);
+      }
     } catch (err) {
-      console.warn('Failed to get AI suggestions:', err);
+      setError(err instanceof Error ? err.message : 'Failed to get suggestions');
     }
-  }, [audioFiles, options.autoSuggest]);
+  }, []);
 
   // Load library with optional AI enhancement
   const loadLibrary = useCallback(async () => {
@@ -137,35 +114,31 @@ export function useAudioLibrary(options: UseAudioLibraryOptions = {}) {
       const data = await response.json();
       const files = data.data.audioFiles;
 
-      if (options.enableAIAnalysis) {
-        // Enhance with AI analysis
-        const enhancedFiles = await Promise.all(
-          files.map(async (file: AudioFile) => {
-            try {
-              const analysis = await ragService.queryWithContext({
-                text: `Provide metadata analysis for: ${file.filename}`,
-                context: { audioFile: file }
-              });
-              
-              return {
-                ...file,
-                aiAnalysis: analysis.audioSegments?.[0]
-              };
-            } catch {
-              return file;
-            }
-          })
-        );
-        setAudioFiles(enhancedFiles);
-      } else {
-        setAudioFiles(files);
-      }
+      // Enhance with AI analysis
+      const enhancedFiles = await Promise.all(
+        files.map(async (file: AudioFile) => {
+          try {
+            const analysis = await ragService.queryWithContext({
+              text: `Provide metadata analysis for: ${file.filename}`,
+              context: { audioFile: file }
+            });
+            
+            return {
+              ...file,
+              aiAnalysis: analysis.audioSegments?.[0]
+            };
+          } catch {
+            return file;
+          }
+        })
+      );
+      setAudioFiles(enhancedFiles);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load library');
     } finally {
       setLoading(false);
     }
-  }, [options.enableAIAnalysis]);
+  }, []);
 
   useEffect(() => {
     loadLibrary();
@@ -178,6 +151,8 @@ export function useAudioLibrary(options: UseAudioLibraryOptions = {}) {
     suggestions,
     searchWithAI,
     getAISuggestions,
-    reload: loadLibrary
+    reload: loadLibrary,
+    searchFiles,
+    searchByDescription
   };
 }

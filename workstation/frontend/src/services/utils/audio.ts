@@ -2,7 +2,7 @@
  * Audio utilities for the OEW application
  */
 
-// Create the audio context based on browser support
+// Audio context utility
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
 /**
@@ -111,4 +111,12 @@ export function createAudioBufferFromPCM(
   }
   
   return buffer;
+}
+
+export function createAudioBuffer(length: number, sampleRate: number): AudioBuffer {
+  return audioContext.createBuffer(2, length, sampleRate);
+}
+
+export function decodeAudioData(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
+  return audioContext.decodeAudioData(arrayBuffer);
 }

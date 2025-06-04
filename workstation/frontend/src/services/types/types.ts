@@ -116,6 +116,24 @@ export class TimelinePosition {
     horizontalScale: 1
   };
 
+  // Static method to convert margin to measures, beats, and fraction
+  static measureMargin(margin: number, settings?: TimelineSettings): { measures: number; beats: number; fraction: number } {
+    const timelineSettings = settings || TimelinePosition.defaultSettings;
+    const { timeSignature, horizontalScale } = timelineSettings;
+    
+    // Calculate how many beats fit in the margin based on horizontal scale
+    const beatsPerMeasure = timeSignature.beats;
+    const beatWidth = 48 * horizontalScale; // Assuming base beat width of 48 pixels
+    
+    const totalBeats = margin / beatWidth;
+    const measures = Math.floor(totalBeats / beatsPerMeasure);
+    const remainingBeats = totalBeats % beatsPerMeasure;
+    const beats = Math.floor(remainingBeats);
+    const fraction = remainingBeats - beats;
+    
+    return { measures, beats, fraction };
+  }
+
   constructor(
     public bar: number = 0,
     public beat: number = 0,
@@ -157,7 +175,7 @@ export class TimelinePosition {
     let resultBar = this.bar + bars;
     
     // Handle tick overflow
-    if (resultTick >= 480) { // Assuming 480 ticks per beat
+    if (resultTick >= 480) { // Assuming 480 ticks per sixteenth
       resultBeat += Math.floor(resultTick / 480);
       resultTick %= 480;
     }

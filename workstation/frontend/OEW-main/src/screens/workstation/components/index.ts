@@ -15,3 +15,8 @@ export { default as TrackVolumeSlider } from "./TrackVolumeSlider";
 export { default as Waveform } from "./Waveform";
 export { default as ZoomControls } from "./ZoomControls";
 export { default as AudioAnalysisPanel } from './AudioAnalysisPanel';
+
+// Mock components for missing ones
+export const TrackIcon = ({ color, type }: { color: string; type: string }) => (
+  <div style={{ color, fontSize: '14px' }}>{type[0].toUpperCase()}</div>
+);

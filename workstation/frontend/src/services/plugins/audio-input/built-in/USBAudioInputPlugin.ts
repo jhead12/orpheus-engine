@@ -138,12 +138,11 @@ export class USBAudioInputPlugin implements AudioInputPlugin {
     }
 
     try {
-      const constraints: MediaStreamConstraints = {
+      const constraints = {
         audio: {
-          deviceId: { exact: this.currentDevice.id },
-          sampleRate: { ideal: this.config.sampleRate },
-          channelCount: { ideal: this.config.channels.length },
-          latency: { ideal: 0.01 }, // 10ms
+          deviceId: this.currentDevice.id ? { exact: this.currentDevice.id } : undefined,
+          sampleRate: this.config.sampleRate,
+          channelCount: this.config.channels.length,
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false,

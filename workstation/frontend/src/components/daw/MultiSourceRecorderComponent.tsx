@@ -6,7 +6,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { MultiSourceRecorder } from '../../services/audio/multiSourceRecorder';
-import { AudioRecorder } from '../../services/audio/audioRecorder';
+import { AudioRecorder as SingleSourceAudioRecorder } from '../../services/audio/audioRecorder';
 
 interface MultiSourceRecorderComponentProps {
   onRecordingsComplete?: (recordings: Blob[]) => void;
@@ -31,7 +31,7 @@ const MultiSourceRecorderComponent: React.FC<MultiSourceRecorderComponentProps> 
     const loadDevices = async () => {
       try {
         // Create temporary AudioRecorder just to get the devices
-        const tempRecorder = new AudioRecorder();
+        const tempRecorder = new SingleSourceAudioRecorder();
         const devices = await tempRecorder.getAudioInputDevices();
         setAudioDevices(devices);
         tempRecorder.dispose();

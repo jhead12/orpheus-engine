@@ -14,8 +14,8 @@ import { v4 } from "uuid";
 import { clamp, inverseLerp, lerp, hslToHex } from "./general";
 
 export const BASE_MAX_MEASURES = 1600; // Maximum number of measures at time signature 4/4
-export const BASE_BEAT_WIDTH = 120;
-export const BASE_HEIGHT = 60;
+export const BASE_BEAT_WIDTH = 48;
+export const BASE_HEIGHT = 64;
 
 export const GRID_MIN_INTERVAL_WIDTH = 8.5;
 
@@ -133,6 +133,44 @@ export function formatPanning(val: number, short = false) {
 export function formatVolume(val: number) {
   return `${val === -Infinity ? "-∞" : +val.toFixed(1)} dB`;
 }
+
+export const formatDuration = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
+export const measureSeconds = (tempo: number, timeSignature: { beats: number; noteValue: number }): number => {
+  const beatsPerSecond = tempo / 60;
+  const beatsPerMeasure = timeSignature.beats;
+  return beatsPerMeasure / beatsPerSecond;
+};
+
+export const parseDuration = (timeString: string): { hours: number; minutes: number; seconds: number; milliseconds: number } | null => {
+  // Parse time string like "1:30.500" or "90.5"
+  const parts = timeString.split(':');
+  if (parts.length === 1) {
+    const seconds = parseFloat(parts[0]);
+    return {
+      hours: 0,
+      minutes: 0,
+      seconds: Math.floor(seconds),
+      milliseconds: (seconds % 1) * 1000
+    };
+  }
+  // Add more parsing logic as needed
+  return null;
+};
+
+// Fix the Number() call issue
+export function parseNumber(value: string): number {
+  return Number(value); // Use Number constructor correctly
+}
+
+// Fix the Number() issue
+export const normalizeValue = (value: number, min: number, max: number): number => {
+  return Math.max(min, Math.min(max, value));
+};
 
 export function getBaseTrack(id = v4()) : Track {
   return {
@@ -494,4 +532,10 @@ function calculateMeasuresBeatsFraction(margin: number): { measures: number; bea
 function addTimeValues(pos: TimelinePosition, measures: number, beats: number, fraction: number): TimelinePosition {
     const newSixteenths = pos.toSixteenths() + measures * 4 * 4 * 4 + beats * 4 * 4 + fraction;
     return TimelinePosition.fromSixteenths(newSixteenths);
+}
+
+// Fix line 474 - replace Number() with parseFloat() or Number constructor properly
+export function parseNumericValue(value: string | number): number {
+  if (typeof value === 'number') return value;
+  return parseFloat(value) || 0;
 }

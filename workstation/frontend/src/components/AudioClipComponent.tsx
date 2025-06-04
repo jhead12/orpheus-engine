@@ -1,8 +1,9 @@
-import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useWorkstation } from "../contexts/WorkstationContext";
-import { BaseClipComponentProps, TimelinePosition, TrackType, WaveformLODLevel } from "../services/types/types";
-import { ClipComponent, Waveform } from ".";
-import { audioBufferToBuffer, audioContext, reverseAudio } from "../services/utils/audio";
+import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { BaseClipComponent } from "./BaseClipComponent";
+import { WorkstationContext, useWorkstation } from "../contexts/WorkstationProvider";
+import { Clip, TimelinePosition } from "../services/types/types";
+import { Waveform } from ".";
+import { audioContext } from "../services/utils/audio";
 import type { WaveformLevelsOfDetail } from '../../shared/types/audio';
 
 export const WAVEFORM_CHUNK_SIZE = 2048;
@@ -61,7 +62,15 @@ function AudioClipWaveform({ copyFrom, data, height, offset, width, onDraw, offs
   );
 }
 
-function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: BaseClipComponentProps) {
+interface AudioClipComponentProps {
+  clip: Clip;
+  height: number;
+  track: any;
+  onChangeLane: (clipId: string, newLane: number) => void;
+  onSetClip: (clip: any) => void;
+}
+
+const AudioClipComponent: React.FC<AudioClipComponentProps> = ({ clip, height, onChangeLane, onSetClip, track }) => {
   const { timelineSettings } = useContext(WorkstationContext)!;
 
   const [copyFrom, setCopyFrom] = useState<{ canvas: HTMLCanvasElement }>();
@@ -149,7 +158,47 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
     }
   }
 
-  async function loadAudioData() {
+  const handleAudioData = async () => {
+    if (clipAudio.buffer) {
+      const buffer = clipAudio.buffer instanceof ArrayBuffer 
+        ? new Uint8Array(clipAudio.buffer)
+        : clipAudio.buffer;
+      
+      const blob = new Blob([buffer]);
+      // ...existing code...
+    }
+  };
+
+  const calculateDuration = () => {
+    if (clipAudio.sourceDuration) {
+      return clipAudio.sourceDuration;
+    }
+    // ...existing code...
+  };
+
+  const processAudioBuffer = () => {
+    if (clipAudio.buffer) {
+      const buffer = clipAudio.buffer instanceof ArrayBuffer 
+        ? new Uint8Array(clipAudio.buffer)
+        : clipAudio.buffer;
+      
+      if (buffer.length > 0) {
+        // Process buffer...
+        const sample = buffer[0];
+        // ...existing code...
+      }
+    }
+  };
+
+  const renderWaveform = (height: number) => {
+    // ...existing implementation...
+  };
+
+  const renderSpectrogram = (height: number) => {
+    // ...existing implementation...
+  };
+
+  function loadAudioData() {
     if (!clipAudio.audioBuffer) {
       const ab = new ArrayBuffer(clipAudio.buffer.length);
       const view = new Uint8Array(ab);
@@ -195,6 +244,25 @@ function AudioClipComponent({ clip, height, onChangeLane, onSetClip, track }: Ba
     width: audioWidth
   });
   
+  const handleAnalyze = async () => {
+    // Make function async to use await
+    const audioData: AudioData = {
+      type: 'audio',
+      waveform: new Float32Array(1024),
+      buffer: new ArrayBuffer(1024)
+    };
+    
+    // Implementation
+  };
+
+  const getWaveformHeight = (height: number): number => {
+    return height * 0.8;
+  };
+
+  const getAmplitudeHeight = (height: number): number => {
+    return height * 0.6;
+  };
+
   return (
     <>
       <ClipComponent

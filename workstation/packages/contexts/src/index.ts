@@ -1,6 +1,2 @@
-export { 
-  WorkstationContext, 
-  WorkstationProvider, 
-  useWorkstation, 
-  WorkstationContextType 
-} from './WorkstationContext';
+export { WorkstationProvider, useWorkstation, WorkstationContext } from './WorkstationContext';
+export type { WorkstationContextType } from './WorkstationContext';

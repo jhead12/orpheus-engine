@@ -1,43 +1,18 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Clip, Track } from '../services/types/types';
 
 interface ClipboardContextType {
-  copyClip: (clip: Clip) => void;
-  copyTrack: (track: Track) => void;
-  getPasteableClip: () => Clip | null;
-  getPasteableTrack: () => Track | null;
-  hasCopiedClip: boolean;
-  hasCopiedTrack: boolean;
+  clipboardData: any;
+  setClipboardData: (data: any) => void;
 }
 
-const ClipboardContext = createContext<ClipboardContextType | undefined>(undefined);
+const ClipboardContext = createContext<ClipboardContextType | null>(null);
 
 export const ClipboardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [copiedClip, setCopiedClip] = useState<Clip | null>(null);
-  const [copiedTrack, setCopiedTrack] = useState<Track | null>(null);
+  const [clipboardData, setClipboardData] = useState(null);
 
-  const copyClip = (clip: Clip) => {
-    setCopiedClip({ ...clip, id: Math.random().toString() });
-  };
-
-  const copyTrack = (track: Track) => {
-    setCopiedTrack({ 
-      ...track, 
-      id: Math.random().toString(),
-      clips: track.clips.map(clip => ({ ...clip, id: Math.random().toString() }))
-    });
-  };
-
-  const getPasteableClip = () => copiedClip;
-  const getPasteableTrack = () => copiedTrack;
-
-  const value: ClipboardContextType = {
-    copyClip,
-    copyTrack,
-    getPasteableClip,
-    getPasteableTrack,
-    hasCopiedClip: !!copiedClip,
-    hasCopiedTrack: !!copiedTrack,
+  const value = {
+    clipboardData,
+    setClipboardData,
   };
 
   return (
@@ -54,5 +29,3 @@ export const useClipboard = () => {
   }
   return context;
 };
-
-export default ClipboardProvider;

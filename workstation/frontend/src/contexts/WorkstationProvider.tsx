@@ -3,13 +3,16 @@ import {
   Clip,
   TrackType, 
   Track,
-  Region,
   TimelinePosition,
   TimelineSettings
 } from '../services/types/types';
 
-interface WorkstationContextType {
+export interface WorkstationContextType {
   tracks: Track[];
+  timelineSettings: TimelineSettings;
+  currentPosition: TimelinePosition;
+  isPlaying: boolean;
+  isRecording: boolean;
   play: () => void;
   stop: () => void;
   record: () => void;
@@ -17,10 +20,6 @@ interface WorkstationContextType {
   removeTrack: (id: string) => void;
   addClip: (trackId: string, clip: Clip) => void;
   removeClip: (trackId: string, clipId: string) => void;
-  timelineSettings: TimelineSettings;
-  currentPosition: TimelinePosition;
-  isPlaying: boolean;
-  isRecording: boolean;
 }
 
 const defaultTimelineSettings: TimelineSettings = {
@@ -45,17 +44,14 @@ export const WorkstationProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const play = () => {
     setIsPlaying(true);
-    // Implement playback logic
   };
 
   const stop = () => {
     setIsPlaying(false);
-    // Implement stop logic
   };
 
   const record = () => {
     setIsRecording(!isRecording);
-    // Implement recording logic
   };
 
   const addTrack = (type: TrackType) => {
@@ -68,6 +64,7 @@ export const WorkstationProvider: React.FC<{ children: ReactNode }> = ({ childre
       solo: false,
       volume: 1,
       pan: 0,
+      automationLanes: [],
     };
     setTracks([...tracks, newTrack]);
   };

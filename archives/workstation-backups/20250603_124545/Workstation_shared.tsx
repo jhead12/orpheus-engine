@@ -1,6 +1,35 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useWorkstation, TrackType, TimelinePosition } from '../../contexts/src/index';
+import { useWorkstation, TrackType, TimelinePosition } from '../../contexts';
 import './Workstation.css';
+
+// Utility function to format playhead position
+const formatPlayheadPosition = (pos: TimelinePosition): string => {
+  if (!pos) return "0.0.000";
+  
+  // Check if the position has a toTimeString method (some implementations do)
+  if (typeof pos.toTimeString === 'function') {
+    return pos.toTimeString();
+  }
+  
+  // Check if the position has a toString method (some implementations do)
+  if (typeof pos.toString === 'function') {
+    return pos.toString();
+  }
+  
+  // Default formatting: measure.beat.fraction
+  const fraction = typeof pos.fraction === 'number' ? 
+    Math.round(pos.fraction * 1000).toString().padStart(3, '0') : '000';
+  
+  // Determine if we're using bar/measure or measures property
+  const measure = typeof pos.bar === 'number' ? pos.bar + 1 : 
+                 typeof pos.measures === 'number' ? pos.measures + 1 : 1;
+  
+  // Determine the beat property
+  const beat = typeof pos.beat === 'number' ? pos.beat + 1 : 
+              typeof pos.beats === 'number' ? pos.beats + 1 : 1;
+  
+  return `${measure}.${beat}.${fraction}`;
+};
 
 interface WorkstationProps {
   isDesktopMode?: boolean;
@@ -274,7 +303,8 @@ const Workstation: React.FC<WorkstationProps> = ({
     isPlaying, 
     showMixer,
     mixerHeight,
-    setMixerHeight 
+    setMixerHeight,
+    playheadPos
   } = useWorkstation();
 
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
@@ -323,7 +353,7 @@ const Workstation: React.FC<WorkstationProps> = ({
         <div className="status-bar">
           <span>Tracks: {tracks.length}</span>
           <span>Status: {isPlaying ? 'Playing' : 'Stopped'}</span>
-          <span>Position: {/* playhead position */}</span>
+          <span>Position: {formatPlayheadPosition(playheadPos)}</span>
         </div>
       </div>
     </div>

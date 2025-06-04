@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { AudioAnalysisType, Clip } from '@/services/types/types';
+import React, { useEffect, useRef, useState } from 'react';
+import { AudioAnalysisType, Clip } from '../../../services/types/types';
 import { useMCPAnalysis } from '@/hooks/useMCPAnalysis';
 import { useAI } from '@/contexts/AIContext';
 import { invokePythonAnalysis } from '@/services/pythonBridge';
@@ -23,7 +23,7 @@ interface AnalysisResults {
   };
 }
 
-export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelProps) {
+const AudioAnalysisPanel: React.FC<AudioAnalysisPanelProps> = ({ type, clip }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [resolution, setResolution] = useState(1024);
   const [windowSize, setWindowSize] = useState(2048);
@@ -385,6 +385,14 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
     return units[feature] || '';
   };
 
+  if (!clip) {
+    return (
+      <div className="p-4 text-center">
+        <p>No clip selected for analysis</p>
+      </div>
+    );
+  }
+
   return (
     <div className="analysis-panel">
       <h3>{clip?.name || 'No clip selected'}</h3>
@@ -475,4 +483,6 @@ export default function AudioAnalysisPanel({ type, clip }: AudioAnalysisPanelPro
       </div>
     </div>
   );
-}
+};
+
+export default AudioAnalysisPanel;

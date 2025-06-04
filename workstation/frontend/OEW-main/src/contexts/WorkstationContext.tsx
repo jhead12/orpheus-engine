@@ -3,15 +3,90 @@ import {
   Track, 
   Clip, 
   TimelinePosition, 
-  TimelineSettings,
-  WorkstationPlugin,
-  WorkstationContextType 
-} from '../services/types';
+  TimelineSettings, 
+  SnapGridSizeOption, 
+  TrackType, 
+  Region
+} from '../services/types/types';
+import { BASE_BEAT_WIDTH } from '../services/utils/utils';
+
+// Define the ElectronAPI interface
+interface ElectronAPI {
+  ipcRenderer: {
+    on: (channel: string, listener: (...args: any[]) => void) => void;
+    removeAllListeners: (channel: string) => void;
+  };
+  getDataDirectory?: () => Promise<string>;
+  analyzeAudio?: (filePath: string) => Promise<any>;
+  getVersion?: () => Promise<string>;
+}
+
+// Extend Window interface to include electronAPI
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI;
+  }
+}
+
+// Define the extended WorkstationContextType with all properties
+export interface WorkstationContextType {
+  // Transport/Playback
+  isPlaying: boolean;
+  isRecording: boolean;
+  isLooping: boolean;
+  setIsPlaying: (playing: boolean) => void;
+  setIsRecording: (recording: boolean) => void;
+  setIsLooping: (looping: boolean) => void;
+  skipToStart: () => void;
+  skipToEnd: () => void;
+  
+  // Timeline & Position
+  playheadPos: TimelinePosition;
+  setPlayheadPos: (pos: TimelinePosition) => void;
+  maxPos: TimelinePosition;
+  numMeasures: number;
+  timelineSettings: TimelineSettings;
+  updateTimelineSettings: (updater: TimelineSettings | ((settings: TimelineSettings) => TimelineSettings)) => void;
+  
+  // Grid & Snap
+  snapGridSize: number;
+  snapGridSizeOption: SnapGridSizeOption;
+  setSnapGridSizeOption: (option: SnapGridSizeOption) => void;
+  showTimeRuler: boolean;
+  setShowTimeRuler: (show: boolean) => void;
+  
+  // Tracks & Clips
+  tracks: Track[];
+  setTracks: (tracks: Track[]) => void;
+  masterTrack: Track;
+  getTrackCurrentValue: (track: Track, envelope: string, pos?: TimelinePosition) => number;
+  adjustNumMeasures: (pos?: TimelinePosition) => void;
+  
+  // Audio Features
+  stretchAudio: boolean;
+  setStretchAudio: (stretch: boolean) => void;
+  
+  // UI & Navigation
+  scrollToItem: { type: string, params?: any } | null;
+  setScrollToItem: (item: { type: string, params?: any } | null) => void;
+  setTimeSignature: (numerator: number, denominator: number) => void;
+  setVerticalScale: (scale: number) => void;
+  verticalScale: number;
+  
+  // Audio Service
+  audioService: {
+    play: (buffer?: AudioBuffer) => void;
+    stop: () => void;
+    getWaveformData: () => Promise<Float32Array>;
+    getFrequencyData: () => Promise<Float32Array>;
+  };
+  
+  // Project Management
+  saveWorkstation: (name: string) => Promise<string>;
+}
 
 // Create the context with a default undefined value
 export const WorkstationContext = createContext<WorkstationContextType | undefined>(undefined);
-
-// No need to redefine interfaces already defined in consolidated-types.ts
 
 export const useWorkstation = () => {
   const context = useContext(WorkstationContext);
@@ -22,12 +97,59 @@ export const useWorkstation = () => {
 };
 
 export const WorkstationProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+  // Core State
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [playheadPos, setPlayheadPos] = useState<TimelinePosition>(new TimelinePosition());
-  const [timelineSettings, setTimelineSettings] = useState<TimelineSettings>({ bpm: 120, timeSignature: 4 });
+  const [timelineSettings, setTimelineSettings] = useState<TimelineSettings>({
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    snap: true,
+    snapUnit: 'beat',
+    horizontalScale: 1
+  });
+  
+  // Transport State
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  
+  // UI State
+  const [showTimeRuler, setShowTimeRuler] = useState(true);
+  const [snapGridSizeOption, setSnapGridSizeOption] = useState<SnapGridSizeOption>(SnapGridSizeOption.Eighth);
+  const [stretchAudio, setStretchAudio] = useState(false);
+  const [scrollToItem, setScrollToItem] = useState<{ type: string, params?: any } | null>(null);
+  const [verticalScale, setVerticalScale] = useState(1);
+  const [numMeasures, setNumMeasures] = useState(4);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  
+  // Initialize master track
+  const [masterTrack, setMasterTrack] = useState<Track>({
+    id: 'master',
+    name: 'Master',
+    type: TrackType.Audio,
+    clips: [],
+    mute: false,
+    solo: false,
+    volume: 0,
+    pan: 0,
+    automationLanes: []
+  });
+
+  // Helper functions for recording and project management
+  const listWorkstations = async (): Promise<string[]> => {
+    // Implementation to list available workstation projects
+    return [];
+  };
+
+  const startRecording = (trackId: string) => {
+    // Implementation to start recording on a track
+    setIsRecording(true);
+  };
+
+  const stopRecording = () => {
+    // Implementation to stop recording
+    setIsRecording(false);
+  };
 
   useEffect(() => {
     // Initialize Electron API connections when component mounts
@@ -48,8 +170,8 @@ export const WorkstationProvider: React.FC<{children: ReactNode}> = ({ children 
       });
 
       window.electronAPI.ipcRenderer.on('menu-start-recording', () => {
-        if (currentTrack) {
-          startRecording(currentTrack.id);
+        if (tracks.length > 0) {
+          startRecording(tracks[0].id);
         }
       });
 
@@ -67,7 +189,7 @@ export const WorkstationProvider: React.FC<{children: ReactNode}> = ({ children 
         window.electronAPI.ipcRenderer.removeAllListeners('menu-stop-recording');
       }
     };
-  }, [currentTrack]);
+  }, [tracks]);
 
   // Enhanced audio service with Electron integration
   const audioService = {
@@ -116,11 +238,13 @@ export const WorkstationProvider: React.FC<{children: ReactNode}> = ({ children 
     // Use Electron's file system if available
     if (window.electronAPI) {
       try {
-        const userDataPath = await window.electronAPI.getDataDirectory();
-        const projectPath = `${userDataPath}/${name}.oew`;
-        // Save to file system via Electron IPC
-        // await window.electronAPI.saveProject(projectPath, projectData);
-        return projectPath;
+        const userDataPath = await window.electronAPI.getDataDirectory?.();
+        if (userDataPath) {
+          const projectPath = `${userDataPath}/${name}.oew`;
+          // Save to file system via Electron IPC
+          // await window.electronAPI.saveProject(projectPath, projectData);
+          return projectPath;
+        }
       } catch (error) {
         console.error('Failed to save via Electron:', error);
       }
@@ -131,19 +255,88 @@ export const WorkstationProvider: React.FC<{children: ReactNode}> = ({ children 
     localStorage.setItem(id, JSON.stringify(projectData));
     return id;
   };
+  
+  // Calculate the maximum position based on tracks
+  const maxPos = new TimelinePosition(numMeasures, 0, 0);
+  
+  // Calculated snap grid size based on option
+  const snapGridSize = snapGridSizeOption === SnapGridSizeOption.None ? 0 : BASE_BEAT_WIDTH / 4; // Default snap size
+  
+  // Get track current value (for automation) - Fix return type
+  const getTrackCurrentValue = (track: Track, envelope: string, pos?: TimelinePosition): number => {
+    const automationLane = track.automationLanes?.find(lane => lane.id === envelope);
+    if (automationLane) {
+      return envelope === 'volume' ? track.volume : track.pan;
+    }
+    return envelope === 'volume' ? track.volume : track.pan;
+  };
+  
+  // Timeline navigation methods
+  const skipToStart = () => {
+    setPlayheadPos(new TimelinePosition(0, 0, 0));
+  };
+  
+  const skipToEnd = () => {
+    setPlayheadPos(maxPos);
+  };
 
-  const value = {
+  // Timeline updating methods
+  const updateTimelineSettings = (updater: TimelineSettings | ((settings: TimelineSettings) => TimelineSettings)) => {
+    if (typeof updater === 'function') {
+      setTimelineSettings(updater(timelineSettings));
+    } else {
+      setTimelineSettings(updater);
+    }
+  };
+  
+  const adjustNumMeasures = (pos?: TimelinePosition) => {
+    // Implementation to adjust the number of measures based on position
+    if (pos && pos.measure >= numMeasures) {
+      setNumMeasures(pos.measure + 1);
+    }
+  };
+  
+  const setTimeSignature = (numerator: number, denominator: number) => {
+    updateTimelineSettings(settings => ({
+      ...settings,
+      timeSignature: { beats: numerator, noteValue: denominator }
+    }));
+  };
+
+  // Final value object with all required properties for Header component
+  const value: WorkstationContextType = {
     tracks,
-    currentTrack,
     playheadPos,
     timelineSettings,
     isPlaying,
+    isRecording,
+    isLooping,
+    masterTrack,
+    maxPos,
+    snapGridSize,
+    snapGridSizeOption,
+    showTimeRuler,
+    stretchAudio,
+    verticalScale,
+    numMeasures,
+    scrollToItem,
     audioService,
+    getTrackCurrentValue,
     setTracks,
-    setCurrentTrack,
     setPlayheadPos,
-    setTimelineSettings,
     setIsPlaying,
+    setIsRecording,
+    setIsLooping,
+    setSnapGridSizeOption,
+    setShowTimeRuler,
+    setStretchAudio,
+    setScrollToItem,
+    setVerticalScale,
+    setTimeSignature,
+    skipToStart,
+    skipToEnd,
+    updateTimelineSettings,
+    adjustNumMeasures,
     saveWorkstation
   };
 

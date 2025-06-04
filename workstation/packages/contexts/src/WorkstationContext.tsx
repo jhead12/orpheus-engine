@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define basic types needed by the context
 interface TimelinePosition {
@@ -61,6 +61,8 @@ export interface WorkstationContextType {
   saveWorkstation: (name: string) => Promise<string>;
   loadWorkstation: (id: string) => Promise<boolean>;
   listWorkstations: () => Promise<any[]>;
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
 }
 
 // Create context with better type safety
@@ -77,6 +79,8 @@ export const useWorkstation = (): WorkstationContextType => {
 
 // Mock provider for development
 export const WorkstationProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  const [isActive, setIsActive] = useState(false);
+
   // This is a placeholder implementation
   const contextValue = {
     addTrack: () => {},
@@ -108,7 +112,9 @@ export const WorkstationProvider: React.FC<{children: React.ReactNode}> = ({ chi
     unregisterPlugin: () => {},
     saveWorkstation: async () => '',
     loadWorkstation: async () => true,
-    listWorkstations: async () => []
+    listWorkstations: async () => [],
+    isActive,
+    setIsActive,
   } as WorkstationContextType;
   
   return (

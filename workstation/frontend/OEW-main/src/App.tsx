@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes as BaseRoutes, Route as BaseRoute } from "react-router-dom";
 import { ClipboardProvider } from "./contexts/ClipboardContext";
 import { WorkstationProvider } from "./contexts/WorkstationContext";
 import { MixerProvider } from "./contexts/MixerContext";
@@ -21,6 +21,11 @@ import { TimelinePosition } from "./services/types/types";
 interface AppProps {
   onReady?: () => void;
 }
+
+// Cast components to fix React 18/19 compatibility
+const Router = MemoryRouter as React.ComponentType<React.PropsWithChildren<any>>;
+const Routes = BaseRoutes as React.ComponentType<React.PropsWithChildren<any>>;
+const Route = BaseRoute as React.ComponentType<any>;
 
 function App({ onReady }: AppProps = {}): React.ReactElement {
   const [isLoaded, setIsLoaded] = useState(false);

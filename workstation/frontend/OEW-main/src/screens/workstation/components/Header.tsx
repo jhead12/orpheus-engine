@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import {
   FastForward,
   FastRewind,
@@ -28,7 +28,7 @@ import {
   Drawer,
   Badge,
 } from "@mui/material";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from "../../../contexts/WorkstationContext";
 import { Meter, NumberInput, SelectSpinBox } from "../../../components/widgets";
 import {
   AutomationLaneEnvelope,
@@ -36,16 +36,22 @@ import {
   SnapGridSizeOption,
   TrackType,
 } from "../../../services/types/types";
-import { FaMagnet } from "react-icons/fa";
 import {
+  scrollToAndAlign,
+  BASE_BEAT_WIDTH,
   getVolumeGradient,
   sliceClip,
   volumeToNormalized,
 } from "../../../services/utils/utils";
+import {
+  formatDuration,
+  measureSeconds,
+  parseDuration
+} from "../../../services/utils/general";
+import { FaMagnet } from "react-icons/fa";
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
-import { parseDuration } from "../../../services/utils/general";
 import SettingsPanel from "../../../components/settings/SettingsPanel";
 
 const noteValues: { label: string; value: number }[] = [];
@@ -161,44 +167,37 @@ export default function Header() {
 
               TimelinePosition.timelineSettings.tempo = newTempo;
 
-              let { measures, beats, fraction } =
-                TimelinePosition.durationToSpan(durationSinceAudioStart);
+              const audioStartSpan = TimelinePosition.durationToSpan(durationSinceAudioStart);
               clip.audio = {
                 ...clip.audio,
-                start: clip.start.subtract(measures, beats, fraction, false),
+                start: clip.start.subtract(audioStartSpan.measures, audioStartSpan.beats, audioStartSpan.fraction, false),
               };
-              ({ measures, beats, fraction } =
-                TimelinePosition.durationToSpan(audioDuration));
+              const audioDurationSpan = TimelinePosition.durationToSpan(audioDuration);
               clip.audio = {
                 ...clip.audio,
-                end: clip.audio.start.add(measures, beats, fraction, false),
+                end: clip.audio.start.add(audioDurationSpan.measures, audioDurationSpan.beats, audioDurationSpan.fraction, false),
               };
-              ({ measures, beats, fraction } = TimelinePosition.durationToSpan(
-                clipRepetitionDuration
-              ));
-              clip.end = clip.start.add(measures, beats, fraction, false);
+              const clipRepetitionSpan = TimelinePosition.durationToSpan(clipRepetitionDuration);
+              clip.end = clip.start.add(clipRepetitionSpan.measures, clipRepetitionSpan.beats, clipRepetitionSpan.fraction, false);
 
               if (durationSinceStartLimit && clip.startLimit) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(durationSinceStartLimit));
+                const startLimitSpan = TimelinePosition.durationToSpan(durationSinceStartLimit);
                 clip.startLimit = clip.start.subtract(
-                  measures,
-                  beats,
-                  fraction,
+                  startLimitSpan.measures,
+                  startLimitSpan.beats,
+                  startLimitSpan.fraction,
                   false
                 );
               }
 
               if (durationFromStartToEndLimit && clip.endLimit) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(durationFromStartToEndLimit));
-                clip.loopEnd = clip.start.add(measures, beats, fraction, false);
+                const endLimitSpan = TimelinePosition.durationToSpan(durationFromStartToEndLimit);
+                clip.endLimit = clip.start.add(endLimitSpan.measures, endLimitSpan.beats, endLimitSpan.fraction, false);
               }
 
               if (clipDuration && clip.loopEnd) {
-                ({ measures, beats, fraction } =
-                  TimelinePosition.durationToSpan(clipDuration));
-                clip.loopEnd = clip.start.add(measures, beats, fraction, false);
+                const loopEndSpan = TimelinePosition.durationToSpan(clipDuration);
+                clip.loopEnd = clip.start.add(loopEndSpan.measures, loopEndSpan.beats, loopEndSpan.fraction, false);
               }
 
               TimelinePosition.timelineSettings.tempo = originalTempo;
@@ -217,93 +216,15 @@ export default function Header() {
     updateTimelineSettings({ ...timelineSettings, tempo: newTempo });
   }
 
-  function handleClick() {
-    if (!typeCursorPosMode) {
-      if (timeout.current === null) {
-        timeout.current = setTimeout(() => {
-          setShowTimeRuler(!showTimeRuler);
-          timeout.current = null;
-        }, 250);
-      } else {
-        clearTimeout(timeout.current);
-        timeout.current = null;
-        setTypeCursorPosMode(true);
-      }
-    }
-  }
-
-  function handleConfirmTimePosText() {
-    setTypeCursorPosMode(false);
-
-    let pos = TimelinePosition.parseFromString(timePosText);
-
-    if (!pos) {
-      const time = parseDuration(timePosText);
-
-      if (timePosText && time) {
-        const { hours, minutes, seconds, milliseconds } = time;
-        const totalSeconds =
-          hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
-        pos = TimelinePosition.fromSpan(
-          TimelinePosition.durationToSpan(totalSeconds)
-        );
-      }
-    }
-
-    if (
-      pos &&
-      pos.compareTo(TimelinePosition.start) >= 0 &&
-      !pos.equals(playheadPos)
-    ) {
-      pos.normalize();
-
-      if (pos.compareTo(maxPos) > 0) pos = maxPos.copy();
-
-      setPlayheadPos(pos);
-      setScrollToItem({ type: "cursor", params: { alignment: "center" } });
-    }
-  }
-
-  function fastForward() {
-    const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "ceil");
-
-    if (playheadPos.equals(newPos))
-      newPos.add(span.measures, span.beats, span.fraction);
-
-    setPlayheadPos(TimelinePosition.min(maxPos.copy(), newPos));
-    setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
-    });
-  }
-
-  function fastRewind() {
-    const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "floor");
-
-    if (playheadPos.equals(newPos))
-      newPos.subtract(span.measures, span.beats, span.fraction);
-
-    setPlayheadPos(TimelinePosition.max(TimelinePosition.start.copy(), newPos));
-    setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
-    });
-  }
-
-  function stop() {
-    if (isPlaying) {
-      setIsPlaying(false);
-      skipToStart();
-    }
-  }
-
   const tempo = useMemo(() => {
     const lane = masterTrack.automationLanes.find(
-      (lane: any) => lane.envelope === (AutomationLaneEnvelope as any).Tempo
+      (lane: any) => lane.envelope === 'Tempo'
     );
-    return getTrackCurrentValue(masterTrack, lane);
+    const value = getTrackCurrentValue(masterTrack, lane?.id || '');
+    return {
+      value: typeof value === 'number' ? value : timelineSettings.tempo,
+      isAutomated: Boolean(lane)
+    };
   }, [
     masterTrack.automationLanes,
     playheadPos,
@@ -517,6 +438,146 @@ export default function Header() {
     setPluginsOpen(!pluginsOpen);
   };
 
+  function handleClick() {
+    if (!typeCursorPosMode) {
+      if (timeout.current === null) {
+        timeout.current = setTimeout(() => {
+          setShowTimeRuler(!showTimeRuler);
+          timeout.current = null;
+        }, 250);
+      } else {
+        clearTimeout(timeout.current);
+        timeout.current = null;
+        setTypeCursorPosMode(true);
+      }
+    }
+  }
+
+  function handleConfirmTimePosText() {
+    setTypeCursorPosMode(false);
+
+    let pos = TimelinePosition.parseFromString(timePosText);
+
+    if (!pos) {
+      const time = parseDuration(timePosText);
+
+      if (timePosText && time) {
+        const { hours, minutes, seconds, milliseconds } = time;
+        const totalSeconds =
+          hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+        pos = TimelinePosition.fromSpan(
+          TimelinePosition.durationToSpan(totalSeconds)
+        );
+      }
+    }
+
+    if (
+      pos &&
+      pos.compareTo(TimelinePosition.start) >= 0 &&
+      !pos.equals(playheadPos)
+    ) {
+      pos.normalize();
+
+      if (pos.compareTo(maxPos) > 0) pos = maxPos.copy();
+
+      setPlayheadPos(pos);
+      setScrollToItem({ type: "cursor", params: { alignment: "center" } });
+    }
+  }
+
+  function fastForward() {
+    const span = { measures: 1, beats: 0, fraction: 0 };
+    const newPos = playheadPos.copy().snap(span, "ceil");
+
+    if (playheadPos.equals(newPos))
+      newPos.add(span.measures, span.beats, span.fraction);
+
+    setPlayheadPos(TimelinePosition.min(maxPos.copy(), newPos));
+    setScrollToItem({
+      type: "cursor",
+      params: { alignment: "scrollIntoView" },
+    });
+  }
+
+  function fastRewind() {
+    const span = { measures: 1, beats: 0, fraction: 0 };
+    const newPos = playheadPos.copy().snap(span, "floor");
+
+    if (playheadPos.equals(newPos))
+      newPos.subtract(span.measures, span.beats, span.fraction);
+
+    setPlayheadPos(TimelinePosition.max(TimelinePosition.start.copy(), newPos));
+    setScrollToItem({
+      type: "cursor",
+      params: { alignment: "scrollIntoView" },
+    });
+  }
+
+  function stop() {
+    if (isPlaying) {
+      setIsPlaying(false);
+      skipToStart();
+    }
+  }
+
+  const tempoDisplayValue = Math.round(tempo.value);
+
+  const tempoStyle = {
+    container: {
+      width: 40,
+      height: "fit-content",
+      backgroundColor: "#0000",
+      margin: "auto",
+      pointerEvents: tempo.isAutomated ? "none" : "auto",
+      opacity: tempo.isAutomated ? 0.5 : 1,
+    },
+    decrIcon: { color: "var(--fg1)", fontSize: 12 },
+    incrIcon: { color: "var(--fg1)", fontSize: 12 },
+    input: {
+      textAlign: "center",
+      color: "var(--fg1)",
+      fontWeight: "bold",
+      padding: 0,
+      height: 16,
+    },
+  };
+
+  const timeSignatureStyle = {
+    container: { width: 50, height: 13, lineHeight: 1, marginBottom: 4 },
+    decr: { width: 14, height: "100%" },
+    decrIcon: { color: "var(--fg1)" },
+    incr: { width: 14, height: "100%" },
+    incrIcon: { color: "var(--fg1)" },
+    input: {
+      color: "var(--fg1)",
+      fontSize: 13,
+      textAlign: "center",
+      padding: "0 3px",
+      height: "100%",
+    },
+  };
+
+  const timeSignatureNoteValueStyle = {
+    container: {
+      width: 50,
+      height: "fit-content",
+      backgroundColor: "#0000",
+      padding: 0,
+      marginTop: 4,
+    },
+    next: { width: 14 },
+    nextIcon: { color: "var(--fg1)", fontSize: 18 },
+    prev: { width: 14 },
+    prevIcon: { color: "var(--fg1)", fontSize: 18 },
+    select: {
+      textAlign: "center",
+      color: "var(--fg1)",
+      fontSize: 13,
+      fontWeight: "bold",
+      padding: "0 3px",
+    },
+  };
+
   return (
     <div className="col-12 position-relative" style={{ zIndex: 19 }}>
       <div className="text-center" style={style.titleBar}>
@@ -558,10 +619,7 @@ export default function Header() {
             min={1}
             max={24}
             onChange={(value: number) =>
-              setTimeSignature({
-                ...timelineSettings.timeSignature,
-                beats: value,
-              })
+              setTimeSignature(value, timelineSettings.timeSignature.noteValue)
             }
             style={style.timeSignatureBeats}
             value={timelineSettings.timeSignature.beats}
@@ -578,10 +636,7 @@ export default function Header() {
             disableSelect
             layout="alt"
             onChange={(value: number) => {
-              setTimeSignature({
-                ...timelineSettings.timeSignature,
-                noteValue: Number(value),
-              });
+              setTimeSignature(timelineSettings.timeSignature.beats, Number(value));
             }}
             options={noteValues}
             style={style.timeSignatureNoteValue}
@@ -592,7 +647,7 @@ export default function Header() {
           className="d-flex justify-content-center align-items-center"
           style={style.tempoControlContainer}
         >
-          <div title={`Tempo: ${+tempo.value!.toFixed(2)} BPM`}>
+          <div title={`Tempo: ${tempo.value.toFixed(2)} BPM`}>
             <NumberInput
               buttons={{ show: !tempo.isAutomated }}
               classes={{
@@ -609,7 +664,7 @@ export default function Header() {
               onChange={(value: number) => changeTempo(value)}
               orientation="vertical"
               style={style.tempo}
-              value={+tempo.value!.toFixed(1)}
+              value={tempoDisplayValue}
             />
             {tempo.isAutomated && (
               <p className="m-0 font-bold" style={style.automatedText}>

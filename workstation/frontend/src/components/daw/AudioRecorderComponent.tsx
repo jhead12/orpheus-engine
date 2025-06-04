@@ -152,6 +152,32 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
     draw();
   };
 
+  const handleRecord = async () => {
+    const audioBuffer = new ArrayBuffer(1024);
+    const uint8Data = await Promise.resolve(new Uint8Array(audioBuffer));
+    
+    // Check the actual length of the resolved data
+    if (uint8Data.length > 0) {
+      const firstByte = uint8Data[0];
+      console.log('First byte:', firstByte);
+    }
+
+    const audioData = {
+      type: 'audio' as const,
+      waveform: new Float32Array(1024),
+      buffer: audioBuffer
+    };
+
+    const clipBlob = new Blob([audioBuffer]);
+    // Process the blob
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    // Convert to the expected SelectChangeEvent format
+    const value = event.target.value as string;
+    console.log('Input changed:', value);
+  };
+
   return (
     <Box sx={{ margin: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -217,6 +243,10 @@ const AudioRecorderComponent: React.FC<AudioRecorderComponentProps> = ({ onRecor
       <div className="waveform-container">
         <canvas ref={canvasRef} width="600" height="100" />
       </div>
+
+      <select onChange={handleInputChange}>
+        <option value="default">Default Input</option>
+      </select>
     </Box>
   );
 };
