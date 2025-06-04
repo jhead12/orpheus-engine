@@ -101,8 +101,8 @@ if [ -d "/workspaces/orpheus-engine/OEW-main" ]; then
 elif [ -d "/workspaces/orpheus-engine/orpheus-engine-workstation/frontend" ]; then
   cd /workspaces/orpheus-engine/orpheus-engine-workstation/frontend
 else
-  echo "Searching for frontend directory with electron-launch.js..."
-  frontend_dir=$(find /workspaces/orpheus-engine -name "electron-launch.js" -type f | head -n 1 | xargs dirname)
+  echo "Searching for frontend directory with electron-launch.mjs..."
+  frontend_dir=$(find /workspaces/orpheus-engine -name "electron-launch.mjs" -type f | head -n 1 | xargs dirname)
   if [ -n "$frontend_dir" ]; then
     cd "$frontend_dir"
   else
