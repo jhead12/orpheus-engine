@@ -86,7 +86,11 @@
     "fix-vite-path": "bash scripts/fix-vite-not-found.sh",
     "fix-npm-deps": "node scripts/fix-npm-deps.js",
     "system-check": "node scripts/system-check.js",
-    "update-submodules": "git submodule update --init --recursive"
+    "update-submodules": "git submodule update --init --recursive",
+    "dev:all": "concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:monitor-backend\" \"npm run start:vite\" \"npm run start:daw\"",
+    "dev:frontend-only": "concurrently \"npm run start:vite\" \"npm run start:daw\"",
+    "debug": "npm run typecheck && NODE_ENV=development concurrently \"npm run start:rag-backend\" \"npm run start:audio-backend\" \"npm run start:vite\" \"npm run start:daw\"",
+    "system-info": "node -e \"console.log('Node:', process.version); console.log('OS:', require('os').type(), require('os').release()); console.log('CPU:', require('os').cpus()[0].model); console.log('Memory:', Math.round(require('os').totalmem() / (1024 * 1024 * 1024)), 'GB')\""
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
