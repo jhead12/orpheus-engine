@@ -4,6 +4,25 @@ import { Clip, AudioData, TimelinePosition } from '../../services/types/types';
 // Import the service to be tested (this would be your actual file operations service)
 import { ProjectFileService } from '../../services/daw/projectFileService';
 
+// Define the project type interface
+interface MockProject {
+  name: string;
+  tracks: Array<{
+    id: string;
+    name: string;
+    type: string;
+    clips: Array<{
+      id: string;
+      trackId: string;
+      start: TimelinePosition;
+      length: TimelinePosition;
+      data: AudioData;
+    }>;
+  }>;
+  tempo: number;
+  timeSignature: { numerator: number; denominator: number };
+}
+
 // Mock file system / electron APIs
 vi.mock('../../services/electron/utils', () => ({
   electronAPI: {
@@ -47,7 +66,7 @@ vi.mock('../../services/electron/utils', () => ({
 
 describe('ProjectFileService - File Operations', () => {
   let projectFileService: ProjectFileService;
-  let mockProject;
+  let mockProject: MockProject;
   
   beforeEach(() => {
     // Initialize project file service
