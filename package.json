@@ -77,6 +77,8 @@
     "fix-permissions": "sudo chown -R $(whoami) ~/.npm || true",
     "start:vite": "cd workstation/frontend && npm run dev",
     "fix-ipfs": "node scripts/fix-ipfs-dependency.js",
+      "fix-python-deps": "node scripts/fix-python-deps.js",
+
     "fix-tokenizers": "node scripts/fix-tokenizers.js",
     "fix-tokenizers-macos": "python3 scripts/fix-tokenizers-macos.py",
     "fix-sentence-transformers": "node scripts/fix-sentence-transformers.js && npm run fix-tokenizers",
