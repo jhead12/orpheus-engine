@@ -83,13 +83,22 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
     this.state = {
       dragging: false,
       mousePos: { x: 0, y: 0 },
-      value: props.value,
+      value: props.value || 0,
       showInput: false,
       active: false,
       wheel: false,
-      text: props.value.toString(),
+      text: props.value?.toString() || "0",
       anchorEl: null,
     };
+  }
+
+  componentDidUpdate(prevProps: KnobProps) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: this.props.value || 0,
+        text: this.props.value?.toString() || "0",
+      });
+    }
   }
 
   private onMouseMove = (e: MouseEvent): void => {
@@ -97,9 +106,8 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
       const { clientX, clientY } = e;
       const deltaY = clientY - this.state.mousePos.y;
 
-      this.setState(
-        { mousePos: { x: clientX, y: clientY } },
-        () => this.updateValue(-deltaY * 0.005)
+      this.setState({ mousePos: { x: clientX, y: clientY } }, () =>
+        this.updateValue(-deltaY * 0.005)
       );
     }
   };
@@ -210,15 +218,14 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
     const normalizedValue = this.normalize(this.state.value);
     const rotation = rotationOffset + normalizedValue * degrees;
 
+    const label = valueLabelFormat(this.state.value);
+
     return (
-      <Tooltip
-        title={valueLabelFormat(this.state.value)}
-        arrow
-        open={this.state.active}
-        {...tooltipProps}
-      >
+      <Tooltip title={label} arrow open={this.state.active} {...tooltipProps}>
         <div
           ref={this.ref}
+          data-testid="knob-container"
+          aria-label={label}
           style={{
             width: sizeWithPadding,
             height: sizeWithPadding,
@@ -226,8 +233,14 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
             cursor: disabled ? "default" : "pointer",
           }}
           onMouseDown={this.handleMouseDown}
+          role="slider"
+          aria-valuemin={this.props.min}
+          aria-valuemax={this.props.max}
+          aria-valuenow={this.state.value}
+          aria-disabled={disabled}
         >
           <div
+            data-testid="knob-rotator"
             style={{
               position: "absolute",
               width: size,
@@ -239,6 +252,7 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
             }}
           >
             <div
+              data-testid="knob-indicator"
               style={{
                 position: "absolute",
                 width: size * 0.25,
