@@ -24,9 +24,17 @@ export default defineConfig({
     }
   },
   server: {
-    port: 5174, // Changed from 5173 to avoid conflicts
-    strictPort: false, // Allow fallback to another port if needed
-    host: true
+    port: parseInt(process.env.VITE_PORT || '5174'),
+    strictPort: false,
+    host: process.env.VITE_HOST || true,
+    proxy: {
+      '/api': {
+        target: process.env.API_URL || 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   test: {
     globals: true,

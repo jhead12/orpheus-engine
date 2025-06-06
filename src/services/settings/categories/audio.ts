@@ -1,9 +1,9 @@
 // Default audio settings
 export const audioSettings = {
   // Playback settings
-  sampleRate: 44100,
-  bufferSize: 4096,
-  latencyHint: "interactive" as AudioContextLatencyCategory,
+  sampleRate: parseInt(process.env.VITE_AUDIO_SAMPLE_RATE || '44100'),
+  bufferSize: parseInt(process.env.VITE_AUDIO_BUFFER_SIZE || '4096'),
+  latencyHint: (process.env.VITE_AUDIO_LATENCY_HINT || "interactive") as AudioContextLatencyCategory,
 
   // Default gain/volume settings
   masterGain: 1.0,
