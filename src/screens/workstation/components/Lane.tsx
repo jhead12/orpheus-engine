@@ -1,6 +1,11 @@
 import React, { memo, useContext, useEffect, useMemo, useRef, useState, forwardRef } from "react";
-import { ClipboardContext, ClipboardItemType, WorkstationContext } from "../../../contexts";
-import { AutomationLane, Clip, ContextMenuType, TimelinePosition, Track, TrackType, WorkstationAudioInputFile } from "../../../services/types/types";
+import { WorkstationContext } from "../../../contexts";
+import ClipboardContext from "../../../context/ClipboardContext"; 
+import { ClipboardItemType } from "../../../types/clipboard";
+import { AutomationLane, Clip, Track, TrackType } from "../../../services/types/types";
+import { TimelinePosition } from "../../../services/types/timeline";
+import { WorkstationAudioInputFile } from "../../../services/types/audio";
+import { ContextMenuType } from "../../../types/context-menu";
 import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
 import { AudioClipComponent, AutomationLaneComponent, ClipComponent, RegionComponent } from "./index";
 import { electronAPI, openContextMenu } from "../../../services/electron/utils";
@@ -20,7 +25,7 @@ export interface LaneComponentProps {
 // Define component as a named function expression and wrap with forwardRef
 const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
   const { className, dragDataTarget, style, track, onClipContextMenu } = props;
-  const { clipboardItem } = useContext(ClipboardContext)!;
+  const { clipboardData } = useContext(ClipboardContext)!;
   const { 
     adjustNumMeasures,
     createAudioClip,
@@ -127,7 +132,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
 
   function onLaneContextMenu(e: React.MouseEvent<HTMLElement>) {
     const targetEl = e.currentTarget;
-    const disablePaste = clipboardItem?.type !== ClipboardItemType.Clip || clipboardItem.item.type !== track.type;
+    const disablePaste = clipboardData?.type !== ClipboardItemType.Clip || clipboardData.item.type !== track.type;
 
     openContextMenu(ContextMenuType.Lane, { track, disablePaste }, (params: any) => {
       switch (params.action) {

@@ -1,4 +1,4 @@
-import { ContextMenuType } from "../../services/types/types";
+import { ContextMenuType } from "../../types/context-menu";
 
 // Define SortData interface
 export interface SortData {

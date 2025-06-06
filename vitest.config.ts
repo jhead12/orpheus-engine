@@ -12,8 +12,14 @@ export default defineConfig({
     reporters: ["verbose"],
     coverage: {
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "src/setupTests.ts"],
+      reportsDirectory: "./test-results/coverage",
     },
-    testTimeout: 20000, // Increase timeout for visual tests
+    outputFile: {
+      html: "./test-results/html/index.html",
+    },
+    deps: {
+      inline: ["jest-image-snapshot"],
+    },
+    snapshotDir: "__snapshots__",
   },
 });
