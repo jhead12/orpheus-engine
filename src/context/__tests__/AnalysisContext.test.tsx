@@ -4,6 +4,9 @@ import { AnalysisContext } from "../AnalysisContext";
 import { AudioAnalysisType } from "../../types/audio";
 import type { AnalysisContextType } from "../../types/context";
 
+// Import MockAudioContext from test setup
+const MockAudioContext = (global as any).AudioContext;
+
 describe("AnalysisContext", () => {
   // Mock implementations
   const mockSetAnalysisType = vi.fn();
@@ -64,7 +67,8 @@ describe("AnalysisContext", () => {
 
   it("handles clip selection", () => {
     let contextValue: AnalysisContextType | undefined;
-    const audioCtx = new AudioContext();
+    // Use the mocked AudioContext instead of direct reference
+    const audioCtx = new MockAudioContext();
     const testClip = {
       id: "test-clip",
       audio: {
@@ -93,7 +97,8 @@ describe("AnalysisContext", () => {
 
   it("runs audio analysis", async () => {
     let contextValue: AnalysisContextType | undefined;
-    const audioCtx = new AudioContext();
+    // Use the mocked AudioContext instead of direct reference
+    const audioCtx = new MockAudioContext();
     const testBuffer = audioCtx.createBuffer(2, 44100, 44100);
 
     mockRunAudioAnalysis.mockResolvedValue({

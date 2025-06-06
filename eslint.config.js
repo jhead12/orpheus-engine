@@ -7,14 +7,9 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 export default [
   {
     languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "module",
       parser: tsParser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
       globals: {
         ...globals.browser,
         ...globals.es2021,
@@ -32,25 +27,9 @@ export default [
       },
     },
     rules: {
-      // TypeScript specific rules
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_" },
-      ],
-
-      // React rules
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-
-      // General rules
-      "no-console": ["warn", { allow: ["warn", "error"] }],
-      "no-debugger": "warn",
+      ...tsPlugin.configs.recommended.rules,
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
     },
-    files: ["**/*.ts", "**/*.tsx"],
   },
 ];

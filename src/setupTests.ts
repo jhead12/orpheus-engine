@@ -43,15 +43,19 @@ global.DOMMatrix = MockDOMMatrix as any;
 class MockAudioContext {
   destination = {};
   sampleRate = 44100;
-  createBuffer(channels: number, length: number, sampleRate: number) {
-    return {
+
+  createBuffer(
+    channels: number,
+    length: number,
+    sampleRate: number
+  ): AudioBuffer {
+    return new MockAudioBuffer({
       numberOfChannels: channels,
       length,
       sampleRate,
-      duration: length / sampleRate,
-      getChannelData: vi.fn(() => new Float32Array(length)),
-    };
+    });
   }
+
   createBufferSource = vi.fn(() => ({
     connect: vi.fn(),
     start: vi.fn(),
@@ -59,9 +63,53 @@ class MockAudioContext {
   }));
 }
 
-// Add to global before ResizeObserver mock
-global.AudioContext = MockAudioContext as any;
-global.webkitAudioContext = MockAudioContext as any;
+// Update MockAudioBuffer implementation
+class MockAudioBuffer implements AudioBuffer {
+  private _channels: Float32Array[];
+  readonly numberOfChannels: number;
+  readonly length: number;
+  readonly sampleRate: number;
+  readonly duration: number;
+
+  constructor(options: AudioBufferOptions) {
+    const { numberOfChannels = 1, length, sampleRate } = options;
+    this._channels = Array(numberOfChannels)
+      .fill(null)
+      .map(() => new Float32Array(length));
+    this.numberOfChannels = numberOfChannels;
+    this.length = length;
+    this.sampleRate = sampleRate;
+    this.duration = length / sampleRate;
+  }
+
+  getChannelData(channel: number): Float32Array {
+    if (channel >= this.numberOfChannels) {
+      throw new Error("Invalid channel index");
+    }
+    return this._channels[channel];
+  }
+
+  copyToChannel(
+    source: Float32Array,
+    channelNumber: number,
+    startInChannel = 0
+  ): void {
+    const target = this._channels[channelNumber];
+    target.set(source, startInChannel);
+  }
+
+  copyFromChannel(
+    destination: Float32Array,
+    channelNumber: number,
+    startInChannel = 0
+  ): void {
+    const source = this._channels[channelNumber];
+    const length = Math.min(destination.length, this.length - startInChannel);
+    for (let i = 0; i < length; i++) {
+      destination[i] = source[startInChannel + i];
+    }
+  }
+}
 
 // Console error handling
 const SUPPRESSED_ERRORS = [

@@ -306,13 +306,10 @@ describe("Lane Component", () => {
 
   describe("Audio Analysis", () => {
     it("shows audio analysis panel when clip is selected", () => {
+      const audioContext = new MockAudioContext();
       const clipWithAnalysis = {
         id: "clip-1",
-        audioBuffer: new AudioBuffer({
-          length: 44100,
-          numberOfChannels: 2,
-          sampleRate: 44100,
-        }),
+        audioBuffer: audioContext.createBuffer(2, 44100, 44100),
         startTime: 0,
         duration: 1,
       };
@@ -329,13 +326,10 @@ describe("Lane Component", () => {
     });
 
     it("switches between different analysis types", () => {
+      const audioContext = new MockAudioContext();
       const clipWithAnalysis = {
         id: "clip-1",
-        audioBuffer: new AudioBuffer({
-          length: 44100,
-          numberOfChannels: 2,
-          sampleRate: 44100,
-        }),
+        audioBuffer: audioContext.createBuffer(2, 44100, 44100),
         startTime: 0,
         duration: 1,
       };

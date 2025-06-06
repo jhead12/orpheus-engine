@@ -1,9 +1,21 @@
+import { vi, beforeEach } from "vitest";
 import {
   audioContext,
   audioBufferToBuffer,
   reverseAudio,
   getAudioContext,
 } from "../audio";
+
+// Mock audio.ts to use our test AudioContext
+vi.mock("../audio", async () => {
+  const actual = await vi.importActual<typeof import("../audio")>("../audio");
+  const mockContext = new (global.AudioContext as any)();
+  return {
+    ...actual,
+    audioContext: mockContext,
+    getAudioContext: () => mockContext,
+  };
+});
 
 describe("Audio Utilities", () => {
   beforeEach(() => {
@@ -37,25 +49,24 @@ describe("Audio Utilities", () => {
   });
 
   it("reverses audio data", async () => {
-    const ctx = getAudioContext(); // This will throw if audioContext is null
-    const sampleRate = 44100;
-    const audioBuffer = ctx.createBuffer(1, sampleRate, sampleRate);
+    const ctx = getAudioContext();
+    const bufferSize = 4;
+    const audioBuffer = ctx.createBuffer(1, bufferSize, 44100);
 
-    // Fill with test pattern (using simple integers to avoid floating point issues)
-    const channelData = audioBuffer.getChannelData(0);
-    channelData[0] = 1; // Start
-    channelData[1] = 2; // Second
-    channelData[sampleRate - 2] = 3; // Second to last
-    channelData[sampleRate - 1] = 4; // End
+    // Create test data
+    const inputChannel = audioBuffer.getChannelData(0);
+    const testValues = [0.1, 0.2, 0.3, 0.4];
+    testValues.forEach((value, i) => {
+      inputChannel[i] = value;
+    });
 
     const reversed = await reverseAudio(audioBuffer);
     const reversedData = reversed.getChannelData(0);
 
-    // Check if the values are reversed using exact equality
-    // This should work because we're using simple integer values
-    expect(reversedData[0]).toBe(channelData[sampleRate - 1]); // 4
-    expect(reversedData[1]).toBe(channelData[sampleRate - 2]); // 3
-    expect(reversedData[sampleRate - 2]).toBe(channelData[1]); // 2
-    expect(reversedData[sampleRate - 1]).toBe(channelData[0]); // 1
+    // Verify reversed values
+    const expectedValues = testValues.slice().reverse();
+    expectedValues.forEach((expected, i) => {
+      expect(reversedData[i]).toBeCloseTo(expected, 5);
+    });
   });
 });

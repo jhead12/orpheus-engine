@@ -12,5 +12,9 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
     },
+    deps: {
+      inline: ["jest-image-snapshot"],
+    },
+    snapshotDir: "__snapshots__",
   },
 });
