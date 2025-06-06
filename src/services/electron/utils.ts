@@ -1,4 +1,4 @@
-import { ContextMenuType } from "../types/types";
+import { ContextMenuType } from "../../types/context-menu";
 
 export function openContextMenu(
   type: ContextMenuType,

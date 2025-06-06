@@ -11,10 +11,16 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      reportsDirectory: "./test-results/coverage",
     },
+    outputFile: {
+      html: "./test-results/html/index.html",
+    },
+    reporters: ["default", "html"],
     deps: {
       inline: ["jest-image-snapshot"],
     },
-    snapshotDir: "__snapshots__",
+    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    exclude: ["**/node_modules/**", "**/__snapshots__/**"],
   },
 });
