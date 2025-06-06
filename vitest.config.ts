@@ -9,7 +9,6 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     globals: true,
     setupFiles: ["src/setupTests.ts"],
-    reporters: ["verbose"],
     coverage: {
       reporter: ["text", "json", "html"],
       reportsDirectory: "./test-results/coverage",
@@ -17,9 +16,10 @@ export default defineConfig({
     outputFile: {
       html: "./test-results/html/index.html",
     },
+    reporters: ["default", "html"],
     deps: {
       inline: ["jest-image-snapshot"],
     },
-    snapshotDir: "__snapshots__",
+    exclude: ["**/node_modules/**", "**/__snapshots__/**"],
   },
 });
