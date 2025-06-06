@@ -12,14 +12,20 @@ declare global {
 // Basic audio utilities
 const createAudioContext = () => {
   try {
+    // Check if we're in a test environment
+    const isTest = process.env.NODE_ENV === "test" || process.env.VITEST;
+
     const AudioContextClass: AudioContextConstructor =
-      window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) {
+      window?.AudioContext || window?.webkitAudioContext;
+
+    if (!AudioContextClass && !isTest) {
       throw new Error("AudioContext is not supported in this browser");
     }
     return new AudioContextClass();
   } catch (e) {
-    console.warn("AudioContext not available:", e);
+    if (process.env.NODE_ENV !== "test") {
+      console.warn("AudioContext not available:", e);
+    }
     return null;
   }
 };

@@ -297,10 +297,12 @@ class DNRBase extends Component<DNRProps, DNRState> {
         currentX = matrix.m41;
         currentY = matrix.m42;
       } catch (e) {
-        // Fallback for environments without DOMMatrix
-        const matches = transform.match(/matrix\((.*)\)/);
-        if (matches) {
-          const values = matches[1].split(",").map(Number);
+        // Safe fallback for matrix parsing
+        const matches = transform.match(
+          /matrix\(([-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+)\)/
+        );
+        if (matches && matches[1]) {
+          const values = matches[1].split(",").map((v) => parseFloat(v.trim()));
           currentX = values[4] || 0;
           currentY = values[5] || 0;
         }

@@ -1,7 +1,12 @@
 export enum ContextMenuType {
-  Track = "track",
+  AddAutomationLane = "add-automation-lane",
+  Automation = "automation",
   Clip = "clip",
-  Region = "region",
-  Timeline = "timeline",
+  FXChainPreset = "fx-chain-preset",
   Lane = "lane",
+  Node = "node",
+  Region = "region",
+  Text = "text",
+  Timeline = "timeline",
+  Track = "track",
 }

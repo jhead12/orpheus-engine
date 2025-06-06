@@ -1,39 +1,37 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import Scrollbar from "../Scrollbar";
 
 describe("Scrollbar", () => {
+  let targetEl: HTMLDivElement;
+
   beforeEach(() => {
     // Create target element with specific dimensions for testing
-    const targetEl = document.createElement("div");
-    targetEl.style.width = "200px";
-    targetEl.style.height = "200px";
-    targetEl.style.overflow = "auto";
-    targetEl.style.position = "relative";
-
-    // Create content that's twice the size to ensure scrolling
-    const content = document.createElement("div");
-    content.style.width = "400px";
-    content.style.height = "400px";
-    content.style.background = "#eee";
-
-    targetEl.appendChild(content);
+    targetEl = document.createElement("div");
+    Object.defineProperties(targetEl, {
+      scrollWidth: { value: 1000, configurable: true },
+      clientWidth: { value: 500, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      clientHeight: { value: 500, configurable: true },
+      scrollLeft: { value: 0, writable: true },
+      scrollTop: { value: 0, writable: true },
+    });
     document.body.appendChild(targetEl);
   });
 
   afterEach(() => {
-    document.body.innerHTML = "";
+    document.body.removeChild(targetEl);
+    vi.clearAllMocks();
   });
 
   it("renders without crashing", () => {
-    const targetEl = document.querySelector("div") as HTMLDivElement;
     const { container } = render(<Scrollbar axis="y" targetEl={targetEl} />);
     const scrollbar = container.querySelector(".scrollbar");
     expect(scrollbar).toBeInTheDocument();
   });
 
   it("handles vertical scrolling", async () => {
-    const targetEl = document.querySelector("div") as HTMLDivElement;
     const { container } = render(
       <Scrollbar axis="y" targetEl={targetEl} style={{ height: "100px" }} />
     );
@@ -70,7 +68,6 @@ describe("Scrollbar", () => {
   });
 
   it("handles horizontal scrolling", async () => {
-    const targetEl = document.querySelector("div") as HTMLDivElement;
     const { container } = render(
       <Scrollbar axis="x" targetEl={targetEl} style={{ width: "100px" }} />
     );
@@ -109,7 +106,6 @@ describe("Scrollbar", () => {
   });
 
   it("updates thumb position on target scroll", async () => {
-    const targetEl = document.querySelector("div") as HTMLDivElement;
     const { container } = render(<Scrollbar axis="y" targetEl={targetEl} />);
 
     const thumb = container.querySelector(".scrollbar-thumb") as HTMLDivElement;
@@ -146,7 +142,6 @@ describe("Scrollbar", () => {
   });
 
   it("applies custom styles", () => {
-    const targetEl = document.querySelector("div") as HTMLDivElement;
     render(
       <Scrollbar
         axis="y"

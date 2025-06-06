@@ -34,7 +34,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "fix-vite": "pnpm install --save-dev @vitejs/plugin-react",
-    "fix-electron-path": "node scripts/fix-electron-path.js"
+    "fix-electron-path": "node scripts/fix-electron-path.js",
+    "find-files": "ts-node scripts/findFiles.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
