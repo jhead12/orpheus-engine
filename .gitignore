@@ -1,0 +1,74 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/node_modules/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/.vscode
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+__snapshots__/diffs
+
+# Large file types
+*.weights
+*.h5
+*.onnx
+*.pkl
+*.pth
+*.bin
+*.model
+*.pt
+*.tar.gz
+*.zip
+*.rar
+# Additional large file types
+*.tar
+*.gz
+*.7z
+*.iso
+*.img
+*.npy
+*.npz
+*.tflite
+*.mlmodel
+*.safetensors
+*.ckpt
+
+# Temporary and cache files
+.cache/
+*.swp
+*.swo
+tmp/
+temp/
+
+# Directories that might contain large files
+models/
+weights/
+datasets/
+checkpoints/
+
+# Git large files
+.git/objects/pack/pack-*.pack
+.git/objects/pack/tmp_pack_*
+
+# Git LFS patterns (consider using for large files)
+*.pack
+*.idx

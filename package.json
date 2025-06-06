@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "oew",
+  "version": "1.0.10",
+  "type": "module",
+  "authors": [
+    {
+      "name": "Creative Organization DAO",
+      "email": "creatives@creativeplatform.xyz",
+      "url": "https://github.com/creativeplatform"
+    },
+    {
+      "name": "JEH Ventures, LLC",
+      "email": "support@jeldonmusic.com",
+      "url": "https://www.matrixblend.com"
+    }
+  ],
+  "description": "Digital Audio Workstation (DAW) made in React",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sirgawain0x/orpheus-engine.git"
+  },
+  "private": true,
+  "main": "build/electron/main.js",
+  "scripts": {
+    "dev": "nodemon --exec \"node electron-launch.js\"",
+    "dev:vite": "vite --port 5174 --host",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
+    "dev:headless": "ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 NODE_ENV=development electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
+    "build": "tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
+    "preview": "vite preview",
+    "start": "node electron-launch.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "fix-vite": "pnpm install --save-dev @vitejs/plugin-react",
+    "fix-electron-path": "node scripts/fix-electron-path.js",
+    "find-files": "ts-node scripts/findFiles.ts",
+    "find-large-files": "node scripts/find-large-files.js"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.9",
+    "@mui/material": "^5.14.10",
+    "bootstrap": "^5.3.2",
+    "buffer": "^6.0.3",
+    "fs": "0.0.1-security",
+    "jsdom": "^22.1.0",
+    "jspdf": "^3.0.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
+    "react-resize-detector": "^9.1.0",
+    "react-router-dom": "^6.16.0",
+    "styled-components": "^6.0.8",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.3.3",
+    "@testing-library/jest-dom": "^6.1.3",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.5",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.8.2",
+    "@types/react": "^18.2.24",
+    "@types/react-dom": "^18.2.8",
+    "@types/uuid": "^9.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "@vitejs/plugin-react": "^4.5.1",
+    "@vitest/coverage-v8": "^0.34.6",
+    "@vitest/ui": "^0.34.6",
+    "concurrently": "^8.2.1",
+    "conventional-changelog": "^5.1.0",
+    "electron": "^26.2.2",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.50.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^13.22.0",
+    "jest-image-snapshot": "^6.2.0",
+    "node-html-to-image": "^4.0.0",
+    "nodemon": "^3.0.1",
+    "playwright": "^1.41.0",
+    "typescript": "~5.2.2",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.6",
+    "wait-on": "^7.0.1"
+  },
+  "build": {
+    "productName": "Orpheus Engine",
+    "appId": "com.creativeplatform.OEW",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*"
+    ],
+    "extraMetadata": {
+      "main": "build/electron/main.js"
+    },
+    "extraResources": [
+      "src/assets/**/*"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "Creative Organization DAO",
+      "repo": "orpheus-engine"
+    }
+  }
+}
