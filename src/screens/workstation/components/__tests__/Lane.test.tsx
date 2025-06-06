@@ -19,8 +19,31 @@ jest.mock("../../../../services/electron/utils", () => ({
   openContextMenu: jest.fn(),
 }));
 
-// Mock audio utils
-jest.mock("../../../../services/utils/audio");
+// Setup test environment
+vi.mock("../../../../services/utils/audio", () => ({
+  createAudioContext: () => new MockAudioContext(),
+}));
+
+// Mock classes
+class MockAudioBuffer implements AudioBuffer {
+  length: number;
+  numberOfChannels: number;
+  sampleRate: number;
+
+  constructor(options: {
+    length: number;
+    numberOfChannels: number;
+    sampleRate: number;
+  }) {
+    this.length = options.length;
+    this.numberOfChannels = options.numberOfChannels;
+    this.sampleRate = options.sampleRate;
+  }
+}
+
+class MockAudioContext {
+  // Mock implementation of AudioContext methods and properties
+}
 
 // Mock context values
 const mockClipboardContext = {
@@ -306,10 +329,13 @@ describe("Lane Component", () => {
 
   describe("Audio Analysis", () => {
     it("shows audio analysis panel when clip is selected", () => {
-      const audioContext = new MockAudioContext();
       const clipWithAnalysis = {
         id: "clip-1",
-        audioBuffer: audioContext.createBuffer(2, 44100, 44100),
+        audioBuffer: new AudioBuffer({
+          length: 44100,
+          numberOfChannels: 2,
+          sampleRate: 44100,
+        }),
         startTime: 0,
         duration: 1,
       };

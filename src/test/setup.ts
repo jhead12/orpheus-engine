@@ -69,7 +69,7 @@ class MockAudioBuffer implements AudioBuffer {
   }
 }
 
-// Mock AudioContext implementation
+// Define and set up AudioContext mock before any other code uses it
 class MockAudioContext implements AudioContext {
   readonly baseLatency = 0;
   readonly outputLatency = 0;
@@ -309,6 +309,11 @@ class MockAudioContext implements AudioContext {
   removeEventListener = vi.fn();
   dispatchEvent = vi.fn().mockReturnValue(true);
 }
+
+// Ensure AudioContext is available globally before any imports
+globalThis.AudioContext = MockAudioContext as unknown as typeof AudioContext;
+globalThis.webkitAudioContext =
+  MockAudioContext as unknown as typeof AudioContext;
 
 // Define constructor types
 type AudioContextConstructor = {
