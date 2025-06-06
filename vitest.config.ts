@@ -6,15 +6,14 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
-    setupFiles: ["./src/setupTests.ts"],
+    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     globals: true,
+    setupFiles: ["src/setupTests.ts"],
+    reporters: ["verbose"],
     coverage: {
-      provider: "v8",
       reporter: ["text", "json", "html"],
+      exclude: ["node_modules/", "src/setupTests.ts"],
     },
-    deps: {
-      inline: ["jest-image-snapshot"],
-    },
-    snapshotDir: "__snapshots__",
+    testTimeout: 20000, // Increase timeout for visual tests
   },
 });

@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { SidePanel } from "../../../screens/workstation/components/SidePanel";
+import { expectScreenshot } from "../../../test/helpers";
 
 describe("SidePanel", () => {
   const mockAudioFiles = [
@@ -53,5 +54,59 @@ describe("SidePanel", () => {
     fireEvent.click(audio1);
 
     expect(mockOnAudioSelect).toHaveBeenCalledWith(mockAudioFiles[0]);
+  });
+
+  it("visual test: renders panel in expanded state @visual", async () => {
+    // Create a dark theme container that matches the app's theme
+    const container = document.createElement("div");
+    container.style.cssText = `
+      width: 300px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      background: #1e1e1e;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    document.body.appendChild(container);
+
+    render(<SidePanel audioFiles={mockAudioFiles} />, { container });
+    const panel = screen.getByTestId("side-panel");
+
+    // Trigger expand
+    fireEvent.mouseEnter(panel);
+
+    // Wait for styled-components to apply styles and transitions to complete
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Take screenshot with the proper container
+    await expectScreenshot(container, "sidepanel-expanded");
+
+    document.body.removeChild(container);
+  });
+
+  it("visual test: renders panel in collapsed state @visual", async () => {
+    // Create a dark theme container that matches the app's theme
+    const container = document.createElement("div");
+    container.style.cssText = `
+      width: 300px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      background: #1e1e1e;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    document.body.appendChild(container);
+
+    render(<SidePanel audioFiles={mockAudioFiles} />, { container });
+
+    // Wait for initial render and styled-components to apply styles
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Take screenshot of collapsed state
+    await expectScreenshot(container, "sidepanel-collapsed");
+
+    document.body.removeChild(container);
   });
 });
