@@ -1,16 +1,17 @@
-import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Preferences from '../Preferences';
-import { usePreferences } from '../../context/PreferencesContext';
 
-// Mock the usePreferences hook
-jest.mock('../../context/PreferencesContext', () => ({
-  usePreferences: jest.fn()
+// Create a mock function for usePreferences
+const mockUsePreferences = vi.fn();
+
+// Mock the module
+vi.mock('../../context/PreferencesContext', () => ({
+  usePreferences: () => mockUsePreferences()
 }));
 
 describe('Preferences Component', () => {
-  // Default mock values
   const mockPreferences = {
     theme: 'dark',
     color: 'rose',
@@ -20,16 +21,27 @@ describe('Preferences Component', () => {
     recording: {},
     plugins: {}
   };
-  
-  const mockSetShowPreferences = jest.fn();
-  const mockUpdatePreferences = jest.fn();
-  const mockSavePreferences = jest.fn();
+
+  const mockSetShowPreferences = vi.fn();
+  const mockUpdatePreferences = vi.fn();
+  const mockSavePreferences = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
-    // Setup default mock implementation
-    (usePreferences as jest.Mock).mockReturnValue({
+    // Setup default mock implementation for each test
+    mockUsePreferences.mockReturnValue({
+      darkMode: false,
+      preferences: mockPreferences,
+      savedPreferences: mockPreferences,
+      showPreferences: true,
+      setShowPreferences: mockSetShowPreferences,
+      updatePreferences: mockUpdatePreferences,
+      savePreferences: mockSavePreferences
+    });
+    
+    // Reset the mock implementation for each test
+    mockUsePreferences.mockReturnValue({
       darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
@@ -40,14 +52,14 @@ describe('Preferences Component', () => {
     });
   });
 
-  test('renders Preferences dialog when showPreferences is true', () => {
+  it('renders Preferences dialog when showPreferences is true', () => {
     render(<Preferences />);
     expect(screen.getByText('Preferences')).toBeInTheDocument();
   });
 
-  test('does not render Preferences dialog when showPreferences is false', () => {
+  it('does not render Preferences dialog when showPreferences is false', () => {
     // Override the mock for this test
-    (usePreferences as jest.Mock).mockReturnValue({
+    mockUsePreferences.mockReturnValue({
       darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
@@ -61,30 +73,30 @@ describe('Preferences Component', () => {
     expect(screen.queryByText('Preferences')).not.toBeInTheDocument();
   });
 
-  test('calls setShowPreferences(false) when Cancel button is clicked', () => {
+  it('calls setShowPreferences(false) when Cancel button is clicked', () => {
     render(<Preferences />);
     fireEvent.click(screen.getByText('Cancel'));
     expect(mockSetShowPreferences).toHaveBeenCalledWith(false);
   });
 
-  test('calls savePreferences when Apply button is clicked', () => {
+  it('calls savePreferences when Apply button is clicked', () => {
     render(<Preferences />);
     fireEvent.click(screen.getByText('Apply'));
     expect(mockSavePreferences).toHaveBeenCalled();
   });
 
-  test('calls both savePreferences and setShowPreferences when OK button is clicked', () => {
+  it('calls both savePreferences and setShowPreferences when OK button is clicked', () => {
     render(<Preferences />);
     
-    // The OK button submits the form
-    const form = screen.getByRole('form');
-    fireEvent.submit(form);
+    // Click the OK button directly instead of submitting the form
+    const okButton = screen.getByText('OK');
+    fireEvent.click(okButton);
     
     expect(mockSavePreferences).toHaveBeenCalled();
     expect(mockSetShowPreferences).toHaveBeenCalledWith(false);
   });
 
-  test('shows tabs for different settings categories', () => {
+  it('shows tabs for different settings categories', () => {
     render(<Preferences />);
     expect(screen.getByText('Appearance')).toBeInTheDocument();
     expect(screen.getByText('Audio')).toBeInTheDocument();
@@ -92,7 +104,7 @@ describe('Preferences Component', () => {
     expect(screen.getByText('Media')).toBeInTheDocument();
   });
 
-  test('updates theme preference when a theme option is selected', () => {
+  it('updates theme preference when a theme option is selected', () => {
     render(<Preferences />);
     
     // Assuming the radio buttons have value attributes matching the theme names
@@ -107,8 +119,8 @@ describe('Preferences Component', () => {
     );
   });
 
-  test('shows a snackbar notification when preferences are saved', () => {
-    (usePreferences as jest.Mock).mockReturnValue({
+  it('shows a snackbar notification when preferences are saved', () => {
+    mockUsePreferences.mockReturnValue({
       darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
@@ -123,7 +135,7 @@ describe('Preferences Component', () => {
     fireEvent.click(screen.getByText('Apply'));
     
     // Update the component with the saved state
-    (usePreferences as jest.Mock).mockReturnValue({
+    mockUsePreferences.mockReturnValue({
       darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
