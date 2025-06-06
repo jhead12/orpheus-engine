@@ -57,7 +57,6 @@ describe("SidePanel", () => {
   });
 
   it("visual test: renders panel in expanded state @visual", async () => {
-    // Create a dark theme container that matches the app's theme
     const container = document.createElement("div");
     container.style.cssText = `
       width: 300px;
@@ -70,14 +69,20 @@ describe("SidePanel", () => {
     `;
     document.body.appendChild(container);
 
+    // Ensure container is ready
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     render(<SidePanel audioFiles={mockAudioFiles} />, { container });
     const panel = screen.getByTestId("side-panel");
+
+    // Ensure initial render is complete
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Trigger expand
     fireEvent.mouseEnter(panel);
 
     // Wait for styled-components to apply styles and transitions to complete
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Take screenshot with the proper container
     await expectScreenshot(container, "sidepanel-expanded");
