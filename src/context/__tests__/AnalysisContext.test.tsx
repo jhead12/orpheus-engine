@@ -4,8 +4,20 @@ import { AnalysisContext } from "../AnalysisContext";
 import { AudioAnalysisType } from "../../types/audio";
 import type { AnalysisContextType } from "../../types/context";
 
-// Import MockAudioContext from test setup
-const MockAudioContext = (global as any).AudioContext;
+// Mock AudioContext implementation
+class MockAudioContext {
+  createBuffer(channels: number, length: number, sampleRate: number) {
+    return {
+      numberOfChannels: channels,
+      length: length,
+      sampleRate: sampleRate,
+      getChannelData: () => new Float32Array(length),
+    };
+  }
+}
+
+// Set up the mock
+vi.stubGlobal('AudioContext', MockAudioContext);
 
 describe("AnalysisContext", () => {
   // Mock implementations

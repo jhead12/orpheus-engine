@@ -78,8 +78,9 @@ describe("SortableList Component", () => {
       })
     );
     
-    // Move to a position that would be item 2
-    fireEvent.mouseMove(document, { clientY: 75 });
+    // Move to a position that would be item 2 (between items 1 and 2)
+    const moveY = 45; // Just below midpoint of first item
+    fireEvent.mouseMove(document, { clientY: moveY });
     
     expect(mockOnSortUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ 
@@ -88,8 +89,8 @@ describe("SortableList Component", () => {
       })
     );
 
-    // Complete the drag
-    fireEvent.mouseUp(document);
+    // Complete the drag at the same position
+    fireEvent.mouseUp(document, { clientY: moveY });
     
     expect(mockOnEnd).toHaveBeenCalledWith(
       expect.any(Object),
