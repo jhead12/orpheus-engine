@@ -1,6 +1,26 @@
 import { Clip, TimelinePosition } from "../types/types";
 
 export const BASE_HEIGHT = 100;
+export const BASE_BEAT_WIDTH = 80;
+export const GRID_MIN_INTERVAL_WIDTH = 34;
+
+// Audio file validation utilities
+export const isValidAudioTrackFileFormat = (type: string): boolean => {
+  const audioFormats = [
+    "audio/wav",
+    "audio/mp3",
+    "audio/ogg",
+    "audio/m4ta",
+    "audio/flac",
+    "audio/aac",
+    "audio/webm",
+  ];
+  return audioFormats.includes(type);
+};
+
+export const isValidTrackFileFormat = (type: string): boolean => {
+  return isValidAudioTrackFileFormat(type) || type === "audio/midi";
+};
 
 export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
   return {
@@ -32,10 +52,10 @@ export const scrollToAndAlign = (
 };
 
 export const timelineEditorWindowScrollThresholds = {
-  top: { size: 50, speed: 1 },
-  right: { size: 100, speed: 1 },
-  bottom: { size: 50, speed: 1 },
-  left: { size: 100, speed: 1 },
+  top: { slow: 25, medium: 50, fast: 100 },
+  right: { slow: 50, medium: 100, fast: 200 },
+  bottom: { slow: 25, medium: 50, fast: 100 },
+  left: { slow: 50, medium: 100, fast: 200 },
 };
 
 export const waitForScrollWheelStop = (

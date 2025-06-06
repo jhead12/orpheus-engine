@@ -85,6 +85,15 @@ export function scrollToAndAlign(
 /**
  * Shades a hex color by a given percentage
  */
+/**
+ * Checks if the Cmd (macOS) or Ctrl (other platforms) key is pressed
+ */
+export function cmdOrCtrl(e: KeyboardEvent | React.KeyboardEvent): boolean {
+  return navigator.platform.toLowerCase().includes("mac")
+    ? e.metaKey
+    : e.ctrlKey;
+}
+
 export const shadeColor = (color: string, percent: number) => {
   if (!color) return color;
 

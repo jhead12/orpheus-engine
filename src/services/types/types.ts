@@ -1,4 +1,4 @@
-import { TimelinePosition, TimelineSettings } from "./timeline";
+import { TimelinePosition } from "../../types/core";
 
 export enum AutomationLaneEnvelope {
   Volume = "volume",
@@ -6,6 +6,7 @@ export enum AutomationLaneEnvelope {
   Send = "send",
   Filter = "filter",
   Tempo = "tempo",
+  Effect = "effect",
 }
 
 export enum AutomationMode {
@@ -13,6 +14,7 @@ export enum AutomationMode {
   Read = "read",
   Write = "write",
   Touch = "touch",
+  Latch = "latch",
 }
 
 export interface AutomationNode {
@@ -57,6 +59,7 @@ export enum ContextMenuType {
 export enum TrackType {
   Audio = "audio",
   Midi = "midi",
+  Sequencer = "sequencer",
 }
 
 export interface Track {
@@ -74,7 +77,7 @@ export interface Track {
   automationLanes: AutomationLane[];
   clips: Clip[];
   fx: {
-    preset: string | null;
+    preset: FXChainPreset | null;
     selectedEffectIndex: number;
     effects: Effect[];
   };
@@ -92,6 +95,8 @@ export interface Clip {
   muted?: boolean;
   audio?: {
     audioBuffer: AudioBuffer;
+    buffer: AudioBuffer;
+    waveform: number[];
     start: TimelinePosition;
     end: TimelinePosition;
   };

@@ -1,0 +1,506 @@
+import React from 'react';
+import { render, fireEvent, screen, within } from '@testing-library/react';
+import { ClipboardContext, WorkstationContext, AnalysisContext } from '../../../contexts';
+import Lane from '../Lane';
+import type { Track, Clip } from '../../../services/types/types';
+import { TrackType, AutomationMode, AutomationLaneEnvelope } from '../../../services/types/types';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});  });    });      }));        ])          })            ])              })                value: expect.any(Number)                time: expect.any(Number),              expect.objectContaining({            nodes: expect.arrayContaining([            id: 'automation-1',          expect.objectContaining({        automationLanes: expect.arrayContaining([        id: 'test-track-1',      expect(setTrack).toHaveBeenCalledWith(expect.objectContaining({      fireEvent.click(automationLane, { clientX: 100, clientY: 50 });      const automationLane = screen.getByTestId('automation-lane-volume');      renderLane({ tracks: [trackWithAutomation], setTrack });      };        automation: true        ...mockTrack,      const trackWithAutomation = {      const setTrack = jest.fn();    it('creates automation nodes on click in automation lane', () => {    });      }));        automation: true        id: 'test-track-1',      expect(setTrack).toHaveBeenCalledWith(expect.objectContaining({      fireEvent.click(automationButton);            const automationButton = within(track).getByRole('button', { name: /automation/i });      const track = screen.getByText('Test Track').closest('[data-testid="track"]');      renderLane({ setTrack });      const setTrack = jest.fn();    it('toggles automation mode correctly', () => {  describe('Automation', () => {  });    });      ]));        expect.objectContaining({ id: 'track-1' })        expect.objectContaining({ id: 'track-2' }),      expect(setTracks).toHaveBeenCalledWith(expect.arrayContaining([      fireEvent.drop(track2);      fireEvent.dragOver(track2);      fireEvent.dragStart(track1);      const track2 = screen.getByText('Track 2').closest('[data-testid="track"]');      const track1 = screen.getByText('Track 1').closest('[data-testid="track"]');      renderLane({ tracks, setTracks });      ];        { ...mockTrack, id: 'track-2', name: 'Track 2' }        { ...mockTrack, id: 'track-1', name: 'Track 1' },      const tracks = [      const setTracks = jest.fn();    it('reorders tracks on drag and drop', async () => {    });      );        })          filePath: '/path/to/test.wav'          trackId: 'test-track-1',        expect.objectContaining({      expect(createAudioClip).toHaveBeenCalledWith(      fireEvent.drop(track, { dataTransfer });      fireEvent.dragOver(track, { dataTransfer });      };        types: ['Files']        ],          { kind: 'file', type: 'audio/wav', getAsFile: () => file }        items: [        files: [file],      const dataTransfer = {      });        writable: false        value: '/path/to/test.wav',      Object.defineProperty(file, 'path', {            const file = new File(['audio content'], 'test.wav', { type: 'audio/wav' });      const track = screen.getByText('Test Track').closest('[data-testid="track"]');      renderLane({ createAudioClip });      const createAudioClip = jest.fn();    it('handles audio file drop on track', async () => {  describe('Drag and Drop', () => {  });    });      }));        solo: true,        id: 'test-track-1',      expect(setTrack).toHaveBeenCalledWith(expect.objectContaining({            fireEvent.click(soloButton);      const soloButton = within(track).getByRole('button', { name: /solo/i });      const track = screen.getByText('Test Track').closest('[data-testid="track"]');            renderLane({ setTrack });      const setTrack = jest.fn();    it('toggles track solo state', () => {    });      }));        mute: true,        id: 'test-track-1',      expect(setTrack).toHaveBeenCalledWith(expect.objectContaining({            fireEvent.click(muteButton);      const muteButton = within(track).getByRole('button', { name: /mute/i });      const track = screen.getByText('Test Track').closest('[data-testid="track"]');            renderLane({ setTrack });      const setTrack = jest.fn();    it('toggles track mute state', () => {    });      expect(setSelectedTrackId).toHaveBeenCalledWith('test-track-1');            fireEvent.click(track);      const track = screen.getByText('Test Track').closest('[data-testid="track"]');            renderLane({ setSelectedTrackId });      const setSelectedTrackId = jest.fn();    it('selects track on click', async () => {  describe('Interactions', () => {  });    });      expect(screen.getByText('Volume')).toBeInTheDocument();      renderLane({ tracks: [trackWithAutomation] });      };        automation: true,        ...mockTrack,      const trackWithAutomation = {    it('renders automation lanes when track automation is enabled', () => {    });      expect(within(track).getByRole('button', { name: /solo/i })).toBeInTheDocument();      expect(within(track).getByRole('button', { name: /mute/i })).toBeInTheDocument();      const track = screen.getByText('Test Track').closest('[data-testid="track"]');      renderLane();    it('renders track controls correctly', () => {    });      expect(screen.getByText('Master')).toBeInTheDocument();      expect(screen.getByText('Test Track')).toBeInTheDocument();      renderLane();    it('renders tracks and master track', () => {  describe('Rendering', () => {  };    );      </WorkstationContext.Provider>        </ClipboardContext.Provider>          </AnalysisContext.Provider>            <Lane />          <AnalysisContext.Provider value={analysisValue}>        <ClipboardContext.Provider value={clipboardValue}>      <WorkstationContext.Provider value={workstationValue}>    return render(    const analysisValue = { ...mockAnalysisContext, ...analysisProps };    const clipboardValue = { ...mockClipboardContext, ...clipboardProps };    const workstationValue = { ...mockWorkstationContext, ...workstationProps };  ) => {    analysisProps = {}    clipboardProps = {},    workstationProps = {},  const renderLane = (  // Helper function to render Lane with contexts  };    setIsAnalyzing: jest.fn(),    isAnalyzing: false,    setResults: jest.fn(),    results: {},    setAnalysisType: jest.fn(),    analysisType: AudioAnalysisType.Waveform,  const mockAnalysisContext = {  };    duplicateClip: jest.fn(),    deleteClip: jest.fn(),    consolidateClip: jest.fn(),    setAllowMenuAndShortcuts: jest.fn(),    allowMenuAndShortcuts: true,    },      horizontalScale: 1,      timeSignature: { beats: 4, noteValue: 4 },      tempo: 120,    timelineSettings: {    trackRegion: null,    setTrackRegion: jest.fn(),    pasteClip: jest.fn(),    insertClips: jest.fn(),    createClipFromTrackRegion: jest.fn(),    createAudioClip: jest.fn(),    adjustNumMeasures: jest.fn(),    showMaster: true,    verticalScale: 1,    setTracks: jest.fn(),    setTrack: jest.fn(),    setSelectedTrackId: jest.fn(),    selectedTrackId: null,    playheadPos: { toMargin: () => 0, copy: () => ({ toMargin: () => 0 }) },    snapGridSize: 1,    tracks: [mockTrack],    },      automationLanes: [],      fx: { preset: null, effects: [], selectedEffectIndex: 0 },      clips: [],      automationMode: AutomationMode.Off,      automation: false,      armed: false,      mute: false,      solo: false,      pan: 0,      volume: 0,      type: TrackType.Audio,      name: "Master",      id: "master",    masterTrack: {  const mockWorkstationContext = {  };    setClipboardItem: jest.fn(),    clipboardItem: null,  const mockClipboardContext = {  };    }],      expanded: false      show: true,      nodes: [],      maxValue: 1,      minValue: 0,      enabled: true,      envelope: AutomationLaneEnvelope.Volume,      label: "Volume",      id: "automation-1",    automationLanes: [{    },      selectedEffectIndex: 0,      effects: [],      preset: null,    fx: {    clips: [mockClip],    automationMode: AutomationMode.Off,    automation: false,    armed: false,    mute: false,    solo: false,    pan: 0,    volume: 0,    type: TrackType.Audio,    color: "#ff0000",    name: "Test Track",    id: "test-track-1",  const mockTrack: Track = {  };    selected: false,    mute: false,    gain: 1,    color: "#ff0000",    name: "Test Clip",    filePath: "test-file.wav",    offset: 0,    endTime: 4,    startTime: 0,    trackId: "test-track-1",    id: "test-clip-1",  const mockClip: Clip = {  // Mock data setupdescribe('Lane Component', () => {}));  }),    ref: React.createRef(),    height: 500,    width: 1000,  useResizeDetector: () => ({jest.mock('react-resize-detector', () => ({// Mock react-resize-detector}));  openContextMenu: jest.fn(),  },    },      invoke: jest.fn(),    ipcRenderer: {  electronAPI: {jest.mock("../../../services/electron/utils", () => ({// Mock the electron APIimport userEvent from '@testing-library/user-event';import { AudioAnalysisType } from '../../../types/audio';
+// Mock the electron API
+jest.mock('../../../services/electron/utils', () => ({
+  electronAPI: {
+    ipcRenderer: {
+      invoke: jest.fn(),
+    },
+  },
+}));
+
+// Mock context values
+const mockClipboardContext = {
+  clipboardItem: null,
+  setClipboardItem: jest.fn(),
+};
+
+const mockTrack: Track = {
+  id: 'test-track-1',
+  name: 'Test Track',
+  color: '#ff0000',
+  type: TrackType.Audio,
+  volume: 0,
+  pan: 0,
+  solo: false,
+  mute: false,
+  armed: false,
+  automation: false,
+  automationMode: AutomationMode.Off,
+  clips: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
+  automationLanes: [{
+    id: 'automation-1',
+    label: 'Volume',
+    envelope: AutomationLaneEnvelope.Volume,
+    enabled: true,
+    minValue: 0,
+    maxValue: 1,
+    nodes: [],
+    show: true,
+    expanded: false
+  }],
+};
+
+const mockWorkstationContext = {
+  masterTrack: {
+    ...mockTrack,
+    id: 'master',
+    name: 'Master Track',
+  },
+  tracks: [mockTrack],
+  snapGridSize: 1,
+  playheadPos: { toMargin: () => 0, copy: () => ({ toMargin: () => 0 }) },
+  selectedTrackId: null,
+  setSelectedTrackId: jest.fn(),
+  setTrack: jest.fn(),
+  setTracks: jest.fn(),
+  verticalScale: 1,
+  showMaster: true,
+  adjustNumMeasures: jest.fn(),
+  createAudioClip: jest.fn(),
+  createClipFromTrackRegion: jest.fn(),
+  insertClips: jest.fn(),
+  pasteClip: jest.fn(),
+  setTrackRegion: jest.fn(),
+  trackRegion: null,
+  timelineSettings: {
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    horizontalScale: 1,
+  },
+  allowMenuAndShortcuts: true,
+  setAllowMenuAndShortcuts: jest.fn(),
+  consolidateClip: jest.fn(),
+  deleteClip: jest.fn(),
+  duplicateClip: jest.fn(),
+  splitClip: jest.fn(),
+  toggleMuteClip: jest.fn(),
+  setSongRegion: jest.fn(),
+  maxPos: { toMargin: () => 1000 },
+  numMeasures: 4,
+  setVerticalScale: jest.fn(),
+  updateTimelineSettings: jest.fn(),
+  scrollToItem: null,
+  selectedClipId: null,
+  setScrollToItem: jest.fn(),
+  setSelectedClipId: jest.fn(),
+  isPlaying: false,
+  setIsPlaying: jest.fn(),
+  analyzeClip: jest.fn(),
+};
+
+describe('Lane Component', () => {
+  const renderLane = (props = {}) => {
+    return render(
+      <ClipboardContext.Provider value={mockClipboardContext}>
+        <WorkstationContext.Provider value={mockWorkstationContext}>
+          <Lane data-testid="lane-container" dragDataTarget={null} track={mockTrack} {...props} />
+        </WorkstationContext.Provider>
+      </ClipboardContext.Provider>
+    );
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Rendering', () => {
+    it('renders track lane correctly', () => {
+      const { container } = renderLane();
+      const laneElement = container.querySelector('.lane');
+      expect(laneElement).toBeInTheDocument();
+      expect(laneElement).toHaveAttribute('data-track', mockTrack.id);
+    });
+
+    it('displays track automation lanes when automation is enabled', () => {
+      const automatedTrack = {
+        ...mockTrack,
+        automation: true,
+      };
+      const { container } = renderLane({ track: automatedTrack });
+      const automationElements = container.getElementsByClassName('automation-lane');
+      expect(automationElements.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Interactions', () => {
+    it('selects track on mouse down', () => {
+      renderLane();
+      const laneElement = screen.getByTestId('lane-container');
+      fireEvent.mouseDown(laneElement);
+      expect(mockWorkstationContext.setSelectedTrackId).toHaveBeenCalledWith(mockTrack.id);
+    });
+
+    it('shows context menu on right click', () => {
+      const { container } = renderLane();
+      const lane = container.querySelector('.lane');
+      expect(lane).toBeTruthy();
+      fireEvent.contextMenu(lane!);
+    });
+  });
+
+  describe('Drag and Drop', () => {
+    it('handles audio file drag and drop', () => {
+      const { container } = renderLane();
+      const lane = container.querySelector('.lane');
+      expect(lane).toBeTruthy();
+
+      const file = new File(['test audio content'], 'test.mp3', { type: 'audio/mp3' });
+      const dataTransfer = {
+        files: [file],
+        items: [{ kind: 'file', type: 'audio/mp3' }],
+      };
+
+      fireEvent.dragOver(lane!, {
+        dataTransfer,
+        preventDefault: jest.fn(),
+      });
+
+      fireEvent.drop(lane!, {
+        dataTransfer,
+        preventDefault: jest.fn(),
+      });
+
+      expect(mockWorkstationContext.createAudioClip).toHaveBeenCalled();
+    });
+
+    it('rejects invalid file types', () => {
+      const { container } = renderLane();
+      const lane = container.querySelector('.lane');
+      expect(lane).toBeTruthy();
+
+      const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
+      const dataTransfer = {
+        files: [file],
+        items: [{ kind: 'file', type: 'text/plain' }],
+      };
+
+      fireEvent.dragOver(lane!, {
+        dataTransfer,
+        preventDefault: jest.fn(),
+      });
+
+      expect(lane).toHaveClass('invalid-track-type');
+    });
+  });
+});

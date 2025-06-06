@@ -43,29 +43,19 @@ class MockAudioBuffer implements AudioBuffer {
     return this._channelData[channel];
   }
 
-  copyToChannel(
-    source: Float32Array,
-    channelNumber: number,
-    startInChannel = 0
-  ): void {
+  copyToChannel(source: Float32Array, channelNumber: number, startInChannel = 0): void {
     if (channelNumber >= this.numberOfChannels) {
       throw new Error("Channel index out of bounds");
     }
     this._channelData[channelNumber].set(source, startInChannel);
   }
 
-  copyFromChannel(
-    destination: Float32Array,
-    channelNumber: number,
-    startInChannel = 0
-  ): void {
+  copyFromChannel(destination: Float32Array, channelNumber: number, startInChannel = 0): void {
     if (channelNumber >= this.numberOfChannels) {
       throw new Error("Channel index out of bounds");
     }
     const end = Math.min(startInChannel + destination.length, this.length);
-    destination.set(
-      this._channelData[channelNumber].subarray(startInChannel, end)
-    );
+    destination.set(this._channelData[channelNumber].subarray(startInChannel, end));
   }
 }
 
@@ -79,8 +69,7 @@ class MockAudioContext implements AudioContext {
   readonly audioWorklet: AudioWorklet;
   readonly listener: AudioListener;
   readonly currentTime = 0;
-  readonly onstatechange: ((this: BaseAudioContext, ev: Event) => any) | null =
-    null;
+  readonly onstatechange: ((this: BaseAudioContext, ev: Event) => any) | null = null;
 
   constructor(_options?: AudioContextOptions) {
     this.audioWorklet = {
@@ -112,194 +101,133 @@ class MockAudioContext implements AudioContext {
     } as unknown as AudioDestinationNode;
   }
 
-  createBuffer = vi.fn(
-    (numChannels: number, length: number, sampleRate: number) =>
-      new MockAudioBuffer({ numberOfChannels: numChannels, length, sampleRate })
-  );
+  createBuffer = vi.fn((numChannels: number, length: number, sampleRate: number) =>
+    new MockAudioBuffer({ numberOfChannels: numChannels, length, sampleRate }));
 
-  createBufferSource = vi.fn(
-    () =>
-      ({
-        buffer: null,
-        playbackRate: { value: 1 },
-        detune: { value: 0 },
-        loop: false,
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-        start: vi.fn(),
-        stop: vi.fn(),
-      } as unknown as AudioBufferSourceNode)
-  );
+  createBufferSource = vi.fn(() => ({
+    buffer: null,
+    playbackRate: { value: 1 },
+    detune: { value: 0 },
+    loop: false,
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+  } as unknown as AudioBufferSourceNode));
 
-  createGain = vi.fn(
-    () =>
-      ({
-        gain: { value: 1 },
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as GainNode)
-  );
+  createGain = vi.fn(() => ({
+    gain: { value: 1 },
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as GainNode));
 
-  createAnalyser = vi.fn(
-    () =>
-      ({
-        fftSize: 2048,
-        frequencyBinCount: 1024,
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-        getFloatFrequencyData: vi.fn(),
-        getByteFrequencyData: vi.fn(),
-      } as unknown as AnalyserNode)
-  );
+  createAnalyser = vi.fn(() => ({
+    fftSize: 2048,
+    frequencyBinCount: 1024,
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    getFloatFrequencyData: vi.fn(),
+    getByteFrequencyData: vi.fn(),
+  } as unknown as AnalyserNode));
 
-  createMediaElementSource = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as MediaElementAudioSourceNode)
-  );
+  createMediaElementSource = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as MediaElementAudioSourceNode));
 
-  createMediaStreamDestination = vi.fn(
-    () =>
-      ({
-        stream: new MediaStream(),
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as MediaStreamAudioDestinationNode)
-  );
+  createMediaStreamDestination = vi.fn(() => ({
+    stream: new MediaStream(),
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as MediaStreamAudioDestinationNode));
 
-  createMediaStreamSource = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as MediaStreamAudioSourceNode)
-  );
+  createMediaStreamSource = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as MediaStreamAudioSourceNode));
 
   getOutputTimestamp = vi.fn(() => ({
     contextTime: 0,
     performanceTime: 0,
   }));
 
-  createBiquadFilter = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as BiquadFilterNode)
-  );
+  createBiquadFilter = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as BiquadFilterNode));
 
-  createOscillator = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-        start: vi.fn(),
-        stop: vi.fn(),
-      } as unknown as OscillatorNode)
-  );
+  createOscillator = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+  } as unknown as OscillatorNode));
 
-  createPanner = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as PannerNode)
-  );
+  createPanner = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as PannerNode));
 
-  createDynamicsCompressor = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as DynamicsCompressorNode)
-  );
+  createDynamicsCompressor = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as DynamicsCompressorNode));
 
-  createStereoPanner = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as StereoPannerNode)
-  );
+  createStereoPanner = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as StereoPannerNode));
 
-  createDelay = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as DelayNode)
-  );
+  createDelay = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as DelayNode));
 
-  createConvolver = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as ConvolverNode)
-  );
+  createConvolver = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as ConvolverNode));
 
-  createConstantSource = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-        start: vi.fn(),
-        stop: vi.fn(),
-      } as unknown as ConstantSourceNode)
-  );
+  createConstantSource = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+  } as unknown as ConstantSourceNode));
 
-  createChannelMerger = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as ChannelMergerNode)
-  );
+  createChannelMerger = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as ChannelMergerNode));
 
-  createChannelSplitter = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as ChannelSplitterNode)
-  );
+  createChannelSplitter = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as ChannelSplitterNode));
 
-  createWaveShaper = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as WaveShaperNode)
-  );
+  createWaveShaper = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as WaveShaperNode));
 
-  createIIRFilter = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-      } as unknown as IIRFilterNode)
-  );
+  createIIRFilter = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  } as unknown as IIRFilterNode));
 
-  createPeriodicWave = vi.fn(() => ({} as unknown as PeriodicWave));
+  createPeriodicWave = vi.fn(() => ({}) as unknown as PeriodicWave);
 
-  createScriptProcessor = vi.fn(
-    () =>
-      ({
-        connect: vi.fn(),
-        disconnect: vi.fn(),
-        onaudioprocess: null,
-      } as unknown as ScriptProcessorNode)
-  );
+  createScriptProcessor = vi.fn(() => ({
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    onaudioprocess: null,
+  } as unknown as ScriptProcessorNode));
 
-  decodeAudioData = vi.fn().mockResolvedValue(
-    new MockAudioBuffer({
-      numberOfChannels: 2,
-      length: 44100,
-      sampleRate: 44100,
-    })
-  );
+  decodeAudioData = vi.fn().mockResolvedValue(new MockAudioBuffer({
+    numberOfChannels: 2,
+    length: 44100,
+    sampleRate: 44100,
+  }));
 
   close = vi.fn().mockResolvedValue(undefined);
   suspend = vi.fn().mockResolvedValue(undefined);
@@ -321,8 +249,7 @@ interface AudioBufferConstructor {
 }
 
 // Cast constructors to expected types
-const TypedAudioContext =
-  MockAudioContext as unknown as AudioContextConstructor;
+const TypedAudioContext = MockAudioContext as unknown as AudioContextConstructor;
 const TypedAudioBuffer = MockAudioBuffer as unknown as AudioBufferConstructor;
 
 // Declare globals
@@ -391,24 +318,6 @@ class MockResizeObserver implements ResizeObserver {
 
 global.ResizeObserver = MockResizeObserver;
 
-// Mock DOMMatrix
-class MockDOMMatrix {
-  constructor(transform?: string) {
-    const values = transform
-      ? transform
-          .match(/matrix\((.*)\)/)![1]
-          .split(",")
-          .map(Number)
-      : [1, 0, 0, 1, 0, 0];
-    this.m41 = values[4] || 0;
-    this.m42 = values[5] || 0;
-  }
-  m41: number;
-  m42: number;
-}
-
-global.DOMMatrix = MockDOMMatrix as any;
-
 // Console error handling
 const SUPPRESSED_ERRORS = [
   "Warning:",
@@ -424,10 +333,7 @@ beforeAll(() => {
   // Mock console.error
   console.error = (...args: Parameters<typeof console.error>) => {
     const firstArg = args[0];
-    if (
-      typeof firstArg === "string" &&
-      SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))
-    ) {
+    if (typeof firstArg === "string" && SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))) {
       return;
     }
     originalConsoleError.apply(console, args);

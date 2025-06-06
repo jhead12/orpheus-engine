@@ -5,8 +5,11 @@ import { describe, it, expect, vi, beforeAll } from "vitest";
 import Knob from "../Knob";
 
 describe("Knob Component", () => {
-  // Mock wheel events since JSDom doesn't fully support them
   beforeAll(() => {
+    // Setup fake timers
+    vi.useFakeTimers();
+
+    // Mock wheel events since JSDom doesn't fully support them
     Object.defineProperty(window, "WheelEvent", {
       value: class WheelEvent extends Event {
         deltaY: number;
@@ -92,10 +95,12 @@ describe("Knob Component", () => {
 
     const knobElement = screen.getByLabelText("50");
     const wheelEvent = new WheelEvent("wheel", { deltaY: -100 });
-    
+
     act(() => {
       knobElement.dispatchEvent(wheelEvent);
+      vi.advanceTimersByTime(100); // Advance timers to handle any debounced callbacks
     });
+
     expect(handleChange).toHaveBeenCalled();
   });
   it("supports custom styling", () => {

@@ -1,59 +1,98 @@
-import { cmdOrCtrl } from "../../services/utils/general";
+import { clamp } from "../../services/utils/general";
+
+declare global {
+  interface Window {
+    electron: {
+      ipcRenderer: {
+        send(channel: string, data: unknown): void;
+      };
+    };
+  }
+}
+
+export interface ContextMenuParams {
+  action: string;
+  [key: string]: unknown;
+}
+
+type DebouncedFunction<T extends (...args: unknown[]) => unknown> = T & {
+  cancel: () => void;
+};
 
 /**
- * Create a debounced function that adds delay between invocations
+ * Creates a debounced function that delays invoking func until after wait milliseconds
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
-): T & { cancel: () => void } {
-  let timeout: NodeJS.Timeout | null;
+): DebouncedFunction<T> {
+  let timeout: NodeJS.Timeout | null = null;
 
-  function debounced(...args: Parameters<T>) {
+  const debounced = function (this: unknown, ...args: Parameters<T>): void {
     const later = () => {
       timeout = null;
-      func.apply(null, args);
+      func.apply(this, args);
     };
 
-    if (timeout) clearTimeout(timeout);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
     timeout = setTimeout(later, wait);
-  }
+  } as DebouncedFunction<T>;
 
-  debounced.cancel = () => {
+  debounced.cancel = function () {
     if (timeout) {
       clearTimeout(timeout);
       timeout = null;
     }
   };
 
-  return debounced as T & { cancel: () => void };
+  return debounced;
 }
 
 /**
- * Clamp a value between min and max
- */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
-}
-
-/**
- * Check if system is macOS
- */
-export function isMacOS(): boolean {
-  return navigator.platform.toLowerCase().includes("mac");
-}
-
-/**
- * Open context menu with specified parameters
+ * Opens the context menu with the specified type and parameters
  */
 export function openContextMenu(
   type: string,
-  params: any = {},
-  callback: (actionParams: any) => void
+  params: Record<string, unknown> = {},
+  callback: (actionParams: ContextMenuParams) => void
 ): void {
-  // Implementation would connect to electron for native context menu
-  console.log("Opening context menu", { type, params });
-  callback(params);
+  window.electron.ipcRenderer.send("show-context-menu", {
+    type,
+    ...params,
+    callback,
+  });
 }
 
-export { cmdOrCtrl };
+/**
+ * Returns true if the current platform is macOS
+ */
+export function isMacOS(): boolean {
+  return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+}
+
+/**
+ * Checks if a keyboard event should trigger a context menu
+ */
+export function shouldOpenContextMenu(
+  e: KeyboardEvent | React.KeyboardEvent
+): boolean {
+  return cmdOrCtrl(e) && e.key === " ";
+}
+
+/**
+ * Returns true if the Cmd key is pressed on Mac or Ctrl key on other platforms
+ */
+export function cmdOrCtrl(e: KeyboardEvent | React.KeyboardEvent): boolean {
+  return isMacOS() ? e.metaKey : e.ctrlKey;
+}
+
+// Export SortData interface
+export interface SortData {
+  sourceIndex: number;
+  edgeIndex?: number;
+  destIndex?: number;
+}
+
+export { clamp };

@@ -32,6 +32,9 @@ export enum AutomationMode {
 export enum AutomationLaneEnvelope {
   Volume = "volume",
   Pan = "pan",
+  Send = "send",
+  Filter = "filter",
+  Tempo = "tempo",
   Effect = "effect",
 }
 
@@ -369,17 +372,20 @@ export interface AutomationNode {
 
 export interface Clip {
   id: string;
-  start: TimelinePosition;
-  end: TimelinePosition;
-  startLimit?: TimelinePosition;
-  endLimit?: TimelinePosition;
-  loopEnd: TimelinePosition;
-  muted: boolean;
   name: string;
   type: TrackType;
+  start: TimelinePosition;
+  end: TimelinePosition;
+  loopEnd: TimelinePosition;
+  startLimit?: TimelinePosition;
+  endLimit?: TimelinePosition;
+  muted: boolean;
   audio?: {
+    audioBuffer: AudioBuffer;
     buffer: AudioBuffer;
     waveform: number[];
+    start: TimelinePosition;
+    end: TimelinePosition;
   };
 }
 

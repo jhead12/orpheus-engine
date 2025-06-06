@@ -37,17 +37,19 @@ import WorkstationContext from "../../context/WorkstationContext";
 import { AnalysisContext } from "../../context/AnalysisContext";
 import { ContextMenuType } from "../../types/context-menu";
 import {
-  Clip,
   TimelinePosition,
-  Track,
   TrackType,
   AutomationMode,
+  Clip,
 } from "../../types/core";
+import { Track } from "../../services/types/types";
 import {
   AudioAnalysisType,
   AudioAnalysisResults,
   SnapGridSizeOption,
+  WorkstationAudioInputFile,
 } from "../../types/audio";
+import { getGridSizeFromOption } from "../../services/utils/timeline-utils";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,
@@ -527,7 +529,11 @@ export default function Editor() {
       const rect = timelineEditorWindow.getBoundingClientRect();
       const margin =
         timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
-      let pos = TimelinePosition.fromMargin(margin).snap(snapGridSize);
+      const gridSize =
+        typeof snapGridSize === "number"
+          ? snapGridSize
+          : getGridSizeFromOption(snapGridSize);
+      let pos = TimelinePosition.fromMargin(margin).snap(gridSize);
 
       for (let i = 0; i < files.length; i++) {
         if (isValidAudioTrackFileFormat(files[i].type)) {
@@ -536,23 +542,28 @@ export default function Editor() {
             dragData.target.track.type === TrackType.Audio
           ) {
             const name = files[i].name.split(".")[0];
-            const buffer = Buffer.from(await files[i].arrayBuffer());
-            const audioFile = {
-              id: v4(), // Generate unique ID
-              name,
-              path: files[i].name,
-              duration: 0, // Duration will be calculated in createAudioClip
-              buffer, // If createAudioClip needs this, we'll need to update WorkstationAudioInputFile
-              type: files[i].type, // Same here - add to the interface if needed
-            };
 
             try {
-              const newClip = await createAudioClip(audioFile, pos);
-              clips.push(newClip);
-              if (dragData.target.track && newClip.end) {
-                const snapSize =
-                  typeof snapGridSize === "number" ? snapGridSize : 1;
-                pos = newClip.end.copy().snap(snapSize);
+              const arrayBuffer = await files[i].arrayBuffer();
+              const buffer = Buffer.from(arrayBuffer);
+
+              const result = await createAudioClip({
+                id: v4(),
+                name,
+                path: files[i].name,
+                type: files[i].type,
+                size: files[i].size,
+                lastModified: files[i].lastModified,
+                buffer,
+              });
+
+              if (result && typeof result === "object" && "end" in result) {
+                clips.push(result as Clip);
+                if (dragData.target.track && result.end) {
+                  pos = TimelinePosition.fromMargin(result.end.toMargin()).snap(
+                    gridSize
+                  );
+                }
               }
             } catch (error) {
               console.error("Failed to create audio clip:", error);
@@ -606,17 +617,23 @@ export default function Editor() {
   }
 
   function handleSortEnd(_: MouseEvent, data: SortData) {
-    if (data.destIndex > -1 && data.sourceIndex !== data.destIndex) {
+    if (
+      data.destIndex !== undefined &&
+      data.destIndex > -1 &&
+      data.sourceIndex !== data.destIndex
+    ) {
       const newTracks = tracks.slice();
       const [removed] = newTracks.splice(data.sourceIndex, 1);
 
       newTracks.splice(data.destIndex, 0, removed);
 
       setTracks(newTracks);
-      setScrollToItem({
-        type: "track",
-        params: { trackId: newTracks[data.destIndex].id },
-      });
+      if (newTracks[data.destIndex]) {
+        setScrollToItem({
+          type: "track",
+          params: { trackId: newTracks[data.destIndex].id },
+        });
+      }
     }
 
     setTrackReorderData({ sourceIndex: -1, edgeIndex: -1 });
@@ -626,7 +643,7 @@ export default function Editor() {
   function handleSortStart(_: React.MouseEvent, data: SortData) {
     setTrackReorderData({
       sourceIndex: data.sourceIndex,
-      edgeIndex: data.edgeIndex,
+      edgeIndex: data.edgeIndex || -1,
     });
     setAllowMenuAndShortcuts(false);
   }
@@ -698,13 +715,14 @@ export default function Editor() {
             });
           }
         } else {
-          if (Math.abs(e.deltaY) > 5)
+          if (Math.abs(e.deltaY) > 5) {
             const newScale = clamp(
               verticalScale + (e.deltaY < 0 ? 0.25 : -0.25),
               0.75,
               5
             );
-          setVerticalScale(newScale);
+            setVerticalScale(newScale);
+          }
         }
       }
     }
@@ -720,7 +738,7 @@ export default function Editor() {
     });
   }, [dragData.items]);
 
-  const { beatWidth: settingsBeatWidth, timeSignature } = timelineSettings;
+  const { timeSignature } = timelineSettings;
   const beatWidth =
     timelineSettings.beatWidth *
     (timelineSettings.horizontalScale ?? 1) *
