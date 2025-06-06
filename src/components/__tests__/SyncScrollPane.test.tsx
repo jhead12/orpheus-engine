@@ -50,8 +50,28 @@ describe("SyncScrollPane", () => {
   it("maintains scroll synchronization between panes", () => {
     const scrollFn2 = vi.fn();
     
+    // Mock the scroll handler implementation
+    const mockScrollHandler = vi.fn((e: Event) => {
+      if (e.target === pane1) {
+        scrollFn2({
+          top: pane1.scrollTop,
+          left: pane1.scrollLeft,
+          behavior: undefined
+        });
+      }
+    });
+
+    // Update mock context to include scroll handler
+    const contextWithHandler = {
+      ...mockContext,
+      registerPane: (pane: HTMLElement) => {
+        mockRegisterPane(pane);
+        pane.onscroll = mockScrollHandler;
+      }
+    };
+
     const { container } = render(
-      <TestProvider>
+      <ScrollSyncContext.Provider value={contextWithHandler}>
         <div style={{ display: "flex", height: "200px" }}>
           <SyncScrollPane id="pane1" style={{ width: "200px", overflow: "auto" }}>
             <div style={{ height: "400px", width: "400px" }}>Content 1</div>
@@ -60,7 +80,7 @@ describe("SyncScrollPane", () => {
             <div style={{ height: "400px", width: "400px" }}>Content 2</div>
           </SyncScrollPane>
         </div>
-      </TestProvider>
+      </ScrollSyncContext.Provider>
     );
 
     // Get references to both panes
@@ -71,29 +91,29 @@ describe("SyncScrollPane", () => {
     expect(pane2).toBeTruthy();
 
     if (pane1 && pane2) {
-      // Set up scroll dimensions
+      // Set up scroll dimensions with configurable properties
       Object.defineProperties(pane1, {
-        scrollWidth: { value: 1000 },
-        clientWidth: { value: 500 },
-        scrollHeight: { value: 1000 },
-        clientHeight: { value: 500 },
-        scrollLeft: { value: 100 },
-        scrollTop: { value: 100 },
+        scrollWidth: { value: 1000, configurable: true },
+        clientWidth: { value: 500, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        clientHeight: { value: 500, configurable: true },
+        scrollLeft: { value: 100, configurable: true },
+        scrollTop: { value: 100, configurable: true }
       });
 
       Object.defineProperties(pane2, {
-        scrollTo: { value: scrollFn2 },
-        scrollWidth: { value: 1000 },
-        clientWidth: { value: 500 },
-        scrollHeight: { value: 1000 },
-        clientHeight: { value: 500 },
+        scrollTo: { value: scrollFn2, configurable: true },
+        scrollWidth: { value: 1000, configurable: true },
+        clientWidth: { value: 500, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        clientHeight: { value: 500, configurable: true }
       });
 
       // Verify registration occurred
       expect(mockRegisterPane).toHaveBeenCalledWith(pane1);
       expect(mockRegisterPane).toHaveBeenCalledWith(pane2);
 
-      // Simulate scroll event
+      // Simulate scroll event with updated context
       act(() => {
         fireEvent.scroll(pane1);
         vi.runAllTimers();
@@ -103,7 +123,7 @@ describe("SyncScrollPane", () => {
       expect(scrollFn2).toHaveBeenCalledWith({
         top: 100,
         left: 100,
-        behavior: undefined,
+        behavior: undefined
       });
     }
   });
