@@ -16,17 +16,18 @@ import {
   ContextMenuType,
   TimelinePosition,
   Track,
-} from '../../../types/core';
-import { BaseClipComponentProps, ResizeDNRData } from '../../../types/components';
+} from '@orpheus/types/core';
+import { BaseClipComponentProps, ResizeDNRData } from '@orpheus/types/components';
 import { shadeColor } from '@orpheus/utils/general';
-import {
-  BASE_HEIGHT,
-  clipAtPos,
-  scrollToAndAlign,
-  timelineEditorWindowScrollThresholds,
-  waitForScrollWheelStop,
-} from '@orpheus/utils/utils';
 import useClickAway from "../../../services/hooks/useClickAway";
+import {
+  scrollToAndAlign,
+  waitForScrollWheelStop,
+  clipAtPos,
+  timelineEditorWindowScrollThresholds,
+} from '@orpheus/utils/utils';
+
+export const BASE_HEIGHT = 100; // Adding constant at top level
 
 interface IProps extends BaseClipComponentProps {
   automationSprite?: (height: number) => React.ReactNode;
@@ -94,8 +95,8 @@ function ClipComponent({
   const laneRef = useRef<HTMLElement | null>(null);
   const loopRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const prevHorizontalScale = useRef<number>(undefined);
-  const timelineEditorWindowInner = useRef<HTMLElement>(null);
+  const prevHorizontalScale = useRef<number | null>(null);
+  const timelineEditorWindowInner = useRef<HTMLElement | null>(null);
 
   const handleClickAway = useCallback(() => {
     if (selectedClipId === clip.id && !looping) setSelectedClipId(null);
@@ -104,9 +105,10 @@ function ClipComponent({
   const ref = useClickAway<HTMLDivElement>(handleClickAway);
 
   useEffect(() => {
-    timelineEditorWindowInner.current = document.getElementById(
-      "timeline-editor-window"
-    );
+    const element = document.getElementById("timeline-editor-window");
+    if (element instanceof HTMLElement) {
+      timelineEditorWindowInner.current = element;
+    }
 
     if (ref.current)
       laneRef.current = ref.current.closest<HTMLElement>(".lane");
@@ -135,11 +137,12 @@ function ClipComponent({
   useEffect(() => {
     const endX = clip.end.toMargin();
     setCoords({ startX: clip.start.toMargin(), endX });
-    setLoopWidth(clip.loopEnd ? clip.loopEnd.toMargin() - endX : 0);
+    const loopEndMargin = clip.loopEnd?.toMargin();
+    setLoopWidth(loopEndMargin !== undefined ? loopEndMargin - endX : 0);
   }, [clip, timelineSettings.timeSignature]);
 
   useEffect(() => {
-    if (prevHorizontalScale.current !== undefined) {
+    if (prevHorizontalScale.current !== null) {
       const percentChange =
         timelineSettings.horizontalScale / prevHorizontalScale.current;
       setCoords({
@@ -396,10 +399,9 @@ function ClipComponent({
 
     onSetClip({
       ...clip,
-      loopEnd:
-        loopWidth > 0
-          ? TimelinePosition.fromMargin(coords.endX + loopWidth)
-          : undefined,
+      loopEnd: loopWidth > 0 
+        ? TimelinePosition.fromMargin(coords.endX + loopWidth)
+        : TimelinePosition.fromMargin(coords.endX)
     });
     setAllowMenuAndShortcuts(true);
     rest.onLoopStop?.(e, data);
@@ -441,10 +443,9 @@ function ClipComponent({
         ...clip,
         start: TimelinePosition.fromMargin(coords.startX),
         end: TimelinePosition.fromMargin(coords.endX),
-        loopEnd:
-          loopWidth > 0
-            ? TimelinePosition.fromMargin(coords.endX + loopWidth)
-            : undefined,
+        loopEnd: TimelinePosition.fromMargin(
+          loopWidth > 0 ? coords.endX + loopWidth : coords.endX
+        ),
       });
 
     setAllowMenuAndShortcuts(true);

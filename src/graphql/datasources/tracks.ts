@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { v4 as uuidv4 } from 'uuid';
-import { Track, TrackType, AutomationMode, Effect, FXChainPreset } from '../../types/core';
+import { Track, TrackType, AutomationMode } from '../../types/core';
 
 interface TrackInput {
   name: string;
@@ -83,32 +83,6 @@ export class TrackAPI {
   }
 
   async delete(id: string): Promise<boolean> {
-    const success = this.tracks.delete(id);
-    this.trackLoader.clear(id);
-    return success;
-  }
-
-    this.tracks.set(id, track);
-    return track;
-  }
-
-  async update(id: string, input: any) {
-    const track = await this.get(id);
-    if (!track) {
-      throw new Error('Track not found');
-    }
-
-    const updatedTrack = {
-      ...track,
-      ...input
-    };
-
-    this.tracks.set(id, updatedTrack);
-    this.trackLoader.clear(id);
-    return updatedTrack;
-  }
-
-  async delete(id: string) {
     const success = this.tracks.delete(id);
     this.trackLoader.clear(id);
     return success;

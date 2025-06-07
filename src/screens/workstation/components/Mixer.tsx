@@ -1,10 +1,11 @@
+import { formatPanning, getVolumeGradient } from '@orpheus/utils/audio';
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
 import { WorkstationContext } from '@orpheus/contexts';
 import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from '@orpheus/types/core';
 import { hslToHex, hueFromHex } from '@orpheus/utils/general';
-import { formatPanning, getVolumeGradient, volumeToNormalized } from '@orpheus/utils/utils';
+;
 import { FXComponent, TrackVolumeSlider } from "./index";
 import { TrackIcon } from "../../../components/icons";
 import { SortData } from '@orpheus/widgets/SortableList';

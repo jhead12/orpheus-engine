@@ -1,5 +1,4 @@
 // Type definitions for preferences and settings
-import { Theme } from "@mui/material";
 
 // Preference Types
 export interface Preferences {

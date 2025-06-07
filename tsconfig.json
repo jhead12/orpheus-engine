@@ -32,8 +32,14 @@
       "@orpheus/electron": ["electron/index"],
       "@orpheus/electron/*": ["electron/*"]
     },
-    "types": ["jest"]
+    "types": ["vitest/globals", "vite/client", "node"]
   },
-  "include": ["src"],
+  "include": ["src", "test", "scripts"],
+  "exclude": [
+    "src/test/visual-agent/templates/**/*.template.ts",
+    "node_modules",
+    "dist",
+    "build"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

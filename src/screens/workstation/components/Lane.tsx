@@ -5,11 +5,13 @@ import { ClipboardItemType } from "@orpheus/types/clipboard";
 import { AutomationLane, Clip, Track, TrackType, TimelinePosition } from '@orpheus/types/core';
 import { WorkstationAudioInputFile } from '@orpheus/types/audio';
 import { ContextMenuType } from "@orpheus/types/context-menu";
-import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from '@orpheus/utils/utils';
 import { AudioClipComponent, AutomationLaneComponent, ClipComponent, RegionComponent } from "./index";
 import { openContextMenu } from "@orpheus/services/electron/utils";
 import { TRACK_FILE_UPLOAD } from "@orpheus/services/electron/channels";
 import { getCSSVarValue, normalizeHex } from '@orpheus/utils/general';
+import {
+  BASE_HEIGHT
+} from "../../../services/utils/utils";
 
 
 // Export the props interface to make it available for consumers

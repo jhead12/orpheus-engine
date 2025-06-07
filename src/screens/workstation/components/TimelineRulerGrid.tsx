@@ -1,9 +1,10 @@
+
 import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { PreferencesContext, WorkstationContext } from "@orpheus/contexts";
 import { TimelinePosition } from "@orpheus/types/core";
 import { SnapGridSizeOption } from "@orpheus/types/audio";
 import { formatDuration, measureSeconds } from "@orpheus/utils/general";
-import { BASE_BEAT_WIDTH, GRID_MIN_INTERVAL_WIDTH } from "@orpheus/utils/utils";
+;
 
 const TIME_MIN_INTERVAL_WIDTH = 68;
 const POS_MIN_INTERVAL_WIDTH = 34;

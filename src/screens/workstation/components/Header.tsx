@@ -1,3 +1,4 @@
+import { getVolumeGradient, sliceClip } from '@orpheus/utils/audio';
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   FastForward,
@@ -36,11 +37,7 @@ import {
 } from '@orpheus/types/core';
 import { SnapGridSizeOption } from '@orpheus/types/audio';
 import { FaMagnet } from "react-icons/fa";
-import {
-  getVolumeGradient,
-  sliceClip,
-  volumeToNormalized,
-} from '@orpheus/utils/utils';
+;
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";

@@ -1,3 +1,4 @@
+
 import React, { useContext, useMemo, useState } from "react"
 import { IconButton, Popover } from "@mui/material"
 import { WorkstationContext } from '@orpheus/contexts';
@@ -5,7 +6,7 @@ import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, Contex
 import { Add, ExpandLess, ExpandMore, Remove } from "@mui/icons-material"
 import { clamp, inverseLerp, lerp } from '@orpheus/utils/general'
 import { v4 } from "uuid"
-import { BASE_HEIGHT, automatedValueAtPos, volumeToNormalized } from '@orpheus/utils/utils'
+
 import { Meter } from '@orpheus/widgets'
 import { openContextMenu } from "../../../services/electron/utils"
 

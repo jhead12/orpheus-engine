@@ -1,38 +1,34 @@
-// We need to set up mocks before any imports
 import { vi } from "vitest";
 
-// Make sure vi.mock is at the top level, not inside a function
-// Define the mock factory function
-const createMockTimelinePosition = () => ({
-  ticks: 0,
-  compareTo: vi.fn().mockReturnValue(0),
-  toMargin: vi.fn().mockReturnValue(0),
-  copy: vi.fn().mockReturnThis(),
-  equals: vi.fn().mockReturnValue(true),
-  diff: vi.fn().mockReturnThis(),
-});
-
-// Setup mock for TimelinePosition - using direct path without @orpheus alias
+// Setup all mocks before any imports
 vi.mock("../../../../types/core", () => {
-  const MockTimelinePosition = vi.fn().mockImplementation(() => createMockTimelinePosition());
-  
-  // Add static methods and ensure they're properly typed
-  MockTimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
-    if (!str) return null;
-    return createMockTimelinePosition();
-  });
-  
-  // Add static properties
-  MockTimelinePosition.start = createMockTimelinePosition();
-  
   return {
-    TimelinePosition: MockTimelinePosition,
+    TimelinePosition: vi.fn().mockImplementation(() => ({
+      ticks: 0,
+      compareTo: vi.fn().mockReturnValue(0),
+      toMargin: vi.fn().mockReturnValue(0),
+      copy: vi.fn().mockReturnThis(),
+      equals: vi.fn().mockReturnValue(true),
+      diff: vi.fn().mockReturnThis(),
+    })),
     TrackType: { Audio: "audio" },
     AutomationMode: { Off: "off" },
     AutomationLaneEnvelope: { Volume: "volume" },
     ContextMenuType: { Track: 0, Automation: 1 }
   };
 });
+
+// Factory function to create mock TimelinePosition instances for tests
+function createMockTimelinePosition() {
+  return {
+    ticks: 0,
+    compareTo: vi.fn().mockReturnValue(0),
+    toMargin: vi.fn().mockReturnValue(0),
+    copy: vi.fn().mockReturnThis(),
+    equals: vi.fn().mockReturnValue(true),
+    diff: vi.fn().mockReturnThis(),
+  };
+}
 
 // Normal imports after mocks
 import { describe, expect, beforeEach, afterEach } from "vitest";

@@ -1,6 +1,7 @@
 // Export all type definitions
 export * from "./core";
-export * from "./components";
+// Export components types separately to avoid name clashes
+export type { BaseClipComponentProps } from "./components";
 export * from "./audio";
 export * from "./utils";
 export * from "./context";

@@ -1,4 +1,5 @@
 onlyBuiltDependencies:
+  - '@apollo/protobufjs'
   - core-js
   - electron
   - electron-winstaller

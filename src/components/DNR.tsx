@@ -16,9 +16,10 @@ export interface DNRData {
 
 export interface DNRProps {
   allowAnyClick?: boolean;
+  autoScroll?: { thresholds: { top: any; right: any; bottom: any; left: any } };
+  bounds?: { left?: number; top?: number; right?: number; bottom?: number };
   className?: string;
   children?: React.ReactNode;
-  bounds?: { left?: number; top?: number; right?: number; bottom?: number };
   coords: Coords;
   drag?: boolean;
   dragAxis?: "x" | "y" | "both";
@@ -41,20 +42,24 @@ export interface DNRProps {
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   onWheel?: (e: React.WheelEvent<HTMLDivElement>) => void;
-  onResize?: (
-    data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }
-  ) => void;
+  onResize?: (data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
+  onResizeStart?: (e: React.MouseEvent<HTMLDivElement>, data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
+  onResizeStop?: (e: MouseEvent, data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
   position?: { x: number; y: number };
-  resize?:
-    | boolean
-    | {
-        top?: boolean;
-        right?: boolean;
-        bottom?: boolean;
-        left?: boolean;
-        bottomRight?: boolean;
-      };
+  resize?: boolean | {
+    top?: boolean;
+    right?: boolean;
+    bottom?: boolean;
+    left?: boolean;
+    bottomRight?: boolean;
+  };
   resizeAxis?: "x" | "y" | "both";
+  resizeHandles?: {
+    left?: { style?: React.CSSProperties };
+    right?: { style?: React.CSSProperties };
+  };
+  restrictToContainerBounds?: { x: boolean; y: boolean };
+  snapGridSize?: { x: number };
   scale?: number;
   style?: CSSProperties;
 }
