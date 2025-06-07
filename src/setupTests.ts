@@ -115,6 +115,75 @@ class MockAudioBuffer implements AudioBuffer {
   }
 }
 
+// Set up global AudioBuffer constructor
+global.AudioBuffer = MockAudioBuffer as any;
+
+// Mock HTMLCanvas context
+const mockCanvasContext = {
+  fillRect: vi.fn(),
+  clearRect: vi.fn(),
+  getImageData: vi.fn(() => ({
+    data: new Uint8ClampedArray(4),
+    width: 1,
+    height: 1,
+  })),
+  putImageData: vi.fn(),
+  createImageData: vi.fn(() => ({
+    data: new Uint8ClampedArray(4),
+    width: 1,
+    height: 1,
+  })),
+  setTransform: vi.fn(),
+  drawImage: vi.fn(),
+  save: vi.fn(),
+  fillText: vi.fn(),
+  restore: vi.fn(),
+  beginPath: vi.fn(),
+  moveTo: vi.fn(),
+  lineTo: vi.fn(),
+  closePath: vi.fn(),
+  stroke: vi.fn(),
+  translate: vi.fn(),
+  scale: vi.fn(),
+  rotate: vi.fn(),
+  arc: vi.fn(),
+  fill: vi.fn(),
+  measureText: vi.fn(() => ({ width: 0 })),
+  transform: vi.fn(),
+  rect: vi.fn(),
+  clip: vi.fn(),
+};
+
+// Mock HTMLCanvasElement.getContext
+HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
+  if (contextType === '2d') {
+    return mockCanvasContext;
+  }
+  return null;
+}) as any;
+
+// Mock electron IPC renderer
+const mockIpcRenderer = {
+  invoke: vi.fn().mockResolvedValue({}),
+  send: vi.fn(),
+  on: vi.fn(),
+  removeListener: vi.fn(),
+};
+
+global.window = Object.assign(global.window || {}, {
+  electron: {
+    ipcRenderer: mockIpcRenderer,
+  },
+});
+
+// Also make it available as window.require for older electron patterns
+global.window.require = vi.fn((module) => {
+  if (module === 'electron') {
+    return { ipcRenderer: mockIpcRenderer };
+  }
+  return {};
+});
+
 // Console error handling
 const SUPPRESSED_ERRORS = [
   "Warning:",

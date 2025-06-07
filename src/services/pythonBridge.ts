@@ -1,5 +1,13 @@
 import { ipcRenderer } from "electron";
 
+// Handle test environment
+const getIpcRenderer = (): any => {
+  if (typeof window !== 'undefined' && window.electron?.ipcRenderer) {
+    return window.electron.ipcRenderer;
+  }
+  return ipcRenderer;
+};
+
 export interface PythonAnalysisParams {
   command: string;
   audioData: Float32Array;
@@ -36,7 +44,8 @@ export async function invokePythonAnalysis(
   params: PythonAnalysisParams
 ): Promise<PythonAnalysisResult> {
   try {
-    const result = await ipcRenderer.invoke("audio:analyze", params);
+    const renderer = getIpcRenderer();
+    const result = await renderer.invoke("audio:analyze", params);
     return result as PythonAnalysisResult;
   } catch (error) {
     console.error("Python analysis failed:", error);
