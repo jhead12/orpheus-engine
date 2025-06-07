@@ -59,7 +59,9 @@ describe("Knob Component", () => {
   });
   it("calls onChange when dragged", async () => {
     const handleChange = vi.fn();
-    renderWithTheme(<Knob value={50} onChange={handleChange} onInput={handleChange} />);
+    renderWithTheme(
+      <Knob value={50} onChange={handleChange} onInput={handleChange} />
+    );
 
     const knobElement = screen.getByLabelText("50");
 
@@ -140,7 +142,9 @@ describe("Knob Component", () => {
   });
   it("handles wheel events for value adjustment", async () => {
     const handleChange = vi.fn();
-    renderWithTheme(<Knob value={50} onChange={handleChange} onInput={handleChange} />);
+    renderWithTheme(
+      <Knob value={50} onChange={handleChange} onInput={handleChange} />
+    );
 
     const knobElement = screen.getByLabelText("50");
 
@@ -167,7 +171,9 @@ describe("Knob Component", () => {
       },
     };
 
-    const { container } = renderWithTheme(<Knob value={50} style={customStyle} />);
+    const { container } = renderWithTheme(
+      <Knob value={50} style={customStyle} />
+    );
 
     // Look for elements with the specific test IDs instead of style attributes
     const knobRotator = screen.getByTestId("knob-rotator");
@@ -192,7 +198,11 @@ describe("Knob Component", () => {
     expect(initialKnob).toBeInTheDocument();
 
     // Update the value prop
-    rerender(<TestWrapper><Knob value={75} onChange={handleChange} min={0} max={100} /></TestWrapper>);
+    rerender(
+      <TestWrapper>
+        <Knob value={75} onChange={handleChange} min={0} max={100} />
+      </TestWrapper>
+    );
 
     // Check rotation change
     const rotator = screen.getByTestId("knob-rotator");
@@ -221,7 +231,9 @@ describe("Knob Component", () => {
   describe("Visual Tests", () => {
     // Simplified visual tests without screenshot dependencies to avoid timeouts
     it("visual test: renders knob at different values", () => {
-      const { container } = renderWithTheme(<Knob value={75} min={0} max={100} />);
+      const { container } = renderWithTheme(
+        <Knob value={75} min={0} max={100} />
+      );
       const knobRotator = screen.getByTestId("knob-rotator");
 
       // Verify the knob renders and rotates correctly for 75% value
@@ -233,7 +245,9 @@ describe("Knob Component", () => {
     });
 
     it("visual test: renders knob at minimum value", () => {
-      const { container } = renderWithTheme(<Knob value={0} min={0} max={100} />);
+      const { container } = renderWithTheme(
+        <Knob value={0} min={0} max={100} />
+      );
       const knobRotator = screen.getByTestId("knob-rotator");
 
       // Verify the knob renders and rotates correctly for 0% value (minimum rotation)
@@ -245,7 +259,9 @@ describe("Knob Component", () => {
     });
 
     it("visual test: renders knob at maximum value", () => {
-      const { container } = renderWithTheme(<Knob value={100} min={0} max={100} />);
+      const { container } = renderWithTheme(
+        <Knob value={100} min={0} max={100} />
+      );
       const knobRotator = screen.getByTestId("knob-rotator");
 
       // Verify the knob renders and rotates correctly for 100% value (maximum rotation)

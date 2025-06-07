@@ -53,9 +53,22 @@ vi.mock("@orpheus/services/electron/utils", () => ({
 // Mock utility functions
 vi.mock("@orpheus/utils/utils", () => ({
   BASE_HEIGHT: 100,
-  getLaneColor: () => "#000000",
+  getLaneColor: vi.fn().mockReturnValue("#000000"),
   removeAllClipOverlap: (clips: Clip[]) => clips,
-  timelineEditorWindowScrollThresholds: [100, 100],
+  timelineEditorWindowScrollThresholds: {
+    top: { slow: 25, medium: 50, fast: 100 },
+    right: { slow: 50, medium: 100, fast: 200 },
+    bottom: { slow: 25, medium: 50, fast: 100 },
+    left: { slow: 50, medium: 100, fast: 200 }
+  },
+  volumeToNormalized: vi.fn(),
+  normalizedToVolume: vi.fn(),
+  formatVolume: vi.fn(),
+  getPanUnitValue: vi.fn(),
+  formatPan: vi.fn(),
+  formatAutomationValue: vi.fn(),
+  formatAutomationValueDisplay: vi.fn(),
+  convertToAutomationValue: vi.fn(),
 }));
 
 // Mock CSS variable utils
