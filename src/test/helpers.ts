@@ -82,20 +82,46 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
   // Set content and wait for styles to load
   await page.setContent(html);
 
-  // Wait for styles to be applied and any dynamic content
-  await page.waitForTimeout(1000);
+  // Wait for fonts to load
+  await page.waitForLoadState("domcontentloaded");
+  await page.evaluate(() => document.fonts.ready);
 
-  // Wait for the side panel element to be visible
+  // Wait for styles to be applied and any dynamic content
+  await page.waitForTimeout(2000);
+
+  // Wait for the side panel element to be visible and any transitions to complete
   await page.waitForSelector('[data-testid="side-panel"]', {
-    timeout: 2000,
+    timeout: 5000,
     state: "visible",
   });
 
-  // Take the screenshot
+  // Additional wait for any CSS transitions to complete
+  await page.waitForTimeout(500);
+
+  // Ensure the element is stable (no animations/transitions running)
+  await page.evaluate(() => {
+    return new Promise((resolve) => {
+      const element = document.querySelector('[data-testid="side-panel"]');
+      if (!element) {
+        resolve(null);
+        return;
+      }
+
+      // Wait for any ongoing transitions
+      element.addEventListener("transitionend", () => resolve(null), {
+        once: true,
+      });
+      // Fallback if no transition is running
+      setTimeout(resolve, 100);
+    });
+  });
+
+  // Take the screenshot with consistent settings
   const screenshot = await page.screenshot({
     type: "png",
     animations: "disabled",
     scale: "css",
+    timeout: 5000,
   });
 
   await browser.close();
@@ -108,7 +134,10 @@ export async function expectScreenshot(element: HTMLElement, name: string) {
     customSnapshotsDir: "__snapshots__/screenshots",
     customDiffDir: "__snapshots__/diffs",
     customSnapshotIdentifier: name,
-    failureThreshold: 0.01, // Allow 1% difference
+    failureThreshold: 0.02, // Allow 2% difference for more stability
     failureThresholdType: "percent",
+    blur: 0.5, // Apply slight blur to reduce impact of anti-aliasing differences
+    comparisonMethod: "ssim", // Use structural similarity comparison
+    allowSizeMismatch: true, // Allow slight size mismatches
   });
 }

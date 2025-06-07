@@ -19,12 +19,42 @@ import {
 import { TrackIcon } from "../../../components/icons"
 import { openContextMenu } from "../../../services/electron/utils"
 
+interface EnhancedTrack extends Track {
+  armed?: boolean;
+  type?: string;
+  automation?: boolean;
+  automationMode?: string;
+  automationLanes?: Array<{
+    id: string;
+    show: boolean;
+    envelope: AutomationLaneEnvelope;
+  }>;
+  mute?: boolean;
+  solo?: boolean;
+  effects?: Array<{
+    id: string;
+    type: string;
+    enabled: boolean;
+    parameters: Record<string, unknown>;
+  }>;
+  inputs?: Array<{
+    id: string;
+    name: string;
+    active?: boolean;
+  }>;
+  outputs?: Array<{
+    id: string;
+    name: string;
+    active?: boolean;
+  }>;
+}
+
 interface IProps {
   className?: string;
   colorless?: boolean;
   order?: number;
-  style?: React.CSSProperties; // Changed from CSSProperties to React.CSSProperties
-  track: Track;
+  style?: React.CSSProperties;
+  track: EnhancedTrack;
 }
 
 function TrackComponent({ className, colorless, order, track, style }: IProps) {
@@ -227,6 +257,31 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
     addAutomationButtonIcon: { color: "var(--border6)", transform: "translate(-0.5px, 0.5px)" }
   } as const;
 
+  function handleToggleFX(effectId: string) {
+    if (track.type === 'audio' && track.effects) {
+      const newEffects = track.effects.map(effect =>
+        effect.id === effectId ? { ...effect, enabled: !effect.enabled } : effect
+      );
+      setTrack({ ...track, effects: newEffects });
+    }
+  }
+
+  function handleUpdateFXParameters(effectId: string, parameters: Record<string, any>) {
+    if (track.type === 'audio' && track.effects) {
+      const newEffects = track.effects.map(effect =>
+        effect.id === effectId ? { ...effect, parameters: { ...effect.parameters, ...parameters } } : effect
+      );
+      setTrack({ ...track, effects: newEffects });
+    }
+  }
+
+  function handleRemoveFX(effectId: string) {
+    if (track.type === 'audio' && track.effects) {
+      const newEffects = track.effects.filter(effect => effect.id !== effectId);
+      setTrack({ ...track, effects: newEffects });
+    }
+  }
+
   if (showMaster || !isMaster) {
     return (
       <div 
@@ -244,79 +299,75 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
             style={{ height: trackHeight, borderBottom: "1px solid var(--border1)" }}
           >
             <div className="d-flex flex-column" style={styles.trackLeftSection}>
-              <div className="d-flex" style={styles.nameFxVolumePanContainer}>
-                <div className="overflow-hidden" style={{height: "fit-content"}}>
-                  <div className="d-flex align-items-center stop-reorder" style={styles.nameContainer}>
-                    <IconButton style={{padding: "2px 2px 2px 3px", borderRadius: 0}}>
-                      <TrackIcon color={borderColor} type={track.type} />
-                    </IconButton>
-                    <form
-                      onSubmit={e => {e.preventDefault(); setTrack({ ...track, name })}}
-                      title={name}
-                      style={{ lineHeight: 1, paddingLeft: 1 }}
-                    >
-                      <input
-                        className="m-0 p-0 pe-1 col-12 no-borders"
-                        onChange={e => setName(e.target.value)}
-                        onBlur={() => setTrack({ ...track, name })}
-                        style={styles.nameInput}
-                        value={name}
-                      />
-                    </form>
+              <div style={styles.nameFxVolumePanContainer}>
+                <div style={styles.nameContainer}>
+                  <input
+                    className="p-1 border-0 w-100"
+                    onChange={e => setName(e.target.value)}
+                    onBlur={handleNameBlur}
+                    style={styles.nameInput}
+                    type="text"
+                    value={name}
+                  />
+                </div>
+                {track.type === 'audio' && track.effects?.length > 0 && (
+                  <div data-testid="fx-chain" style={styles.fx.container}>
+                    {track.effects.map(effect => (
+                      <div key={effect.id} className="fx-plugin">
+                        <span>{effect.type}</span>
+                        <IconButton
+                          size="small"
+                          onClick={() => setTrack({
+                            ...track,
+                            effects: track.effects?.map(e => 
+                              e.id === effect.id ? { ...e, enabled: !e.enabled } : e
+                            )
+                          })}
+                        >
+                          {effect.enabled ? <Check /> : null}
+                        </IconButton>
+                      </div>
+                    ))}
                   </div>
-                  <FXComponent compact={trackHeight < 75} track={track} style={styles.fx} />
-                </div>
-                <div style={{marginLeft: 3, width: 22}}>
-                  <Knob
-                    disabled={volume.isAutomated}
-                    max={6}
-                    min={-Infinity}  
-                    onChange={(val: number) => setTrack({ ...track, volume: val } as any)}
-                    origin={0}
-                    scale={{
-                      toNormalized: (value: number) => Math.pow(10, value / 75.1456) * 0.8321,
-                      toScale: (value: number) => value === 0 ? -Infinity : 75.1456 * Math.log10(value / 0.8321)
-                    }}
-                    showMeter={false}
-                    size={20}
-                    style={{ ...styles.knob, knob: { ...styles.knob.knob, marginBottom: 3 } }}
-                    title={`Volume: ${formatVolume(volume.value!)}${volume.isAutomated ? " (automated)" : ""}`}
-                    tooltipProps={{ container: { vertical: "#track-section" } }}
-                    value={volume.value!}
-                    valueLabelFormat={(value: number) => formatVolume(value)}
-                  />
-                  <Knob
-                    disabled={pan.isAutomated}
-                    max={100}
-                    min={-100}
-                    onChange={(val: number) => setTrack({ ...track, pan: val } as any)}
-                    origin={0}
-                    showMeter={false}
-                    size={20}
-                    style={styles.knob}
-                    title={`Pan: ${formatPanning(pan.value!)}${pan.isAutomated ? " (automated)" : ""}`}
-                    tooltipProps={{ container: { vertical: "#track-section" } }}
-                    value={pan.value!}
-                    valueLabelFormat={(value: number) => formatPanning(value, true)}
-                  />
-                </div>
-              </div>
-              <div className="d-flex flex-column" style={styles.meterContainer}>
-                <Meter
-                  color={getVolumeGradient(false)}
-                  marks={[{value: 75, style: {backgroundColor: "var(--border1)"}}]}
-                  percent={volumeToNormalized((track as any).volume || 0) * 100}
-                  style={{ ...styles.meter, borderBottom: "1px solid var(--border1)" }}
-                />  
-                <Meter
-                  color={getVolumeGradient(false)}
-                  marks={[{value: 75, style: {backgroundColor: "var(--border1)"}}]}
-                  percent={volumeToNormalized((track as any).volume || 0) * 100}
-                  style={styles.meter}
-                />
+                )}
+                {track.type === 'audio' && (
+                  <>
+                    <select
+                      data-testid="track-input-select"
+                      onChange={e => handleInputChange(e.target.value)}
+                      value={track.inputs?.[0]?.id}
+                    >
+                      {track.inputs?.map(input => (
+                        <option key={input.id} value={input.id}>
+                          {input.name}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      data-testid="track-output-select"
+                      onChange={e => handleOutputChange(e.target.value)}
+                      value={track.outputs?.[0]?.id}
+                    >
+                      {track.outputs?.map(output => (
+                        <option key={output.id} value={output.id}>
+                          {output.name}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                )}
               </div>
             </div>
             <div className="d-flex flex-column align-items-center" style={styles.controlButtonsContainer}>
+              {track.type === 'audio' && (
+                <IconButton
+                  data-testid="track-arm-button"
+                  onClick={handleArmTrack}
+                  style={{ color: track.armed ? '#ff004c' : 'var(--border6)' }}
+                >
+                  <FiberManualRecord style={{ fontSize: 14 }} />
+                </IconButton>
+              )}
               <div style={{ display: "flex", flexDirection: !isMaster ? "column" : "row" }}>
                 <div style={{display: "flex"}}>
                   <div title={muteButtonTitle}>
