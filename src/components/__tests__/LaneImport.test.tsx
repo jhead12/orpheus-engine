@@ -3,6 +3,8 @@ import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import type { Clip } from "@orpheus/types/core";
+import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
+import { ClipboardContext } from "@orpheus/contexts/ClipboardContext";
 
 // Define the enums for testing since they need to be available at runtime
 const TrackType = {
@@ -21,15 +23,11 @@ const AutomationMode = {
 
 // Mock the required contexts
 vi.mock("@orpheus/contexts/WorkstationContext", () => ({
-  WorkstationContext: {
-    Provider: ({ children }: { children: React.ReactNode }) => children,
-  },
+  WorkstationContext: React.createContext({}),
 }));
 
 vi.mock("@orpheus/contexts/ClipboardContext", () => ({
-  ClipboardContext: {
-    Provider: ({ children }: { children: React.ReactNode }) => children,
-  },
+  ClipboardContext: React.createContext({}),
 }));
 
 // Mock TimelinePosition
@@ -263,9 +261,6 @@ describe("Lane Component Import and Type Tests", () => {
     });
 
     const renderLaneWithContext = (track: any, additionalProps = {}) => {
-      const { ClipboardContext } = require("@orpheus/contexts/ClipboardContext");
-      const { WorkstationContext } = require("@orpheus/contexts/WorkstationContext");
-      
       return render(
         React.createElement(WorkstationContext.Provider, { value: mockWorkstationContext },
           React.createElement(ClipboardContext.Provider, { value: mockClipboardContext },
@@ -298,11 +293,10 @@ describe("Lane Component Import and Type Tests", () => {
           name: 'Audio Clip',
           start: mockTimelinePosition,
           end: mockTimelinePosition,
-          startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: audioTrack.id,
           type: TrackType.Audio
-        } as Clip
+        }
       ];
       
       expect(() => renderLaneWithContext(audioTrack)).not.toThrow();
@@ -316,11 +310,10 @@ describe("Lane Component Import and Type Tests", () => {
           name: 'MIDI Clip',
           start: mockTimelinePosition,
           end: mockTimelinePosition,
-          startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: midiTrack.id,
           type: TrackType.Midi
-        } as Clip
+        }
       ];
       
       expect(() => renderLaneWithContext(midiTrack)).not.toThrow();
@@ -413,10 +406,10 @@ describe("Lane Component Import and Type Tests", () => {
     it("should handle track with effects", () => {
       const trackWithEffects = createMockTrack(TrackType.Audio);
       trackWithEffects.fx = {
-        preset: 'rock-preset',
+        preset: null,
         effects: [
-          { id: 'reverb-1', name: 'Reverb', enabled: true },
-          { id: 'eq-1', name: 'EQ', enabled: false }
+          { id: 'reverb-1', name: 'Reverb', enabled: true, type: 'reverb', parameters: {} },
+          { id: 'eq-1', name: 'EQ', enabled: false, type: 'eq', parameters: {} }
         ],
         selectedEffectIndex: 0,
       };
@@ -432,7 +425,6 @@ describe("Lane Component Import and Type Tests", () => {
           name: 'First Clip',
           start: mockTimelinePosition,
           end: mockTimelinePosition,
-          startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: track.id,
           type: TrackType.Audio
@@ -442,12 +434,11 @@ describe("Lane Component Import and Type Tests", () => {
           name: 'Second Clip',
           start: mockTimelinePosition,
           end: mockTimelinePosition,
-          startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: track.id,
           type: TrackType.Audio
         }
-      ] as Clip[];
+      ];
       
       expect(() => renderLaneWithContext(track)).not.toThrow();
     });
