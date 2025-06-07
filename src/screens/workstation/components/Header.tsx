@@ -28,7 +28,7 @@ import {
   Badge,
 } from "@mui/material";
 import { WorkstationContext } from '@orpheus/contexts';
-import { Meter, NumberInput, SelectSpinBox } from '../../../components/widgets';
+import { Meter, NumberInput, SelectSpinBox } from '@orpheus/widgets';
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
@@ -40,11 +40,11 @@ import {
   getVolumeGradient,
   sliceClip,
   volumeToNormalized,
-} from '../../../services/utils/utils';
+} from '@orpheus/utils/utils';
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
-import { parseDuration } from '../../../services/utils/general';
+import { parseDuration } from '@orpheus/utils/general';
 import SettingsPanel from "../../../components/settings/SettingsPanel";
 
 const noteValues: { label: string; value: number }[] = [];

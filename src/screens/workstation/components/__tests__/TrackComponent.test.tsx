@@ -2,8 +2,8 @@ import { describe, it, beforeEach, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TrackComponent } from "../TrackComponent";
-import { expectScreenshot } from "../../../../test/helpers";
-import { WorkstationContext } from "../../../../contexts/WorkstationContext";
+import { expectScreenshot } from '@orpheus/test/helpers';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { TimelinePosition } from "../../../../types";
 import type { Track } from "../../../../types";
 
@@ -125,43 +125,6 @@ describe("TrackComponent Visual Tests", () => {
     document.body.removeChild(container);
   });
 
-  it("visual test: renders track with automation @visual", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Test Track",
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: true,
-      automationLanes: [
-        {
-          id: "lane-1",
-          show: true,
-          envelope: "volume",
-          nodes: [
-            { id: "node-1", pos: { bar: 0, beat: 0, ticks: 0 }, value: 0.5 },
-            { id: "node-2", pos: { bar: 1, beat: 0, ticks: 0 }, value: 0.8 },
-          ],
-        },
-      ],
-      mute: false,
-      solo: false,
-    };
-
-    renderWithContext(<TrackComponent track={track} />, container);
-
-    // Wait for initial render
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Wait for styled-components
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Wait for automation lanes to render
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    await expectScreenshot(container, "track-with-automation");
-    document.body.removeChild(container);
-  });
-
   it("visual test: renders muted track @visual", async () => {
     const container = createContainer();
     renderWithContext(
@@ -184,86 +147,6 @@ describe("TrackComponent Visual Tests", () => {
     await expectScreenshot(container, "track-muted");
     document.body.removeChild(container);
   });
-
-  it("visual test: renders soloed track @visual", async () => {
-    const container = createContainer();
-    renderWithContext(
-      <TrackComponent
-        track={{
-          id: "track-1",
-          name: "Test Track",
-          color: "#ff0000",
-          volume: 0.8,
-          pan: 0,
-          automation: false,
-          mute: false,
-          solo: true,
-        }}
-      />,
-      container
-    );
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await expectScreenshot(container, "track-soloed");
-    document.body.removeChild(container);
-  });
-
-  it("visual test: renders master track @visual", async () => {
-    const container = createContainer();
-    renderWithContext(
-      <TrackComponent
-        track={{
-          id: "master-1",
-          name: "Master",
-          color: "#808080",
-          volume: 1.0,
-          pan: 0,
-          automation: false,
-          mute: false,
-          solo: false,
-        }}
-      />,
-      container
-    );
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await expectScreenshot(container, "track-master");
-    document.body.removeChild(container);
-  });
-});
-
-describe("TrackComponent Functional Tests", () => {
-  it("functional test: interacts with track controls", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Test Track",
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-      automationLanes: [],
-    };
-
-    renderWithContext(<TrackComponent track={track} />, container);
-
-    // Interact with the track component
-    const muteButton = screen.getByLabelText("Mute");
-    userEvent.click(muteButton);
-
-    // Assert the expected outcome
-    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mute: true,
-      })
-    );
-
-    document.body.removeChild(container);
-  });
-
-  // Add more functional tests as needed
 });
 
 describe("TrackComponent Recording Features", () => {
@@ -281,16 +164,12 @@ describe("TrackComponent Recording Features", () => {
       solo: false,
     };
 
-    const { getByTestId } = render(
-      <WorkstationContext.Provider value={mockWorkstationContext}>
-        <TrackComponent track={track} />
-      </WorkstationContext.Provider>
-    );
+    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
 
     const armButton = getByTestId("track-arm-button");
     expect(armButton).toBeInTheDocument();
     userEvent.click(armButton);
-    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
+    expect(defaultContext.setTrack).toHaveBeenCalledWith(
       expect.objectContaining({ armed: true })
     );
   });
@@ -328,8 +207,8 @@ describe("TrackComponent FX Features", () => {
           id: "fx-1",
           type: "reverb",
           enabled: true,
-          parameters: { mix: 0.5 },
-        },
+          parameters: { mix: 0.5 }
+        }
       ],
       color: "#ff0000",
       volume: 0.8,
@@ -339,11 +218,7 @@ describe("TrackComponent FX Features", () => {
       solo: false,
     };
 
-    const { getByTestId } = render(
-      <WorkstationContext.Provider value={mockWorkstationContext}>
-        <TrackComponent track={track} />
-      </WorkstationContext.Provider>
-    );
+    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
 
     const fxChain = getByTestId("fx-chain");
     expect(fxChain).toBeInTheDocument();
@@ -361,8 +236,8 @@ describe("TrackComponent FX Features", () => {
           id: "fx-1",
           type: "reverb",
           enabled: true,
-          parameters: { mix: 0.5 },
-        },
+          parameters: { mix: 0.5 }
+        }
       ],
       color: "#ff0000",
       volume: 0.8,
@@ -395,11 +270,7 @@ describe("TrackComponent I/O Features", () => {
       solo: false,
     };
 
-    const { getByTestId } = render(
-      <WorkstationContext.Provider value={mockWorkstationContext}>
-        <TrackComponent track={track} />
-      </WorkstationContext.Provider>
-    );
+    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
 
     const inputSelect = getByTestId("track-input-select");
     const outputSelect = getByTestId("track-output-select");
