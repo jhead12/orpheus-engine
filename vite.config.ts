@@ -24,7 +24,7 @@ export default defineConfig({
       "@orpheus/services": path.resolve(__dirname, "./src/services"),
       "@orpheus/screens": path.resolve(__dirname, "./src/screens"),
       "@orpheus/contexts": path.resolve(__dirname, "./src/contexts"),
-      "@orpheus/types": path.resolve(__dirname, "./src/services/types"),
+      "@orpheus/types": path.resolve(__dirname, "./src/types"),
       "@orpheus/test": path.resolve(__dirname, "./src/test"),
       "@orpheus/utils": path.resolve(__dirname, "./src/services/utils"),
       "@orpheus/widgets": path.resolve(__dirname, "./src/components/widgets"),

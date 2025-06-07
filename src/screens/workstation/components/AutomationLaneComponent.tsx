@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { ClipboardContext, ClipboardItemType, WorkstationContext } from '@orpheus/contexts';
-import { clamp, inverseLerp, lerp } from '../../../services/utils/general';
+import { clamp, inverseLerp, lerp } from '@orpheus/utils/general';
 import { AutomationNodeComponent } from "./index";
 import { v4 } from "uuid";
-import { BASE_HEIGHT } from '../../../services/utils/utils';
+import { BASE_HEIGHT } from '@orpheus/utils/utils';
 import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from '@orpheus/types/core';
 import { openContextMenu } from "../../../services/electron/utils";
 

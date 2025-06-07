@@ -2,6 +2,7 @@ import { describe, it, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import AudioAnalysisPanel from '../AudioAnalysisPanel';
 import { AudioAnalysisType } from '../../../../types/audio';
+import { TimelinePosition } from '../../../../types/core';
 
 // Mock the hooks and contexts that AudioAnalysisPanel uses
 vi.mock('../../../hooks/useMCPAnalysis', () => ({
@@ -89,11 +90,10 @@ describe('AudioAnalysisPanel Visual Tests', () => {
             audioBuffer: audioBuffer,
             buffer: audioBuffer,
             waveform: Array.from({ length: 1024 }, (_, i) => Math.sin(i * 0.1)),
-            start: { measure: 0, beat: 0, sixteenth: 0 },
-            end: { measure: 4, beat: 0, sixteenth: 0 }
+            start: new TimelinePosition(0, 0, 0),
+            end: new TimelinePosition(4, 0, 0)
           },
-          name: 'Test Clip',
-          color: '#ff0000'
+          name: 'Test Clip'
         }}
         results={null}
       />,

@@ -18,14 +18,14 @@ import {
   Track,
 } from '../../../types/core';
 import { BaseClipComponentProps, ResizeDNRData } from '../../../types/components';
-import { shadeColor } from '../../../services/utils/general';
+import { shadeColor } from '@orpheus/utils/general';
 import {
   BASE_HEIGHT,
   clipAtPos,
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from '../../../services/utils/utils';
+} from '@orpheus/utils/utils';
 import useClickAway from "../../../services/hooks/useClickAway";
 
 interface IProps extends BaseClipComponentProps {

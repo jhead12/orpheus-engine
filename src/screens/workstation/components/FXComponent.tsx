@@ -4,7 +4,7 @@ import { IconButton } from "@mui/material";
 import { BaseEffect, ContextMenuType, Effect, FXChainPreset, Track } from '@orpheus/types/core';
 import { v4 } from "uuid";
 import { WorkstationContext } from '@orpheus/contexts';
-import { SelectSpinBox } from '../../../components/widgets';
+import { SelectSpinBox } from '@orpheus/widgets';
 import { openContextMenu } from "../../../services/electron/utils";
 
 const FX_TYPES = [
