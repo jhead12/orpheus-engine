@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { v4 as uuidv4 } from 'uuid';
-import { Track, TrackType, AutomationMode, Effect, FXChainPreset } from '../../types/core';
+import { Track, TrackType, AutomationMode } from '../../types/core';
 
 interface TrackInput {
   name: string;

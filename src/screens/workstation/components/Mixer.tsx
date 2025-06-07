@@ -1,3 +1,4 @@
+import { formatPanning, getVolumeGradient } from '@orpheus/utils/audio';
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";

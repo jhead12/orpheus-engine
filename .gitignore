@@ -6,6 +6,19 @@ node_modules
 /.pnp
 .pnp.js
 
+# build output
+dist/
+# next.js
+.next/
+# nuxt.js
+.nuxt/
+# vue.js
+.vuepress/dist/
+# gatsby.js
+.cache/
+# tsconfig.tsbuildinfo
+*.tsbuildinfo
+
 # testing
 /coverage
 

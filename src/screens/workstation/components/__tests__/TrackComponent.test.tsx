@@ -1,10 +1,8 @@
 // Import vi first to ensure it's available for mocks
 import { vi } from "vitest";
 
-// Import test setup first to ensure mocks are initialized
-import "@orpheus/test/test-setup";
-
-// Define the createMockTimelinePosition helper function
+// Make sure vi.mock is at the top level, not inside a function
+// Define the mock factory function
 const createMockTimelinePosition = () => ({
   ticks: 0,
   compareTo: vi.fn().mockReturnValue(0),
@@ -14,19 +12,21 @@ const createMockTimelinePosition = () => ({
   diff: vi.fn().mockReturnThis(),
 });
 
-// Setup mock for TimelinePosition using @orpheus symbolic link
-vi.mock("@orpheus/types/core", () => {
-  const mockTimeline = createMockTimelinePosition();
+// Setup mock for TimelinePosition - using direct path without @orpheus alias
+vi.mock("../../../../types/core", () => {
+  const MockTimelinePosition = vi.fn().mockImplementation(() => createMockTimelinePosition());
 
-  // Create the mock class constructor
-  const MockTimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
+  // Add static methods and ensure they're properly typed
+  MockTimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
+    if (!str) return null;
+    return createMockTimelinePosition();
+  });
 
-  // Create a complete mock object with all required parts
-  const mockModule = {
-    TimelinePosition: Object.assign(MockTimelinePosition, {
-      parseFromString: vi.fn((str) => (str ? mockTimeline : null)),
-      start: mockTimeline,
-    }),
+  // Add static properties
+  MockTimelinePosition.start = createMockTimelinePosition();
+
+  return {
+    TimelinePosition: MockTimelinePosition,
     TrackType: { Audio: "audio" },
     AutomationMode: { Off: "off" },
     AutomationLaneEnvelope: { Volume: "volume" },
@@ -35,6 +35,18 @@ vi.mock("@orpheus/types/core", () => {
 
   return mockModule;
 });
+
+// Factory function to create mock TimelinePosition instances for tests
+function createMockTimelinePosition() {
+  return {
+    ticks: 0,
+    compareTo: vi.fn().mockReturnValue(0),
+    toMargin: vi.fn().mockReturnValue(0),
+    copy: vi.fn().mockReturnThis(),
+    equals: vi.fn().mockReturnValue(true),
+    diff: vi.fn().mockReturnThis(),
+  };
+}
 
 // Normal imports after mocks
 import { describe, expect, beforeEach, afterEach } from "vitest";

@@ -19,10 +19,15 @@ export function isMacOS(): boolean {
   return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 }
 
+export interface ContextMenuParams {
+  action: string;
+  [key: string]: unknown;
+}
+
 export function openContextMenu(
-  type: ContextMenuType | string, 
-  data: Record<string, any> = {}, 
-  callback: (params: any) => void
+  _type: ContextMenuType | string,
+  data: Record<string, unknown> = {},
+  callback: (params: ContextMenuParams) => void
 ): void {
   // Implementation would display context menu and call the callback with action
   setTimeout(() => {
@@ -30,13 +35,24 @@ export function openContextMenu(
   }, 100);
 }
 
-export function debounce<T extends (...args: any[]) => any>(
-  func: T, 
+/**
+ * Creates a debounced version of a function that delays invoking it until after
+ * `wait` milliseconds have elapsed since the last invocation.
+ * 
+ * @param func The function to debounce
+ * @param wait The number of milliseconds to delay
+ * @returns A debounced version of the function with an additional `cancel` method
+ */
+export function debounce<Args extends unknown[], R>(
+  func: (...args: Args) => R,
   wait: number
-): T {
+): {
+  (...args: Args): void;
+  cancel: () => void;
+} {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  
-  const debouncedFunction = function(this: any, ...args: any[]) {
+
+  const debouncedFunction = function(this: unknown, ...args: Args) {
     const context = this;
     if (timeout !== null) {
       clearTimeout(timeout);
@@ -45,15 +61,14 @@ export function debounce<T extends (...args: any[]) => any>(
       timeout = null;
       func.apply(context, args);
     }, wait);
-  } as unknown as T;
-  
-  // Add cancel method
-  (debouncedFunction as any).cancel = function() {
+  };
+
+  debouncedFunction.cancel = function() {
     if (timeout !== null) {
       clearTimeout(timeout);
       timeout = null;
     }
   };
-  
+
   return debouncedFunction;
 }

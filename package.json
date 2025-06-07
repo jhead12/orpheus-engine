@@ -22,6 +22,10 @@
   },
   "private": true,
   "main": "build/electron/main.js",
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=10.6.4"
+  },
   "scripts": {
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.mjs\"",
@@ -120,6 +124,7 @@
     "typescript": "~5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.33.0",
+    "vitest-dom": "^0.1.1",
     "wait-on": "^7.0.1"
   },
   "build": {

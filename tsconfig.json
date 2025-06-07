@@ -32,7 +32,7 @@
       "@orpheus/electron": ["electron/index"],
       "@orpheus/electron/*": ["electron/*"]
     },
-    "types": ["jest"]
+    "types": ["vitest/globals", "vite/client", "node"]
   },
   "include": ["src"],
   "exclude": [

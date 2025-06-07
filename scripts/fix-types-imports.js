@@ -5,18 +5,22 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Files to fix and their imports
-const filesToFix = [
+// Pattern to identify problematic imports
+const importPatterns = [
   {
-    file: 'src/screens/workstation/components/AudioClipComponent.tsx',
-    from: "import { BaseClipComponentProps, TimelinePosition } from '@orpheus/types/types';",
-    to: "import { BaseClipComponentProps } from '@orpheus/types/components';\nimport { TimelinePosition } from '@orpheus/types/core';"
-  },
-  {
-    file: 'src/screens/workstation/components/TimelineRulerGrid.tsx',
-    from: "import { TimelinePosition, SnapGridSizeOption } from '@orpheus/types/types';",
-    to: "import { TimelinePosition } from '@orpheus/types/core';\nimport { SnapGridSizeOption } from '@orpheus/types/core';"
-  },
+    pattern: /@orpheus\/types\/types/,
+    replacements: {
+      'BaseClipComponentProps': '@orpheus/types/components',
+      'TimelinePosition': '@orpheus/types/core',
+      'SnapGridSizeOption': '@orpheus/types/core',
+      'Track': '@orpheus/types/core',
+      'Clip': '@orpheus/types/core',
+      'Effect': '@orpheus/types/core'
+    }
+  }
+];
+
+const fileReplacements = [
   {
     file: 'src/screens/workstation/components/Lane.tsx',
     from: "import { AutomationLane, Clip, Track, TrackType } from '@orpheus/types/types';",
@@ -67,8 +71,8 @@ const filesToFix = [
 function fixImports() {
   let fixedCount = 0;
   
-  for (const { file, from, to } of filesToFix) {
-    const filePath = path.join(__dirname, file);
+  for (const { file, from, to } of fileReplacements) {
+    const filePath = path.join(__dirname, '..', file);
     
     if (!fs.existsSync(filePath)) {
       console.log(`⚠️ File not found: ${file}`);

@@ -1,8 +1,17 @@
 import { Clip, TimelinePosition, AutomationLane, AutomationLaneEnvelope } from "../../types/core";
 
-export const BASE_HEIGHT = 100;
+// Timeline constants
 export const BASE_BEAT_WIDTH = 80;
+export const BASE_HEIGHT = 100;
 export const GRID_MIN_INTERVAL_WIDTH = 34;
+
+// Scroll thresholds interface
+export interface TimelineEditorWindowScrollThresholds {
+  top: { slow: number; medium: number; fast: number };
+  right: { slow: number; medium: number; fast: number };
+  bottom: { slow: number; medium: number; fast: number };
+  left: { slow: number; medium: number; fast: number };
+}
 
 // Audio file validation utilities
 export const isValidAudioTrackFileFormat = (type: string): boolean => {
@@ -18,6 +27,15 @@ export const isValidAudioTrackFileFormat = (type: string): boolean => {
   return audioFormats.includes(type);
 };
 
+// Window scroll thresholds
+export const timelineEditorWindowScrollThresholds: TimelineEditorWindowScrollThresholds = {
+  top: { slow: 25, medium: 50, fast: 100 },
+  right: { slow: 50, medium: 100, fast: 200 },
+  bottom: { slow: 25, medium: 50, fast: 100 },
+  left: { slow: 50, medium: 100, fast: 200 },
+};
+
+// Track file format validation
 export const isValidTrackFileFormat = (type: string): boolean => {
   return isValidAudioTrackFileFormat(type) || type === "audio/midi";
 };
@@ -86,13 +104,6 @@ export const scrollToAndAlign = (
     const alignedLeft = left - clientWidth * (align.left || 0);
     element.scrollLeft = Math.max(0, Math.min(alignedLeft, maxScrollLeft));
   }
-};
-
-export const timelineEditorWindowScrollThresholds = {
-  top: { slow: 25, medium: 50, fast: 100 },
-  right: { slow: 50, medium: 100, fast: 200 },
-  bottom: { slow: 25, medium: 50, fast: 100 },
-  left: { slow: 50, medium: 100, fast: 200 },
 };
 
 export const waitForScrollWheelStop = (
