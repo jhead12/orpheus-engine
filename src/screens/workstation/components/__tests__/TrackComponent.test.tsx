@@ -1,13 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom";
-import TrackComponent from "../TrackComponent";
-import { WorkstationContext } from "@orpheus/contexts";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
-
-// Define enums for testing since they need to be available at runtime
+// Define enums FIRST - these must be available before any mocks
 const TrackType = {
   Audio: "audio" as const,
   Midi: "midi" as const,
@@ -30,6 +21,15 @@ const AutomationLaneEnvelope = {
   Filter: "filter" as const,
   Effect: "effect" as const,
 };
+
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
+import TrackComponent from "../TrackComponent";
+import { WorkstationContext } from "@orpheus/contexts";
+import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
 
 // Mock volume utility functions
 vi.mock("@orpheus/utils/utils", () => ({
@@ -69,17 +69,32 @@ vi.mock("@orpheus/types/core", () => {
     compareTo: vi.fn(() => 0),
   };
 
-  const mockModule = {
+  return {
     TimelinePosition: {
       ...mockTimelinePosition,
       parseFromString: vi.fn().mockImplementation(() => mockTimelinePosition),
     },
-    TrackType,
-    AutomationMode,
-    AutomationLaneEnvelope,
+    TrackType: {
+      Audio: "audio",
+      Midi: "midi", 
+      Sequencer: "sequencer",
+    },
+    AutomationMode: {
+      Read: "read",
+      Write: "write",
+      Touch: "touch",
+      Latch: "latch",
+      Off: "off",
+    },
+    AutomationLaneEnvelope: {
+      Volume: "volume",
+      Pan: "pan",
+      Tempo: "tempo",
+      Send: "send",
+      Filter: "filter",
+      Effect: "effect",
+    },
   };
-  
-  return mockModule;
 });
 
 // Mock AutomationLaneTrack to avoid dependency issues
@@ -92,7 +107,7 @@ vi.mock("@orpheus/services/electron/utils", () => ({
   openContextMenu: vi.fn()
 }));
 
-// Mock general utils
+// Mock general utils - consolidate both @orpheus/services/utils/general and @orpheus/utils/general
 vi.mock("@orpheus/services/utils/general", () => ({
   hueFromHex: vi.fn().mockReturnValue(120),
   hslToHex: vi.fn().mockReturnValue("#00ff00")
@@ -104,10 +119,12 @@ vi.mock("@orpheus/components/widgets", () => ({
   HueInput: vi.fn(() => null)
 }));
 
-// Mock CSS variable utils
+// Mock CSS variable utils - consolidate with hue functions
 vi.mock("@orpheus/utils/general", () => ({
-  getCSSVarValue: () => "#000000",
-  normalizeHex: (hex: string) => hex,
+  getCSSVarValue: vi.fn().mockReturnValue("#000000"),
+  normalizeHex: vi.fn().mockImplementation((hex: string) => hex),
+  hueFromHex: vi.fn().mockReturnValue(120),
+  hslToHex: vi.fn().mockReturnValue("#00ff00")
 }));
 
 // Mock ResizeObserver
@@ -455,290 +472,6 @@ describe("TrackComponent", () => {
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);
       }
-    });
-  });
-});
-vi.mock("@orpheus/types/core", () => {
-  const mockModule = {
-    TimelinePosition: {
-      parseFromString: vi.fn().mockImplementation(() => ({
-        ticks: 0,
-        toMargin: () => 0,
-        fromMargin: () => ({ ticks: 0 }),
-        snap: () => ({ ticks: 0 }),
-      })),
-    },
-    TrackType,
-    AutomationMode,
-    AutomationLaneEnvelope,
-  };
-  
-  return mockModule;
-});
-
-// Mock AutomationLaneTrack to avoid dependency issues
-vi.mock("../AutomationLaneTrack", () => ({
-  default: vi.fn(() => null)
-}));
-
-// Mock electron utils
-vi.mock("@orpheus/services/electron/utils", () => ({
-  openContextMenu: vi.fn()
-}));
-
-// Mock general utils
-vi.mock("@orpheus/services/utils/general", () => ({
-  hueFromHex: vi.fn().mockReturnValue(120),
-  hslToHex: vi.fn().mockReturnValue("#00ff00")
-}));
-
-// Mock widgets
-vi.mock("@orpheus/components/widgets", () => ({
-  Dialog: vi.fn(({ children, open }) => open ? children : null),
-  HueInput: vi.fn(() => null)
-}));
-
-// Factory function to create mock TimelinePosition instances for tests
-function createMockTimelinePosition() {
-  return {
-    ticks: 0,
-    toMargin: () => 0,
-    fromMargin: () => ({ ticks: 0 }),
-    snap: () => ({ ticks: 0 }),
-  };
-}
-
-const createTestContainer = () => {
-  const container = document.createElement("div");
-  container.style.width = "800px";
-  container.style.height = "600px";
-  container.style.position = "relative";
-  container.style.backgroundColor = "#1e1e1e";
-  document.body.appendChild(container);
-  return container;
-};
-
-const baseTrack = {
-  id: "test-track",
-  name: "Test Track",
-  type: TrackType.Audio,
-  volume: -20,
-  pan: 0,
-  mute: false,
-  solo: false,
-  armed: false,
-  color: "#ff0000",
-  height: 100,
-  collapsed: false,
-  automation: false,
-  automationMode: AutomationMode.Read,
-  automationLanes: [],
-  clips: [],
-  effects: [],
-  fx: {
-    preset: null,
-    effects: [],
-    selectedEffectIndex: -1,
-  },
-  sends: [],
-  parentId: null,
-  order: 0,
-  selected: false,
-};
-
-const mockWorkstationContext = {
-  setTrack: vi.fn(),
-  duplicateTrack: vi.fn(),
-  deleteTrack: vi.fn(),
-  clearAutomation: vi.fn(),
-  playheadPos: createMockTimelinePosition(),
-  timelineSettings: {
-    tempo: 120,
-    timeSignature: { numerator: 4, denominator: 4 },
-  },
-  verticalScale: 1,
-  getTrackCurrentValue: vi.fn().mockReturnValue(0),
-  maxPos: createMockTimelinePosition(),
-  addNode: vi.fn(),
-  setLane: vi.fn(),
-  setSelectedNodeId: vi.fn(),
-};
-
-const renderWithContext = (ui: React.ReactNode, container?: HTMLElement) => {
-  return render(
-    <WorkstationContext.Provider value={mockWorkstationContext}>
-      {ui}
-    </WorkstationContext.Provider>,
-    { container }
-  );
-};
-
-describe("TrackComponent", () => {
-  let container: HTMLElement;
-
-  beforeEach(() => {
-    container = createTestContainer();
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
-    }
-  });
-
-  describe("Basic rendering", () => {
-    it("renders track component with basic props", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      expect(container.querySelector('[data-testid="track-component"]')).toBeTruthy();
-    });
-
-    it("displays track name", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      const nameInput = container.querySelector('input[value="Test Track"]');
-      expect(nameInput).toBeTruthy();
-    });
-
-    it("displays correct volume", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      // Check if volume is displayed (exact implementation depends on component)
-      expect(container).toBeTruthy();
-    });
-  });
-
-  describe("Track controls", () => {
-    it("toggles mute state when mute button is clicked", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      const muteButton = container.querySelector('[data-testid="mute-button"]');
-      expect(muteButton).toBeTruthy();
-      
-      fireEvent.click(muteButton!);
-      expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
-        ...baseTrack,
-        mute: true,
-      });
-    });
-
-    it("toggles solo state when solo button is clicked", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      const soloButton = container.querySelector('[data-testid="solo-button"]');
-      expect(soloButton).toBeTruthy();
-      
-      fireEvent.click(soloButton!);
-      expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
-        ...baseTrack,
-        solo: true,
-      });
-    });
-
-    it("toggles armed state when arm button is clicked", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      const armButton = container.querySelector('[data-testid="arm-button"]');
-      expect(armButton).toBeTruthy();
-      
-      fireEvent.click(armButton!);
-      expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
-        ...baseTrack,
-        armed: true,
-      });
-    });
-  });
-
-  describe("Track name editing", () => {
-    it("updates track name when input changes", async () => {
-      const user = userEvent.setup();
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      const nameInput = container.querySelector('input[value="Test Track"]') as HTMLInputElement;
-      expect(nameInput).toBeTruthy();
-      
-      await user.clear(nameInput);
-      await user.type(nameInput, "New Track Name");
-      
-      // Expect at least one call to setTrack with the new name
-      expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: "New Track Name",
-        })
-      );
-    });
-  });
-
-  describe("Volume control", () => {
-    it("updates volume when volume slider changes", () => {
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      const volumeSlider = container.querySelector('input[type="range"]') as HTMLInputElement;
-      if (volumeSlider) {
-        fireEvent.change(volumeSlider, { target: { value: "0.5" } });
-        expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
-      }
-    });
-  });
-
-  describe("Visual tests", () => {
-    it("visual test: renders normal track @visual", async () => {
-      const track = { ...baseTrack };
-      renderWithContext(<TrackComponent track={track} />, container);
-
-      // Force a layout recalculation
-      container.getBoundingClientRect();
-
-      // Wait for styles and animations
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      await expectScreenshot(container, "track-normal", 0.5);
-    });
-
-    it("visual test: renders muted track @visual", async () => {
-      const track = { ...baseTrack, mute: true };
-      renderWithContext(<TrackComponent track={track} />, container);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await expectScreenshot(container, "track-muted", 0.5);
-    });
-
-    it("visual test: renders armed track @visual", async () => {
-      const track = { ...baseTrack, armed: true };
-      renderWithContext(<TrackComponent track={track} />, container);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await expectScreenshot(container, "track-armed", 0.5);
-    });
-
-    it("visual test: renders track with FX chain @visual", async () => {
-      const track = {
-        ...baseTrack,
-        effects: [
-          {
-            id: "fx-1",
-            name: "Test Effect",
-            type: "juce" as const,
-            enabled: true,
-            parameters: { mix: 0.5 },
-          },
-        ],
-        fx: {
-          preset: null,
-          effects: [
-            {
-              id: "fx-1",
-              name: "Test Effect",
-              type: "juce" as const,
-              enabled: true,
-              parameters: { mix: 0.5 },
-            },
-          ],
-          selectedEffectIndex: 0,
-        },
-      };
-
-      renderWithContext(<TrackComponent track={track} />, container);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await expectScreenshot(container, "track-with-fx", 0.5);
     });
   });
 });
