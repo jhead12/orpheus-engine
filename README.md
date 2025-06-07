@@ -316,6 +316,7 @@ const customExportPlugin: ExportPlugin = {
 Based on the main Orpheus Engine repository, here are key features and improvements to implement:
 
 ### High Priority
+- [ ] **MLFlow & HP AI Studio Integration**: Set up MLFlow experiment tracking with Jupyter Books running in HP AI Studio Framework for advanced audio ML workflows (see [MLFLOW_SETUP.md](MLFLOW_SETUP.md))
 - [ ] **Audio Backend Integration**: Connect to Python RAG backend (port 5001) for AI-powered audio analysis
 - [ ] **Real Audio Processing**: Implement actual audio file loading, playback, and processing
 - [ ] **Export Functionality**: Add comprehensive audio export capabilities (WAV, MP3, FLAC)
