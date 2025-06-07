@@ -35,8 +35,9 @@ describe('Meter Component', () => {
   describe('Percentage Display', () => {
     it('displays correct percentage container for horizontal meter', () => {
       const { container } = render(<Meter percent={75} />);
-      // The percentage container is the first child of the positioning container
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1)
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '75%',
         height: '100%'
@@ -45,8 +46,9 @@ describe('Meter Component', () => {
 
     it('displays correct percentage container for vertical meter', () => {
       const { container } = render(<Meter percent={60} vertical />);
-      // The percentage container is the first child of the positioning container
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1)
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '100%',
         height: '60%'
@@ -55,8 +57,9 @@ describe('Meter Component', () => {
 
     it('handles 0% correctly', () => {
       const { container } = render(<Meter percent={0} />);
-      // The percentage container is the first child of the positioning container
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1)
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '0%'
       });
@@ -64,8 +67,9 @@ describe('Meter Component', () => {
 
     it('handles 100% correctly', () => {
       const { container } = render(<Meter percent={100} />);
-      // The percentage container is the first child of the positioning container
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1)
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '100%'
       });
@@ -76,8 +80,9 @@ describe('Meter Component', () => {
   describe('Color Customization', () => {
     it('uses default color when none specified', () => {
       const { container } = render(<Meter percent={50} />);
-      // The fill element is inside the percentage container
-      const fillElement = container.querySelector('div > div > div:first-child > div');
+      // Get all div > div > div elements and take the third one (index 2) - this is the fill element
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillElement = divElements[2]; // This is the fill element
       expect(fillElement).toHaveStyle({
         background: 'rgb(0, 0, 0)'
       });
@@ -85,8 +90,9 @@ describe('Meter Component', () => {
 
     it('applies custom color', () => {
       const { container } = render(<Meter percent={50} color="#ff0000" />);
-      // The fill element is inside the percentage container
-      const fillElement = container.querySelector('div > div > div:first-child > div');
+      // Get all div > div > div elements and take the third one (index 2) - this is the fill element
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillElement = divElements[2]; // This is the fill element
       expect(fillElement).toHaveStyle({
         background: 'rgb(255, 0, 0)'
       });
@@ -173,7 +179,9 @@ describe('Meter Component', () => {
   describe('Edge Cases', () => {
     it('handles negative percentage', () => {
       const { container } = render(<Meter percent={-10} />);
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1) - this is the percentage container
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '-10%'
       });
@@ -181,7 +189,9 @@ describe('Meter Component', () => {
 
     it('handles percentage over 100', () => {
       const { container } = render(<Meter percent={150} />);
-      const fillContainer = container.querySelector('div > div > div:first-child');
+      // Get all div > div > div elements and take the second one (index 1) - this is the percentage container
+      const divElements = container.querySelectorAll('div > div > div');
+      const fillContainer = divElements[1]; // This is the percentage container
       expect(fillContainer).toHaveStyle({
         width: '150%'
       });
