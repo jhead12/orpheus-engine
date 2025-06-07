@@ -95,8 +95,14 @@ describe("App component", () => {
 
   it("renders the DocsPage component on the /docs path", () => {
     // Update the mock location
-    const mockLocation = { pathname: "/docs" };
-    vi.mocked(useLocation as jest.Mock).mockReturnValue(mockLocation);
+    const mockLocation = { 
+      pathname: "/docs",
+      search: "",
+      hash: "",
+      state: null,
+      key: "test-key"
+    };
+    vi.mocked(useLocation).mockReturnValue(mockLocation);
 
     const { container } = renderApp();
     expect(container).toBeInTheDocument();
