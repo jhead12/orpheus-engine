@@ -18,37 +18,19 @@ export async function expectScreenshot(
   name: string,
   threshold = 0.01
 ): Promise<void> {
-  // Create a temporary div to contain the element for screenshotting
-  const tempContainer = document.createElement("div");
-  tempContainer.style.position = "fixed";
-  tempContainer.style.top = "0";
-  tempContainer.style.left = "0";
-  tempContainer.style.width = "auto";
-  tempContainer.style.height = "auto";
-  tempContainer.style.zIndex = "9999";
-
-  // Clone the element to avoid modifying the original
-  const clonedElement = element.cloneNode(true) as HTMLElement;
-  tempContainer.appendChild(clonedElement);
-  document.body.appendChild(tempContainer);
-
-  try {
-    // Use the extended expect with jest-image-snapshot matcher
-    await imageSnapshotExpect(tempContainer).toMatchImageSnapshot({
-      customSnapshotIdentifier: name,
-      customSnapshotsDir: path.join(
-        process.cwd(),
-        "__snapshots__",
-        "screenshots"
-      ),
-      customDiffDir: path.join(process.cwd(), "__snapshots__", "diffs"),
-      failureThreshold: threshold,
-      failureThresholdType: "percent",
-    });
-  } finally {
-    // Clean up
-    document.body.removeChild(tempContainer);
-  }
+  const screenshot = await takeScreenshot(element, name);
+  expect(screenshot).toMatchImageSnapshot({
+    customSnapshotsDir: "__snapshots__/screenshots",
+    customDiffDir: "__snapshots__/diffs",
+    customSnapshotIdentifier: `${name}.png`, // Explicitly add .png extension
+    failureThreshold: threshold,
+    failureThresholdType: "percent",
+    storeReceivedOnFailure: true, // Store failed screenshots for debugging
+    comparisonMethod: "ssim", // Use structural similarity for better comparison
+    customSnapshotIdentifierProviders: [
+      () => `${name}.png`, // Ensure consistent PNG extension
+    ],
+  });
 }
 
 /**
@@ -79,4 +61,37 @@ export async function recordGif(
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
   return outputPath;
+}
+
+/**
+ * Take a screenshot of an element
+ * @param element The element to screenshot
+ * @param name Name of the screenshot
+ * @returns Promise<Buffer> Screenshot data
+ */
+async function takeScreenshot(
+  element: HTMLElement,
+  name: string
+): Promise<Buffer> {
+  const htmlToImage = (await import("node-html-to-image")).default;
+
+  const html = element.outerHTML;
+  const css = Array.from(document.styleSheets)
+    .map((sheet) => {
+      try {
+        return Array.from(sheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join("\n");
+      } catch (e) {
+        return "";
+      }
+    })
+    .join("\n");
+
+  return htmlToImage({
+    html: `<div>${html}</div>`,
+    css: css,
+    transparent: true,
+    type: "png",
+  }) as Promise<Buffer>;
 }

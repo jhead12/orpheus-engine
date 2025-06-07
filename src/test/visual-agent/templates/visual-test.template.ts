@@ -27,14 +27,16 @@ describe('{{ComponentName}} Visual Tests', () => {
     await new Promise(resolve => setTimeout(resolve, 100)); // Wait for updates
     {{/each}}
 
-    {{#if ../captureGif}}
-    // Record a GIF of any animations or state changes
-    await recordGif(container, '{{../componentName}}-{{name}}', {{../animationDuration || 2000}});
-    {{else}}
-    // Wait for any animations to complete
+    ${
+      captureGif
+        ? `// Record a GIF of any animations or state changes
+    await recordGif(container, '${componentName.toLowerCase()}-${stateName}', ${
+            animationDuration || 2000
+          });`
+        : `// Wait for any animations to complete
     await new Promise(resolve => setTimeout(resolve, 500));
-    await expectScreenshot(container, '{{../componentName}}-{{name}}');
-    {{/if}}
+    await expectScreenshot(container, '${componentName.toLowerCase()}-${stateName}.png');`
+    }
 
     document.body.removeChild(container);
   });
