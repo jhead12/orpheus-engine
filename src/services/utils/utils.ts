@@ -73,3 +73,13 @@ export const waitForScrollWheelStop = (
 
   return () => element.removeEventListener("scroll", handleScroll);
 };
+
+export const getLaneColor = (
+  lanes: AutomationLane[],
+  idx: number,
+  defaultColor: string
+): string => {
+  if (!lanes || !lanes.length) return defaultColor;
+  const visibleLanes = lanes.filter((lane) => lane.show);
+  return idx >= 0 && idx < visibleLanes.length ? defaultColor : "transparent";
+};

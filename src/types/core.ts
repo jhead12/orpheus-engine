@@ -229,29 +229,10 @@ export class TimelinePosition {
   }
 
   /**
-   * Calculate difference between positions
+   * Calculate absolute difference between margins of two positions
    */
-  diff(other: TimelinePosition): {
-    measures: number;
-    beats: number;
-    fraction: number;
-    sign: number;
-  } {
-    const thisTicks = this.toTicks();
-    const otherTicks = other.toTicks();
-    const diffTicks = thisTicks - otherTicks;
-    const sign = Math.sign(diffTicks);
-    const absDiffTicks = Math.abs(diffTicks);
-
-    const measures = Math.floor(absDiffTicks / (4 * 480));
-    let remainingTicks = absDiffTicks % (4 * 480);
-
-    const beats = Math.floor(remainingTicks / 480);
-    remainingTicks = remainingTicks % 480;
-
-    const fraction = Math.floor(remainingTicks / 120);
-
-    return { measures, beats, fraction, sign };
+  diffInMargin(other: TimelinePosition): number {
+    return Math.abs(this.toMargin() - other.toMargin());
   }
 
   // Static methods

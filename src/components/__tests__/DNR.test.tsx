@@ -36,11 +36,11 @@ describe("DNR (Drag and Resize) Component", () => {
         return {
           x: 0,
           y: 0,
-          width: 300, // Keep within the max size constraints for tests
-          height: 300,
+          width: 200, // Keep within the max size constraints for tests
+          height: 200,
           top: 0,
-          right: 300,
-          bottom: 300,
+          right: 200,
+          bottom: 200,
           left: 0,
           toJSON: () => {},
         };
