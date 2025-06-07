@@ -25,6 +25,7 @@ export interface WorkstationAudioInputFile {
   size: number;
   lastModified: number;
   buffer?: AudioBuffer;
+  duration?: number;
 }
 
 export enum SnapGridSizeOption {

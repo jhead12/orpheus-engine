@@ -35,6 +35,9 @@
     "types": ["jest"]
   },
   "include": ["src"],
-  "exclude": ["src/test/visual-agent/templates/**/*.ts", "src/test/visual-agent/templates/**/*.template.ts"],
+  "exclude": [
+    "src/test/visual-agent/templates/**/*.ts",
+    "src/test/visual-agent/templates/**/*.template.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

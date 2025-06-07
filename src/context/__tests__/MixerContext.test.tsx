@@ -21,7 +21,9 @@ describe("MixerContext", () => {
     solo: false,
   };
 
-  const createMockValue = (mockSetTracks: ReturnType<typeof vi.fn>): MixerContextValue => ({
+  const createMockValue = (
+    mockSetTracks: ReturnType<typeof vi.fn>
+  ): MixerContextValue => ({
     tracks: [testTrack],
     mixerHeight: 200,
     setMixerHeight: vi.fn(),
