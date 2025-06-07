@@ -2,7 +2,6 @@ import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { useLocation } from "react-router-dom";
 import App from "../../App";
 import { PreferencesProvider } from "../../context/PreferencesContext";
 import { WorkstationProvider } from "../../context/WorkstationContext";
@@ -27,6 +26,8 @@ beforeAll(() => {
 });
 
 // Create a simplified mock of the router
+const mockUseLocation = vi.fn(() => ({ pathname: "/" }));
+
 vi.mock("react-router-dom", () => ({
   MemoryRouter: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="app-root">{children}</div>
@@ -34,7 +35,7 @@ vi.mock("react-router-dom", () => ({
   Routes: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   Route: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useNavigate: () => vi.fn(),
-  useLocation: () => ({ pathname: "/" }),
+  useLocation: () => mockUseLocation(),
 }));
 
 // Create a simplified mock of the Workstation component
@@ -102,10 +103,13 @@ describe("App component", () => {
       state: null,
       key: "test-key"
     };
-    vi.mocked(useLocation).mockReturnValue(mockLocation);
+    mockUseLocation.mockReturnValue(mockLocation);
 
     const { container } = renderApp();
     expect(container).toBeInTheDocument();
+    
+    // Reset to default
+    mockUseLocation.mockReturnValue({ pathname: "/" });
   });
 
   it("handles focusout event to clear text selection", () => {
