@@ -1,9 +1,8 @@
-import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import Knob from "../Knob";
-import { expectScreenshot } from "../../../test/helpers";
+import { expectScreenshot } from "@orpheus/test/helpers";
 
 describe("Knob Component", () => {
   beforeAll(() => {
@@ -37,7 +36,7 @@ describe("Knob Component", () => {
   });
   it("calls onChange when dragged", () => {
     const handleChange = vi.fn();
-    const { container } = render(
+    render(
       <Knob value={50} onChange={handleChange} onInput={handleChange} />
     );
 
@@ -180,7 +179,6 @@ describe("Knob Component", () => {
       document.body.appendChild(container);
 
       render(<Knob value={75} min={0} max={100} />, { container });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       await expectScreenshot(container, "knob-75-percent");
       document.body.removeChild(container);
     });
@@ -197,7 +195,6 @@ describe("Knob Component", () => {
       document.body.appendChild(container);
 
       render(<Knob value={0} min={0} max={100} />, { container });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       await expectScreenshot(container, "knob-min");
       document.body.removeChild(container);
     });
@@ -214,7 +211,6 @@ describe("Knob Component", () => {
       document.body.appendChild(container);
 
       render(<Knob value={100} min={0} max={100} />, { container });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       await expectScreenshot(container, "knob-max");
       document.body.removeChild(container);
     });

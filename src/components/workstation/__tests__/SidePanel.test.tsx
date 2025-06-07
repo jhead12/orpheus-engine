@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
-import { SidePanel } from "@orpheus/workstation/components/SidePanel";
+import { SidePanel } from "../../../screens/workstation/components/SidePanel";
 import { expectScreenshot } from "@orpheus/test/helpers";
 
 describe("SidePanel", () => {
