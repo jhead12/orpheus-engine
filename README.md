@@ -344,10 +344,28 @@ Based on the main Orpheus Engine repository, here are key features and improveme
 - [ ] **Documentation**: Add comprehensive API documentation and user guides
 - [ ] **Performance Monitoring**: Add performance tracking and optimization tools
 
+### HP AI Studio Competition Requirements
+- [ ] **About Section Documentation**: Use Markdown to differentiate sections in About textbox
+- [ ] **HP AI Studio Showcase**: Document how the project showcases HP AI Studio's capabilities while addressing real-world industry challenges
+- [ ] **Technical Workflow Documentation**: Explain the technical workflow implemented with HP AI Studio
+- [ ] **Challenges & Solutions**: Outline the challenges addressed and solutions developed
+- [ ] **HP AI Studio Features**: Highlight key features of HP AI Studio that were leveraged
+- [ ] **Lessons Learned**: Describe lessons learned and best practices discovered
+- [ ] **Demo Video Creation**: Create a ~3 minute demo video that clearly demonstrates key features highlighting HP AI Studio's capabilities
+- [ ] **Video Accessibility**: Ensure demo video is viewable by judges
+- [ ] **Public Code Repository**: Provide link to well-documented and organized open-source public repository
+- [ ] **Open Source License**: Include link to Apache 2.0 or MIT open-source license
+- [ ] **MLFlow Model Registration**: Demonstrate model registration to MLFlow for local deployment
+- [ ] **API Key Security**: Ensure no 3rd-party API keys are embedded in code
+- [ ] **Dependencies Documentation**: Include all dependencies and requirements
+- [ ] **README for Judges**: Create comprehensive README with steps for judging and testing
+- [ ] **Model Documentation**: Provide detailed explanation of models downloaded and methods used
+
 ### Current Limitations (as noted in original README)
 - User interface is functional, but audio processing needs implementation
 - Performance optimization needed for large numbers of tracks
 - Main functionality prioritized over performance optimization
+- Frontend separated from main repository due to deprecated dependency issues
 
 ## Contributing
 
