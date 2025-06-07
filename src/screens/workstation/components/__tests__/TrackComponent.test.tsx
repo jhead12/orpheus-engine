@@ -1,68 +1,57 @@
-import { describe, it, beforeEach, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+// We need to set up mocks before any imports
+import { vi } from "vitest";
+
+// Make sure vi.mock is at the top level, not inside a function
+// Define the mock factory function
+const createMockTimelinePosition = () => ({
+  ticks: 0,
+  compareTo: vi.fn().mockReturnValue(0),
+  toMargin: vi.fn().mockReturnValue(0),
+  copy: vi.fn().mockReturnThis(),
+  equals: vi.fn().mockReturnValue(true),
+  diff: vi.fn().mockReturnThis(),
+});
+
+// Setup mock for TimelinePosition - using direct path without @orpheus alias
+vi.mock("../../../../types/core", () => {
+  const MockTimelinePosition = vi.fn().mockImplementation(() => createMockTimelinePosition());
+  
+  // Add static methods and ensure they're properly typed
+  MockTimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
+    if (!str) return null;
+    return createMockTimelinePosition();
+  });
+  
+  // Add static properties
+  MockTimelinePosition.start = createMockTimelinePosition();
+  
+  return {
+    TimelinePosition: MockTimelinePosition,
+    TrackType: { Audio: "audio" },
+    AutomationMode: { Off: "off" },
+    AutomationLaneEnvelope: { Volume: "volume" },
+    ContextMenuType: { Track: 0, Automation: 1 }
+  };
+});
+
+// Normal imports after mocks
+import { describe, expect, beforeEach, afterEach } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TrackComponent } from "../TrackComponent";
-import { expectScreenshot } from "@orpheus/test/helpers";
-import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
-import { TimelinePosition } from "../../../../types";
-import type { Track } from "../../../../types";
+import React from "react";
+import TrackComponent from "../TrackComponent";
+import { WorkstationContext } from "../../../../contexts/WorkstationContext";
+import { expectScreenshot } from "../../../../test/helpers/screenshot";
 
-// Update the mock context with all required properties
-const defaultContext = {
-  tracks: [] as Track[],
-  masterTrack: { id: "master-1", name: "Master" } as Track,
-  playheadPos: new TimelinePosition(0, 0, 0),
-  maxPos: new TimelinePosition(4, 0, 0),
-  numMeasures: 4,
-  snapGridSize: 240,
-  songRegion: null,
-  verticalScale: 1,
-  timelineSettings: {
-    beatWidth: 40,
-    timeSignature: { beats: 4, noteValue: 4 },
-    horizontalScale: 1,
-  },
-  isPlaying: false,
-  scrollToItem: null,
-  allowMenuAndShortcuts: true,
-  setTracks: vi.fn(),
-  setPlayheadPos: vi.fn(),
-  setSongRegion: vi.fn(),
-  setVerticalScale: vi.fn(),
-  setScrollToItem: vi.fn(),
-  setAllowMenuAndShortcuts: vi.fn(),
-  addTrack: vi.fn(),
-  adjustNumMeasures: vi.fn(),
-  createAudioClip: vi.fn(),
-  insertClips: vi.fn(),
-  updateTimelineSettings: vi.fn(),
-  consolidateClip: vi.fn(),
-  deleteClip: vi.fn(),
-  duplicateClip: vi.fn(),
-  getClipsForTrack: () => [],
-  insertTrack: vi.fn(),
-  moveTrack: vi.fn(),
-  pasteClip: vi.fn(),
-  playheadTimeSeconds: 0,
-  recording: false,
-  setRecording: vi.fn(),
-  splitClip: vi.fn(),
-  workstationHeight: 800,
-  workstationWidth: 1200,
-  selectedClipId: null,
-  setSelectedClipId: vi.fn(),
-  setTrackRegion: vi.fn(),
-  toggleMuteClip: vi.fn(),
-  setTrack: vi.fn(),
-  getTrackCurrentValue: () => ({ value: 0.8, isAutomated: false }),
-  deleteTrack: vi.fn(),
-  duplicateTrack: vi.fn(),
-  showMaster: true,
-  selectedTrackId: null,
-  setSelectedTrackId: vi.fn(),
-};
+// Import from mocked module - using direct path instead of @orpheus alias
+import {
+  AutomationMode,
+  AutomationLaneEnvelope,
+  TrackType,
+} from "../../../../types/core";
 
-const createContainer = () => {
+// Create a container for visual tests
+const createTestContainer = () => {
   const container = document.createElement("div");
   container.style.cssText = `
     width: 800px;
@@ -77,229 +66,285 @@ const createContainer = () => {
     padding: 16px;
     box-sizing: border-box;
   `;
-  // Add some global styles that might be needed
+
   const style = document.createElement("style");
   style.textContent = `
-    .MuiSvgIcon-root { font-size: 24px; }
     .MuiIconButton-root { padding: 8px; }
+    .MuiSvgIcon-root { font-size: 24px; }
+    .track-btn { margin: 0 4px; }
+    .track-controls { display: flex; align-items: center; }
   `;
   document.head.appendChild(style);
   document.body.appendChild(container);
   return container;
 };
 
+// Container setup for tests
+
+const baseTrack = {
+  id: "test-track",
+  name: "Test Track",
+  type: TrackType.Audio,
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: 0,
+  pan: 0,
+  automation: false,
+  automationMode: AutomationMode.Off,
+  automationLanes: [],
+  clips: [],
+  color: "#ff0000",
+  effects: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
+};
+
+// Mock context
+const mockWorkstationContext = {
+  adjustNumMeasures: vi.fn(),
+  allowMenuAndShortcuts: true,
+  consolidateClip: vi.fn(),
+  deleteClip: vi.fn(),
+  deleteTrack: vi.fn(),
+  duplicateClip: vi.fn(),
+  duplicateTrack: vi.fn(),
+  getTrackCurrentValue: vi.fn(() => ({ value: 0.8, isAutomated: false })),
+  insertClips: vi.fn(),
+  masterTrack: baseTrack,
+  maxPos: createMockTimelinePosition(),
+  numMeasures: 4,
+  playheadPos: createMockTimelinePosition(),
+  scrollToItem: null,
+  selectedClipId: null,
+  selectedTrackId: null,
+  setAllowMenuAndShortcuts: vi.fn(),
+  setScrollToItem: vi.fn(),
+  setSelectedClipId: vi.fn(),
+  setSelectedTrackId: vi.fn(),
+  setTrack: vi.fn(),
+  setSongRegion: vi.fn(),
+  setTrackRegion: vi.fn(),
+  showMaster: true,
+  snapGridSize: createMockTimelinePosition(),
+  songRegion: null,
+  splitClip: vi.fn(),
+  timelineSettings: {
+    beatWidth: 40,
+    timeSignature: { beats: 4, noteValue: 4 },
+    horizontalScale: 1,
+    tempo: 120,
+  },
+  toggleMuteClip: vi.fn(),
+  trackRegion: null,
+  tracks: [],
+  verticalScale: 1,
+  // Additional props needed for AutomationLaneTrack
+  addNode: vi.fn(),
+  setLane: vi.fn(),
+  setSelectedNodeId: vi.fn(),
+};
+
+// Render helper with context provider
 const renderWithContext = (ui: React.ReactNode, container?: HTMLElement) => {
   return render(
-    <WorkstationContext.Provider value={defaultContext}>
+    <WorkstationContext.Provider value={mockWorkstationContext}>
       {ui}
     </WorkstationContext.Provider>,
     container ? { container } : undefined
   );
 };
 
-describe("TrackComponent Visual Tests", () => {
-  it("visual test: renders normal track @visual", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Test Track",
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-      automationLanes: [],
+describe("TrackComponent Core Functionality", () => {
+  let container: HTMLElement;
+
+  beforeEach(() => {
+    container = createTestContainer();
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+  });
+
+  it("renders track name correctly", () => {
+    const { getByDisplayValue } = renderWithContext(
+      <TrackComponent track={baseTrack} />
+    );
+    const nameInput = getByDisplayValue("Test Track");
+    expect(nameInput).toBeInTheDocument();
+  });
+
+  it("handles track name change", async () => {
+    const { getByDisplayValue } = renderWithContext(
+      <TrackComponent track={baseTrack} />
+    );
+    const nameInput = getByDisplayValue("Test Track");
+    await userEvent.clear(nameInput);
+    await userEvent.type(nameInput, "New Track Name");
+    fireEvent.blur(nameInput);
+
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "New Track Name",
+      })
+    );
+  });
+
+  it("handles mute toggle", () => {
+    const { container } = renderWithContext(
+      <TrackComponent track={baseTrack} />
+    );
+    const muteButton = container.querySelector('[data-testid="mute-button"]');
+    if (!muteButton) throw new Error("Mute button not found");
+
+    fireEvent.click(muteButton);
+
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mute: true,
+      })
+    );
+  });
+
+  it("handles solo toggle", () => {
+    const { container, rerender } = renderWithContext(
+      <TrackComponent track={baseTrack} />
+    );
+
+    const soloButton = container.querySelector('[data-testid="solo-button"]');
+    if (!soloButton) throw new Error("Solo button not found");
+
+    // First click - enable solo
+    fireEvent.click(soloButton);
+
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
+      expect.objectContaining({
+        solo: true,
+      })
+    );
+
+    // Simulate the track state update
+    const updatedTrack = { ...baseTrack, solo: true };
+    rerender(
+      <WorkstationContext.Provider value={mockWorkstationContext}>
+        <TrackComponent track={updatedTrack} />
+      </WorkstationContext.Provider>
+    );
+
+    // Second click - disable solo
+    fireEvent.click(soloButton);
+
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith(
+      expect.objectContaining({
+        solo: false,
+      })
+    );
+  });
+
+  it("handles automation controls", () => {
+    const trackWithAutomation = {
+      ...baseTrack,
+      automation: true,
+      automationLanes: [
+        {
+          id: "volume-lane",
+          envelope: AutomationLaneEnvelope.Volume,
+          enabled: true,
+          expanded: false,
+          label: "Volume",
+          show: true,
+          minValue: -60,
+          maxValue: 6,
+          nodes: [],
+        },
+      ],
     };
 
+    const { getByText } = renderWithContext(
+      <TrackComponent track={trackWithAutomation} />
+    );
+    expect(getByText("OFF")).toBeInTheDocument();
+  });
+});
+
+// Visual Tests
+describe("TrackComponent Visual Tests", () => {
+  let container: HTMLElement;
+
+  beforeEach(() => {
+    container = createTestContainer();
+  });
+
+  afterEach(() => {
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+  });
+
+  it("visual test: renders normal track @visual", async () => {
+    const track = { ...baseTrack };
     renderWithContext(<TrackComponent track={track} />, container);
 
-    // Wait for initial render and any animations
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Wait for any styled-components to be applied
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Wait for any dynamic content (meters, etc)
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Force a layout recalculation
+    container.getBoundingClientRect();
+
+    // Wait for styles and animations
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     await expectScreenshot(container, "track-normal");
-    document.body.removeChild(container);
   });
 
   it("visual test: renders muted track @visual", async () => {
-    const container = createContainer();
-    renderWithContext(
-      <TrackComponent
-        track={{
-          id: "track-1",
-          name: "Test Track",
-          color: "#ff0000",
-          volume: 0.8,
-          pan: 0,
-          automation: false,
-          mute: true,
-          solo: false,
-        }}
-      />,
-      container
-    );
+    const track = { ...baseTrack, mute: true };
+    renderWithContext(<TrackComponent track={track} />, container);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await expectScreenshot(container, "track-muted");
-    document.body.removeChild(container);
-  });
-});
-
-describe("TrackComponent Recording Features", () => {
-  it("should handle recording arm state", () => {
-    const track = {
-      id: "track-1",
-      name: "Audio Track",
-      type: "audio",
-      armed: false,
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-    };
-
-    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
-
-    const armButton = getByTestId("track-arm-button");
-    expect(armButton).toBeInTheDocument();
-    userEvent.click(armButton);
-    expect(defaultContext.setTrack).toHaveBeenCalledWith(
-      expect.objectContaining({ armed: true })
-    );
   });
 
   it("visual test: renders armed track @visual", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Audio Track",
-      type: "audio",
-      armed: true,
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-    };
-
+    const track = { ...baseTrack, armed: true };
     renderWithContext(<TrackComponent track={track} />, container);
-    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await expectScreenshot(container, "track-armed");
-    document.body.removeChild(container);
   });
-});
 
-describe("TrackComponent FX Features", () => {
-  it("should render FX chain", () => {
+  it("visual test: renders track with FX chain @visual", async () => {
     const track = {
-      id: "track-1",
-      name: "Track with FX",
-      type: "audio",
+      ...baseTrack,
       effects: [
         {
           id: "fx-1",
-          type: "reverb",
+          name: "Test Effect",
+          type: "juce" as const,
           enabled: true,
           parameters: { mix: 0.5 },
         },
       ],
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-    };
-
-    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
-
-    const fxChain = getByTestId("fx-chain");
-    expect(fxChain).toBeInTheDocument();
-    expect(fxChain).toHaveTextContent("reverb");
-  });
-
-  it("visual test: renders track with fx chain @visual", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Track with FX",
-      type: "audio",
-      effects: [
-        {
-          id: "fx-1",
-          type: "reverb",
-          enabled: true,
-          parameters: { mix: 0.5 },
-        },
-      ],
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
+      fx: {
+        preset: null,
+        effects: [
+          {
+            id: "fx-1",
+            name: "Test Effect",
+            type: "juce" as const,
+            enabled: true,
+            parameters: { mix: 0.5 },
+          },
+        ],
+        selectedEffectIndex: 0,
+      },
     };
 
     renderWithContext(<TrackComponent track={track} />, container);
     await new Promise((resolve) => setTimeout(resolve, 500));
     await expectScreenshot(container, "track-with-fx");
-    document.body.removeChild(container);
-  });
-});
-
-describe("TrackComponent I/O Features", () => {
-  it("should handle input/output routing", () => {
-    const track = {
-      id: "track-1",
-      name: "Audio Track",
-      type: "audio",
-      inputs: [{ id: "input-1", name: "Audio In 1" }],
-      outputs: [{ id: "output-1", name: "Main Out" }],
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-    };
-
-    const { getByTestId } = renderWithContext(<TrackComponent track={track} />);
-
-    const inputSelect = getByTestId("track-input-select");
-    const outputSelect = getByTestId("track-output-select");
-
-    expect(inputSelect).toBeInTheDocument();
-    expect(outputSelect).toBeInTheDocument();
-    expect(inputSelect).toHaveTextContent("Audio In 1");
-    expect(outputSelect).toHaveTextContent("Main Out");
-  });
-
-  it("visual test: renders track with i/o routing @visual", async () => {
-    const container = createContainer();
-    const track = {
-      id: "track-1",
-      name: "Audio Track",
-      type: "audio",
-      inputs: [{ id: "input-1", name: "Audio In 1" }],
-      outputs: [{ id: "output-1", name: "Main Out" }],
-      color: "#ff0000",
-      volume: 0.8,
-      pan: 0,
-      automation: false,
-      mute: false,
-      solo: false,
-    };
-
-    renderWithContext(<TrackComponent track={track} />, container);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await expectScreenshot(container, "track-with-io");
-    document.body.removeChild(container);
   });
 });

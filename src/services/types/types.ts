@@ -76,23 +76,34 @@ export interface Track {
   automationMode: AutomationMode;
   automationLanes: AutomationLane[];
   clips: Clip[];
+  effects?: Effect[];
   fx: {
     preset: FXChainPreset | null;
     selectedEffectIndex: number;
     effects: Effect[];
   };
+  inputs?: {
+    id: string;
+    name: string;
+    active: boolean;
+  }[];
+  outputs?: {
+    id: string;
+    name: string;
+    active: boolean;
+  }[];
 }
 
 export interface Clip {
   id: string;
   name: string;
-  type?: TrackType;
+  type: TrackType;
   start: TimelinePosition;
   end: TimelinePosition;
-  loopEnd?: TimelinePosition;
+  loopEnd: TimelinePosition;
   startLimit?: TimelinePosition;
   endLimit?: TimelinePosition;
-  muted?: boolean;
+  muted: boolean;
   audio?: {
     audioBuffer: AudioBuffer;
     buffer: AudioBuffer;

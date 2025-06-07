@@ -3,10 +3,11 @@ export {
   type WorkstationContextType,
 } from "./WorkstationContext";
 export { AnalysisContext, type AnalysisContextType } from "./AnalysisContext";
-export { 
-  ClipboardContext, 
+export {
+  ClipboardContext,
   ClipboardProvider,
   useClipboard,
-  type ClipboardContextType, 
-  type ClipboardItem 
+  type ClipboardContextType,
+  type ClipboardItem,
 } from "./ClipboardContext";
+export { ClipboardItemType } from "../types/clipboard";
