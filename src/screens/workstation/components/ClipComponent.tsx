@@ -121,13 +121,16 @@ function ClipComponent({
           case "F2":
             setRenaming(true);
             break;
+          case "Delete":
+            deleteClip(clip);
+            break;
         }
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedClipId, clip, allowMenuAndShortcuts]);
+  }, [selectedClipId, clip, allowMenuAndShortcuts, deleteClip]);
 
   useEffect(() => {
     const endX = clip.end.toMargin();
