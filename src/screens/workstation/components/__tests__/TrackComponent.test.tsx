@@ -1,6 +1,26 @@
 import { vi } from "vitest";
 
 // Setup all mocks before any imports
+// Mock volume utility functions
+vi.mock("../../../../services/utils/utils", () => ({
+  volumeToNormalized: vi.fn().mockImplementation((volume) => {
+    if (volume <= -60) return 0;
+    if (volume >= 0) return 1;
+    return 0.8; // Fixed mock value for testing
+  }),
+  normalizedToVolume: vi.fn().mockImplementation((normalized) => {
+    if (normalized <= 0) return -60;
+    if (normalized >= 1) return 0;
+    return -20; // Fixed mock value for testing
+  }),
+  formatVolume: vi.fn().mockImplementation((volume) => {
+    if (volume <= -60) return "-∞ dB";
+    return `${volume.toFixed(1)} dB`;
+  }),
+  getLaneColor: vi.fn().mockReturnValue("#808080"),
+  BASE_HEIGHT: 100,
+}));
+
 vi.mock("../../../../types/core", () => {
   return {
     TimelinePosition: vi.fn().mockImplementation(() => ({
@@ -48,14 +68,36 @@ import {
 
 // Create a container for visual tests
 const createTestContainer = () => {
+  // Add CSS variables needed for styling
+  const rootStyle = document.createElement("style");
+  rootStyle.textContent = `
+    :root {
+      --bg1: #e1e1e1;
+      --bg2: #eee;
+      --bg3: #e2e2e2;
+      --bg4: #dfdfdf;
+      --bg5: var(--color1-muted);
+      --bg6: #f7f7f7;
+      --border1: #777;
+      --border2: #0004;
+      --border3: #666;
+      --border4: #0006;
+      --border5: #0009;
+      --border6: #777;
+      --color1: #f06;
+      --fg1: #000;
+    }
+  `;
+  document.head.appendChild(rootStyle);
+
   const container = document.createElement("div");
   container.style.cssText = `
     width: 800px;
     height: 200px;
-    background: #1e1e1e;
+    background: var(--bg1);
     position: relative;
     overflow: hidden;
-    color: white;
+    color: var(--fg1);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     display: flex;
     flex-direction: column;
@@ -69,6 +111,7 @@ const createTestContainer = () => {
     .MuiSvgIcon-root { font-size: 24px; }
     .track-btn { margin: 0 4px; }
     .track-controls { display: flex; align-items: center; }
+    .dnr-container { position: relative; }
   `;
   document.head.appendChild(style);
   document.body.appendChild(container);
