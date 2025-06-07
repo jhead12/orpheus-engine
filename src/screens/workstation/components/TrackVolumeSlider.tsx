@@ -1,10 +1,13 @@
-
-import { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
-;
-import Slider from '@orpheus/widgets/Slider';
-import { WorkstationContext } from '@orpheus/contexts';
-import { TooltipProps } from '@orpheus/widgets/Tooltip';
+import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { AutomationLaneEnvelope, Track } from "@orpheus/types/core";
+import {
+  formatVolume,
+  normalizedToVolume,
+  volumeToNormalized,
+} from "@orpheus/utils/utils";
+import Slider from "@orpheus/widgets/Slider";
+import { useWorkstation } from "../../../context/WorkstationContext";
+import { TooltipProps } from "@orpheus/widgets/Tooltip";
 
 interface TrackVolumeSliderProps {
   className?: string;
@@ -14,37 +17,77 @@ interface TrackVolumeSliderProps {
   track: Track;
 }
 
-const markVolumes = [6, 0, -6, -12, -18, -24, -30, -36, -42, -48, -54, -60, -Infinity];
+const markVolumes = [
+  6,
+  0,
+  -6,
+  -12,
+  -18,
+  -24,
+  -30,
+  -36,
+  -42,
+  -48,
+  -54,
+  -60,
+  -Infinity,
+];
 
-export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolumeSliderProps) {
-  const { getTrackCurrentValue, playheadPos, setTrack, timelineSettings } = useContext(WorkstationContext)!;
-  
-  // Default volume to 0 since Track interface doesn't include volume property
-  const [volume, setVolume] = useState((track as any).volume ?? 0);
+export default function TrackVolumeSlider({
+  style,
+  track,
+  ...rest
+}: TrackVolumeSliderProps) {
+  const { getTrackCurrentValue, setTrack } = useWorkstation();
+
+  // Initialize volume state with track's volume property
+  const [volume, setVolume] = useState(track.volume ?? 0);
 
   const { isAutomated, value } = useMemo(() => {
-    const lane = track.automationLanes?.find(lane => lane.envelope === AutomationLaneEnvelope.Volume);
+    const lane = track.automationLanes?.find(
+      (lane) => lane.envelope === AutomationLaneEnvelope.Volume
+    );
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, (track as any).volume, timelineSettings.timeSignature])
+  }, [track, getTrackCurrentValue]);
 
-  useEffect(() => setVolume(value!), [value])
+  useEffect(() => setVolume(value!), [value]);
 
   const vertical = rest.orientation === "vertical";
-  const thumbBeforeStyle = vertical 
-    ? { borderBottom: "1px solid var(--border6)", width: "80%", height: "fit-content", top: 5.5 } 
-    : { borderRight: "1px solid var(--border6)", height: "80%", width: "fit-content", right: 5.5 };
+  const thumbBeforeStyle = vertical
+    ? {
+        borderBottom: "1px solid var(--border6)",
+        width: "80%",
+        height: "fit-content",
+        top: 5.5,
+      }
+    : {
+        borderRight: "1px solid var(--border6)",
+        height: "80%",
+        width: "fit-content",
+        right: 5.5,
+      };
 
   return (
     <div
-      style={{ display: "flex", height: vertical ? "100%" : undefined, width: vertical ? undefined : "100%" }}
-      title={isAutomated ? `Volume: ${formatVolume(volume)} (automated)` : undefined}  
+      style={{
+        display: "flex",
+        height: vertical ? "100%" : undefined,
+        width: vertical ? undefined : "100%",
+      }}
+      title={
+        isAutomated ? `Volume: ${formatVolume(volume)} (automated)` : undefined
+      }
     >
       <Slider
         {...rest}
         disabled={isAutomated}
-        onChange={(_, value) => setVolume(normalizedToVolume((value as number) / 1000)) }
-        onChangeCommitted={() => setTrack({ ...track, volume } as any)}
-        marks={markVolumes.map(volume => ({ value: volumeToNormalized(volume) * 1000 }))}
+        onChange={(_, value) =>
+          setVolume(normalizedToVolume((value as number) / 1000))
+        }
+        onChangeCommitted={() => setTrack({ ...track, volume })}
+        marks={markVolumes.map((volume) => ({
+          value: volumeToNormalized(volume) * 1000,
+        }))}
         max={1000}
         min={0}
         slotProps={{
@@ -56,37 +99,47 @@ export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolume
               backgroundColor: "var(--bg2)",
               width: vertical ? 12 : 14,
               height: vertical ? 14 : 12,
-              transitionDuration: "0ms"
-            }
+              transitionDuration: "0ms",
+            },
           },
           rail: {
             style: {
               backgroundColor: "var(--border6)",
               opacity: 1,
-              height: vertical ? "calc(100% + 1px)" : "inherit"
-            }
+              height: vertical ? "calc(100% + 1px)" : "inherit",
+            },
           },
-          track: { style: { backgroundColor: "var(--border6)", border: "none" } },
+          track: {
+            style: { backgroundColor: "var(--border6)", border: "none" },
+          },
           mark: {
             style: {
               backgroundColor: "var(--border6)",
               width: vertical ? 8 : 1,
               height: vertical ? 1 : 8,
-              transform: vertical ? "translate(0, 1px)" : "" 
-            }
-          }
+              transform: vertical ? "translate(0, 1px)" : "",
+            },
+          },
         }}
-        style={{ 
-          height: vertical ? "calc(100% + 1px)" : 1, 
-          width: vertical ? 1 : "100%", 
+        style={{
+          height: vertical ? "calc(100% + 1px)" : 1,
+          width: vertical ? 1 : "100%",
           opacity: isAutomated ? 0.5 : 1,
-          ...style
+          ...style,
         }}
-        sx={{ "& .MuiSlider-thumb::before": { ...thumbBeforeStyle, borderRadius: 0, boxShadow: "none" } }}
+        sx={{
+          "& .MuiSlider-thumb::before": {
+            ...thumbBeforeStyle,
+            borderRadius: 0,
+            boxShadow: "none",
+          },
+        }}
         value={volumeToNormalized(volume) * 1000}
         valueLabelDisplay="auto"
-        valueLabelFormat={value => formatVolume(normalizedToVolume(value / 1000))}
+        valueLabelFormat={(value) =>
+          formatVolume(normalizedToVolume(value / 1000))
+        }
       />
     </div>
-  )
+  );
 }

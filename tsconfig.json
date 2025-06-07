@@ -34,12 +34,10 @@
     },
     "types": ["vitest/globals", "vite/client", "node"]
   },
-  "include": ["src", "test", "scripts"],
+  "include": ["src"],
   "exclude": [
-    "src/test/visual-agent/templates/**/*.template.ts",
-    "node_modules",
-    "dist",
-    "build"
+    "src/test/visual-agent/templates/**/*.ts",
+    "src/test/visual-agent/templates/**/*.template.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

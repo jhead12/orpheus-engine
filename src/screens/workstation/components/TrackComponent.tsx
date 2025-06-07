@@ -104,19 +104,6 @@ function TrackComponent({ className, track, style }: IProps) {
     setTrack({ ...track, ...updates });
   };
 
-  const buttonStyle = {
-    fontSize: "10px",
-    fontWeight: "bold",
-    padding: "4px 8px",
-    margin: "0 2px",
-    border: "1px solid var(--border4)",
-    borderRadius: "4px",
-    background: "var(--bg6)",
-    color: "var(--fg1)",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-  };
-
   return (
     <div
       ref={ref}
@@ -124,49 +111,33 @@ function TrackComponent({ className, track, style }: IProps) {
       style={{
         ...style,
         borderColor:
-          track.mute || masterTrack?.mute ? "#ff004c" : "var(--border6)",
-        background: "var(--bg5)",
-        padding: "8px",
-        borderRadius: "4px",
+          track.mute || masterTrack?.mute ? "#ff0000" : "var(--border6)",
+        border: track.mute || masterTrack?.mute ? "1px solid #ff0000" : "none",
+        background: track.color || "var(--bg5)", // Use track color as background
+        padding: "4px",
         display: "flex",
         flexDirection: "column",
-        gap: "8px",
+        gap: "6px",
       }}
       onContextMenu={onContextMenu}
     >
       <div
         className="track-header"
-        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+        style={{ display: "flex", alignItems: "center", gap: "4px" }}
       >
-        {/* Track name */}
-        <input
-          type="text"
-          value={track.name}
-          onChange={(e) => setTrack({ ...track, name: e.target.value })}
-          onBlur={(e) => setTrack({ ...track, name: e.target.value.trim() })}
-          className="track-name"
-          style={{
-            background: "var(--bg7)",
-            border: "1px solid var(--border4)",
-            color: "var(--fg1)",
-            borderRadius: "4px",
-            padding: "4px 8px",
-            flex: 1,
-          }}
-        />
-
-        {/* Track controls */}
+        {/* Track controls - buttons on left side per 2022 design */}
         <div
           className="track-controls"
-          style={{ display: "flex", alignItems: "center", gap: "4px" }}
+          style={{ display: "flex", alignItems: "center", gap: "2px" }}
         >
           <button
             data-testid="mute-button"
             className={`track-btn ${track.mute ? "active" : ""}`}
             onClick={handleMuteClick}
             style={{
-              ...buttonStyle,
-              background: track.mute ? "#ff004c" : buttonStyle.background,
+              background: track.mute ? "#ff0000" : "transparent", // Brighter red color for muted state
+              color: track.mute ? "#ffffff" : "var(--fg1)",
+              fontWeight: track.mute ? "bold" : "normal",
             }}
           >
             M
@@ -176,9 +147,8 @@ function TrackComponent({ className, track, style }: IProps) {
             className={`track-btn ${track.solo ? "active" : ""}`}
             onClick={handleSoloClick}
             style={{
-              ...buttonStyle,
-              background: track.solo ? "#ffcc00" : buttonStyle.background,
-              color: track.solo ? "#000" : buttonStyle.color,
+              background: track.solo ? "#ffcc00" : "transparent",
+              color: track.solo ? "#000" : "var(--fg1)",
             }}
           >
             S
@@ -190,13 +160,33 @@ function TrackComponent({ className, track, style }: IProps) {
               setTrack({ ...track, automation: !track.automation })
             }
             style={{
-              ...buttonStyle,
-              background: track.automation ? "#00cc00" : buttonStyle.background,
+              background: track.automation ? "#00cc00" : "transparent",
+              color: track.automation ? "#fff" : "var(--fg1)",
             }}
           >
             OFF
           </button>
         </div>
+
+        {/* Track name */}
+        <input
+          type="text"
+          value={track.name}
+          onChange={(e) => setTrack({ ...track, name: e.target.value })}
+          onBlur={(e) => {
+            if (e.target.value !== track.name) {
+              setTrack({ ...track, name: e.target.value.trim() });
+            }
+          }}
+          className="track-name"
+          style={{
+            background: "var(--bg7)",
+            border: "1px solid var(--border4)",
+            color: "var(--fg1)",
+            padding: "2px 4px",
+            flex: 1,
+          }}
+        />
       </div>
 
       {/* Automation lanes */}

@@ -5,6 +5,7 @@ import { WorkstationContext } from '@orpheus/contexts';
 import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from '@orpheus/types/core'
 import { Add, ExpandLess, ExpandMore, Remove } from "@mui/icons-material"
 import { clamp, inverseLerp, lerp } from '@orpheus/utils/general'
+import { volumeToNormalized } from '@orpheus/utils/utils'
 import { v4 } from "uuid"
 
 import { Meter } from '@orpheus/widgets'

@@ -28,20 +28,24 @@ import {
   Drawer,
   Badge,
 } from "@mui/material";
-import { WorkstationContext } from '@orpheus/contexts';
-import { Meter, NumberInput, SelectSpinBox } from '@orpheus/widgets';
+import { WorkstationContext } from "@orpheus/contexts";
+import { Meter, NumberInput, SelectSpinBox } from "@orpheus/widgets";
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
   TrackType,
-} from '@orpheus/types/core';
-import { SnapGridSizeOption } from '@orpheus/types/audio';
+} from "@orpheus/types/core";
+import { SnapGridSizeOption } from "@orpheus/types/audio";
 import { FaMagnet } from "react-icons/fa";
-;
+import {
+  getVolumeGradient,
+  sliceClip,
+  volumeToNormalized,
+} from "@orpheus/utils/utils";
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
-import { parseDuration } from '@orpheus/utils/general';
+import { parseDuration } from "@orpheus/utils/general";
 import SettingsPanel from "../../../components/settings/SettingsPanel";
 
 const noteValues: { label: string; value: number }[] = [];
@@ -297,7 +301,7 @@ export default function Header() {
 
   const tempo = useMemo(() => {
     const lane = masterTrack.automationLanes.find(
-      (lane: any) => lane.envelope === (AutomationLaneEnvelope as any).Tempo
+      (lane) => lane.envelope === AutomationLaneEnvelope.Tempo
     );
     return getTrackCurrentValue(masterTrack, lane);
   }, [
@@ -305,6 +309,8 @@ export default function Header() {
     playheadPos,
     timelineSettings.tempo,
     timelineSettings.timeSignature,
+    getTrackCurrentValue,
+    masterTrack,
   ]);
 
   const style = {
@@ -470,9 +476,8 @@ export default function Header() {
   // New state for UI features
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [audioMenuAnchorEl, setAudioMenuAnchorEl] = useState<null | HTMLElement>(
-    null
-  );
+  const [audioMenuAnchorEl, setAudioMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [pluginsOpen, setPluginsOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(2); // Example for notification badge
 
@@ -766,7 +771,9 @@ export default function Header() {
             onClick={handleAudioMenuOpen}
             title="Audio I/O Settings"
           >
-            <AudiotrackOutlined style={{ fontSize: 18, color: "var(--border6)" }} />
+            <AudiotrackOutlined
+              style={{ fontSize: 18, color: "var(--border6)" }}
+            />
           </IconButton>
 
           {/* Plugins Button */}
@@ -785,7 +792,12 @@ export default function Header() {
             title="Chat"
           >
             <Badge badgeContent={unreadMessages} color="error">
-              <Chat style={{ fontSize: 18, color: chatOpen ? "var(--color1)" : "var(--border6)" }} />
+              <Chat
+                style={{
+                  fontSize: 18,
+                  color: chatOpen ? "var(--color1)" : "var(--border6)",
+                }}
+              />
             </Badge>
           </IconButton>
 
@@ -839,17 +851,10 @@ export default function Header() {
       </div>
 
       {/* Replace the Settings Dialog with the new SettingsPanel */}
-      <SettingsPanel
-        open={settingsOpen}
-        onClose={handleCloseSettings}
-      />
+      <SettingsPanel open={settingsOpen} onClose={handleCloseSettings} />
 
       {/* Chat Drawer */}
-      <Drawer
-        anchor="right"
-        open={chatOpen}
-        onClose={handleToggleChat}
-      >
+      <Drawer anchor="right" open={chatOpen} onClose={handleToggleChat}>
         <div style={style.chatDrawer}>
           <h4>Chat</h4>
           <div
@@ -869,7 +874,8 @@ export default function Header() {
               <strong>You:</strong> How do I add a plugin?
             </div>
             <div style={{ margin: "8px 0", textAlign: "left" }}>
-              <strong>System:</strong> You can add plugins through the plugins manager. Click on the puzzle piece icon in the toolbar.
+              <strong>System:</strong> You can add plugins through the plugins
+              manager. Click on the puzzle piece icon in the toolbar.
             </div>
           </div>
           <input
