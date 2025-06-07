@@ -1,16 +1,16 @@
 import React, { memo, useContext, useEffect, useMemo, useRef, useState, forwardRef } from "react";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from '@orpheus/contexts';
 import ClipboardContext from "../../../context/ClipboardContext"; 
 import { ClipboardItemType } from "../../../types/clipboard";
-import { AutomationLane, Clip, Track, TrackType } from "../../../services/types/types";
-import { TimelinePosition } from "../../../services/types/timeline";
-import { WorkstationAudioInputFile } from "../../../services/types/audio";
+import { AutomationLane, Clip, Track, TrackType } from '@orpheus/types/types';
+import { TimelinePosition } from '@orpheus/types/timeline';
+import { WorkstationAudioInputFile } from '@orpheus/types/audio';
 import { ContextMenuType } from "../../../types/context-menu";
-import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
+import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from '@orpheus/utils/utils';
 import { AudioClipComponent, AutomationLaneComponent, ClipComponent, RegionComponent } from "./index";
 import { electronAPI, openContextMenu } from "../../../services/electron/utils";
 import { TRACK_FILE_UPLOAD } from "../../../services/electron/channels";
-import { getCSSVarValue, normalizeHex } from "../../../services/utils/general";
+import { getCSSVarValue, normalizeHex } from '@orpheus/utils/general';
 
 
 // Export the props interface to make it available for consumers

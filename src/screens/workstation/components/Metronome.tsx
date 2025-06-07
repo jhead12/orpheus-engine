@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from '@orpheus/contexts';
 import { MusicNote as MetronomeIcon, ArrowDropDown } from "@mui/icons-material";
 import metronomeTick from "../../../assets/audio/metronome-tick.wav";
 import metronomeTickAccentuated from "../../../assets/audio/metronome-tick-accentuated.wav";

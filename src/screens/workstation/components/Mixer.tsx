@@ -1,14 +1,14 @@
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "../../../contexts";
-import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from "../../../services/types/types";
-import { hslToHex, hueFromHex } from "../../../services/utils/general";
-import { formatPanning, getVolumeGradient, volumeToNormalized } from "../../../services/utils/utils";
+import { WorkstationContext } from '@orpheus/contexts';
+import { AutomationLaneEnvelope, AutomationMode, ContextMenuType, Track } from '@orpheus/types/types';
+import { hslToHex, hueFromHex } from '@orpheus/utils/general';
+import { formatPanning, getVolumeGradient, volumeToNormalized } from '@orpheus/utils/utils';
 import { FXComponent, TrackVolumeSlider } from "./index";
 import { TrackIcon } from "../../../components/icons";
-import { SortData } from "../../../components/widgets/SortableList";
-import { Dialog, HueInput, Knob, Meter, SelectSpinBox, SortableList, SortableListItem } from "../../../components/widgets";
+import { SortData } from '@orpheus/widgets/SortableList';
+import { Dialog, HueInput, Knob, Meter, SelectSpinBox, SortableList, SortableListItem } from '@orpheus/widgets';
 import { openContextMenu } from "../../../services/electron/utils";
 
 const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => {

@@ -36,15 +36,21 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "pretest": "mkdir -p __snapshots__/screenshots __snapshots__/diffs",
-    "test:screenshots": "npm run pretest && vitest run --config vitest.config.ts \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" || true && node scripts/list-screenshots.js",
+    "test:screenshots": "pnpm pretest && vitest run --config vitest.config.ts \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" || true && node scripts/list-screenshots.js",
     "list:screenshots": "node scripts/list-screenshots.js",
+    "setup:aliases": "node scripts/setup-aliases.js",
+    "refactor:sample": "node scripts/refactor-sample.js",
+    "refactor:imports": "node scripts/refactor-imports.js",
+    "refactor:imports:auto": "node scripts/refactor-imports-auto.js",
     "fix-vite": "pnpm install --save-dev @vitejs/plugin-react",
     "fix-electron-path": "node scripts/fix-electron-path.js",
     "find-files": "ts-node scripts/findFiles.ts",
     "find-large-files": "node scripts/find-large-files.js",
     "validate:env": "node scripts/validate-env.js",
     "predev": "npm run validate:env",
-    "prebuild": "npm run validate:env"
+    "prebuild": "npm run validate:env",
+    "test:visual": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\"",
+    "test:visual:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" -u"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

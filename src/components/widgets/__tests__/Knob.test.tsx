@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import Knob from "../Knob";
+import { expectScreenshot } from "../../../test/helpers";
 
 describe("Knob Component", () => {
   beforeAll(() => {
@@ -164,5 +165,58 @@ describe("Knob Component", () => {
 
     // Handle double-click case even if direct text input not available
     expect(knobElement).toBeInTheDocument();
+  });
+
+  describe("Visual Tests", () => {
+    it("visual test: renders knob at different values @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
+
+      render(<Knob value={75} min={0} max={100} />, { container });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await expectScreenshot(container, "knob-75-percent");
+      document.body.removeChild(container);
+    });
+
+    it("visual test: renders knob at minimum value @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
+
+      render(<Knob value={0} min={0} max={100} />, { container });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await expectScreenshot(container, "knob-min");
+      document.body.removeChild(container);
+    });
+
+    it("visual test: renders knob at maximum value @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
+
+      render(<Knob value={100} min={0} max={100} />, { container });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await expectScreenshot(container, "knob-max");
+      document.body.removeChild(container);
+    });
   });
 });

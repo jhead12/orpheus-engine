@@ -1,11 +1,11 @@
 import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { WorkstationContext } from "../../../contexts";
-import { AutomationLaneEnvelope, ContextMenuType, Track } from "../../../services/types/types"
-import { Knob, HueInput, Dialog, Meter } from "../../../components/widgets"
+import { WorkstationContext } from '@orpheus/contexts';
+import { AutomationLaneEnvelope, ContextMenuType, Track } from '@orpheus/types/types'
+import { Knob, HueInput, Dialog, Meter } from '@orpheus/widgets'
 import { IconButton, DialogContent } from "@mui/material"
 import { Add, Check, FiberManualRecord } from "@mui/icons-material"
 import { AutomationLaneTrack, FXComponent } from "./index"
-import { getCSSVarValue, hslToHex, hueFromHex, normalizeHex } from "../../../services/utils/general"
+import { getCSSVarValue, hslToHex, hueFromHex, normalizeHex } from '@orpheus/utils/general'
 import { 
   BASE_HEIGHT, 
   formatPanning, 
@@ -15,7 +15,7 @@ import {
   volumeToNormalized, 
   scrollToAndAlign,
   waitForScrollWheelStop
-} from "../../../services/utils/utils"
+} from '@orpheus/utils/utils'
 import { TrackIcon } from "../../../components/icons"
 import { openContextMenu } from "../../../services/electron/utils"
 

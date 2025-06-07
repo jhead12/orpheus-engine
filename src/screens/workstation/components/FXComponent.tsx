@@ -1,10 +1,10 @@
 import React, { CSSProperties, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Tune, Add, PowerSettingsNew, Delete, ArrowDropUp, ArrowDropDown, Check, Close, MoreHoriz, Save } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { BaseEffect, ContextMenuType, Effect, FXChainPreset, Track } from "../../../services/types/types";
+import { BaseEffect, ContextMenuType, Effect, FXChainPreset, Track } from '@orpheus/types/types';
 import { v4 } from "uuid";
-import { WorkstationContext } from "../../../contexts";
-import { SelectSpinBox } from "../../../components/widgets";
+import { WorkstationContext } from '@orpheus/contexts';
+import { SelectSpinBox } from '@orpheus/widgets';
 import { openContextMenu } from "../../../services/electron/utils";
 
 const FX_TYPES = [

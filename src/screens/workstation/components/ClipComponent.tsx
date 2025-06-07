@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { createPortal, flushSync } from "react-dom";
 import DNR, { DNRData, ResizeDNRData } from "../../../components/DNR";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from '@orpheus/contexts';
 import { openContextMenu } from "../../../services/electron/utils";
 import {
   AutomationLane,
@@ -17,15 +17,15 @@ import {
   ContextMenuType,
   TimelinePosition,
   Track,
-} from "../../../services/types/types";
-import { shadeColor } from "../../../services/utils/general";
+} from '@orpheus/types/types';
+import { shadeColor } from '@orpheus/utils/general';
 import {
   BASE_HEIGHT,
   clipAtPos,
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from "../../../services/utils/utils";
+} from '@orpheus/utils/utils';
 import useClickAway from "../../../services/hooks/useClickAway";
 
 interface IProps extends BaseClipComponentProps {

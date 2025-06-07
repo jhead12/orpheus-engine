@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Clip } from "../../../types/core";
 import { AudioAnalysisType, AudioAnalysisResults } from "../../../types/audio";
 import { useMCPAnalysis } from "../../../hooks/useMCPAnalysis";
-import { useAI } from "../../../contexts/AIContext";
+import { useAI } from '@orpheus/contexts/AIContext';
 import { invokePythonAnalysis } from "../../../services/pythonBridge";
 
 interface AudioAnalysisPanelProps {
