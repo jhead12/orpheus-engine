@@ -23,6 +23,7 @@
   "private": true,
   "main": "build/electron/main.js",
   "scripts": {
+    "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.js\"",
     "dev:vite": "cross-env NODE_ENV=development vite",
     "dev:local": "cross-env NODE_ENV=development VITE_PORT=3000 vite",

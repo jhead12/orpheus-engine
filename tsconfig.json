@@ -28,7 +28,9 @@
       "@orpheus/test/*": ["src/test/*"],
       "@orpheus/utils/*": ["src/services/utils/*"],
       "@orpheus/widgets/*": ["src/components/widgets/*"],
-      "@orpheus/workstation/*": ["src/screens/workstation/*"]
+      "@orpheus/workstation/*": ["src/screens/workstation/*"],
+      "@orpheus/electron": ["electron/index"],
+      "@orpheus/electron/*": ["electron/*"]
     },
     "types": ["jest"]
   },
