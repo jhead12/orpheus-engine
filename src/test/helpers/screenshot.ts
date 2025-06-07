@@ -100,9 +100,20 @@ async function takeScreenshot(
     </html>
   `;
 
-  return htmlToImage({
+  // Add timeout to prevent hanging
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error("Screenshot timeout after 5 seconds")), 5000);
+  });
+
+  const screenshotPromise = htmlToImage({
     html: fullHtml,
     transparent: true,
     type: "png",
+    puppeteerArgs: {
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      timeout: 4000, // 4 second timeout for puppeteer
+    },
   }) as Promise<Buffer>;
+
+  return Promise.race([screenshotPromise, timeoutPromise]);
 }
