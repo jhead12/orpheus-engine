@@ -87,6 +87,13 @@ export class TimelinePosition {
     return this.toTicks() / ticksPerSecond;
   }
 
+  /**
+   * Calculate absolute difference between margins of two positions
+   */
+  diffInMargin(other: TimelinePosition): number {
+    return Math.abs(this.toMargin() - other.toMargin());
+  }
+
   snap(
     gridSize: number,
     direction: "floor" | "ceil" | "round" = "round"

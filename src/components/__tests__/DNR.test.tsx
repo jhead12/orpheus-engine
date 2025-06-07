@@ -15,11 +15,11 @@ describe("DNR (Drag and Resize) Component", () => {
       .mockImplementation(() => ({
         x: 0,
         y: 0,
-        width: 800,
-        height: 600,
+        width: 200,
+        height: 200,
         top: 0,
-        right: 800,
-        bottom: 600,
+        right: 200,
+        bottom: 200,
         left: 0,
         toJSON: () => {},
       }));
