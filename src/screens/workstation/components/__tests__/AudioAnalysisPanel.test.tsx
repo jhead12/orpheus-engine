@@ -1,11 +1,16 @@
 import { describe, it, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import AudioAnalysisPanel from '../AudioAnalysisPanel';
+import { AudioAnalysisType } from '../../../../types/audio';
 
 // Mock the hooks and contexts that AudioAnalysisPanel uses
 vi.mock('../../../hooks/useMCPAnalysis', () => ({
   useMCPAnalysis: vi.fn(() => ({
-    results: null,
+    results: {
+      spectral: { features: [] },
+      temporal: { features: [] },
+      waveform: new Float32Array([0.1, 0.2, 0.3]),
+    },
     error: null,
     isLoading: false,
   })),
@@ -13,13 +18,35 @@ vi.mock('../../../hooks/useMCPAnalysis', () => ({
 
 vi.mock('@orpheus/contexts/AIContext', () => ({
   useAI: vi.fn(() => ({
-    analyzeAudioFeatures: vi.fn().mockResolvedValue({}),
-    suggestArrangement: vi.fn().mockResolvedValue({}),
+    analyzeAudioFeatures: vi.fn().mockResolvedValue({
+      tempo: 120,
+      key: 'C major',
+      mood: 'upbeat',
+    }),
+    suggestArrangement: vi.fn().mockResolvedValue({
+      suggestions: ['Add drums', 'Layer harmonies'],
+    }),
   })),
 }));
 
+// Mock the python bridge to prevent IPC calls
 vi.mock('../../../services/pythonBridge', () => ({
-  invokePythonAnalysis: vi.fn().mockResolvedValue({}),
+  invokePythonAnalysis: vi.fn().mockResolvedValue({
+    success: true,
+    data: {
+      waveform: new Float32Array([0.1, 0.2, 0.3, 0.2, 0.1]),
+      spectral: {
+        mfcc: [0.1, 0.2, 0.3],
+        spectral_centroid: [1000, 1200, 1100],
+        spectral_rolloff: [2000, 2200, 2100],
+      },
+      temporal: {
+        tempo: 120,
+        beat_frames: [0, 48, 96],
+        onset_frames: [0, 24, 48, 72, 96],
+      },
+    },
+  }),
 }));
 
 describe('AudioAnalysisPanel Visual Tests', () => {
@@ -55,10 +82,16 @@ describe('AudioAnalysisPanel Visual Tests', () => {
 
     const { container: renderContainer } = render(
       <AudioAnalysisPanel
-        type="waveform"
+        type={AudioAnalysisType.Waveform}
         clip={{
           id: 'clip-1',
-          audio: { buffer: audioBuffer },
+          audio: { 
+            audioBuffer: audioBuffer,
+            buffer: audioBuffer,
+            waveform: Array.from({ length: 1024 }, (_, i) => Math.sin(i * 0.1)),
+            start: { measure: 0, beat: 0, sixteenth: 0 },
+            end: { measure: 4, beat: 0, sixteenth: 0 }
+          },
           name: 'Test Clip',
           color: '#ff0000'
         }}
