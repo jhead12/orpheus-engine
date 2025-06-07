@@ -7,6 +7,7 @@ import { PreferencesProvider } from "./context/PreferencesContext";
 import Workstation from "./screens/workstation/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
+import { DocsPage, DocsNavigation } from "./components/docs";
 import "./styles/App.css";
 
 function App(): React.ReactElement {
@@ -40,6 +41,7 @@ function App(): React.ReactElement {
       <PreferencesProvider>
         <MixerProvider>
           <Router>
+            <DocsNavigation show={true} />
             <Routes>
               <Route
                 path="/"
@@ -51,7 +53,12 @@ function App(): React.ReactElement {
                   </ClipboardProvider>
                 }
               />
+              <Route
+                path="/docs"
+                element={<DocsPage />}
+              />
             </Routes>
+            <DocsNavigation />
             <Preferences />
           </Router>
         </MixerProvider>
