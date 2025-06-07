@@ -129,6 +129,9 @@ importers:
       globals:
         specifier: ^13.22.0
         version: 13.24.0
+      html2canvas:
+        specifier: ^1.4.1
+        version: 1.4.1
       jest-image-snapshot:
         specifier: ^6.2.0
         version: 6.5.1
@@ -5300,8 +5303,7 @@ snapshots:
   bare-events@2.5.4:
     optional: true
 
-  base64-arraybuffer@1.0.2:
-    optional: true
+  base64-arraybuffer@1.0.2: {}
 
   base64-js@1.5.1: {}
 
@@ -5743,7 +5745,6 @@ snapshots:
   css-line-break@2.1.0:
     dependencies:
       utrie: 1.0.2
-    optional: true
 
   css-to-react-native@3.2.0:
     dependencies:
@@ -6663,7 +6664,6 @@ snapshots:
     dependencies:
       css-line-break: 2.1.0
       text-segmentation: 1.0.3
-    optional: true
 
   http-cache-semantics@4.2.0: {}
 
@@ -8255,7 +8255,6 @@ snapshots:
   text-segmentation@1.0.3:
     dependencies:
       utrie: 1.0.2
-    optional: true
 
   text-table@0.2.0: {}
 
@@ -8423,7 +8422,6 @@ snapshots:
   utrie@1.0.2:
     dependencies:
       base64-arraybuffer: 1.0.2
-    optional: true
 
   uuid@9.0.1: {}
 

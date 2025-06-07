@@ -35,7 +35,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "pretest": "mkdir -p __snapshots__/screenshots __snapshots__/diffs",
+    "pretest": "mkdir -p __snapshots__/screenshots __snapshots__/diffs __snapshots__/gifs",
     "test:screenshots": "pnpm pretest && vitest run --config vitest.config.ts \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" || true && node scripts/list-screenshots.js",
     "list:screenshots": "node scripts/list-screenshots.js",
     "setup:aliases": "node scripts/setup-aliases.js",
@@ -50,7 +50,12 @@
     "predev": "npm run validate:env",
     "prebuild": "npm run validate:env",
     "test:visual": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\"",
-    "test:visual:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" -u"
+    "test:visual:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" -u",
+    "generate:visual-tests": "ts-node scripts/visual-agent.js generate",
+    "generate:visual-test": "ts-node scripts/visual-agent.js generate",
+    "test:visual:gif": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\"",
+    "test:visual:gif:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\" -u",
+    "list:visual-tests": "ts-node scripts/visual-agent.js list"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -95,6 +100,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "globals": "^13.22.0",
+    "html2canvas": "^1.4.1",
     "jest-image-snapshot": "^6.2.0",
     "node-html-to-image": "^4.0.0",
     "nodemon": "^3.0.1",
