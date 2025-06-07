@@ -13,18 +13,20 @@ const createMockTimelinePosition = () => ({
 });
 
 // Setup mock for TimelinePosition - using direct path without @orpheus alias
-vi.mock("../../../../types/core", () => {
-  const MockTimelinePosition = vi.fn().mockImplementation(() => createMockTimelinePosition());
+vi.mock("@orpheus/types/core", () => {
+  // Define the type for the TimelinePosition class with static methods
+  type TimelinePositionStatic = {
+    parseFromString: (str: string | undefined) => ReturnType<typeof createMockTimelinePosition> | null;
+    start: ReturnType<typeof createMockTimelinePosition>;
+  } & { new (): ReturnType<typeof createMockTimelinePosition> };
+
+  const MockTimelinePosition = vi
+    .fn()
+    .mockImplementation(() => createMockTimelinePosition()) as unknown as TimelinePositionStatic;
 
   // Add static methods and ensure they're properly typed
   MockTimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
     if (!str) return null;
-    return createMockTimelinePosition();
-  });
-
-  // Add static properties
-  MockTimelinePosition.start = createMockTimelinePosition();
-
   return {
     TimelinePosition: MockTimelinePosition,
     TrackType: { Audio: "audio" },
@@ -32,21 +34,13 @@ vi.mock("../../../../types/core", () => {
     AutomationLaneEnvelope: { Volume: "volume" },
     ContextMenuType: { Track: 0, Automation: 1 },
   };
+    AutomationMode: { Off: "off" },
+    AutomationLaneEnvelope: { Volume: "volume" },
+    ContextMenuType: { Track: 0, Automation: 1 },
+  };
 
   return mockModule;
 });
-
-// Factory function to create mock TimelinePosition instances for tests
-function createMockTimelinePosition() {
-  return {
-    ticks: 0,
-    compareTo: vi.fn().mockReturnValue(0),
-    toMargin: vi.fn().mockReturnValue(0),
-    copy: vi.fn().mockReturnThis(),
-    equals: vi.fn().mockReturnValue(true),
-    diff: vi.fn().mockReturnThis(),
-  };
-}
 
 // Normal imports after mocks
 import { describe, expect, beforeEach, afterEach } from "vitest";
@@ -284,9 +278,11 @@ describe("TrackComponent Core Functionality", () => {
       <TrackComponent track={trackWithAutomation} />
     );
 
-    const automationButton = container.querySelector('[data-testid="automation-mode-button"]');
-    expect(automationButton).toHaveClass('active');
-    expect(automationButton).toHaveTextContent('OFF');
+    const automationButton = container.querySelector(
+      '[data-testid="automation-mode-button"]'
+    );
+    expect(automationButton).toHaveClass("active");
+    expect(automationButton).toHaveTextContent("OFF");
   });
 });
 
