@@ -68,20 +68,21 @@
     "jsdom": "^22.1.0",
     "jspdf": "^3.0.1",
     "lodash": "^4.17.21",
+    "node-html-to-image": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-resize-detector": "^9.1.0",
     "react-router-dom": "^6.16.0",
     "styled-components": "^6.0.8",
-    "uuid": "^9.0.1",
-    "node-html-to-image": "^4.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.1.3",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.5",
+    "@types/jest-image-snapshot": "^6.4.0",
     "@types/lodash": "^4.14.199",
     "@types/node": "^20.8.2",
     "@types/react": "^18.2.24",
@@ -106,11 +107,11 @@
     "node-html-to-image": "^4.0.0",
     "nodemon": "^3.0.1",
     "playwright": "^1.41.0",
+    "ssim.js": "^3.5.0",
     "typescript": "~5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.33.0",
-    "wait-on": "^7.0.1",
-    "ssim.js": "^3.5.0"
+    "wait-on": "^7.0.1"
   },
   "build": {
     "productName": "Orpheus Engine",
