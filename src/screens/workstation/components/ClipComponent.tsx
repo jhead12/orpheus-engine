@@ -8,24 +8,24 @@ import React, {
   useState,
 } from "react";
 import { createPortal, flushSync } from "react-dom";
-import DNR, { DNRData, ResizeDNRData } from "../../../components/DNR";
-import { WorkstationContext } from '@orpheus/contexts';
+import DNR, { DNRData } from "../../../components/DNR";
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { openContextMenu } from "../../../services/electron/utils";
 import {
   AutomationLane,
-  BaseClipComponentProps,
   ContextMenuType,
   TimelinePosition,
   Track,
-} from '@orpheus/types/types';
-import { shadeColor } from '@orpheus/utils/general';
+} from '../../../types/core';
+import { BaseClipComponentProps, ResizeDNRData } from '../../../types/components';
+import { shadeColor } from '../../../services/utils/general';
 import {
   BASE_HEIGHT,
   clipAtPos,
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from '@orpheus/utils/utils';
+} from '../../../services/utils/utils';
 import useClickAway from "../../../services/hooks/useClickAway";
 
 interface IProps extends BaseClipComponentProps {

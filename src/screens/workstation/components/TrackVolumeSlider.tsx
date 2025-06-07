@@ -1,9 +1,9 @@
 import { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from '@orpheus/types/types';
-import { formatVolume, normalizedToVolume, volumeToNormalized } from '@orpheus/utils/utils';
-import Slider from '@orpheus/widgets/Slider';
+import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
+import { formatVolume, normalizedToVolume, volumeToNormalized } from '../../../services/utils/utils';
+import Slider from '../../../components/widgets/Slider';
 import { WorkstationContext } from '@orpheus/contexts';
-import { TooltipProps } from '@orpheus/widgets/Tooltip';
+import { TooltipProps } from '../../../components/widgets/Tooltip';
 
 interface TrackVolumeSliderProps {
   className?: string;

@@ -28,23 +28,23 @@ import {
   Badge,
 } from "@mui/material";
 import { WorkstationContext } from '@orpheus/contexts';
-import { Meter, NumberInput, SelectSpinBox } from '@orpheus/widgets';
+import { Meter, NumberInput, SelectSpinBox } from '../../../components/widgets';
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
-  SnapGridSizeOption,
   TrackType,
-} from '@orpheus/types/types';
+} from '@orpheus/types/core';
+import { SnapGridSizeOption } from '@orpheus/types/audio';
 import { FaMagnet } from "react-icons/fa";
 import {
   getVolumeGradient,
   sliceClip,
   volumeToNormalized,
-} from '@orpheus/utils/utils';
+} from '../../../services/utils/utils';
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
-import { parseDuration } from '@orpheus/utils/general';
+import { parseDuration } from '../../../services/utils/general';
 import SettingsPanel from "../../../components/settings/SettingsPanel";
 
 const noteValues: { label: string; value: number }[] = [];

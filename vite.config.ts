@@ -19,7 +19,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@orpheus": path.resolve(__dirname, "./src"),
       "@orpheus-engine": path.resolve(__dirname, ".."),
       "@orpheus/components": path.resolve(__dirname, "./src/components"),
       "@orpheus/services": path.resolve(__dirname, "./src/services"),
@@ -29,7 +28,8 @@ export default defineConfig({
       "@orpheus/test": path.resolve(__dirname, "./src/test"),
       "@orpheus/utils": path.resolve(__dirname, "./src/services/utils"),
       "@orpheus/widgets": path.resolve(__dirname, "./src/components/widgets"),
-      "@orpheus/workstation": path.resolve(__dirname, "./src/screens/workstation")
+      "@orpheus/workstation": path.resolve(__dirname, "./src/screens/workstation"),
+      "@orpheus": path.resolve(__dirname, "./src")
     }
   },
   server: {

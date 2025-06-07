@@ -1,9 +1,10 @@
 import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 // Update the import to point directly to the file exporting WorkstationContext
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
-import { BaseClipComponentProps, TimelinePosition } from '@orpheus/types/types';
+import { BaseClipComponentProps } from '@orpheus/types/components';
+import { TimelinePosition } from '@orpheus/types/core';
 import { ClipComponent, Waveform } from "./index";
-import { audioBufferToBuffer, audioContext, reverseAudio } from '@orpheus/utils/audio';
+import { audioBufferToBuffer, audioContext, reverseAudio } from '@orpheus/services/utils/audio';
 import { CHUNK_SIZE as WAVEFORM_CHUNK_SIZE, WaveformProps } from "./Waveform";
 import { ResizeDNRData } from "../../../components/DNR";
 

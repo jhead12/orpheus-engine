@@ -14,10 +14,10 @@
 
 import React, { Component, ContextType } from "react";
 import { WorkstationContext } from '@orpheus/contexts';
-import { Region, TimelinePosition } from '@orpheus/types/types';
+import { Region, TimelinePosition } from '@orpheus/types/core';
 import WindowAutoScroll from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
-import { BASE_BEAT_WIDTH } from '@orpheus/utils/utils';
+import { BASE_BEAT_WIDTH } from '../../../services/utils/utils';
 
 /**
  * Interface for auto-scroll configuration

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { TrackComponent } from '../TrackComponent';
 import { expectScreenshot } from '@orpheus/test/helpers';
 import { WorkstationContext } from '@orpheus/contexts';
-import type { Track } from '@orpheus/types/types';
+import type { Track } from '@orpheus/types/core';
 
 describe('TrackComponent Visual Tests', () => {
   const defaultContext = {

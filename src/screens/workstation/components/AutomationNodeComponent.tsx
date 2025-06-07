@@ -2,10 +2,10 @@ import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, us
 import { createPortal, flushSync } from "react-dom";
 import { Popover } from "@mui/material";
 import { WorkstationContext } from '@orpheus/contexts';
-import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from '@orpheus/types/types';
-import { clamp } from '@orpheus/utils/general';
-import { formatPanning, formatVolume, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from '@orpheus/utils/utils';
-import { Tooltip } from '@orpheus/widgets';
+import { AutomationLane, AutomationLaneEnvelope, AutomationNode, ContextMenuType, TimelinePosition } from '@orpheus/types/core';
+import { clamp } from '../../../services/utils/general';
+import { formatPanning, formatVolume, scrollToAndAlign, timelineEditorWindowScrollThresholds, waitForScrollWheelStop } from '../../../services/utils/utils';
+import { Tooltip } from '../../../components/widgets';
 import DNR, { DNRData } from "../../../components/DNR";
 import { openContextMenu } from "../../../services/electron/utils";
 import useClickAway from "../../../services/hooks/useClickAway";

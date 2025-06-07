@@ -22,6 +22,10 @@ const rootDir = path.resolve(__dirname, "..");
 const pathAliasMap = [
   // Core module paths
   {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/\.\.\/contexts\/index['"]/g,
+    replacement: "from '@orpheus/contexts'",
+  },
+  {
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/\.\.\/contexts['"]/g,
     replacement: "from '@orpheus/contexts'",
   },
@@ -61,6 +65,18 @@ const pathAliasMap = [
 
   // Three levels deep
   {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/contexts\/index['"]/g,
+    replacement: "from '@orpheus/contexts'",
+  },
+  {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/contexts['"]/g,
+    replacement: "from '@orpheus/contexts'",
+  },
+  {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/contexts\/(.+?)['"]/g,
+    replacement: "from '@orpheus/contexts/$1'",
+  },
+  {
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/services\/types\/(.+?)['"]/g,
     replacement: "from '@orpheus/types/$1'",
   },
@@ -76,16 +92,20 @@ const pathAliasMap = [
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/components\/widgets\/(.+?)['"]/g,
     replacement: "from '@orpheus/widgets/$1'",
   },
+
+  // Two levels deep
   {
-    pattern: /from ['"]\.\.\/\.\.\/\.\.\/contexts['"]/g,
+    pattern: /from ['"]\.\.\/\.\.\/contexts\/index['"]/g,
     replacement: "from '@orpheus/contexts'",
   },
   {
-    pattern: /from ['"]\.\.\/\.\.\/\.\.\/contexts\/(.+?)['"]/g,
+    pattern: /from ['"]\.\.\/\.\.\/contexts['"]/g,
+    replacement: "from '@orpheus/contexts'",
+  },
+  {
+    pattern: /from ['"]\.\.\/\.\.\/contexts\/(.+?)['"]/g,
     replacement: "from '@orpheus/contexts/$1'",
   },
-
-  // Two levels deep
   {
     pattern: /from ['"]\.\.\/\.\.\/services\/types\/(.+?)['"]/g,
     replacement: "from '@orpheus/types/$1'",
@@ -102,16 +122,23 @@ const pathAliasMap = [
     pattern: /from ['"]\.\.\/\.\.\/components\/widgets\/(.+?)['"]/g,
     replacement: "from '@orpheus/widgets/$1'",
   },
-  {
-    pattern: /from ['"]\.\.\/\.\.\/contexts['"]/g,
-    replacement: "from '@orpheus/contexts'",
-  },
-  {
-    pattern: /from ['"]\.\.\/\.\.\/contexts\/(.+?)['"]/g,
-    replacement: "from '@orpheus/contexts/$1'",
-  },
 
   // Import type statements
+  {
+    pattern:
+      /import type \{ (.+?) \} from ['"]\.\.\/\.\.\/\.\.\/\.\.\/contexts\/(.+?)['"]/g,
+    replacement: "import type { $1 } from '@orpheus/contexts/$2'",
+  },
+  {
+    pattern:
+      /import type \{ (.+?) \} from ['"]\.\.\/\.\.\/\.\.\/contexts\/(.+?)['"]/g,
+    replacement: "import type { $1 } from '@orpheus/contexts/$2'",
+  },
+  {
+    pattern:
+      /import type \{ (.+?) \} from ['"]\.\.\/\.\.\/contexts\/(.+?)['"]/g,
+    replacement: "import type { $1 } from '@orpheus/contexts/$2'",
+  },
   {
     pattern:
       /import type \{ (.+?) \} from ['"]\.\.\/\.\.\/\.\.\/\.\.\/services\/types\/(.+?)['"]/g,

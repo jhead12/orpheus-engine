@@ -1,4 +1,4 @@
-import { Clip, TimelinePosition } from "../types/types";
+import { Clip, TimelinePosition, AutomationLane } from "../../types/core";
 
 export const BASE_HEIGHT = 100;
 export const BASE_BEAT_WIDTH = 80;
@@ -23,10 +23,13 @@ export const isValidTrackFileFormat = (type: string): boolean => {
 };
 
 export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
+  const duration = clip.end.toTicks() - clip.start.toTicks();
+  const endPosition = TimelinePosition.fromTicks(position.toTicks() + duration);
+  
   return {
     ...clip,
     start: position,
-    end: TimelinePosition.fromSpan(clip.end.diff(clip.start)).add(position),
+    end: endPosition,
   };
 };
 
@@ -72,6 +75,26 @@ export const waitForScrollWheelStop = (
   element.addEventListener("scroll", handleScroll, { passive: true });
 
   return () => element.removeEventListener("scroll", handleScroll);
+};
+
+export const removeAllClipOverlap = (clips: Clip[], newClip?: Clip): Clip[] => {
+  if (!newClip) return clips;
+
+  // Remove any clips that overlap with the new clip
+  return clips
+    .filter((clip) => {
+      if (clip.id === newClip.id) return false;
+
+      // Check if clips overlap
+      const clipStart = clip.start.toTicks();
+      const clipEnd = clip.end.toTicks();
+      const newClipStart = newClip.start.toTicks();
+      const newClipEnd = newClip.end.toTicks();
+
+      // No overlap if one clip ends before the other starts
+      return clipEnd <= newClipStart || newClipEnd <= clipStart;
+    })
+    .concat([newClip]);
 };
 
 export const getLaneColor = (

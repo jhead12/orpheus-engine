@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const requiredEnvVars = {
   VITE_PORT: { type: 'number', default: '5174' },
@@ -15,8 +19,9 @@ const requiredEnvVars = {
 };
 
 function validateEnv() {
-  const envPath = path.join(process.cwd(), '.env');
-  const envExamplePath = path.join(process.cwd(), '.env.example');
+  const projectRoot = path.join(__dirname, '..');
+  const envPath = path.join(projectRoot, '.env');
+  const envExamplePath = path.join(projectRoot, '.env.example');
   
   // Check if .env exists
   if (!fs.existsSync(envPath)) {
