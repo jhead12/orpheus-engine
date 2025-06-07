@@ -1,6 +1,10 @@
 import "@testing-library/jest-dom";
-import { vi, beforeEach, beforeAll, afterAll } from "vitest";
+import { vi, expect, beforeEach, beforeAll, afterAll } from "vitest";
+import { toMatchImageSnapshot } from "jest-image-snapshot";
 import type { Mock } from "vitest";
+
+// Add jest-image-snapshot matcher
+expect.extend({ toMatchImageSnapshot });
 
 // Add jest globals
 const mockJest = {

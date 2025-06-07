@@ -417,11 +417,13 @@ class DNRBase extends Component<DNRProps, DNRState> {
         className={finalClassName}
         style={finalStyle}
         onMouseDown={this.handleMouseDown}
+        data-testid="dnr-content"
         {...rest}
       >
         {children}
         <div
           className="dnr-resize-handle"
+          data-testid="resize-handle"
           style={{
             position: "absolute",
             right: "-5px",
