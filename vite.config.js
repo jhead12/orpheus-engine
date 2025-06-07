@@ -1,17 +1,6 @@
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import * as path from "path";
-// Make sure to import the vitest config
-import { configDefaults } from 'vitest/config';
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
@@ -25,22 +14,33 @@ export default defineConfig({
         sourcemap: true,
     },
     resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "./src"),
-            "@orpheus": path.resolve(__dirname, "./src"),
-            "@orpheus-engine": path.resolve(__dirname, "..")
-        }
+        alias: [
+            { find: "@", replacement: path.resolve(__dirname, "./src") },
+            { find: "@orpheus/utils", replacement: path.resolve(__dirname, "./src/services/utils") },
+            { find: "@orpheus/components", replacement: path.resolve(__dirname, "./src/components") },
+            { find: "@orpheus/services", replacement: path.resolve(__dirname, "./src/services") },
+            { find: "@orpheus/screens", replacement: path.resolve(__dirname, "./src/screens") },
+            { find: "@orpheus/contexts", replacement: path.resolve(__dirname, "./src/contexts") },
+            { find: "@orpheus/types", replacement: path.resolve(__dirname, "./src/types") },
+            { find: "@orpheus/test", replacement: path.resolve(__dirname, "./src/test") },
+            { find: "@orpheus/widgets", replacement: path.resolve(__dirname, "./src/components/widgets") },
+            { find: "@orpheus/workstation", replacement: path.resolve(__dirname, "./src/screens/workstation") },
+            { find: "@orpheus-engine", replacement: path.resolve(__dirname, "..") },
+            { find: "@orpheus", replacement: path.resolve(__dirname, "./src") }
+        ]
     },
     server: {
-        port: 5174, // Changed from 5173 to avoid conflicts
-        strictPort: false, // Allow fallback to another port if needed
-        host: true
+        port: parseInt(process.env.VITE_PORT || '5174'),
+        strictPort: false,
+        host: process.env.VITE_HOST || true,
+        proxy: {
+            '/api': {
+                target: process.env.API_URL || 'http://localhost:5001',
+                changeOrigin: true,
+                secure: false,
+                rewrite: function (path) { return path.replace(/^\/api/, ''); }
+            }
+        }
     },
-    test: {
-        globals: true,
-        environment: 'jsdom',
-        setupFiles: ['./src/test/setup.ts'],
-        exclude: __spreadArray([], configDefaults.exclude, true),
-        include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}']
-    }
+    // Test configuration moved to vitest.config.ts
 });

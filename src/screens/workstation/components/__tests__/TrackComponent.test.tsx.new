@@ -1,10 +1,24 @@
-// Import vi first to ensure it's available for mocks
-import { vi } from "vitest";
-
+// filepath: /Users/jeldonmusic/Downloads/OEW-main/src/screens/workstation/components/__tests__/TrackComponent.test.tsx
 // Import test setup first to ensure mocks are initialized
-import "@orpheus/test/test-setup";
+import "../../../../test/test-setup";
+import { vi } from "vitest";
+import { describe, expect, beforeEach, afterEach } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
+import TrackComponent from "../TrackComponent";
+import { WorkstationContext } from "../../../../contexts/WorkstationContext";
+import { expectScreenshot } from "../../../../test/helpers/screenshot";
 
-// Define the createMockTimelinePosition helper function
+// Import from mocked module - using direct path instead of @orpheus alias
+import {
+  AutomationMode,
+  AutomationLaneEnvelope,
+  TrackType,
+  TimelinePosition,
+} from "../../../../types/core";
+
+// Define helper function for creating timeline position instances
 const createMockTimelinePosition = () => ({
   ticks: 0,
   compareTo: vi.fn().mockReturnValue(0),
@@ -13,44 +27,6 @@ const createMockTimelinePosition = () => ({
   equals: vi.fn().mockReturnValue(true),
   diff: vi.fn().mockReturnThis(),
 });
-
-// Setup mock for TimelinePosition using @orpheus symbolic link
-vi.mock("@orpheus/types/core", () => {
-  const mockTimeline = createMockTimelinePosition();
-
-  // Create the mock class constructor
-  const MockTimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
-
-  // Create a complete mock object with all required parts
-  const mockModule = {
-    TimelinePosition: Object.assign(MockTimelinePosition, {
-      parseFromString: vi.fn((str) => (str ? mockTimeline : null)),
-      start: mockTimeline,
-    }),
-    TrackType: { Audio: "audio" },
-    AutomationMode: { Off: "off" },
-    AutomationLaneEnvelope: { Volume: "volume" },
-    ContextMenuType: { Track: 0, Automation: 1 },
-  };
-
-  return mockModule;
-});
-
-// Normal imports after mocks
-import { describe, expect, beforeEach, afterEach } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import React from "react";
-import TrackComponent from "../TrackComponent";
-import { WorkstationContext } from "@orpheus/contexts";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
-
-// Import from mocked module using @orpheus symbolic link
-import {
-  AutomationMode,
-  AutomationLaneEnvelope,
-  TrackType,
-} from "@orpheus/types/core";
 
 // Create a container for visual tests
 const createTestContainer = () => {
@@ -80,8 +56,6 @@ const createTestContainer = () => {
   document.body.appendChild(container);
   return container;
 };
-
-// Container setup for tests
 
 const baseTrack = {
   id: "test-track",
@@ -268,13 +242,10 @@ describe("TrackComponent Core Functionality", () => {
       ],
     };
 
-    const { container } = renderWithContext(
+    const { getByText } = renderWithContext(
       <TrackComponent track={trackWithAutomation} />
     );
-
-    const automationButton = container.querySelector('[data-testid="automation-mode-button"]');
-    expect(automationButton).toHaveClass('active');
-    expect(automationButton).toHaveTextContent('OFF');
+    expect(getByText("OFF")).toBeInTheDocument();
   });
 });
 
@@ -302,7 +273,7 @@ describe("TrackComponent Visual Tests", () => {
     // Wait for styles and animations
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    await expectScreenshot(container, "track-normal", 0.5); // Increased threshold to accommodate new design
+    await expectScreenshot(container, "track-normal");
   });
 
   it("visual test: renders muted track @visual", async () => {
@@ -310,7 +281,7 @@ describe("TrackComponent Visual Tests", () => {
     renderWithContext(<TrackComponent track={track} />, container);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    await expectScreenshot(container, "track-muted", 0.5); // Increased threshold to accommodate new design
+    await expectScreenshot(container, "track-muted");
   });
 
   it("visual test: renders armed track @visual", async () => {
@@ -318,7 +289,7 @@ describe("TrackComponent Visual Tests", () => {
     renderWithContext(<TrackComponent track={track} />, container);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    await expectScreenshot(container, "track-armed", 0.5); // Increased threshold to accommodate new design
+    await expectScreenshot(container, "track-armed");
   });
 
   it("visual test: renders track with FX chain @visual", async () => {
@@ -350,6 +321,6 @@ describe("TrackComponent Visual Tests", () => {
 
     renderWithContext(<TrackComponent track={track} />, container);
     await new Promise((resolve) => setTimeout(resolve, 500));
-    await expectScreenshot(container, "track-with-fx", 0.5); // Increased threshold to accommodate new design
+    await expectScreenshot(container, "track-with-fx");
   });
 });

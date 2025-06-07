@@ -202,12 +202,10 @@ describe("MixerContext", () => {
       mixerHeight: 200,
       setMixerHeight: () => {},
       addTrack: () => {},
-      // @ts-ignore - Unused parameter in test mock
-      removeTrack: (id) => {
+      removeTrack: (_id) => {
         mockSetTracks([]);
       },
-      // @ts-ignore - Unused parameter in test mock
-      updateTrack: (id, updates) => {
+      updateTrack: (_id, updates) => {
         mockSetTracks([{ ...testTrack, ...updates }]);
       },
     };

@@ -31,7 +31,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
   const pan = useMemo(() => {
     const lane = track.automationLanes?.find(lane => lane.envelope === AutomationLaneEnvelope.Pan);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, (track as any).pan, timelineSettings.timeSignature])
+  }, [track, getTrackCurrentValue])
 
   useEffect(() => setName(track.name), [track.name])
 
@@ -62,11 +62,11 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
 
   const isMaster = track.id === masterTrack.id;
   const selected = selectedTrackId === track.id;
-  const mutedByMaster = (masterTrack as any).mute && !isMaster;
+  const mutedByMaster = masterTrack.mute && !isMaster;
 
   const muteButtonTitle = mutedByMaster 
     ? "Master is muted"
-    : `${(track as any).mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
+    : `${track.mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
 
   const style = {
     fx: {
@@ -107,10 +107,10 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
       meter: { color: "var(--border6)", sizeRatio: 1.1, width: 1.5 }
     },
     muteButton: { 
-      color: (track as any).mute || (masterTrack as any).mute ? "#ff004c" : "var(--border6)", 
+      color: track.mute || masterTrack.mute ? "#ff004c" : "var(--border6)", 
       borderBottomWidth: isMaster ? 1 : 0
     },
-    armIcon: { fontSize: 14, color: (track as any).armed ? "#ff004c" : "var(--border6)" },
+    armIcon: { fontSize: 14, color: track.armed ? "#ff004c" : "var(--border6)" },
     peakLevel: {
       lineHeight: 1,
       color: "var(--fg1)",
@@ -185,14 +185,14 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
                 <Meter
                   color={getVolumeGradient(true)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border12)"}}]}
-                  percent={volumeToNormalized((track as any).volume || 0) * 100}
+                  percent={volumeToNormalized(track.volume || 0) * 100}
                   style={{ ...style.volumeMeter, marginRight: 2 }}
                   vertical
                 />
                 <Meter
                   color={getVolumeGradient(true)}
                   marks={[{value: 75, style: {backgroundColor: "var(--border12)"}}]}
-                  percent={volumeToNormalized((track as any).volume || 0) * 100}
+                  percent={volumeToNormalized(track.volume || 0) * 100}
                   style={style.volumeMeter}
                   vertical
                 />
@@ -223,7 +223,7 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
                   <div title={muteButtonTitle}>
                     <button
                       className={`track-btn stop-reorder ${mutedByMaster ? "pe-none" : "pe-auto hover-4"}`}
-                      onClick={() => setTrack({ ...track, mute: !(track as any).mute } as any)}
+                      onClick={() => setTrack({ ...track, mute: !track.mute })}
                       style={style.muteButton}
                     >
                       <span style={{ opacity: mutedByMaster ? 0.5 : 1 }}>M</span>
@@ -233,16 +233,16 @@ const MixerTrack = memo(({ order, track }: { order?: number, track: Track }) => 
                     <>
                       <button
                         className="track-btn hover-4 stop-reorder"
-                        onClick={() => setTrack({...track, solo: !(track as any).solo} as any)}
-                        style={{ color: (track as any).solo ? "var(--fg2)" : "var(--border6)", borderBottom: "none" }}
+                        onClick={() => setTrack({...track, solo: !track.solo})}
+                        style={{ color: track.solo ? "var(--fg2)" : "var(--border6)", borderBottom: "none" }}
                         title={"Toggle Solo" + (selected ? " [S]" : "")}
                       >
                         S
                       </button>
                       <button
                         className="track-btn hover-4 stop-reorder"
-                        onClick={() => setTrack({...track, armed: !(track as any).armed} as any)}
-                        title={((track as any).armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
+                        onClick={() => setTrack({...track, armed: !track.armed})}
+                        title={(track.armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
                       >
                         <FiberManualRecord style={style.armIcon} />
                       </button>
@@ -335,7 +335,7 @@ export default function Mixer() {
       {masterTrack && <MixerTrack track={masterTrack} />}
       <SortableList
         cancel=".stop-reorder"
-        // @ts-ignore - direction prop is expected by the component but not defined in types
+        // @ts-expect-error - direction prop is expected by the component but not defined in types
         direction="horizontal"
         onSortUpdate={(data: SortData) => setEdgeIndex(data.edgeIndex)}
         onStart={() => setAllowMenuAndShortcuts(false)}

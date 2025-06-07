@@ -23,11 +23,11 @@ const AudioAnalysisPanel: React.FC = () => {
 
         try {
             // Use Electron's IPC renderer to send the file path to the main process
-            // @ts-ignore
+            // @ts-expect-error - window.electronAPI is injected by Electron but not typed
             const result: AnalysisResult = await window.electronAPI.analyzeAudio(selectedFile.path);
             setAnalysisResult(result);
-        } catch (err: any) {
-            setError(err.message || 'Failed to analyze audio');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to analyze audio');
         } finally {
             setLoading(false);
         }

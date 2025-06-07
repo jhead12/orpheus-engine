@@ -152,7 +152,7 @@ export async function recordGif(
       puppeteerArgs: {
         args: ["--no-sandbox"],
       },
-      // @ts-ignore - Type definition is missing this option
+      // @ts-expect-error - Type definition is missing this option
       animations: [
         {
           frames: framePaths,

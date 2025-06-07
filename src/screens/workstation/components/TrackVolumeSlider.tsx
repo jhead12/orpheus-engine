@@ -1,8 +1,8 @@
-import { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
 import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
 import { formatVolume, normalizedToVolume, volumeToNormalized } from '@orpheus/utils/utils';
 import Slider from '@orpheus/widgets/Slider';
-import { WorkstationContext } from '@orpheus/contexts';
+import { useWorkstation } from '../../../context/WorkstationContext';
 import { TooltipProps } from '@orpheus/widgets/Tooltip';
 
 interface TrackVolumeSliderProps {
@@ -16,15 +16,15 @@ interface TrackVolumeSliderProps {
 const markVolumes = [6, 0, -6, -12, -18, -24, -30, -36, -42, -48, -54, -60, -Infinity];
 
 export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolumeSliderProps) {
-  const { getTrackCurrentValue, playheadPos, setTrack, timelineSettings } = useContext(WorkstationContext)!;
+  const { getTrackCurrentValue, setTrack } = useWorkstation();
   
-  // Default volume to 0 since Track interface doesn't include volume property
-  const [volume, setVolume] = useState((track as any).volume ?? 0);
+  // Initialize volume state with track's volume property
+  const [volume, setVolume] = useState(track.volume ?? 0);
 
   const { isAutomated, value } = useMemo(() => {
     const lane = track.automationLanes?.find(lane => lane.envelope === AutomationLaneEnvelope.Volume);
     return getTrackCurrentValue(track, lane);
-  }, [track.automationLanes, playheadPos, (track as any).volume, timelineSettings.timeSignature])
+  }, [track, getTrackCurrentValue])
 
   useEffect(() => setVolume(value!), [value])
 
@@ -42,7 +42,7 @@ export default function TrackVolumeSlider({ style, track, ...rest }: TrackVolume
         {...rest}
         disabled={isAutomated}
         onChange={(_, value) => setVolume(normalizedToVolume((value as number) / 1000)) }
-        onChangeCommitted={() => setTrack({ ...track, volume } as any)}
+        onChangeCommitted={() => setTrack({ ...track, volume })}
         marks={markVolumes.map(volume => ({ value: volumeToNormalized(volume) * 1000 }))}
         max={1000}
         min={0}
