@@ -61,13 +61,13 @@ describe("DNR (Drag and Resize) Component", () => {
   it("renders without crashing", async () => {
     const { container } = render(
       <DNR {...defaultProps}>
-        <div data-testid="dnr-content">Draggable Content</div>
+        <div data-testid="dnr-child-content">Draggable Content</div>
       </DNR>
     );
 
     const dnrElement = container.querySelector(".dnr-container");
     expect(dnrElement).toBeInTheDocument();
-    expect(screen.getByTestId("dnr-content")).toBeInTheDocument();
+    expect(screen.getByTestId("dnr-child-content")).toBeInTheDocument();
   });
 
   it("handles drag operations", () => {

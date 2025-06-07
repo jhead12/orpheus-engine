@@ -417,7 +417,6 @@ class DNRBase extends Component<DNRProps, DNRState> {
         className={finalClassName}
         style={finalStyle}
         onMouseDown={this.handleMouseDown}
-        data-testid="dnr-content"
         {...rest}
       >
         {children}

@@ -1,4 +1,4 @@
-import React from "react";
+pimport React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeAll } from "vitest";
