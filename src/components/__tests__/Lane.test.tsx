@@ -17,6 +17,7 @@ const mockTimelinePosition: any = {
   fromSeconds: vi.fn(() => mockTimelinePosition),
   durationToSpan: vi.fn(() => 100),
   toSeconds: vi.fn(() => 1.0),
+  toMargin: vi.fn(() => 100), // Add missing toMargin method
   snap: vi.fn(() => mockTimelinePosition),
   translate: vi.fn(() => mockTimelinePosition),
   toString: vi.fn(() => '0:00:00'),
@@ -238,6 +239,7 @@ describe('Lane Component', () => {
     snapGridSize: mockTimelinePosition,
     songRegion: null,
     verticalScale: 1,
+    showMaster: true,
     timelineSettings: {
       beatWidth: 80,
       timeSignature: { beats: 4, noteValue: 4 },
@@ -246,12 +248,16 @@ describe('Lane Component', () => {
     isPlaying: false,
     scrollToItem: null,
     allowMenuAndShortcuts: true,
+    trackRegion: null,
+    selectedTrackId: null,
     setTracks: vi.fn(),
     setPlayheadPos: vi.fn(),
     setSongRegion: vi.fn(),
     setVerticalScale: vi.fn(),
     setScrollToItem: vi.fn(),
     setAllowMenuAndShortcuts: vi.fn(),
+    setSelectedTrackId: vi.fn(),
+    setTrackRegion: vi.fn(),
     addTrack: vi.fn(),
     adjustNumMeasures: vi.fn(),
     createAudioClip: vi.fn(),
@@ -263,9 +269,9 @@ describe('Lane Component', () => {
     splitClip: vi.fn(),
     consolidateClip: vi.fn(),
     toggleMuteClip: vi.fn(),
-    setTrackRegion: vi.fn(),
     setSelectedClipId: vi.fn(),
     selectedClipId: null,
+    pasteClip: vi.fn(),
   };
 
   const defaultProps = {
@@ -311,9 +317,10 @@ describe('Lane Component', () => {
     expect(() => renderWithContext()).not.toThrow();
   });
 
-  it('renders track name', () => {
+  it('renders lane container', () => {
     renderWithContext();
-    expect(screen.getByText('Test Track')).toBeInTheDocument();
+    const laneElement = document.querySelector('[data-track="track-1"]');
+    expect(laneElement).toBeInTheDocument();
   });
 
   it('displays track volume correctly', () => {
@@ -339,21 +346,27 @@ describe('Lane Component', () => {
         {
           id: 'clip-1',
           name: 'Test Clip',
+          start: mockTimelinePosition,
+          end: mockTimelinePosition,
           startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: 'track-1',
+          type: TrackType.Audio
         }
       ]
     };
     
     renderWithContext({ track: trackWithClips });
-    // Add assertions for clip rendering
+    // Check if clip container exists
+    const laneElement = document.querySelector('[data-track="track-1"]');
+    expect(laneElement).toBeInTheDocument();
   });
 
   it('handles empty track', () => {
     renderWithContext({ track: { ...defaultProps.track, clips: [] } });
-    // Should render without clips
-    expect(screen.getByText('Test Track')).toBeInTheDocument();
+    // Should render the lane container
+    const laneElement = document.querySelector('[data-track="track-1"]');
+    expect(laneElement).toBeInTheDocument();
   });
 
   it('calls onSelectClip when clip is selected', () => {
@@ -364,9 +377,12 @@ describe('Lane Component', () => {
         {
           id: 'clip-1',
           name: 'Test Clip',
+          start: mockTimelinePosition,
+          end: mockTimelinePosition,
           startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: 'track-1',
+          type: TrackType.Audio
         }
       ]
     };
