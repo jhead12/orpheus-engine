@@ -4,7 +4,11 @@
 
 import path from "path";
 import fs from "fs/promises";
-import { imageSnapshotExpect } from "./vitest-image-snapshot";
+import { expect } from "vitest";
+import { toMatchImageSnapshot } from "jest-image-snapshot";
+
+// Extend expect with image snapshot matcher
+expect.extend({ toMatchImageSnapshot });
 
 /**
  * Take a screenshot of an element and compare it to a reference image
@@ -18,18 +22,15 @@ export async function expectScreenshot(
   name: string,
   threshold = 0.01
 ): Promise<void> {
-  const screenshot = await takeScreenshot(element, name);
+  const screenshot = await takeScreenshot(element);
   expect(screenshot).toMatchImageSnapshot({
     customSnapshotsDir: "__snapshots__/screenshots",
     customDiffDir: "__snapshots__/diffs",
-    customSnapshotIdentifier: `${name}.png`, // Explicitly add .png extension
+    customSnapshotIdentifier: `${name}.png`,
     failureThreshold: threshold,
     failureThresholdType: "percent",
-    storeReceivedOnFailure: true, // Store failed screenshots for debugging
-    comparisonMethod: "ssim", // Use structural similarity for better comparison
-    customSnapshotIdentifierProviders: [
-      () => `${name}.png`, // Ensure consistent PNG extension
-    ],
+    storeReceivedOnFailure: true,
+    comparisonMethod: "ssim",
   });
 }
 
@@ -66,12 +67,10 @@ export async function recordGif(
 /**
  * Take a screenshot of an element
  * @param element The element to screenshot
- * @param name Name of the screenshot
  * @returns Promise<Buffer> Screenshot data
  */
 async function takeScreenshot(
-  element: HTMLElement,
-  name: string
+  element: HTMLElement
 ): Promise<Buffer> {
   const htmlToImage = (await import("node-html-to-image")).default;
 
@@ -88,9 +87,21 @@ async function takeScreenshot(
     })
     .join("\n");
 
+  // Use correct API for node-html-to-image v4.0.0
+  const fullHtml = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>${css}</style>
+      </head>
+      <body>
+        <div>${html}</div>
+      </body>
+    </html>
+  `;
+
   return htmlToImage({
-    html: `<div>${html}</div>`,
-    css: css,
+    html: fullHtml,
     transparent: true,
     type: "png",
   }) as Promise<Buffer>;
