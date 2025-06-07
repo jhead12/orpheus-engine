@@ -1,4 +1,4 @@
-import { Clip, TimelinePosition, AutomationLane } from "../../types/core";
+import { Clip, TimelinePosition, AutomationLane, AutomationLaneEnvelope } from "../../types/core";
 
 export const BASE_HEIGHT = 100;
 export const BASE_BEAT_WIDTH = 80;
@@ -20,6 +20,40 @@ export const isValidAudioTrackFileFormat = (type: string): boolean => {
 
 export const isValidTrackFileFormat = (type: string): boolean => {
   return isValidAudioTrackFileFormat(type) || type === "audio/midi";
+};
+
+// Volume utility functions
+export const volumeToNormalized = (volume: number): number => {
+  // Convert volume from dB to normalized value (0-1)
+  if (volume <= -60) return 0;
+  if (volume >= 0) return 1;
+  return Math.pow(10, volume / 20);
+};
+
+export const normalizedToVolume = (normalized: number): number => {
+  // Convert normalized value (0-1) to dB
+  if (normalized <= 0) return -60;
+  if (normalized >= 1) return 0;
+  return 20 * Math.log10(normalized);
+};
+
+export const formatVolume = (volume: number): string => {
+  if (volume <= -60) return "-∞ dB";
+  return `${volume.toFixed(1)} dB`;
+};
+
+export const formatPanning = (panning: number): string => {
+  if (panning === 0) return "C";
+  if (panning < 0) return `L${Math.abs(panning).toFixed(0)}`;
+  return `R${panning.toFixed(0)}`;
+};
+
+export const getVolumeGradient = (volume: number): string => {
+  const normalized = volumeToNormalized(volume);
+  if (normalized < 0.1) return "linear-gradient(to right, #ff4444, #ff6666)";
+  if (normalized < 0.5) return "linear-gradient(to right, #ffaa44, #ffcc66)";
+  if (normalized < 0.8) return "linear-gradient(to right, #44ff44, #66ff66)";
+  return "linear-gradient(to right, #44ff44, #88ff44)";
 };
 
 export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
@@ -105,4 +139,65 @@ export const getLaneColor = (
   if (!lanes || !lanes.length) return defaultColor;
   const visibleLanes = lanes.filter((lane) => lane.show);
   return idx >= 0 && idx < visibleLanes.length ? defaultColor : "transparent";
+};
+
+export const automatedValueAtPos = (position: TimelinePosition, automationLane: AutomationLane): number => {
+  if (!automationLane || !automationLane.nodes || automationLane.nodes.length === 0) {
+    // Return a default value based on the envelope type
+    switch (automationLane.envelope) {
+      case AutomationLaneEnvelope.Volume:
+        return 0; // 0 dB
+      case AutomationLaneEnvelope.Pan:
+        return 0; // Center
+      case AutomationLaneEnvelope.Tempo:
+        return 120; // Default tempo
+      default:
+        return 0;
+    }
+  }
+
+  const positionTicks = position.toTicks();
+  const nodes = automationLane.nodes.sort((a, b) => a.pos.toTicks() - b.pos.toTicks());
+
+  // Find the nodes surrounding this position
+  let beforeNode = null;
+  let afterNode = null;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const nodeTicks = node.pos.toTicks();
+
+    if (nodeTicks <= positionTicks) {
+      beforeNode = node;
+    } else {
+      afterNode = node;
+      break;
+    }
+  }
+
+  // If we're before the first node, return default value
+  if (!beforeNode) {
+    switch (automationLane.envelope) {
+      case AutomationLaneEnvelope.Volume:
+        return 0;
+      case AutomationLaneEnvelope.Pan:
+        return 0;
+      case AutomationLaneEnvelope.Tempo:
+        return 120;
+      default:
+        return 0;
+    }
+  }
+
+  // If we're after the last node, use the last node's value
+  if (!afterNode) {
+    return beforeNode.value;
+  }
+
+  // Interpolate between the two nodes
+  const beforeTicks = beforeNode.pos.toTicks();
+  const afterTicks = afterNode.pos.toTicks();
+  const progress = (positionTicks - beforeTicks) / (afterTicks - beforeTicks);
+
+  return beforeNode.value + (afterNode.value - beforeNode.value) * progress;
 };

@@ -1,22 +1,24 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
-import type { Clip } from "../../types/core";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import type { Clip, Track, TrackType, AutomationMode } from "@orpheus/types/core";
 
 // Mock the required contexts
-vi.mock("../../contexts/WorkstationContext", () => ({
+vi.mock("@orpheus/contexts/WorkstationContext", () => ({
   WorkstationContext: {
     Provider: ({ children }: { children: React.ReactNode }) => children,
   },
 }));
 
-vi.mock("../../contexts/ClipboardContext", () => ({
+vi.mock("@orpheus/contexts/ClipboardContext", () => ({
   ClipboardContext: {
     Provider: ({ children }: { children: React.ReactNode }) => children,
   },
 }));
 
 // Mock TimelinePosition
-vi.mock("../../services/types/timeline", () => ({
+vi.mock("@orpheus/types/timeline", () => ({
   TimelinePosition: vi.fn().mockImplementation(() => ({
     ticks: 0,
     toMargin: () => 0,
@@ -26,7 +28,7 @@ vi.mock("../../services/types/timeline", () => ({
 }));
 
 // Mock electron utils
-vi.mock("../../../services/electron/utils", () => ({
+vi.mock("@orpheus/services/electron/utils", () => ({
   electronAPI: {
     ipcRenderer: {
       invoke: vi.fn(),
@@ -36,7 +38,7 @@ vi.mock("../../../services/electron/utils", () => ({
 }));
 
 // Mock utility functions
-vi.mock("../../../services/utils/utils", () => ({
+vi.mock("@orpheus/utils/utils", () => ({
   BASE_HEIGHT: 100,
   getLaneColor: () => "#000000",
   removeAllClipOverlap: (clips: Clip[]) => clips,
@@ -44,7 +46,7 @@ vi.mock("../../../services/utils/utils", () => ({
 }));
 
 // Mock CSS variable utils
-vi.mock("../../../services/utils/general", () => ({
+vi.mock("@orpheus/utils/general", () => ({
   getCSSVarValue: () => "#000000",
   normalizeHex: (hex: string) => hex,
 }));
@@ -60,10 +62,13 @@ window.ResizeObserver = vi.fn().mockImplementation(() => ({
 describe("Lane Component Import Test", () => {
   it("should be able to import Lane component", async () => {
     try {
-      const Lane = await import("../../screens/workstation/components/Lane");
+      const Lane = await import("@orpheus/screens/workstation/components/Lane");
       expect(Lane.default).toBeDefined();
-      // Also verify it's a React component
-      expect(typeof Lane.default).toBe("function");
+      // Also verify it's a React component (could be wrapped by forwardRef/memo)
+      expect(typeof Lane.default === "function" || typeof Lane.default === "object").toBe(true);
+      // Check if it has React component markers
+      const component = Lane.default as any;
+      expect(component.$$typeof || component.type || component.render || component.displayName).toBeDefined();
     } catch (error) {
       console.error("Import failed:", error);
       throw error;

@@ -78,12 +78,20 @@ const pathAliasMap = [
 
   // Three levels deep
   {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/types\/(.+?)['"]/g,
+    replacement: "from '@orpheus/types/$1'",
+  },
+  {
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/services\/types\/(.+?)['"]/g,
     replacement: "from '@orpheus/types/$1'",
   },
   {
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/services\/utils\/(.+?)['"]/g,
     replacement: "from '@orpheus/utils/$1'",
+  },
+  {
+    pattern: /from ['"]\.\.\/\.\.\/\.\.\/services\/electron\/(.+?)['"]/g,
+    replacement: "from '@orpheus/services/electron/$1'",
   },
   {
     pattern: /from ['"]\.\.\/\.\.\/\.\.\/components\/widgets['"]/g,

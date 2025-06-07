@@ -1,14 +1,14 @@
 import React, { memo, useContext, useEffect, useMemo, useRef, useState, forwardRef } from "react";
 import { WorkstationContext } from '@orpheus/contexts';
 import { ClipboardContext } from '@orpheus/contexts/ClipboardContext'; 
-import { ClipboardItemType } from "../../../types/clipboard";
-import { AutomationLane, Clip, Track, TrackType, TimelinePosition } from '../../../types/core';
-import { WorkstationAudioInputFile } from '../../../types/audio';
-import { ContextMenuType } from "../../../types/context-menu";
+import { ClipboardItemType } from "@orpheus/types/clipboard";
+import { AutomationLane, Clip, Track, TrackType, TimelinePosition } from '@orpheus/types/core';
+import { WorkstationAudioInputFile } from '@orpheus/types/audio';
+import { ContextMenuType } from "@orpheus/types/context-menu";
 import { BASE_HEIGHT, getLaneColor, removeAllClipOverlap, timelineEditorWindowScrollThresholds } from '@orpheus/utils/utils';
 import { AudioClipComponent, AutomationLaneComponent, ClipComponent, RegionComponent } from "./index";
-import { electronAPI, openContextMenu } from "../../../services/electron/utils";
-import { TRACK_FILE_UPLOAD } from "../../../services/electron/channels";
+import { openContextMenu } from "@orpheus/services/electron/utils";
+import { TRACK_FILE_UPLOAD } from "@orpheus/services/electron/channels";
 import { getCSSVarValue, normalizeHex } from '@orpheus/utils/general';
 
 
@@ -136,7 +136,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
     openContextMenu(ContextMenuType.Lane, { track, disablePaste }, (params: any) => {
       switch (params.action) {
         case 0:
-          electronAPI.ipcRenderer.invoke(TRACK_FILE_UPLOAD, track.type)
+          window.electronAPI.ipcRenderer.invoke(TRACK_FILE_UPLOAD, track.type)
             .then(async (files: WorkstationAudioInputFile[]) => {
               let pos = playheadPos, newClips: Clip[] = [];
 

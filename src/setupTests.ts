@@ -184,6 +184,28 @@ global.window.require = vi.fn((module) => {
   return {};
 });
 
+// Mock react-router-dom
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: vi.fn(() => vi.fn()),
+    useLocation: vi.fn(() => ({ pathname: "/", search: "", hash: "", state: null })),
+    useParams: vi.fn(() => ({})),
+    useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
+    BrowserRouter: ({ children }: { children: React.ReactNode }) => children,
+    MemoryRouter: ({ children }: { children: React.ReactNode }) => children,
+    Link: ({ children, to, ...props }: any) => {
+      const React = require('react');
+      return React.createElement('a', { href: to, ...props }, children);
+    },
+    NavLink: ({ children, to, ...props }: any) => {
+      const React = require('react');
+      return React.createElement('a', { href: to, ...props }, children);
+    },
+  };
+});
+
 // Console error handling
 const SUPPRESSED_ERRORS = [
   "Warning:",

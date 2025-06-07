@@ -17,20 +17,20 @@ export default defineConfig({
     sourcemap: true,
   },
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@orpheus-engine": path.resolve(__dirname, ".."),
-      "@orpheus/components": path.resolve(__dirname, "./src/components"),
-      "@orpheus/services": path.resolve(__dirname, "./src/services"),
-      "@orpheus/screens": path.resolve(__dirname, "./src/screens"),
-      "@orpheus/contexts": path.resolve(__dirname, "./src/contexts"),
-      "@orpheus/types": path.resolve(__dirname, "./src/types"),
-      "@orpheus/test": path.resolve(__dirname, "./src/test"),
-      "@orpheus/utils": path.resolve(__dirname, "./src/services/utils"),
-      "@orpheus/widgets": path.resolve(__dirname, "./src/components/widgets"),
-      "@orpheus/workstation": path.resolve(__dirname, "./src/screens/workstation"),
-      "@orpheus": path.resolve(__dirname, "./src")
-    }
+    alias: [
+      { find: "@", replacement: path.resolve(__dirname, "./src") },
+      { find: "@orpheus/utils", replacement: path.resolve(__dirname, "./src/services/utils") },
+      { find: "@orpheus/components", replacement: path.resolve(__dirname, "./src/components") },
+      { find: "@orpheus/services", replacement: path.resolve(__dirname, "./src/services") },
+      { find: "@orpheus/screens", replacement: path.resolve(__dirname, "./src/screens") },
+      { find: "@orpheus/contexts", replacement: path.resolve(__dirname, "./src/contexts") },
+      { find: "@orpheus/types", replacement: path.resolve(__dirname, "./src/types") },
+      { find: "@orpheus/test", replacement: path.resolve(__dirname, "./src/test") },
+      { find: "@orpheus/widgets", replacement: path.resolve(__dirname, "./src/components/widgets") },
+      { find: "@orpheus/workstation", replacement: path.resolve(__dirname, "./src/screens/workstation") },
+      { find: "@orpheus-engine", replacement: path.resolve(__dirname, "..") },
+      { find: "@orpheus", replacement: path.resolve(__dirname, "./src") }
+    ]
   },
   server: {
     port: parseInt(process.env.VITE_PORT || '5174'),

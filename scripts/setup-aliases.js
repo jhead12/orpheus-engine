@@ -1,17 +1,26 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk') || { green: (t) => `✅ ${t}`, yellow: (t) => `⚠️ ${t}`, blue: (t) => `ℹ️ ${t}` };
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+
+// Fallback if chalk import fails
+const chalkFallback = { 
+  green: (t) => `✅ ${t}`, 
+  yellow: (t) => `⚠️ ${t}`, 
+  blue: (t) => `ℹ️ ${t}` 
+};
+const chalkInstance = chalk || chalkFallback;
 
 // Console styling
 const log = {
-  info: (msg) => console.log(chalk.blue(msg)),
-  success: (msg) => console.log(chalk.green(msg)),
-  warn: (msg) => console.log(chalk.yellow(msg)),
+  info: (msg) => console.log(chalkInstance.blue(msg)),
+  success: (msg) => console.log(chalkInstance.green(msg)),
+  warn: (msg) => console.log(chalkInstance.yellow(msg)),
   title: (msg) => console.log(`\n${'-'.repeat(80)}\n${msg}\n${'-'.repeat(80)}`)
 };
 
 // Paths to config files
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const rootDir = path.resolve(__dirname, '..');
 const tsConfigPath = path.join(rootDir, 'tsconfig.json');
 const viteConfigPath = path.join(rootDir, 'vite.config.ts');

@@ -1,10 +1,49 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Lane from '../../screens/workstation/components/Lane';
-import { ClipboardContext } from '../../contexts/ClipboardContext';
-import { WorkstationContext } from '../../contexts/WorkstationContext';
-import { TrackType, AutomationMode } from '../../types/core';
+import Lane from '@orpheus/screens/workstation/components/Lane';
+import { ClipboardContext } from '@orpheus/contexts/ClipboardContext';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { TrackType, AutomationMode } from '@orpheus/types/core';
+
+// Mock all the utility functions and components that Lane component imports
+vi.mock('@orpheus/utils/utils', () => ({
+  BASE_HEIGHT: 64,
+  getLaneColor: vi.fn(() => '#ff0000'),
+  removeAllClipOverlap: vi.fn((clips) => clips),
+  timelineEditorWindowScrollThresholds: [100, 200]
+}));
+
+vi.mock('@orpheus/utils/general', () => ({
+  getCSSVarValue: vi.fn(() => '#ffffff'),
+  normalizeHex: vi.fn((color) => color)
+}));
+
+vi.mock('@orpheus/services/electron/utils', () => ({
+  openContextMenu: vi.fn()
+}));
+
+vi.mock('@orpheus/services/electron/channels', () => ({
+  TRACK_FILE_UPLOAD: 'track-file-upload'
+}));
+
+// Mock the component imports from the index file
+vi.mock('@orpheus/screens/workstation/components/index', () => ({
+  AudioClipComponent: vi.fn(() => <div data-testid="audio-clip" />),
+  AutomationLaneComponent: vi.fn(() => <div data-testid="automation-lane" />),
+  ClipComponent: vi.fn(() => <div data-testid="clip" />),
+  RegionComponent: vi.fn(() => <div data-testid="region" />)
+}));
+
+// Mock global window electronAPI
+Object.defineProperty(window, 'electronAPI', {
+  value: {
+    ipcRenderer: {
+      invoke: vi.fn().mockResolvedValue([])
+    }
+  },
+  writable: true
+});
 
 // Mock TimelinePosition class with all required methods - fix the typing
 const mockTimelinePosition: any = {
@@ -28,7 +67,7 @@ const mockTimelinePosition: any = {
 };
 
 // Mock TimelinePosition constructor
-vi.mock('../../services/types/timeline', () => ({
+vi.mock('@orpheus/types/timeline', () => ({
   TimelinePosition: vi.fn().mockImplementation((ticks = 0) => ({
     ...mockTimelinePosition,
     ticks,
@@ -205,6 +244,8 @@ global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
 
 describe('Lane Component', () => {
   const mockClipboardContext = {
+    clipboardData: null,
+    setClipboardData: vi.fn(),
     clipboardItem: null,
     setClipboardItem: vi.fn(),
   };
