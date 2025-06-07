@@ -279,7 +279,7 @@ describe('ClipComponent Tests', () => {
         selectedClipId: 'clip-1'
       };
       
-      render(
+      const { container } = render(
         <WorkstationContext.Provider value={selectedContext}>
           <ClipComponent
             clip={mockClip}
@@ -290,9 +290,15 @@ describe('ClipComponent Tests', () => {
           />
         </WorkstationContext.Provider>
       );
+
+      // First click to select the clip
+      const clipElement = container.firstChild as Element;
+      if (clipElement) {
+        await user.click(clipElement);
+      }
       
-      // Simulate Delete key press
-      fireEvent.keyDown(window, { key: 'Delete', code: 'Delete' });
+      // Then simulate Delete key press
+      await user.keyboard('{Delete}');
       
       expect(selectedContext.deleteClip).toHaveBeenCalledWith(mockClip);
     });
@@ -426,15 +432,19 @@ describe('ClipComponent Tests', () => {
     });
 
     it('respects start and end limits during resize', () => {
+      const startMarginSpy = vi.fn(() => 50);
+      const endMarginSpy = vi.fn(() => 300);
+      
       const clipWithLimits = {
         ...mockClip,
-        startLimit: { toMargin: () => 50 },
-        endLimit: { toMargin: () => 300 }
+        startLimit: { toMargin: startMarginSpy },
+        endLimit: { toMargin: endMarginSpy }
       };
       
       renderClipComponent({ clip: clipWithLimits });
       
-      expect(clipWithLimits.startLimit.toMargin).toHaveBeenCalled();
+      expect(startMarginSpy).toHaveBeenCalled();
+      expect(endMarginSpy).toHaveBeenCalled();
     });
   });
 
@@ -461,14 +471,15 @@ describe('ClipComponent Tests', () => {
     });
 
     it('calculates loop repetitions correctly', () => {
+      const loopMarginSpy = vi.fn(() => 600);
       const clipWithLoop = {
         ...mockClip,
-        loopEnd: { toMargin: () => 600 } // Creates multiple repetitions
+        loopEnd: { toMargin: loopMarginSpy }
       };
       
       renderClipComponent({ clip: clipWithLoop });
       
-      expect(clipWithLoop.loopEnd.toMargin).toHaveBeenCalled();
+      expect(loopMarginSpy).toHaveBeenCalled();
     });
 
     it('handles clip without loop end', () => {
@@ -547,15 +558,19 @@ describe('ClipComponent Tests', () => {
 
   describe('Edge Cases', () => {
     it('handles zero-width clips', () => {
+      const startMarginSpy = vi.fn(() => 100);
+      const endMarginSpy = vi.fn(() => 100);
+      
       const zeroWidthClip = {
         ...mockClip,
-        start: { toMargin: () => 100, toTicks: () => 960 },
-        end: { toMargin: () => 100, toTicks: () => 960 }
+        start: { toMargin: startMarginSpy, toTicks: () => 960 },
+        end: { toMargin: endMarginSpy, toTicks: () => 960 }
       };
       
       renderClipComponent({ clip: zeroWidthClip });
       
-      expect(zeroWidthClip.start.toMargin).toHaveBeenCalled();
+      expect(startMarginSpy).toHaveBeenCalled();
+      expect(endMarginSpy).toHaveBeenCalled();
     });
 
     it('handles horizontal scale changes', () => {

@@ -2,8 +2,8 @@ import { describe, it, beforeEach, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TrackComponent } from "../TrackComponent";
-import { expectScreenshot } from '@orpheus/test/helpers';
-import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { expectScreenshot } from "@orpheus/test/helpers";
+import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
 import { TimelinePosition } from "../../../../types";
 import type { Track } from "../../../../types";
 
@@ -17,10 +17,10 @@ const defaultContext = {
   snapGridSize: 240,
   songRegion: null,
   verticalScale: 1,
-  timelineSettings: { 
+  timelineSettings: {
     beatWidth: 40,
     timeSignature: { beats: 4, noteValue: 4 },
-    horizontalScale: 1
+    horizontalScale: 1,
   },
   isPlaying: false,
   scrollToItem: null,
@@ -207,8 +207,8 @@ describe("TrackComponent FX Features", () => {
           id: "fx-1",
           type: "reverb",
           enabled: true,
-          parameters: { mix: 0.5 }
-        }
+          parameters: { mix: 0.5 },
+        },
       ],
       color: "#ff0000",
       volume: 0.8,
@@ -236,8 +236,8 @@ describe("TrackComponent FX Features", () => {
           id: "fx-1",
           type: "reverb",
           enabled: true,
-          parameters: { mix: 0.5 }
-        }
+          parameters: { mix: 0.5 },
+        },
       ],
       color: "#ff0000",
       volume: 0.8,
