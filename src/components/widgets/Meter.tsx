@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface IMeterProps {
+interface IMeterProps extends React.HTMLAttributes<HTMLDivElement> {
   color?: string;
   marks?: {
     value: number;
@@ -11,7 +11,7 @@ interface IMeterProps {
   vertical?: boolean;
 }
 
-function Meter({ color, marks, percent, style, vertical }: IMeterProps) {
+function Meter({ color, marks, percent, style, vertical, ...props }: IMeterProps) {
   const flexStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: vertical ? "column" : "row",
@@ -19,7 +19,7 @@ function Meter({ color, marks, percent, style, vertical }: IMeterProps) {
   }
 
   return (
-    <div style={{width: vertical ? 11 : "100%", height: vertical ? "100%" : 11, ...style}}>
+    <div style={{width: vertical ? 11 : "100%", height: vertical ? "100%" : 11, ...style}} {...props}>
       <div style={{width: "100%", height: "100%", position: "relative", ...flexStyle}}>
         <div 
           style={{
