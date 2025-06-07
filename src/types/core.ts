@@ -52,11 +52,22 @@ export interface Track {
   automationMode: AutomationMode;
   automationLanes: AutomationLane[];
   clips: Clip[];
+  effects?: Effect[];
   fx: {
     preset: FXChainPreset | null;
-    effects: Effect[];
     selectedEffectIndex: number;
+    effects: Effect[];
   };
+  inputs?: {
+    id: string;
+    name: string;
+    active: boolean;
+  }[];
+  outputs?: {
+    id: string;
+    name: string;
+    active: boolean;
+  }[];
 }
 
 // Timeline Types
@@ -390,8 +401,14 @@ export interface FXChainPreset {
 
 // Context Menu Types
 export enum ContextMenuType {
-  Track = "track",
-  Clip = "clip",
-  Effect = "effect",
+  AddAutomationLane = "add-automation-lane",
   Automation = "automation",
+  Clip = "clip",
+  FXChainPreset = "fx-chain-preset",
+  Lane = "lane",
+  Node = "node",
+  Region = "region",
+  Text = "text",
+  Timeline = "timeline",
+  Track = "track",
 }

@@ -156,7 +156,7 @@ const mockCanvasContext = {
 
 // Mock HTMLCanvasElement.getContext
 HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
-  if (contextType === '2d') {
+  if (contextType === "2d") {
     return mockCanvasContext;
   }
   return null;
@@ -178,7 +178,7 @@ global.window = Object.assign(global.window || {}, {
 
 // Also make it available as window.require for older electron patterns
 global.window.require = vi.fn((module) => {
-  if (module === 'electron') {
+  if (module === "electron") {
     return { ipcRenderer: mockIpcRenderer };
   }
   return {};
@@ -190,21 +190,55 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: vi.fn(() => vi.fn()),
-    useLocation: vi.fn(() => ({ pathname: "/", search: "", hash: "", state: null })),
+    useLocation: vi.fn(() => ({
+      pathname: "/",
+      search: "",
+      hash: "",
+      state: null,
+    })),
     useParams: vi.fn(() => ({})),
     useSearchParams: vi.fn(() => [new URLSearchParams(), vi.fn()]),
     BrowserRouter: ({ children }: { children: React.ReactNode }) => children,
     MemoryRouter: ({ children }: { children: React.ReactNode }) => children,
     Link: ({ children, to, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('a', { href: to, ...props }, children);
+      const React = require("react");
+      return React.createElement("a", { href: to, ...props }, children);
     },
     NavLink: ({ children, to, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('a', { href: to, ...props }, children);
+      const React = require("react");
+      return React.createElement("a", { href: to, ...props }, children);
     },
   };
 });
+
+// Mock TimelinePosition class
+const mockTimeline = {
+  ticks: 0,
+  compareTo: vi.fn().mockReturnValue(0),
+  toMargin: vi.fn().mockReturnValue(0),
+  copy: vi.fn().mockReturnThis(),
+  equals: vi.fn().mockReturnValue(true),
+  diff: vi.fn().mockReturnThis(),
+};
+
+vi.mock("@orpheus/types/core", () => ({
+  TimelinePosition: vi.fn().mockImplementation(() => mockTimeline),
+  TrackType: { Audio: "audio" },
+  AutomationMode: { Off: "off", Read: "read" },
+  AutomationLaneEnvelope: { Volume: "volume" },
+}));
+
+// Add static method to TimelinePosition
+const TimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
+TimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
+  if (!str) return null;
+  return mockTimeline;
+});
+TimelinePosition.start = mockTimeline;
+
+// Mock all other static methods used by AutomationLaneTrack
+TimelinePosition.toDisplayString = vi.fn().mockImplementation(() => "0:00:00");
+TimelinePosition.fromTicks = vi.fn().mockImplementation(() => mockTimeline);
 
 // Console error handling
 const SUPPRESSED_ERRORS = [

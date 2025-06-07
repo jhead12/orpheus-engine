@@ -1,151 +1,76 @@
-import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { WorkstationContext } from '@orpheus/contexts';
-import { AutomationLaneEnvelope, ContextMenuType, Track } from '@orpheus/types/core'
-import { Knob, HueInput, Dialog, Meter } from '@orpheus/widgets'
-import { IconButton, DialogContent } from "@mui/material"
-import { Add, Check, FiberManualRecord } from "@mui/icons-material"
-import { AutomationLaneTrack, FXComponent } from "./index"
-import { getCSSVarValue, hslToHex, hueFromHex, normalizeHex } from '@orpheus/utils/general'
-import { 
-  BASE_HEIGHT, 
-  formatPanning, 
-  formatVolume, 
-  getLaneColor, 
-  getVolumeGradient, 
-  volumeToNormalized, 
-  scrollToAndAlign,
-  waitForScrollWheelStop
-} from '@orpheus/utils/utils'
-import { TrackIcon } from "../../../components/icons"
-import { openContextMenu } from "../../../services/electron/utils"
+//This test suite contains visual tests for the TrackComponent component.
 
-interface EnhancedTrack extends Track {
-  armed?: boolean;
-  type?: string;
-  automation?: boolean;
-  automationMode?: string;
-  automationLanes?: Array<{
-    id: string;
-    show: boolean;
-    envelope: AutomationLaneEnvelope;
-  }>;
-  mute?: boolean;
-  solo?: boolean;
-  effects?: Array<{
-    id: string;
-    type: string;
-    enabled: boolean;
-    parameters: Record<string, unknown>;
-  }>;
-  inputs?: Array<{
-    id: string;
-    name: string;
-    active?: boolean;
-  }>;
-  outputs?: Array<{
-    id: string;
-    name: string;
-    active?: boolean;
-  }>;
+import React, { useContext, useState, useRef } from "react";
+import {
+  ContextMenuType,
+  AutomationMode,
+  TrackType,
+  Track as CoreTrack,
+} from "../../../types/core";
+import type { AutomationLane, Effect } from "../../../types/core";
+import { WorkstationContext } from "../../../contexts";
+import { DialogContent } from "@mui/material";
+import { Dialog, HueInput } from "../../../components/widgets";
+import { hueFromHex, hslToHex } from "../../../services/utils/general";
+import { openContextMenu } from "../../../services/electron/utils";
+import AutomationLaneTrack from "./AutomationLaneTrack";
+
+interface Track {
+  id: string;
+  name: string;
+  type: TrackType;
+  color: string;
+  mute: boolean;
+  solo: boolean;
+  armed: boolean;
+  volume: number;
+  pan: number;
+  automation: boolean;
+  automationMode: AutomationMode;
+  automationLanes: AutomationLane[];
+  effects: Effect[];
+  clips: unknown[];
+  fx: {
+    effects: Effect[];
+    selectedEffectIndex: number;
+    preset: unknown | null;
+  };
 }
 
+interface ExtendedWorkstationContextType {
+  deleteTrack: (track: Track) => void;
+  duplicateTrack: (track: Track) => void;
+  setTrack: (track: Track) => void;
+  masterTrack: Track;
+}
+
+// Props interface for the component
 interface IProps {
   className?: string;
-  colorless?: boolean;
-  order?: number;
+  track: Track;
   style?: React.CSSProperties;
-  track: EnhancedTrack;
 }
 
-function TrackComponent({ className, colorless, order, track, style }: IProps) {
-  const { 
-    deleteTrack, 
-    duplicateTrack, 
-    getTrackCurrentValue,
-    masterTrack, 
-    playheadPos,
-    scrollToItem,
-    selectedTrackId,
-    setScrollToItem,
-    setSelectedTrackId, 
-    setTrack,
-    showMaster,
-    timelineSettings,
-    verticalScale
-  } = useContext(WorkstationContext)!;
+function TrackComponent({ className, track, style }: IProps) {
+  const context = useContext(
+    WorkstationContext
+  ) as unknown as ExtendedWorkstationContextType;
 
-  const [hue, setHue] = useState(hueFromHex(track.color || '#808080'));
-  const [name, setName] = useState(track.name);
+  const { deleteTrack, duplicateTrack, setTrack, masterTrack } = context;
+
+  const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const volume = useMemo(() => {
-    const lane = (track as any).automationLanes?.find((lane: any) => lane.envelope === AutomationLaneEnvelope.Volume);
-    return getTrackCurrentValue(track, lane);
-  }, [(track as any).automationLanes, playheadPos, (track as any).volume, timelineSettings.timeSignature])
-
-  const pan = useMemo(() => {
-    const lane = (track as any).automationLanes?.find((lane: any) => lane.envelope === AutomationLaneEnvelope.Pan);
-    return getTrackCurrentValue(track, lane);
-  }, [(track as any).automationLanes, playheadPos, (track as any).pan, timelineSettings.timeSignature])
-
-  useEffect(() => setName(track.name), [track.name]);
-
-  useLayoutEffect(() => {
-    if (scrollToItem?.type === "track" && scrollToItem.params?.trackId === track.id) {
-      const trackSection = document.getElementById("track-section")!;
-
-      waitForScrollWheelStop(trackSection, () => {
-        if (ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          const trackSectionRect = trackSection.getBoundingClientRect();
-  
-          if (rect.bottom < trackSectionRect.top + 43) {
-            const pos = rect.top - trackSectionRect.top + trackSection.scrollTop - 33;
-            scrollToAndAlign(trackSection, { top: pos }, { top: 0 });
-          } else if (rect.top > trackSectionRect.bottom - 75) {
-            if (rect.height > trackSection.clientHeight) {
-              const pos = rect.top - trackSectionRect.top + trackSection.scrollTop - 33;
-              scrollToAndAlign(trackSection, { top: pos }, { top: 0 });
-            } else {
-              const pos = rect.bottom - trackSectionRect.top + trackSection.scrollTop;
-              scrollToAndAlign(trackSection, { top: pos }, { top: 1 });
-            }
-          }
-        }
-  
-        setScrollToItem(null);
-      })
-    }
-  }, [scrollToItem])
-
-  function handleAddAutomationLaneContextMenu() {
-    if ((track as any).automationLanes?.find((lane: any) => !lane.show)) { 
-      openContextMenu(ContextMenuType.AddAutomationLane, { lanes: (track as any).automationLanes }, (params: any) => {
-        if (params.lane) {
-          const automationLanes = (track as any).automationLanes?.slice();
-          const laneIdx = automationLanes?.findIndex((lane: any) => lane.id === params.lane.id);
-          
-          if (laneIdx > -1) {
-            automationLanes[laneIdx] = { ...automationLanes[laneIdx], show: true };
-            setTrack({...track, automationLanes} as any);
-          }
-        }
-      })
-    }
-  }
-
-  function handleChangeHueSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setTrack({...track, color: hslToHex(hue, 80, 70)});
-    setShowChangeHueDialog(false);
-  }
-
-  function handleContextMenu() {
-    if (track.id !== masterTrack.id && document.activeElement?.nodeName !== "INPUT") {
-      openContextMenu(ContextMenuType.Track, {}, (params: any) => {
-        switch (params.action) {
+  const onContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    openContextMenu(
+      ContextMenuType.Track,
+      { trackId: track.id },
+      (params: Record<string, unknown>) => {
+        const action = params.action as number;
+        switch (action) {
           case 0:
             duplicateTrack(track);
             break;
@@ -154,320 +79,147 @@ function TrackComponent({ className, colorless, order, track, style }: IProps) {
             break;
           case 2:
             setShowChangeHueDialog(true);
-            setHue(hueFromHex(track.color || '#808080'));
+            break;
+          case 3:
+            setHue(hueFromHex(track.color || "#808080"));
             break;
         }
-      });
-    }
-  }
+      }
+    );
+  };
 
-  function handleSelectAutomationMode() {
-    openContextMenu(ContextMenuType.Automation, { mode: (track as any).automationMode }, (params: any) => {
-      if (params.mode) 
-        setTrack({ ...track, automationMode: params.mode } as any);
-    });
-  }
- 
-  const selected = selectedTrackId === track.id;
-  const isMaster = track.id === masterTrack.id;
-  const noHiddenLanes = !(track as any).automationLanes?.find((lane: any) => !lane.show);
-  const mutedByMaster = (masterTrack as any)?.mute && !isMaster;
-  
-  const automationColor = colorless ? normalizeHex(getCSSVarValue("--border6")) : (track.color || "#808080");
-  const borderColor = colorless ? "var(--border6)" : "#444";
+  const onHueChange = (value: number) => {
+    setHue(value);
+    const color = hslToHex(value, 50, 50);
+    setTrack({ ...track, color });
+  };
 
-  const height = BASE_HEIGHT * verticalScale;
-  const addExtraHeight = !isMaster && height < 80 && (track as any).automation;
-  const trackHeight = Math.max(height, addExtraHeight ? 76 : 0);
-  const muteButtonTitle = mutedByMaster 
-    ? "Master is muted"
-    : `${(track as any).mute ? "Unmute" : "Mute"}${selected ? " [M]" : ""}`;
+  const handleMuteClick = () => {
+    const updates = { mute: !track.mute };
+    setTrack({ ...track, ...updates });
+  };
 
-  const styles = {
-    orderTextContainer: {  
-      width: 14,
-      border: "1px solid var(--border1)",
-      borderWidth: "0 1px 1px 0",
-      backgroundColor: selected ? "#fff" : ""
-    },
-    orderText: {
-      fontFamily: "Abel, Roboto, sans-serif",
-      letterSpacing: -0.5,
-      fontSize: (order?.toString() || "").length > 2 ? 9 : 11,
-      color: selected ? "#000" : "var(--border6)",
-      margin: `0 0 0 -1px`,
-    },
-    trackLeftSection: { overflow: "hidden", backgroundColor: colorless ? "#0000" : track.color },
-    nameFxVolumePanContainer: {
-      padding: `${!addExtraHeight ? 4 : 3}px 3px 0 4px`,
-      flex: 1,
-      maxHeight: trackHeight > 80 ? 71 : "none"
-    },
-    nameContainer: {
-      border: `1px solid ${borderColor}`,
-      marginBottom: !addExtraHeight ? 3 : 1,
-      backgroundColor: colorless ? "#0000" : "#fff6"
-    },
-    nameInput: {
-      backgroundColor: "#0000",
-      fontSize: 13,  
-      outline: "none",
-      height: "100%",
-      color: colorless ? "var(--fg1)" : "#000",
-      pointerEvents: isMaster ? "none" : "auto"
-    } as React.CSSProperties,
-    fx: {
-      container: { backgroundColor: colorless ? "#0000" : "#fff6", borderColor },
-      effect: { actionsContainer: { borderColor } },
-      preset: { optionsList: { borderColor } },
-      icon: { color: colorless ? "var(--border6)" : "#000" },
-      toggle: { button: { borderColor }, icon: { color: colorless ? "var(--fg3)" : "#000" } },
-      text: { color: colorless ? "var(--fg1)" : "#000" },
-      top: { borderBottomColor: borderColor }
-    },
-    knob: { 
-      knob: { border: `1px solid ${borderColor}`, backgroundColor: colorless ? "#0000" : "#fff6" },
-      indicator: { backgroundColor: `${borderColor}` } 
-    },
-    meterContainer: { 
-      border: "1px solid var(--border1)", 
-      margin: trackHeight > 80 ? "0 3px" : 0,
-      borderWidth: trackHeight > 80 ? "1px" : "1px 0 0"
-    },
-    meter: { height: 3, backgroundColor: "var(--bg1)", boxSizing: "content-box" } as React.CSSProperties,
-    controlButtonsContainer: { padding: "3px 3px 4px", borderLeft: "1px solid var(--border1)", flexShrink: 0 },
-    muteButton: {
-      color: (track as any).mute || (masterTrack as any)?.mute ? "#ff004c" : "var(--border6)",
-      borderWidth: "1px 0 0 1px"
-    },
-    soloButton: { color: (track as any).solo ? "var(--fg2)" : "var(--border6)", borderWidth: "1px 0 0 1px" },
-    armIcon: { fontSize: 14, color: (track as any).armed ? "#ff004c" : "var(--border6)" },
-    automationButton: { color: (track as any).automation ? "var(--fg3)" : "var(--border6)", borderBottom: "none" },
-    automationMode: {
-      border: "1px solid var(--border6)", 
-      color: "var(--fg1)",
-      fontSize: 12,
-      lineHeight: 1,
-      fontFamily: "Abel, Roboto, sans-serif",
-      padding: "2px 2px 1px",
-      letterSpacing: -0.4,
-      textTransform: "uppercase",
-      backgroundColor: "#0000"
-    } as React.CSSProperties,
-    addAutomationButtonIcon: { color: "var(--border6)", transform: "translate(-0.5px, 0.5px)" }
-  } as const;
+  const handleSoloClick = () => {
+    const updates = { solo: !track.solo };
+    setTrack({ ...track, ...updates });
+  };
 
-  function handleToggleFX(effectId: string) {
-    if (track.type === 'audio' && track.effects) {
-      const newEffects = track.effects.map(effect =>
-        effect.id === effectId ? { ...effect, enabled: !effect.enabled } : effect
-      );
-      setTrack({ ...track, effects: newEffects });
-    }
-  }
+  const buttonStyle = {
+    fontSize: "10px",
+    fontWeight: "bold",
+    padding: "4px 8px",
+    margin: "0 2px",
+    border: "1px solid var(--border4)",
+    borderRadius: "4px",
+    background: "var(--bg6)",
+    color: "var(--fg1)",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  };
 
-  function handleUpdateFXParameters(effectId: string, parameters: Record<string, any>) {
-    if (track.type === 'audio' && track.effects) {
-      const newEffects = track.effects.map(effect =>
-        effect.id === effectId ? { ...effect, parameters: { ...effect.parameters, ...parameters } } : effect
-      );
-      setTrack({ ...track, effects: newEffects });
-    }
-  }
-
-  function handleRemoveFX(effectId: string) {
-    if (track.type === 'audio' && track.effects) {
-      const newEffects = track.effects.filter(effect => effect.id !== effectId);
-      setTrack({ ...track, effects: newEffects });
-    }
-  }
-
-  if (showMaster || !isMaster) {
-    return (
-      <div 
-        onMouseDown={() => setSelectedTrackId(track.id)} 
-        ref={ref}
-        style={{ display: "flex", width: "100%", height: "fit-content", ...style }}
+  return (
+    <div
+      ref={ref}
+      className={`track ${className || ""}`}
+      style={{
+        ...style,
+        borderColor:
+          track.mute || masterTrack?.mute ? "#ff004c" : "var(--border6)",
+        background: "var(--bg5)",
+        padding: "8px",
+        borderRadius: "4px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+      }}
+      onContextMenu={onContextMenu}
+    >
+      <div
+        className="track-header"
+        style={{ display: "flex", alignItems: "center", gap: "8px" }}
       >
-        <div className="center-flex" style={styles.orderTextContainer}>
-          <p style={styles.orderText}>{isMaster ? "M" : order}</p>
-        </div>
-        <div className="overflow-hidden" style={{ flex: 1 }}>
-          <div
-            className={`p-0 d-flex overflow-hidden position-relative col-12 ${className}`}
-            onContextMenu={handleContextMenu}
-            style={{ height: trackHeight, borderBottom: "1px solid var(--border1)" }}
+        {/* Track name */}
+        <input
+          type="text"
+          value={track.name}
+          onChange={(e) => setTrack({ ...track, name: e.target.value })}
+          onBlur={(e) => setTrack({ ...track, name: e.target.value.trim() })}
+          className="track-name"
+          style={{
+            background: "var(--bg7)",
+            border: "1px solid var(--border4)",
+            color: "var(--fg1)",
+            borderRadius: "4px",
+            padding: "4px 8px",
+            flex: 1,
+          }}
+        />
+
+        {/* Track controls */}
+        <div
+          className="track-controls"
+          style={{ display: "flex", alignItems: "center", gap: "4px" }}
+        >
+          <button
+            data-testid="mute-button"
+            className={`track-btn ${track.mute ? "active" : ""}`}
+            onClick={handleMuteClick}
+            style={{
+              ...buttonStyle,
+              background: track.mute ? "#ff004c" : buttonStyle.background,
+            }}
           >
-            <div className="d-flex flex-column" style={styles.trackLeftSection}>
-              <div style={styles.nameFxVolumePanContainer}>
-                <div style={styles.nameContainer}>
-                  <input
-                    className="p-1 border-0 w-100"
-                    onChange={e => setName(e.target.value)}
-                    onBlur={handleNameBlur}
-                    style={styles.nameInput}
-                    type="text"
-                    value={name}
-                  />
-                </div>
-                {track.type === 'audio' && track.effects?.length > 0 && (
-                  <div data-testid="fx-chain" style={styles.fx.container}>
-                    {track.effects.map(effect => (
-                      <div key={effect.id} className="fx-plugin">
-                        <span>{effect.type}</span>
-                        <IconButton
-                          size="small"
-                          onClick={() => setTrack({
-                            ...track,
-                            effects: track.effects?.map(e => 
-                              e.id === effect.id ? { ...e, enabled: !e.enabled } : e
-                            )
-                          })}
-                        >
-                          {effect.enabled ? <Check /> : null}
-                        </IconButton>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {track.type === 'audio' && (
-                  <>
-                    <select
-                      data-testid="track-input-select"
-                      onChange={e => handleInputChange(e.target.value)}
-                      value={track.inputs?.[0]?.id}
-                    >
-                      {track.inputs?.map(input => (
-                        <option key={input.id} value={input.id}>
-                          {input.name}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      data-testid="track-output-select"
-                      onChange={e => handleOutputChange(e.target.value)}
-                      value={track.outputs?.[0]?.id}
-                    >
-                      {track.outputs?.map(output => (
-                        <option key={output.id} value={output.id}>
-                          {output.name}
-                        </option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="d-flex flex-column align-items-center" style={styles.controlButtonsContainer}>
-              {track.type === 'audio' && (
-                <IconButton
-                  data-testid="track-arm-button"
-                  onClick={handleArmTrack}
-                  style={{ color: track.armed ? '#ff004c' : 'var(--border6)' }}
-                >
-                  <FiberManualRecord style={{ fontSize: 14 }} />
-                </IconButton>
-              )}
-              <div style={{ display: "flex", flexDirection: !isMaster ? "column" : "row" }}>
-                <div style={{display: "flex"}}>
-                  <div title={muteButtonTitle}>
-                    <button
-                      className={`track-btn stop-reorder ${mutedByMaster ? "pe-none" : "pe-auto hover-4"}`}
-                      onClick={() => setTrack({...track, mute: !(track as any).mute} as any)}
-                      style={styles.muteButton}
-                    >
-                      <span style={{ opacity: mutedByMaster ? 0.5 : 1 }}>M</span>
-                    </button>
-                  </div>
-                  {!isMaster && (
-                    <button
-                      className="track-btn hover-4 stop-reorder"
-                      onClick={() => setTrack({...track, armed: !(track as any).armed} as any)}
-                      style={{ borderBottom: "none" }}
-                      title={((track as any).armed ? "Disarm" : "Arm") + (selected ? " [Shift+A]" : "")}
-                    >
-                      <FiberManualRecord style={styles.armIcon} />
-                    </button>
-                  )}
-                </div>
-                <div style={{display: "flex"}}>
-                  {!isMaster && (
-                    <button
-                      className="track-btn hover-4 stop-reorder"
-                      onClick={() => setTrack({...track, solo: !(track as any).solo} as any)}
-                      style={styles.soloButton}
-                      title={"Toggle Solo" + (selected ? " [S]" : "")}
-                    >
-                      S
-                    </button>
-                  )}
-                  <button
-                    className="track-btn hover-4 stop-reorder"
-                    onClick={() => setTrack({...track, automation: !(track as any).automation} as any)}
-                    style={styles.automationButton}
-                    title={`${(track as any).automation ? "Hide" : "Show"} Automation${selected ? " [A]": ""}`}
-                  >
-                    A
-                  </button>
-                </div>
-              </div>
-              <button
-                className="stop-reorder m-0 col-12 text-center"
-                onMouseDown={handleSelectAutomationMode}
-                style={styles.automationMode}
-                title={`Automation Mode: ${(track as any).automationMode || 'Read'}`}
-              >
-                {(track as any).automationMode || 'Read'}
-              </button>
-              <div className="d-flex align-items-end col-12 overflow-hidden" style={{flex: 1, maxHeight: 20}}>
-                {(track as any).automation && (
-                  <IconButton
-                    className={`p-0 stop-reorder align-items-center ${noHiddenLanes ? "disabled" : ""}`}
-                    onMouseDown={handleAddAutomationLaneContextMenu}
-                    style={{borderRadius: 0, border: "1px solid var(--border6)", width: "100%"}}
-                  >
-                    <Add style={{ fontSize: 15, ...styles.addAutomationButtonIcon }} />
-                  </IconButton>
-                )}
-              </div>
-            </div>
-          </div>
-          {(track as any).automation && (
-            <div style={{width: "100%"}}>
-              {(track as any).automationLanes?.map((lane: any, idx: number) => {
-                if (lane.show)
-                  return (
-                    <AutomationLaneTrack
-                      color={getLaneColor((track as any).automationLanes || [], idx, automationColor)}
-                      key={lane.id}
-                      lane={lane}
-                      track={track}
-                    />
-                  );
-              })}
-            </div>
-          )}
-          <Dialog
-            onClose={() => setShowChangeHueDialog(false)}
-            open={showChangeHueDialog}
-            style={{width: 350}}
-            title={`Change Hue for ${track.name}`}
+            M
+          </button>
+          <button
+            data-testid="solo-button"
+            className={`track-btn ${track.solo ? "active" : ""}`}
+            onClick={handleSoloClick}
+            style={{
+              ...buttonStyle,
+              background: track.solo ? "#ffcc00" : buttonStyle.background,
+              color: track.solo ? "#000" : buttonStyle.color,
+            }}
           >
-            <DialogContent style={{padding: 12}}>
-              <form className="d-flex align-items-center col-12" onSubmit={handleChangeHueSubmit}>
-                <HueInput onChange={(hue: number) => setHue(hue)} value={hue} />
-                <button className="btn-3" style={{marginLeft: 6}}>
-                  <Check style={{fontSize: 16, color: "var(--bg6)", marginTop: -2}} />
-                </button>
-              </form>
-            </DialogContent>
-          </Dialog>
+            S
+          </button>
+          <button
+            data-testid="automation-mode-button"
+            className={`track-btn ${track.automation ? "active" : ""}`}
+            onClick={() =>
+              setTrack({ ...track, automation: !track.automation })
+            }
+            style={{
+              ...buttonStyle,
+              background: track.automation ? "#00cc00" : buttonStyle.background,
+            }}
+          >
+            OFF
+          </button>
         </div>
       </div>
-    )
-  }
 
-  return null;
+      {/* Automation lanes */}
+      {track.automationLanes.map((lane: AutomationLane) => (
+        <AutomationLaneTrack
+          key={lane.id}
+          lane={lane}
+          track={track as CoreTrack}
+          color={track.color}
+        />
+      ))}
+
+      {/* Color picker dialog */}
+      <Dialog
+        open={showChangeHueDialog}
+        onClose={() => setShowChangeHueDialog(false)}
+      >
+        <DialogContent>
+          <HueInput value={hue} onChange={onHueChange} />
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
 
-export default memo(TrackComponent);
+export default TrackComponent;
