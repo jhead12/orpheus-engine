@@ -24,7 +24,7 @@
       "@orpheus/services/*": ["src/services/*"],
       "@orpheus/screens/*": ["src/screens/*"],
       "@orpheus/contexts": ["src/contexts/index"],
-      "@orpheus/types/*": ["src/services/types/*"],
+      "@orpheus/types/*": ["src/types/*", "src/services/types/*"],
       "@orpheus/test/*": ["src/test/*"],
       "@orpheus/utils/*": ["src/services/utils/*"],
       "@orpheus/widgets/*": ["src/components/widgets/*"],
