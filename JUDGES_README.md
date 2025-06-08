@@ -19,7 +19,13 @@ Orpheus Engine Workstation is a modern Digital Audio Workstation (DAW) that show
 ```bash
 git clone https://github.com/jhead12/orpheus-engine.git
 cd orpheus-engine
-npm install
+pnpm install
+
+# Fix permissions (important!)
+# On Windows:
+pnpm run fix:permissions:win
+# On Unix/Linux/macOS:
+pnpm run fix:permissions:unix
 ```
 
 ### 2. Start the Application
@@ -238,14 +244,20 @@ npm run dev:headless       # Test in headless mode
 
 ### **Common Issues**
 ```bash
+# Permission issues
+# On Windows:
+pnpm run fix:permissions:win
+# On Unix/Linux/macOS:
+pnpm run fix:permissions:unix
+
 # Dependency issues
-npm install
+pnpm install
 
 # Port conflicts  
 npm run dev:local  # Uses port 3000 instead of 5173
 
 # Python ML setup
-pip install -r requirements.txt  # If you create requirements.txt
+pip install -r requirements.txt
 ```
 
 ### **Contact**
