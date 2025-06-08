@@ -72,15 +72,13 @@ export async function recordGif(
 async function takeScreenshot(
   element: HTMLElement
 ): Promise<Buffer> {
-  // Environment detection
+  // Environment detection - only skip in actual CI, allow Codespaces and local development
   const isCI = process.env.CI === 'true';
-  const isHeadless = process.env.HEADLESS !== 'false';
-  const hasDisplay = process.env.DISPLAY || process.env.WAYLAND_DISPLAY;
-  const isCodespaces = process.env.CODESPACES === 'true';
+  const isRunningInCI = isCI && !process.env.GITHUB_CODESPACES; // Allow Codespaces even if CI is set
   
-  // Skip visual tests in problematic environments
-  if (isCI || isCodespaces || !hasDisplay) {
-    console.warn('Visual tests skipped in CI/Codespaces/headless environment');
+  // Skip visual tests only in actual CI environments (not Codespaces)
+  if (isRunningInCI) {
+    console.warn('Visual tests skipped in CI environment');
     // Return a minimal 1x1 transparent PNG as placeholder
     return Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=', 'base64');
   }
@@ -115,31 +113,43 @@ async function takeScreenshot(
     `;
 
     // More aggressive timeout settings
-    const timeout = 3000; // Reduced to 3 seconds
+    const timeout = 5000; // Increased to 5 seconds for Codespaces
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error(`Screenshot timeout after ${timeout}ms`)), timeout);
     });
+
+    // Enhanced puppeteer configuration for Codespaces and headless environments
+    const puppeteerArgs = [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+      '--headless=new', // Use new headless mode
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-background-timer-throttling',
+      '--disable-renderer-backgrounding',
+      '--disable-backgrounding-occluded-windows',
+      '--virtual-time-budget=3000',
+      '--window-size=1024,768', // Set a reasonable window size
+      '--force-device-scale-factor=1'
+    ];
+
+    // Add virtual display args for environments without X11
+    if (!process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) {
+      puppeteerArgs.push('--use-gl=swiftshader', '--disable-software-rasterizer');
+    }
 
     const screenshotPromise = htmlToImage({
       html: fullHtml,
       transparent: true,
       type: "png",
       puppeteerArgs: {
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--disable-web-security',
-          '--disable-features=VizDisplayCompositor',
-          '--headless',
-          '--disable-extensions',
-          '--disable-plugins',
-          '--disable-images',
-          '--disable-javascript',
-          '--virtual-time-budget=2000'
-        ],
+        args: puppeteerArgs,
         timeout: timeout - 500, // Leave buffer for our timeout
+        headless: true, // Force headless mode
       },
     }) as Promise<Buffer>;
 
