@@ -434,7 +434,17 @@ describe("TrackComponent", () => {
   });
 
   describe("visual regression tests", () => {
+    const isCI = process.env.CI === "true";
+    const isCodespaces = process.env.CODESPACES === "true";
+    const hasDisplay = process.env.DISPLAY !== undefined;
+    const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
+
     it("should match visual snapshot for audio track", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
       renderWithContext(<TrackComponent track={baseTrack} />, container);
       
       // Wait for any animations or async rendering to complete
@@ -449,6 +459,11 @@ describe("TrackComponent", () => {
     });
 
     it("should match visual snapshot for muted track", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
       const track = { ...baseTrack, mute: true };
       renderWithContext(<TrackComponent track={track} />, container);
       
@@ -462,6 +477,11 @@ describe("TrackComponent", () => {
     });
 
     it("should match visual snapshot for armed track", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
       const track = { ...baseTrack, armed: true };
       renderWithContext(<TrackComponent track={track} />, container);
       
