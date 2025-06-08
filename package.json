@@ -68,7 +68,14 @@
     "list:visual-tests": "ts-node scripts/visual-agent.js list",
     "build:webpack": "webpack --mode production",
     "dev:webpack": "webpack --mode development",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "build:browser": "vite build --config vite.browser.config.ts",
+    "dev:browser": "vite --config vite.browser.config.ts",
+    "preview:browser": "vite preview --config vite.browser.config.ts",
+    "serve:browser": "npx serve dist/browser",
+    "docker:build": "docker build -t orpheus-engine:browser -f Dockerfile.browser .",
+    "docker:run": "docker run -p 3000:3000 orpheus-engine:browser",
+    "docker:dev": "docker-compose -f docker-compose.browser.yml up --build"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",

@@ -190,9 +190,12 @@ describe("Timeline", () => {
    * - Sets correct default height (400px)
    */
   it("renders canvas element with proper dimensions", () => {
+    // Create a proper TimelinePosition instance for testing
+    const mockPosition = new TimelinePosition(0, 0, 0);
+    
     const { container } = render(
       <WorkstationContext.Provider value={createMockWorkstationContext()}>
-        <Timeline />
+        <Timeline currentPosition={mockPosition} />
       </WorkstationContext.Provider>
     );
 
@@ -214,9 +217,12 @@ describe("Timeline", () => {
    * - Maintains canvas element in DOM during resize
    */
   it("handles canvas resizing", () => {
+    // Create a proper TimelinePosition instance for testing
+    const mockPosition = new TimelinePosition(0, 0, 0);
+    
     const { container } = render(
       <WorkstationContext.Provider value={createMockWorkstationContext()}>
-        <Timeline />
+        <Timeline currentPosition={mockPosition} />
       </WorkstationContext.Provider>
     );
 

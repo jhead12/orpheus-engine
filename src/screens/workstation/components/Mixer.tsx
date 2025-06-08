@@ -1,21 +1,22 @@
-import { formatPanning, getVolumeGradient } from '@orpheus/utils/audio';
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "@orpheus/contexts";
+import { WorkstationContext } from "../../../contexts/WorkstationContext";
 import {
   AutomationLaneEnvelope,
   AutomationMode,
   ContextMenuType,
   Track,
-} from "@orpheus/types/core";
-import { hslToHex, hueFromHex } from "@orpheus/utils/general";
+} from "../../../types/core";
+import { hslToHex, hueFromHex } from "../../../services/utils/general";
 import {
   volumeToNormalized,
-} from "@orpheus/utils/utils";
+  getVolumeGradient,
+} from "../../../services/utils/utils";
+import { formatPanning } from "../../../services/utils/audio";
 import { FXComponent, TrackVolumeSlider } from "./index";
 import { TrackIcon } from "../../../components/icons";
-import { SortData } from "@orpheus/widgets/SortableList";
+import { SortData } from "../editor-utils";
 import {
   Dialog,
   HueInput,
@@ -24,8 +25,8 @@ import {
   SelectSpinBox,
   SortableList,
   SortableListItem,
-} from "@orpheus/widgets";
-import { openContextMenu } from '@orpheus/services/electron/utils';
+} from "../../../components/widgets";
+import { openContextMenu } from "../../../services/electron/utils";
 
 const MixerTrack = memo(
   ({ order, track }: { order?: number; track: Track }) => {
@@ -65,7 +66,7 @@ const MixerTrack = memo(
         openContextMenu(ContextMenuType.Track, {}, (params: any) => {
           switch (params.action) {
             case 0:
-              duplicateTrack(track);
+              duplicateTrack(track.id);
               break;
             case 1:
               deleteTrack(track);
@@ -267,7 +268,7 @@ const MixerTrack = memo(
               >
                 <div className="d-flex" style={{ height: "100%" }}>
                   <Meter
-                    color={getVolumeGradient(true)}
+                    color={getVolumeGradient(track.volume || 0)}
                     marks={[
                       {
                         value: 75,
@@ -279,7 +280,7 @@ const MixerTrack = memo(
                     vertical
                   />
                   <Meter
-                    color={getVolumeGradient(true)}
+                    color={getVolumeGradient(track.volume || 0)}
                     marks={[
                       {
                         value: 75,
@@ -465,7 +466,7 @@ function Mixer() {
   }
 
   function handleSortEnd(_: MouseEvent, data: SortData) {
-    if (data.edgeIndex > -1 && data.sourceIndex !== data.destIndex) {
+    if (data.edgeIndex !== undefined && data.edgeIndex > -1 && data.sourceIndex !== data.destIndex) {
       const destIndex =
         data.edgeIndex - (data.edgeIndex > data.sourceIndex ? 1 : 0);
       const newTracks = tracks.slice();
@@ -492,7 +493,7 @@ function Mixer() {
       <SortableList
         cancel=".stop-reorder"
         direction="horizontal"
-        onSortUpdate={(data: SortData) => setEdgeIndex(data.edgeIndex)}
+        onSortUpdate={(data: SortData) => setEdgeIndex(data.edgeIndex || -1)}
         onStart={() => setAllowMenuAndShortcuts(false)}
         onEnd={handleSortEnd}
       >

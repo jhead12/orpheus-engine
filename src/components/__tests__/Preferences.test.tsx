@@ -31,24 +31,12 @@ describe('Preferences Component', () => {
     
     // Setup default mock implementation for each test
     mockUsePreferences.mockReturnValue({
-      darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
       showPreferences: true,
       setShowPreferences: mockSetShowPreferences,
       updatePreferences: mockUpdatePreferences,
       savePreferences: mockSavePreferences
-    });
-    
-    // Reset the mock implementation for each test
-    mockUsePreferences.mockReturnValue({
-      darkMode: false,
-      preferences: mockPreferences,
-      savedPreferences: mockPreferences,
-      showPreferences: true,
-      setShowPreferences: mockSetShowPreferences,
-      updatePreferences: mockUpdatePreferences,
-      savePreferences: mockSavePreferences,
     });
   });
 
@@ -60,7 +48,6 @@ describe('Preferences Component', () => {
   it('does not render Preferences dialog when showPreferences is false', () => {
     // Override the mock for this test
     mockUsePreferences.mockReturnValue({
-      darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
       showPreferences: false,
@@ -121,7 +108,6 @@ describe('Preferences Component', () => {
 
   it('shows a snackbar notification when preferences are saved', () => {
     mockUsePreferences.mockReturnValue({
-      darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
       showPreferences: true,
@@ -136,7 +122,6 @@ describe('Preferences Component', () => {
     
     // Update the component with the saved state
     mockUsePreferences.mockReturnValue({
-      darkMode: false,
       preferences: mockPreferences,
       savedPreferences: mockPreferences,
       showPreferences: true,

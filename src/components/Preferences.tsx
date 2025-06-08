@@ -10,7 +10,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import { Preferences as PreferencesType } from "../types/settings";
-import { usePreferences } from "../context/PreferencesContext";
+import { usePreferences } from "../contexts/PreferencesContext";
 import { Dialog } from "./widgets";
 import styled from "styled-components";
 

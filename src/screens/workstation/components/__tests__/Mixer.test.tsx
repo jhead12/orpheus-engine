@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Mixer } from '../Mixer';
+import Mixer from '../Mixer';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { Track, TrackType } from '@orpheus/types/core';
