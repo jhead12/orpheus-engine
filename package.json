@@ -92,7 +92,11 @@
     "test:visual:gif:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\" -u",
     "list:visual-tests": "ts-node scripts/visual-agent.js list",
     "test:jupyter": "python -c \"import jupyter; print('Jupyter installed')\" && jupyter nbconvert --execute --to notebook notebooks/Professional_Audio_Analysis.ipynb --output test_output.ipynb",
-    "test:notebook": "pip install -r requirements.txt && python -m jupyter nbconvert --execute --to html notebooks/Professional_Audio_Analysis.ipynb --output test_results.html"
+    "test:notebook": "pip install -r requirements.txt && python -m jupyter nbconvert --execute --to html notebooks/Professional_Audio_Analysis.ipynb --output test_results.html",
+    "test:judge:ui": "vitest run --config vitest.config.ts --environment jsdom workstation/frontend/src/components/__tests__/JudgeEvaluationPanel.test.tsx",
+    "test:judge:services": "vitest run --config vitest.config.ts --environment jsdom workstation/frontend/src/services/__tests__/judgeEvaluationService.test.ts",
+    "test:judge:notebook": "python -m pytest test_judge_evaluation_notebook.py --html=test-results/notebook-test-report.html --self-contained-html -v",
+    "test:judge:all": "pnpm run test:judge:ui && pnpm run test:judge:services && pnpm run test:judge:notebook"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
