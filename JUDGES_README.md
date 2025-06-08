@@ -161,6 +161,26 @@ npm run test:screenshots    # Generate visual test snapshots
 npm run dev:headless       # Test in headless mode
 ```
 
+### **Judge Evaluation - Test Jupyter Notebook**
+Test the professional audio analysis notebook to see HP AI Studio integration:
+
+```bash
+# Quick test - verify Jupyter is working
+pnpm run test:jupyter
+
+# Full test - run the complete notebook and generate HTML report
+pnpm run test:notebook
+```
+
+The notebook demonstrates:
+- Real-time audio analysis with librosa
+- Professional waveform and spectrogram visualizations  
+- MLFlow experiment tracking integration
+- Audio feature extraction pipelines
+- Results saved as `test_results.html` for judge review
+
+**Location**: `notebooks/Professional_Audio_Analysis.ipynb`
+
 ---
 
 ## 🔍 **Key Files for Evaluation**

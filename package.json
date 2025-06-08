@@ -95,9 +95,8 @@
     "test:visual:gif": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\"",
     "test:visual:gif:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\" -u",
     "list:visual-tests": "ts-node scripts/visual-agent.js list",
-    "build:webpack": "webpack --mode production",
-    "dev:webpack": "webpack --mode development",
-    "watch": "webpack --mode development --watch"
+    "test:jupyter": "python -c \"import jupyter; print('Jupyter installed')\" && jupyter nbconvert --execute --to notebook notebooks/Professional_Audio_Analysis.ipynb --output test_output.ipynb",
+    "test:notebook": "pip install -r requirements.txt && python -m jupyter nbconvert --execute --to html notebooks/Professional_Audio_Analysis.ipynb --output test_results.html"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
