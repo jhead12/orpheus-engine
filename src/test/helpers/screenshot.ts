@@ -72,16 +72,13 @@ export async function recordGif(
 async function takeScreenshot(
   element: HTMLElement
 ): Promise<Buffer> {
-  // Environment detection - only skip in actual CI, allow Codespaces and local development
-  const isCI = process.env.CI === 'true';
-  const isRunningInCI = isCI && !process.env.GITHUB_CODESPACES; // Allow Codespaces even if CI is set
-  
-  // Skip visual tests only in actual CI environments (not Codespaces)
-  if (isRunningInCI) {
-    console.warn('Visual tests skipped in CI environment');
-    // Return a minimal 1x1 transparent PNG as placeholder
-    return Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=', 'base64');
-  }
+  // Allow visual tests in all environments - use xvfb-run when available
+  console.log('Taking screenshot in environment:', {
+    CI: process.env.CI,
+    CODESPACES: process.env.GITHUB_CODESPACES,
+    DISPLAY: process.env.DISPLAY,
+    hasXvfb: process.env.XVFB_RUN_AVAILABLE || 'unknown'
+  });
 
   try {
     const htmlToImage = (await import("node-html-to-image")).default;
@@ -113,12 +110,12 @@ async function takeScreenshot(
     `;
 
     // More aggressive timeout settings
-    const timeout = 5000; // Increased to 5 seconds for Codespaces
+    const timeout = 10000; // Increased to 10 seconds for complex browser launches
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error(`Screenshot timeout after ${timeout}ms`)), timeout);
     });
 
-    // Enhanced puppeteer configuration for Codespaces and headless environments
+    // Enhanced puppeteer configuration for headless environments with xvfb support
     const puppeteerArgs = [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -132,14 +129,30 @@ async function takeScreenshot(
       '--disable-background-timer-throttling',
       '--disable-renderer-backgrounding',
       '--disable-backgrounding-occluded-windows',
-      '--virtual-time-budget=3000',
+      '--virtual-time-budget=5000', // Increased virtual time budget
       '--window-size=1024,768', // Set a reasonable window size
-      '--force-device-scale-factor=1'
+      '--force-device-scale-factor=1',
+      '--no-zygote', // Helps with container environments
+      '--single-process', // More reliable in containers
+      '--disable-background-networking',
+      '--disable-default-apps',
+      '--disable-sync',
+      '--metrics-recording-only',
+      '--no-first-run',
+      '--disable-ipc-flooding-protection', // Help with timeout issues
+      '--disable-hang-monitor',
+      '--disable-prompt-on-repost',
+      '--disable-client-side-phishing-detection',
+      '--safebrowsing-disable-auto-update'
     ];
 
     // Add virtual display args for environments without X11
     if (!process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) {
-      puppeteerArgs.push('--use-gl=swiftshader', '--disable-software-rasterizer');
+      puppeteerArgs.push(
+        '--use-gl=swiftshader', 
+        '--disable-software-rasterizer',
+        '--disable-gpu-sandbox'
+      );
     }
 
     const screenshotPromise = htmlToImage({
@@ -148,8 +161,10 @@ async function takeScreenshot(
       type: "png",
       puppeteerArgs: {
         args: puppeteerArgs,
-        timeout: timeout - 500, // Leave buffer for our timeout
+        timeout: timeout - 1000, // Leave more buffer for our timeout
         headless: true, // Force headless mode
+        ignoreHTTPSErrors: true,
+        ignoreDefaultArgs: ['--disable-extensions'], // Don't double-add this arg
       },
     }) as Promise<Buffer>;
 
