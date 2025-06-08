@@ -5,7 +5,7 @@
  * This script detects the operating system and provides instructions for installing FFmpeg
  */
 
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 const { platform } = process;
 
 // ANSI color codes for terminal output
