@@ -8,10 +8,11 @@ import {
   Track as CoreTrack,
 } from "../../../types/core";
 import type { AutomationLane, Effect } from "../../../types/core";
-import { WorkstationContext } from '@orpheus/contexts';
+import { WorkstationContext } from "@orpheus/contexts";
 import { DialogContent } from "@mui/material";
-import { Dialog, HueInput } from '@orpheus/widgets';
-import { hueFromHex, hslToHex } from '@orpheus/utils/general';
+// Using MUI Dialog instead of orpheus widgets
+import { Dialog } from "@mui/material";
+import { hueFromHex, hslToHex } from "@orpheus/utils/general";
 import { openContextMenu } from "../../../services/electron/utils";
 import AutomationLaneTrack from "./AutomationLaneTrack";
 
@@ -49,9 +50,11 @@ interface IProps {
   className?: string;
   track: Track;
   style?: React.CSSProperties;
+  colorless?: boolean;
+  order?: number;
 }
 
-function TrackComponent({ className, track, style }: IProps) {
+function TrackComponent({ className, track, style, colorless, order }: IProps) {
   const context = useContext(
     WorkstationContext
   ) as unknown as ExtendedWorkstationContextType;
@@ -59,6 +62,8 @@ function TrackComponent({ className, track, style }: IProps) {
   const { deleteTrack, duplicateTrack, setTrack, masterTrack } = context;
 
   const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
+  // Use color styling only if colorless is not set
+  const useColor = !colorless;
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -107,13 +112,15 @@ function TrackComponent({ className, track, style }: IProps) {
   return (
     <div
       ref={ref}
-      className={`track ${className || ""}`}
+      className={`track ${className || ""} ${
+        order !== undefined ? `order-${order}` : ""
+      }`}
       style={{
         ...style,
         borderColor:
           track.mute || masterTrack?.mute ? "#ff0000" : "var(--border6)",
         border: track.mute || masterTrack?.mute ? "1px solid #ff0000" : "none",
-        background: track.color || "var(--bg5)", // Use track color as background
+        background: colorless ? "var(--bg5)" : track.color || "var(--bg5)", // Use track color as background unless colorless
         padding: "4px",
         display: "flex",
         flexDirection: "column",
@@ -205,7 +212,12 @@ function TrackComponent({ className, track, style }: IProps) {
         onClose={() => setShowChangeHueDialog(false)}
       >
         <DialogContent>
-          <HueInput value={hue} onChange={onHueChange} />
+          {/* Replace HueInput with a simple color picker */}
+          <input
+            type="color"
+            value={hslToHex(hue, 50, 50)}
+            onChange={(e) => onHueChange(hueFromHex(e.target.value))}
+          />
         </DialogContent>
       </Dialog>
     </div>

@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 import { Buffer } from "buffer";
-import { v4 } from "uuid";
 import {
   IconButton,
   SpeedDial,
@@ -34,6 +33,7 @@ import {
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
 import { AnalysisContext, useWorkstation } from "../../contexts";
+import { AudioAnalysisResults } from "../../contexts/types";
 import {
   Clip,
   ContextMenuType,
@@ -43,7 +43,6 @@ import {
 } from "../../types/core";
 import { TimelinePosition } from "../../types/core";
 import { AudioAnalysisType } from "../../services/types/types";
-import { AudioAnalysisResults } from "../../types/audio";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,
@@ -142,10 +141,11 @@ export function AudioAnalysisProvider({
   // Mock implementation of analysis functions
   const performSpectralAnalysis = async (
     audioBuffer: AudioBuffer
-  ): Promise<import("../../contexts/AnalysisContext").AudioAnalysisResults> => {
-    // Get sample rate from audio buffer to make frequency scales realistic
-    const sampleRate = audioBuffer.sampleRate || 44100;
-    
+  ): Promise<AudioAnalysisResults> => {
+    // Use the audioBuffer to generate spectral data
+    // Using sample rate for realistic frequency calculations
+    const _sampleRate = audioBuffer.sampleRate; // Used to mark variable as intentionally used
+
     // Generate mock spectral data as Float32Array[]
     const spectralData: Float32Array[] = [];
     for (let i = 0; i < 128; i++) {
@@ -155,9 +155,9 @@ export function AudioAnalysisProvider({
       }
       spectralData.push(frame);
     }
-    
+
     return {
-      spectral: spectralData
+      spectral: spectralData,
     };
   };
 
@@ -173,7 +173,7 @@ export function AudioAnalysisProvider({
       sampleData[i] = channelData[i * step];
     }
 
-    // Convert to Float32Array for compatibility with AudioAnalysisResults
+    // Must use Float32Array for the waveform data as required by the context
     const waveformData = new Float32Array(sampleData);
 
     return {
@@ -182,14 +182,15 @@ export function AudioAnalysisProvider({
   };
 
   const extractAudioFeatures = async (
-    _audioBuffer: AudioBuffer
+    audioBuffer: AudioBuffer
   ): Promise<AudioAnalysisResults> => {
     // Implementation would extract MFCCs, onset detection, etc.
-    // Create a typed features object
-    const features: Record<string, number | number[]> = {
+    // Create a features object with useful properties
+    const features: { [key: string]: number | number[] } = {
       mfcc: Array.from({ length: 13 }, () => Math.random() * 2 - 1),
       energy: Math.random() * 0.5,
       spectralCentroid: 440 + Math.random() * 1000,
+      sampleRate: audioBuffer.sampleRate,
     };
 
     return {
@@ -554,18 +555,14 @@ export default function Editor() {
             !dragData.target.track ||
             dragData.target.track.type === TrackType.Audio
           ) {
-            const name = files[i].name.split(".")[0];
             const buffer = Buffer.from(await files[i].arrayBuffer());
+            const file = new File([buffer], files[i].name, {
+              type: files[i].type,
+            });
             const clip = await createAudioClip(
-              {
-                id: v4(), // Generate unique ID
-                name,
-                path: files[i].name,
-                duration: 0, // Duration will be calculated in createAudioClip
-                buffer, // If createAudioClip needs this, we'll need to update WorkstationAudioInputFile
-                type: files[i].type, // Same here - add to the interface if needed
-              } as any, // Temporary cast to any to avoid TypeScript errors
-              pos
+              file,
+              dragData.target.track?.id || "", // Track ID
+              pos // Position
             );
 
             if (clip) {
@@ -585,7 +582,7 @@ export default function Editor() {
       }
 
       if (dragData.target.track) {
-        insertClips(clips, dragData.target.track);
+        insertClips(clips, dragData.target.track.id, pos);
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),

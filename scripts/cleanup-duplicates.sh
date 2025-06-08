@@ -11,7 +11,7 @@ echo "🧹 Starting repository cleanup and consolidation..."
 safe_move() {
     local src="$1"
     local dst="$2"
-    
+
     if [[ -e "$src" ]]; then
         if [[ ! -e "$dst" ]]; then
             echo "📦 Moving $src -> $dst"
@@ -28,7 +28,7 @@ safe_move() {
 safe_copy() {
     local src="$1"
     local dst="$2"
-    
+
     if [[ -e "$src" ]]; then
         if [[ ! -e "$dst" ]] || [[ "$src" -nt "$dst" ]]; then
             echo "📄 Copying $src -> $dst"
@@ -80,25 +80,25 @@ safe_move "packages/" "workstation/shared/packages/"
 # Handle duplicate directories - merge orpheus-engine-workstation into workstation
 if [[ -d "orpheus-engine-workstation" ]]; then
     echo "🔄 Merging orpheus-engine-workstation into workstation..."
-    
+
     # Merge backend
     if [[ -d "orpheus-engine-workstation/backend" ]]; then
         echo "📦 Merging backend files..."
         rsync -av --ignore-existing "orpheus-engine-workstation/backend/" "workstation/backend/"
     fi
-    
-    # Merge frontend  
+
+    # Merge frontend
     if [[ -d "orpheus-engine-workstation/frontend" ]]; then
         echo "🎨 Merging frontend files..."
         rsync -av --ignore-existing "orpheus-engine-workstation/frontend/" "workstation/frontend/"
     fi
-    
+
     # Merge shared
     if [[ -d "orpheus-engine-workstation/shared" ]]; then
         echo "🤝 Merging shared files..."
         rsync -av --ignore-existing "orpheus-engine-workstation/shared/" "workstation/shared/"
     fi
-    
+
     # Remove the duplicate directory
     echo "🗑️  Removing orpheus-engine-workstation directory..."
     rm -rf "orpheus-engine-workstation/"
@@ -115,7 +115,9 @@ rm -f README.md.new README.md.updated
 rm -f *.patch
 rm -f find-absolute-imports.js update-imports.js
 rm -f install-jest-types.sh setup-symlinks.js
-rm -f tsconfig.json webpack.config.js
+rm -f tsconfig.json
+# Preserve webpack.config.js as it's needed for builds
+# rm -f webpack.config.js
 
 # Clean up temp directories
 rm -rf temp_check/ backup_changes/
