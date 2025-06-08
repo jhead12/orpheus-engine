@@ -102,13 +102,31 @@ const mockMixerContext = {
   resetAllLevels: vi.fn(),
 };
 
+const mockMasterTrack: Track = {
+  id: 'master',
+  name: 'Master',
+  type: TrackType.Audio,
+  color: '#444444',
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: 0.8,
+  pan: 0,
+  automation: false,
+  clips: [],
+  effects: [],
+  automationLanes: [],
+};
+
 const mockWorkstationContext = {
   tracks: mockTracks,
+  masterTrack: mockMasterTrack,
   updateTrack: vi.fn(),
   removeTrack: vi.fn(),
   duplicateTrack: vi.fn(),
   selection: { tracks: [], clips: [], region: null },
   setSelection: vi.fn(),
+  getTrackCurrentValue: vi.fn().mockReturnValue({ value: 0.8, isAutomated: false }),
 };
 
 const renderMixer = (props = {}) => {
