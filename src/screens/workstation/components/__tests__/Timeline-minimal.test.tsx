@@ -16,8 +16,8 @@ import { vi, beforeEach, describe, it, expect } from "vitest";
 
 // Create a proper canvas mock that extends HTMLElement
 const createCanvasElement = () => {
-  const canvas = document.createElement('canvas');
-  
+  const canvas = document.createElement("canvas");
+
   // Mock the context
   const ctx = {
     clearRect: vi.fn(),
@@ -54,7 +54,7 @@ const createCanvasElement = () => {
   canvas.width = 800;
   canvas.height = 400;
   canvas.style = {};
-  
+
   return canvas;
 };
 
