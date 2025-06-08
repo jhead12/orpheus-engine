@@ -50,6 +50,17 @@ export const getAudioContext = () => {
   return audioContext;
 };
 
+/**
+ * Formats a panning value to a readable string
+ * @param panning Value between -1 (full left) and 1 (full right)
+ * @returns Formatted panning string
+ */
+export const formatPanning = (panning: number): string => {
+  if (panning === 0) return "C";
+  if (panning < 0) return `L ${Math.abs(Math.round(panning * 100))}%`;
+  return `R ${Math.round(panning * 100)}%`;
+};
+
 export const audioBufferToBuffer = async (
   audioBuffer: AudioBuffer
 ): Promise<Buffer> => {

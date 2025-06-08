@@ -4,8 +4,21 @@
 
 import { spawn } from "child_process";
 import path from "path";
-import electron from "electron";
+import { fileURLToPath } from "url";
 import http from "http";
+
+// Fix for ESM in Node.js
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Use dynamic import for electron
+let electron;
+try {
+  electron = await import("electron");
+} catch (e) {
+  console.error("Failed to import electron:", e);
+  process.exit(1);
+}
 
 // Function to check if Vite server is running
 function waitForVite(port = 5174, timeout = 30000) {

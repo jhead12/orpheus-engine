@@ -1,4 +1,16 @@
-import { TimelinePosition } from "../../types/core";
+import { TimelinePosition as CoreTimelinePosition } from "../../types/core";
+
+// Re-export the TimelinePosition type for better accessibility
+export { TimelinePosition } from "../../types/core";
+
+// Define AudioAnalysisType enum
+export enum AudioAnalysisType {
+  Waveform = "waveform",
+  Spectrum = "spectrum",
+  Loudness = "loudness",
+  Pitch = "pitch",
+  Harmony = "harmony",
+}
 
 export enum AutomationLaneEnvelope {
   Volume = "volume",

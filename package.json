@@ -21,7 +21,7 @@
     "url": "git+https://github.com/sirgawain0x/orpheus-engine.git"
   },
   "private": true,
-  "main": "build/electron/main.js",
+  "main": "electron/main.ts",
   "engines": {
     "node": ">=20.19.0",
     "pnpm": ">=10.6.4"
