@@ -1,0 +1,29 @@
+{
+  "audio_library": {
+    "description": "Audio file library for Orpheus Engine Agentic RAG pipeline",
+    "location": "./data/",
+    "files": [
+      {
+        "filename": "tester.mp3",
+        "type": "mp3",
+        "description": "Test audio file for RAG pipeline transcription",
+        "usage": "Primary test file for agentic_rag.ipynb"
+      },
+      {
+        "filename": "metronome-tick.wav",
+        "type": "wav",
+        "description": "Metronome tick sound",
+        "usage": "Frontend audio asset, available for testing"
+      },
+      {
+        "filename": "metronome-tick-accentuated.wav",
+        "type": "wav",
+        "description": "Accentuated metronome tick sound",
+        "usage": "Frontend audio asset, available for testing"
+      }
+    ],
+    "supported_formats": ["mp3", "wav", "m4a", "flac", "ogg"],
+    "logs_directory": "../logs/",
+    "updated": "2024-12-28"
+  }
+}

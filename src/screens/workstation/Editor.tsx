@@ -1203,6 +1203,7 @@ export default function Editor() {
                 <Tab label="Spectral Analysis" />
                 <Tab label="Waveform Analysis" />
                 <Tab label="Feature Extraction" />
+                <Tab label="Judge Evaluation" />
               </Tabs>
               <IconButton
                 onClick={() => setShowAnalysisPanel(false)}
@@ -1213,10 +1214,14 @@ export default function Editor() {
             </div>
 
             <div className="p-2">
-              <AudioAnalysisPanel
-                type={analysis.analysisType}
-                clip={analysis.selectedClip}
-              />
+              {analysisTabValue === 3 ? (
+                <JudgeEvaluationPanel />
+              ) : (
+                <AudioAnalysisPanel
+                  type={analysis.analysisType}
+                  clip={analysis.selectedClip}
+                />
+              )}
             </div>
           </div>
         )}

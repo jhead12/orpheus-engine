@@ -1,0 +1,165 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Meter Component > Visual Tests > visual test: renders empty meter @visual 1`] = `
+<div
+  style="width: 200px; height: 50px; background: rgb(42, 42, 42); padding: 20px;"
+>
+  <div
+    style="width: 100%; height: 11px;"
+  >
+    <div
+      style="width: 100%; height: 100%; position: relative; display: flex; flex-direction: row; justify-content: flex-start;"
+    >
+      <div
+        style="width: 0%; height: 100%; overflow: hidden; display: flex; flex-direction: row; justify-content: flex-start;"
+      >
+        <div
+          style="height: 100%; flex-shrink: 0; background: rgb(102, 102, 102);"
+        />
+      </div>
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 25%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 50%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 75%; width: 1px; height: 100%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Meter Component > Visual Tests > visual test: renders full meter @visual 1`] = `
+<div
+  style="width: 200px; height: 50px; background: rgb(42, 42, 42); padding: 20px;"
+>
+  <div
+    style="width: 100%; height: 11px;"
+  >
+    <div
+      style="width: 100%; height: 100%; position: relative; display: flex; flex-direction: row; justify-content: flex-start;"
+    >
+      <div
+        style="width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: row; justify-content: flex-start;"
+      >
+        <div
+          style="width: 100%; height: 100%; flex-shrink: 0; background: rgb(0, 255, 0);"
+        />
+      </div>
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 25%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 50%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 75%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 100%; width: 1px; height: 100%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Meter Component > Visual Tests > visual test: renders horizontal meter @visual 1`] = `
+<div
+  style="width: 200px; height: 50px; background: rgb(42, 42, 42); padding: 20px;"
+>
+  <div
+    style="width: 100%; height: 11px;"
+  >
+    <div
+      style="width: 100%; height: 100%; position: relative; display: flex; flex-direction: row; justify-content: flex-start;"
+    >
+      <div
+        style="width: 65%; height: 100%; overflow: hidden; display: flex; flex-direction: row; justify-content: flex-start;"
+      >
+        <div
+          style="width: 153.84615384615384%; height: 100%; flex-shrink: 0; background: rgb(0, 255, 0);"
+        />
+      </div>
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 25%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 50%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 0px; left: 75%; width: 1px; height: 100%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Meter Component > Visual Tests > visual test: renders meter with custom marks @visual 1`] = `
+<div
+  style="width: 250px; height: 60px; background: rgb(26, 26, 26); padding: 15px;"
+>
+  <div
+    style="width: 100%; height: 11px;"
+  >
+    <div
+      style="width: 100%; height: 100%; position: relative; display: flex; flex-direction: row; justify-content: flex-start;"
+    >
+      <div
+        style="width: 45%; height: 100%; overflow: hidden; display: flex; flex-direction: row; justify-content: flex-start;"
+      >
+        <div
+          style="width: 222.22222222222223%; height: 100%; flex-shrink: 0; background: rgb(0, 153, 255);"
+        />
+      </div>
+      <div
+        style="position: absolute; background-color: rgb(255, 0, 0); bottom: 0px; left: 10%; width: 2px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(255, 255, 0); bottom: 0px; left: 30%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 255, 0); bottom: 0px; left: 50%; width: 1px; height: 100%;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(255, 0, 255); bottom: 0px; left: 80%; width: 3px; height: 100%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Meter Component > Visual Tests > visual test: renders vertical meter @visual 1`] = `
+<div
+  style="width: 50px; height: 200px; background: rgb(42, 42, 42); padding: 20px;"
+>
+  <div
+    style="width: 11px; height: 100%;"
+  >
+    <div
+      style="width: 100%; height: 100%; position: relative; display: flex; flex-direction: column; justify-content: flex-end;"
+    >
+      <div
+        style="width: 100%; height: 80%; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;"
+      >
+        <div
+          style="width: 100%; height: 125%; flex-shrink: 0; background: rgb(255, 102, 0);"
+        />
+      </div>
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 20%; left: 0px; width: 100%; height: 1px;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 40%; left: 0px; width: 100%; height: 1px;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 60%; left: 0px; width: 100%; height: 1px;"
+      />
+      <div
+        style="position: absolute; background-color: rgb(0, 0, 0); bottom: 80%; left: 0px; width: 100%; height: 1px;"
+      />
+    </div>
+  </div>
+</div>
+`;

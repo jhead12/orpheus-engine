@@ -1,0 +1,7 @@
+torchaudio
+openai-whisper
+ffmpeg-python
+panns-inference
+sentence-transformers
+chromadb
+langchain

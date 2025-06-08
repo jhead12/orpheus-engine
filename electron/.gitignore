@@ -1,0 +1,24 @@
+# Electron specific ignores
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Compiled TypeScript
+*.js
+!*.config.js
+!webpack.config.js
+
+# Electron builder
+release/
+app/dist/
+dist_electron/
+
+# Debug files
+*.log
+debug.log
+
+# Temporary files
+.tmp/
+temp/

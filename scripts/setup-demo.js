@@ -5,9 +5,13 @@
  * Ensures Python dependencies are installed and Jupyter is ready
  */
 
-const { exec, spawn } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { exec, spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const DEMO_DIR = path.join(PROJECT_ROOT, 'demo');
@@ -131,7 +135,7 @@ async function main() {
 }
 
 // Run setup if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }
 
