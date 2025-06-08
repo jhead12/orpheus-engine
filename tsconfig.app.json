@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./.tsbuildinfo",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@orpheus/*": ["./src/*"],
+      "@orpheus/components/*": ["./src/components/*"],
+      "@orpheus/services/*": ["./src/services/*"],
+      "@orpheus/screens/*": ["./src/screens/*"],
+      "@orpheus/contexts": ["./src/contexts/index"],
+      "@orpheus/types/*": ["./src/services/types/*"],
+      "@orpheus/test/*": ["./src/test/*"],
+      "@orpheus/utils/*": ["./src/services/utils/*"],
+      "@orpheus/widgets/*": ["./src/components/widgets/*"],
+      "@orpheus/workstation/*": ["./src/screens/workstation/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

@@ -67,9 +67,6 @@ sqlalchemy>=1.4.0
 # Web framework
 fastapi>=0.100.0
 uvicorn>=0.23.0
-flask>=2.0.0
-flask-cors>=3.0.0
-flask-graphql>=2.0.0
 
 # Network and connectivity
 aiohttp>=3.8.0

@@ -76,7 +76,7 @@ vi.mock("@orpheus/types/core", () => {
     },
     TrackType: {
       Audio: "audio",
-      Midi: "midi",
+      Midi: "midi", 
       Sequencer: "sequencer",
     },
     AutomationMode: {
@@ -192,7 +192,7 @@ describe("TrackComponent", () => {
     div.style.top = "0";
     div.style.left = "0";
     div.style.background = "white";
-
+    
     // Add basic CSS variables that the component might use
     const style = document.createElement("style");
     style.textContent = `
@@ -333,7 +333,7 @@ describe("TrackComponent", () => {
   it("should handle mute toggle", () => {
     const track = { ...baseTrack, mute: false };
     const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
-
+    
     const muteButton = renderedContainer.querySelector('button[title*="mute"], button[aria-label*="mute"], button:has([class*="mute"])');
     if (muteButton) {
       fireEvent.click(muteButton);
@@ -344,7 +344,7 @@ describe("TrackComponent", () => {
   it("should handle solo toggle", () => {
     const track = { ...baseTrack, solo: false };
     const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
-
+    
     const soloButton = renderedContainer.querySelector('button[title*="solo"], button[aria-label*="solo"], button:has([class*="solo"])');
     if (soloButton) {
       fireEvent.click(soloButton);
@@ -355,7 +355,7 @@ describe("TrackComponent", () => {
   it("should handle arm toggle", () => {
     const track = { ...baseTrack, armed: false };
     const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
-
+    
     const armButton = renderedContainer.querySelector('button[title*="arm"], button[aria-label*="arm"], button:has([class*="arm"])');
     if (armButton) {
       fireEvent.click(armButton);
@@ -366,11 +366,11 @@ describe("TrackComponent", () => {
   it("should handle track name change", async () => {
     const user = userEvent.setup();
     const { getByDisplayValue } = renderWithContext(<TrackComponent track={baseTrack} />, container);
-
+    
     const nameInput = getByDisplayValue("Test Track");
     await user.clear(nameInput);
     await user.type(nameInput, "New Track Name");
-
+    
     // The component might call setTrack multiple times during typing
     await waitFor(() => {
       expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
@@ -436,10 +436,10 @@ describe("TrackComponent", () => {
   describe("visual regression tests", () => {
     it("should match visual snapshot for audio track", async () => {
       renderWithContext(<TrackComponent track={baseTrack} />, container);
-
+      
       // Wait for any animations or async rendering to complete
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-audio");
       } catch (error) {
@@ -451,9 +451,9 @@ describe("TrackComponent", () => {
     it("should match visual snapshot for muted track", async () => {
       const track = { ...baseTrack, mute: true };
       renderWithContext(<TrackComponent track={track} />, container);
-
+      
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-muted");
       } catch (error) {
@@ -464,9 +464,9 @@ describe("TrackComponent", () => {
     it("should match visual snapshot for armed track", async () => {
       const track = { ...baseTrack, armed: true };
       renderWithContext(<TrackComponent track={track} />, container);
-
+      
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-armed");
       } catch (error) {

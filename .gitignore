@@ -1,90 +1,101 @@
-# Node
-node_modules/
-**/node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/node_modules/
+/.pnp
+.pnp.js
+
+# build output
 dist/
-build/
-coverage/
-chroma_db
+# next.js
+.next/
+# nuxt.js
+.nuxt/
+# vue.js
+.vuepress/dist/
+# gatsby.js
+.cache/
+# tsconfig.tsbuildinfo
+*.tsbuildinfo
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-**/venv/
-.env/
-.venv/
-pip-log.txt
-.coverage
-coverage.xml
-*.cover
-.pytest_cache/
-.ipynb_checkpoints/
+# testing
+/coverage
+__snapshots__/screenshots/__received_output__/
+*.snap
+*.png.png
+test-results/
+playwright-report/
+test-screenshots/
 
-# IDE and OS
-.idea/
-.vscode/
-*.swp
-*.swo
+# production
+/build
+/dist
+
+# misc
 .DS_Store
-*.bak
-**/*.bak
-**/*.bak/
-
-# Project specific
-chroma_db/
-processed_audio/
-model/
-**/model/
-**/models/
-**/models/*.gguf
-*.gguf
-audio_clips/
-data/
-
-# Large binary files
-*.dylib
-*.so
-*.dll
-**/go-ipfs/
-workstation/backend/models/
-workstation/model/
-
-# Logs
-logs/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/.vscode
 *.log
+*.lock
+package-lock.json
+
+# Development and debugging scripts
+scripts/debug-*
+scripts/find-*
+scripts/fix-*
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
-.env
-.env.*
+__snapshots__/diffs
 
-# Archives
-*.tar.gz
-*.zip
-archives/# Large model files
-*.gguf
-*.bin
-*.pt
-*.pth
+# Large file types
+*.weights
+*.h5
 *.onnx
-*.dylib
-*.so
-
-# Python virtual environments
-**/venv/
-**/env/
-**/.env/
-**/.venv/
-**/ENV/
-
-# Archives
+*.pkl
+*.pth
+*.bin
+*.model
+*.pt
 *.tar.gz
-*.tgz
 *.zip
 *.rar
+# Additional large file types
+*.tar
+*.gz
+*.7z
+*.iso
+*.img
+*.npy
+*.npz
+*.tflite
+*.mlmodel
+*.safetensors
+*.ckpt
+
+# Temporary and cache files
+.cache/
+*.swp
+*.swo
+tmp/
+temp/
+
+# Directories that might contain large files
+models/
+weights/
+datasets/
+checkpoints/
+
+# Git large files
+.git/objects/pack/pack-*.pack
+.git/objects/pack/tmp_pack_*
+
+# Git LFS patterns (consider using for large files)
+*.pack
+*.idx
