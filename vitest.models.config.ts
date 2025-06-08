@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     name: 'Model Tests',
     environment: 'node',
-    setupFiles: ['./src/test/models-setup.ts'],
+    setupFiles: ['./workstation/frontend/src/test/models-setup.ts'],
     include: [
       '**/__tests__/**/*.model.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '**/models/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

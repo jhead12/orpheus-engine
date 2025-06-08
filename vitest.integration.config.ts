@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     name: 'Integration Tests',
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts', './src/test/integration-setup.ts'],
+    setupFiles: ['./workstation/frontend/src/test/setup.ts', './workstation/frontend/src/test/integration-setup.ts'],
     include: [
       '**/__tests__/**/*.integration.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '**/integration/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
