@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { WorkstationContext, WorkstationContextType } from '../../../contexts/WorkstationContext';
 import { TimelinePosition, Track, TrackType } from '../../../types/core';
 
 export interface TimelineProps {
@@ -34,7 +34,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   const [selection, setSelection] = useState<{ start: TimelinePosition; end: TimelinePosition } | null>(null);
   const [playheadPosition, setPlayheadPosition] = useState(currentPosition);
   
-  const context = useContext(WorkstationContext);
+  const context = useContext(WorkstationContext) as WorkstationContextType | null;
 
   // Update playhead position when currentPosition prop changes
   useEffect(() => {
@@ -105,7 +105,7 @@ export const Timeline: React.FC<TimelineProps> = ({
     const y = 30 + index * trackHeight;
 
     // Draw track background
-    ctx.fillStyle = track.id === context?.selectedTrackId ? '#2a4d3a' : '#2a2a2a';
+    ctx.fillStyle = track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a';
     ctx.fillRect(0, y, w, trackHeight);
 
     // Draw track border
@@ -166,11 +166,8 @@ export const Timeline: React.FC<TimelineProps> = ({
     ctx.strokeRect(startX, 30, endX - startX, h - 30);
   };
 
-  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
+  const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
@@ -179,13 +176,11 @@ export const Timeline: React.FC<TimelineProps> = ({
     const newPosition = TimelinePosition.fromSeconds(seconds);
 
     // Check if clicking on a track
-    if (y > 30) {
-      const trackHeight = (height - 30) / Math.max(tracks.length, 1);
-      const trackIndex = Math.floor((y - 30) / trackHeight);
-      
-      if (trackIndex < tracks.length) {
-        onTrackSelect?.(tracks[trackIndex].id);
-      }
+    const trackHeight = (height - 30) / Math.max(tracks.length, 1);
+    const trackIndex = Math.floor(y / trackHeight);
+    
+    if (trackIndex < tracks.length) {
+      onTrackSelect?.(tracks[trackIndex].id);
     }
 
     // Update playhead position
@@ -193,12 +188,12 @@ export const Timeline: React.FC<TimelineProps> = ({
     onPositionChange?.(newPosition);
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     handleCanvasClick(event);
   };
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     handleCanvasClick(event);
   };
@@ -211,29 +206,23 @@ export const Timeline: React.FC<TimelineProps> = ({
     switch (event.key) {
       case 'ArrowLeft':
         event.preventDefault();
-        const prevPosition = new TimelinePosition(
-          Math.max(0, playheadPosition.minutes),
-          Math.max(0, playheadPosition.seconds - 1),
-          playheadPosition.frames
-        );
+        const currentSeconds = playheadPosition.toSeconds();
+        const prevPosition = TimelinePosition.fromSeconds(Math.max(0, currentSeconds - 1));
         setPlayheadPosition(prevPosition);
         onPositionChange?.(prevPosition);
         break;
       
       case 'ArrowRight':
         event.preventDefault();
-        const nextPosition = new TimelinePosition(
-          playheadPosition.minutes,
-          playheadPosition.seconds + 1,
-          playheadPosition.frames
-        );
+        const nextSeconds = playheadPosition.toSeconds();
+        const nextPosition = TimelinePosition.fromSeconds(nextSeconds + 1);
         setPlayheadPosition(nextPosition);
         onPositionChange?.(nextPosition);
         break;
       
       case ' ':
         event.preventDefault();
-        context?.togglePlayback();
+        // context?.togglePlayback();
         break;
       
       case 'Home':
@@ -254,24 +243,199 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   return (
     <div className={`timeline ${className}`} style={{ position: 'relative' }}>
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
+      {/* Time Ruler */}
+      <div data-testid="time-ruler" style={{ height: '30px', background: '#333', position: 'relative' }}>
+        {Array.from({ length: Math.ceil(width / (pixelsPerSecond * zoom)) + 1 }, (_, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: `${i * pixelsPerSecond * zoom}px`,
+              top: '20px',
+              height: '10px',
+              borderLeft: '1px solid #555',
+              fontSize: '12px',
+              color: '#aaa',
+              paddingLeft: '2px'
+            }}
+          >
+            {i}
+          </div>
+        ))}
+      </div>
+
+      {/* Timeline Content Area */}
+      <div 
+        data-testid="timeline-content"
+        style={{ position: 'relative', height: `${height - 30}px`, overflow: 'hidden' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
         onKeyDown={handleKeyDown}
         onWheel={handleWheel}
         tabIndex={0}
-        style={{
-          border: '1px solid #444',
-          backgroundColor: '#1a1a1a',
-          cursor: isDragging ? 'grabbing' : 'crosshair'
-        }}
-        data-testid="timeline-canvas"
-      />
+      >
+        {/* Canvas for visual rendering */}
+        <canvas
+          ref={canvasRef}
+          width={width}
+          height={height - 30}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            backgroundColor: '#1a1a1a',
+            cursor: isDragging ? 'grabbing' : 'crosshair',
+            pointerEvents: 'none'
+          }}
+          data-testid="timeline-canvas"
+        />
+
+        {/* Playhead */}
+        <div
+          data-testid="timeline-playhead"
+          style={{
+            position: 'absolute',
+            left: `${playheadPosition.toSeconds() * pixelsPerSecond * zoom}px`,
+            top: 0,
+            width: '2px',
+            height: '100%',
+            backgroundColor: '#ff6b6b',
+            pointerEvents: 'none',
+            zIndex: 10
+          }}
+        />
+
+        {/* Snap Grid */}
+        {context?.timelineSettings && (
+          <div data-testid="snap-grid" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+            {Array.from({ length: Math.ceil(width / (context.timelineSettings.beatWidth || 64)) }, (_, i) => (
+              <div
+                key={i}
+                style={{
+                  position: 'absolute',
+                  left: `${i * (context.timelineSettings.beatWidth || 64)}px`,
+                  top: 0,
+                  width: '1px',
+                  height: '100%',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Track Elements */}
+        {tracks.map((track, index) => {
+          const trackHeight = (height - 30) / Math.max(tracks.length, 1);
+          const y = index * trackHeight;
+          
+          return (
+            <div
+              key={track.id}
+              data-testid={`track-${track.id}`}
+              style={{
+                position: 'absolute',
+                top: `${y}px`,
+                left: 0,
+                width: '100%',
+                height: `${trackHeight}px`,
+                border: '1px solid #444',
+                backgroundColor: track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 10px'
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                // Show context menu
+                const menu = document.createElement('div');
+                menu.setAttribute('data-testid', 'track-context-menu');
+                menu.style.position = 'fixed';
+                menu.style.background = '#333';
+                menu.style.border = '1px solid #555';
+                menu.style.padding = '5px';
+                menu.style.left = `${e.clientX}px`;
+                menu.style.top = `${e.clientY}px`;
+                menu.style.zIndex = '1000';
+                menu.textContent = 'Track Menu';
+                document.body.appendChild(menu);
+                
+                const removeMenu = () => {
+                  if (document.body.contains(menu)) {
+                    document.body.removeChild(menu);
+                  }
+                  document.removeEventListener('click', removeMenu);
+                };
+                
+                setTimeout(() => document.addEventListener('click', removeMenu), 100);
+              }}
+              onClick={() => onTrackSelect?.(track.id)}
+            >
+              <span style={{ color: '#fff', marginRight: '10px' }}>{track.name}</span>
+              
+              {/* Mute Button */}
+              <button
+                data-testid={`track-${track.id}-mute`}
+                style={{
+                  marginRight: '5px',
+                  padding: '2px 6px',
+                  background: track.mute ? '#ff6b6b' : '#555',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '3px',
+                  fontSize: '12px'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Implement track mute functionality
+                  console.log('Toggle mute for track:', track.id);
+                }}
+              >
+                M
+              </button>
+
+              {/* Solo Button */}
+              <button
+                data-testid={`track-${track.id}-solo`}
+                style={{
+                  padding: '2px 6px',
+                  background: track.solo ? '#ffd93d' : '#555',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '3px',
+                  fontSize: '12px'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Implement track solo functionality
+                  console.log('Toggle solo for track:', track.id);
+                }}
+              >
+                S
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Add Track Button */}
+      <div style={{ padding: '10px' }}>
+        <button
+          data-testid="add-track-button"
+          style={{
+            padding: '8px 16px',
+            background: '#4a9eff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+          onClick={() => context?.addTrack?.('audio')}
+        >
+          Add Track
+        </button>
+      </div>
     </div>
   );
 };

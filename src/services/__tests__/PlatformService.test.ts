@@ -168,6 +168,12 @@ describe('PlatformService', () => {
     it('should return browser capabilities', () => {
       mockUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/91.0.4472.124 Safari/537.36');
       
+      // Mock Notification API for browser environment
+      (global as any).Notification = {
+        permission: 'default',
+        requestPermission: vi.fn()
+      };
+      
       const capabilities = PlatformService.getCapabilities();
       
       expect(capabilities.canAccessFiles).toBe(true); // File API
