@@ -33,8 +33,8 @@ import {
   AutomationLaneEnvelope,
   TimelinePosition,
   TrackType,
-} from "../../../types/core";
-import { SnapGridSizeOption } from "../../../types/audio";
+} from '@orpheus/types/core';
+import { SnapGridSizeOption } from '@orpheus/types/audio';
 import { FaMagnet } from "react-icons/fa";
 import {
   sliceClip,

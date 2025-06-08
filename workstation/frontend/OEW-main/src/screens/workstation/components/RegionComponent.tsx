@@ -17,7 +17,7 @@ import React, { Component, ContextType } from "react";
 import { WorkstationContext } from '@orpheus/contexts';
 import { Region, TimelinePosition } from '@orpheus/types/core';
 import { BASE_BEAT_WIDTH } from "../../../constants/timeline";
-import { timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
+import { timelineEditorWindowScrollThresholds } from '@orpheus/utils/utils';
 import WindowAutoScroll from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
 ;

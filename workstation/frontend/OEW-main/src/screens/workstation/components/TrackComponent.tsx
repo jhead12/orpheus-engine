@@ -6,14 +6,14 @@ import {
   AutomationMode,
   TrackType,
   Track as CoreTrack,
-} from "../../../types/core";
-import type { AutomationLane, Effect } from "../../../types/core";
+} from '@orpheus/types/core';
+import type { AutomationLane, Effect } from '@orpheus/types/core';
 import { WorkstationContext } from "@orpheus/contexts";
 import { DialogContent } from "@mui/material";
 // Using MUI Dialog instead of orpheus widgets
 import { Dialog } from "@mui/material";
 import { hueFromHex, hslToHex } from "@orpheus/utils/general";
-import { openContextMenu } from "../../../services/electron/utils";
+import { openContextMenu } from '@orpheus/services/electron/utils';
 import AutomationLaneTrack from "./AutomationLaneTrack";
 
 interface Track {

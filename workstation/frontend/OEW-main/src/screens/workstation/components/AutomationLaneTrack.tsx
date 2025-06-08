@@ -9,7 +9,7 @@ import { volumeToNormalized } from '@orpheus/utils/utils'
 import { v4 } from "uuid"
 
 import { Meter } from '@orpheus/widgets'
-import { openContextMenu } from "../../../services/electron/utils"
+import { openContextMenu } from '@orpheus/services/electron/utils'
 
 interface Props {
   color: string;

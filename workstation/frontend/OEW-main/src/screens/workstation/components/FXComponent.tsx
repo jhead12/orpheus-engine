@@ -5,7 +5,7 @@ import { BaseEffect, ContextMenuType, Effect, FXChainPreset, Track } from '@orph
 import { v4 } from "uuid";
 import { WorkstationContext } from '@orpheus/contexts';
 import { SelectSpinBox } from '@orpheus/widgets';
-import { openContextMenu } from "../../../services/electron/utils";
+import { openContextMenu } from '@orpheus/services/electron/utils';
 
 const FX_TYPES = [
   { label: "Native FX", value: "native" },

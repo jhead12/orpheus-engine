@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import { WorkstationContext, WorkstationContextType } from '../../../contexts/WorkstationContext';
-import { TimelinePosition, Track, TrackType } from '../../../types/core';
+import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts/WorkstationContext';
+import { TimelinePosition, Track, TrackType } from '@orpheus/types/core';
 
 export interface TimelineProps {
   className?: string;
