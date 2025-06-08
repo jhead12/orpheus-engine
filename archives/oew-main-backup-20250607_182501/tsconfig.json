@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@orpheus/*": ["src/*"]
+    }
+    /* Removed Jest types to fix build errors */
+  },
+  "include": ["src", "../src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/*.bak/**",
+    "../src/**/*.bak/**",
+    "../src/components.bak/**",
+    "../src/services.bak/**",
+    "../src/contexts.bak/**"
+  ],
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
+}

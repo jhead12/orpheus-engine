@@ -46,7 +46,7 @@ class OrpheusEngine {
     // Frontend Development Server
     this.serviceManager.registerService({
       name: 'frontend',
-      command: 'npm',
+      command: 'pnpm',
       args: ['run', 'dev'],
       cwd: path.join(rootPath, 'workstation/frontend'),
       env: { BACKEND_PORT: '5001' },
@@ -66,16 +66,16 @@ class OrpheusEngine {
     // DAW/Workstation Service
     this.serviceManager.registerService({
       name: 'daw',
-      command: 'npm',
+      command: 'pnpm',
       args: ['run', 'dev'],
-      cwd: path.join(rootPath, 'workstation/frontend'),
-      env: { DAW_PORT: '3000' },
-      port: 3000,
+      cwd: path.join(rootPath, 'workstation/frontend/OEW-main'),
+      env: { DAW_PORT: '5174' },
+      port: 5174,
       description: 'DAW/Electron Development Server',
       critical: true,
       healthCheck: async () => {
         try {
-          const response = await fetch(getHealthCheckUrl('frontend'));
+          const response = await fetch(getViteUrl());
           return response.ok;
         } catch {
           return false;
@@ -191,7 +191,7 @@ class OrpheusEngine {
     });
 
     // Load the DAW interface
-    this.mainWindow.loadURL(getFrontendUrl());
+    this.mainWindow.loadURL(getViteUrl());
 
     this.mainWindow.once('ready-to-show', () => {
       this.mainWindow?.show();

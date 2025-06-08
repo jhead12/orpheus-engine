@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "outDir": "../build/electron",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["../node_modules/*"]
+    },
+    "lib": ["ES2020", "DOM"],
+    "typeRoots": [
+      "../node_modules/@types"
+    ]
+  },
+  "include": [
+    "./**/*"
+  ]
+}

@@ -1,0 +1,44 @@
+.audio-search-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.selected-result {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--background-secondary, #2d2d2d);
+  border-radius: 6px;
+}
+
+.selected-result h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--text-highlight, #f0f0f0);
+}
+
+.selected-content {
+  background-color: var(--background-tertiary, #3d3d3d);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.selected-text {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.selected-time {
+  font-size: 13px;
+  color: var(--text-secondary, #a0a0a0);
+  margin-bottom: 0;
+}
+
+.loading-import {
+  margin-top: 10px;
+  color: var(--text-secondary, #a0a0a0);
+  font-style: italic;
+}

@@ -1,52 +1,43 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "allowJs": true,
+    "module": "ESNext",
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "outDir": "./dist",
-    "rootDir": ".",
+    "jsxImportSource": "react",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./workstation/frontend/src/*"],
-      "@/workstation/*": ["./workstation/*"]
+      "@/*": ["src/*"],
+      "@orpheus/*": ["src/*"],
+      "@orpheus/components/*": ["src/components/*"],
+      "@orpheus/services/*": ["src/services/*"],
+      "@orpheus/screens/*": ["src/screens/*"],
+      "@orpheus/contexts": ["src/contexts/index"],
+      "@orpheus/types/*": ["src/types/*", "src/services/types/*"],
+      "@orpheus/test/*": ["src/test/*"],
+      "@orpheus/utils/*": ["src/services/utils/*"],
+      "@orpheus/widgets/*": ["src/components/widgets/*"],
+      "@orpheus/workstation/*": ["src/screens/workstation/*"],
+      "@orpheus/electron": ["electron/index"],
+      "@orpheus/electron/*": ["electron/*"]
     },
-    "sourceMap": true,
-    "jsxImportSource": "react",
-    "types": ["node", "electron"],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ]
+    "types": ["vitest/globals", "vite/client", "node"]
   },
-  "include": [
-    "electron/**/*.ts",
-    "scripts/**/*.ts",
-    "workstation/frontend/**/*.ts",
-    "workstation/frontend/**/*.tsx",
-    "workstation/frontend/src/**/*.ts",
-    "workstation/frontend/src/**/*.tsx",
-    "workstation/electron/**/*.ts"
-  ],
+  "include": ["src"],
   "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "**/node_modules",
-    "**/dist",
-    "**/build",
-    "workstation/frontend/OEW-main/**/*",
-    "**/*.bak",
-    "**/*.bak/**/*"
-  ]
+    "src/test/visual-agent/templates/**/*.ts",
+    "src/test/visual-agent/templates/**/*.template.ts"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

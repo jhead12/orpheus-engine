@@ -12,29 +12,32 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "strict": false,
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@orpheus/*": ["src/*"]
-    }
-    /* Removed Jest types to fix build errors */
+      "@orpheus/*": ["src/*"],
+      "@orpheus/components/*": ["src/components/*"],
+      "@orpheus/services/*": ["src/services/*"],
+      "@orpheus/screens/*": ["src/screens/*"],
+      "@orpheus/contexts": ["src/contexts/index"],
+      "@orpheus/types/*": ["src/types/*", "src/services/types/*"],
+      "@orpheus/test/*": ["src/test/*"],
+      "@orpheus/utils/*": ["src/services/utils/*"],
+      "@orpheus/widgets/*": ["src/components/widgets/*"],
+      "@orpheus/workstation/*": ["src/screens/workstation/*"],
+      "@orpheus/electron": ["electron/index"],
+      "@orpheus/electron/*": ["electron/*"]
+    },
+    "types": ["vitest/globals", "vite/client", "node"]
   },
-  "include": ["src", "../src/**/*"],
+  "include": ["src"],
   "exclude": [
-    "node_modules",
-    "**/*.bak/**",
-    "../src/**/*.bak/**",
-    "../src/components.bak/**",
-    "../src/services.bak/**",
-    "../src/contexts.bak/**"
+    "src/test/visual-agent/templates/**/*.ts",
+    "src/test/visual-agent/templates/**/*.template.ts"
   ],
-  "references": [
-    { "path": "./tsconfig.node.json" }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

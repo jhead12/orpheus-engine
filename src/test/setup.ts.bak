@@ -1,0 +1,465 @@
+import "@testing-library/jest-dom";
+import { vi, beforeEach, beforeAll, afterAll } from "vitest";
+
+// Add missing jest globals
+globalThis.jest = {
+  ...vi,
+  fn: vi.fn,
+  spyOn: vi.spyOn,
+};
+
+// Improve the MockAudioBuffer class implementation
+// Define AudioBuffer interface for mocking
+interface AudioBufferOptions {
+  length: number;
+  numberOfChannels?: number;
+  sampleRate: number;
+}
+
+// Define type for MockAudioBuffer constructor
+type AudioBufferConstructor = {
+  new (options: AudioBufferOptions): AudioBuffer;
+  prototype: AudioBuffer;
+};
+
+class MockAudioBuffer implements AudioBuffer {
+  private _channelData: Float32Array[];
+  readonly numberOfChannels: number;
+  readonly length: number;
+  readonly sampleRate: number;
+  readonly duration: number;
+
+  constructor(options: AudioBufferOptions) {
+    this.numberOfChannels = options.numberOfChannels || 2;
+    this.length = options.length;
+    this.sampleRate = options.sampleRate;
+    this.duration = options.length / options.sampleRate;
+    this._channelData = Array(this.numberOfChannels)
+      .fill(null)
+      .map(() => new Float32Array(options.length));
+  }
+
+  getChannelData(channel: number): Float32Array {
+    if (channel >= this.numberOfChannels) {
+      throw new Error("Channel index out of bounds");
+    }
+    return this._channelData[channel];
+  }
+
+  copyToChannel(
+    source: Float32Array,
+    channelNumber: number,
+    startInChannel?: number
+  ): void {
+    if (channelNumber >= this.numberOfChannels) {
+      throw new Error("Channel index out of bounds");
+    }
+    const start = startInChannel || 0;
+    this._channelData[channelNumber].set(source, start);
+  }
+
+  copyFromChannel(
+    destination: Float32Array,
+    channelNumber: number,
+    startInChannel?: number
+  ): void {
+    if (channelNumber >= this.numberOfChannels) {
+      throw new Error("Channel index out of bounds");
+    }
+    const start = startInChannel || 0;
+    const end = Math.min(start + destination.length, this.length);
+    destination.set(this._channelData[channelNumber].subarray(start, end));
+  }
+}
+
+// Convert MockAudioBuffer to the correct constructor type
+const TypedMockAudioBuffer = MockAudioBuffer as unknown as AudioBufferConstructor;
+
+// Define Web Audio API interfaces
+interface AudioContextOptions {
+  latencyHint?: AudioContextLatencyCategory | number;
+  sampleRate?: number;
+}
+
+interface AudioNode {
+  connect(
+    destinationNode: AudioNode,
+    output?: number,
+    input?: number
+  ): AudioNode;
+  disconnect(output?: number): void;
+  disconnect(destinationNode: AudioNode, output?: number, input?: number): void;
+  context: AudioContext;
+  numberOfInputs: number;
+  numberOfOutputs: number;
+  channelCount: number;
+  channelCountMode: ChannelCountMode;
+  channelInterpretation: ChannelInterpretation;
+}
+
+class MockAudioContext implements AudioContext {
+  // Required properties from AudioContext
+  readonly baseLatency: number = 0;
+  readonly outputLatency: number = 0;
+  readonly destination: AudioDestinationNode;
+  readonly sampleRate: number = 44100;
+  readonly state: AudioContextState = "running";
+  readonly audioWorklet: AudioWorklet;
+  readonly listener: AudioListener;
+  currentTime: number = 0;
+
+  // Event handling
+  onstatechange: ((this: AudioContext, ev: Event) => any) | null = null;
+
+  constructor(_options?: AudioContextOptions) {
+    // Initialize required properties
+    this.audioWorklet = {
+      addModule: vi.fn().mockResolvedValue(undefined)
+    } as AudioWorklet;
+
+    this.listener = {
+      positionX: { value: 0 },
+      positionY: { value: 0 },
+      positionZ: { value: 0 },
+      forwardX: { value: 0 },
+      forwardY: { value: 0 },
+      forwardZ: { value: -1 },
+      upX: { value: 0 },
+      upY: { value: 1 },
+      upZ: { value: 0 }
+    } as AudioListener;
+
+    this.destination = {
+      maxChannelCount: 2,
+      context: this,
+      numberOfInputs: 1,
+      numberOfOutputs: 0,
+      channelCount: 2,
+      channelCountMode: "explicit",
+      channelInterpretation: "speakers",
+      connect: vi.fn(),
+      disconnect: vi.fn()
+    } as unknown as AudioDestinationNode;
+  }
+
+  // Required base methods
+  createBuffer(numberOfChannels: number, length: number, sampleRate: number): AudioBuffer {
+    return new MockAudioBuffer({ numberOfChannels, length, sampleRate });
+  }
+
+  createBufferSource(): AudioBufferSourceNode {
+    return {
+      buffer: null,
+      playbackRate: { value: 1 },
+      detune: { value: 0 },
+      loop: false,
+      loopStart: 0,
+      loopEnd: 0,
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn()
+    } as unknown as AudioBufferSourceNode;
+  }
+
+  // Node creation methods
+  createBiquadFilter(): BiquadFilterNode {
+    return { type: 'lowpass', frequency: { value: 350 }, Q: { value: 1 }, gain: { value: 0 }, connect: vi.fn(), disconnect: vi.fn() } as unknown as BiquadFilterNode;
+  }
+
+  createChannelMerger(numberOfInputs?: number): ChannelMergerNode {
+    return { numberOfInputs: numberOfInputs || 6, connect: vi.fn(), disconnect: vi.fn() } as unknown as ChannelMergerNode;
+  }
+
+  createChannelSplitter(numberOfOutputs?: number): ChannelSplitterNode {
+    return { numberOfOutputs: numberOfOutputs || 6, connect: vi.fn(), disconnect: vi.fn() } as unknown as ChannelSplitterNode;
+  }
+
+  createConstantSource(): ConstantSourceNode {
+    return { offset: { value: 1 }, connect: vi.fn(), disconnect: vi.fn(), start: vi.fn(), stop: vi.fn() } as unknown as ConstantSourceNode;
+  }
+
+  createConvolver(): ConvolverNode {
+    return { buffer: null, normalize: true, connect: vi.fn(), disconnect: vi.fn() } as unknown as ConvolverNode;
+  }
+
+  createDelay(maxDelayTime?: number): DelayNode {
+    return { delayTime: { value: maxDelayTime || 1 }, connect: vi.fn(), disconnect: vi.fn() } as unknown as DelayNode;
+  }
+
+  createDynamicsCompressor(): DynamicsCompressorNode {
+    return {
+      threshold: { value: -24 },
+      knee: { value: 30 },
+      ratio: { value: 12 },
+      attack: { value: 0.003 },
+      release: { value: 0.25 },
+      connect: vi.fn(),
+      disconnect: vi.fn()
+    } as unknown as DynamicsCompressorNode;
+  }
+
+  createGain(): GainNode {
+    return { gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() } as unknown as GainNode;
+  }
+
+  createIIRFilter(_feedforward: number[], _feedback: number[]): IIRFilterNode {
+    return { connect: vi.fn(), disconnect: vi.fn(), getFrequencyResponse: vi.fn() } as unknown as IIRFilterNode;
+  }
+
+  createOscillator(): OscillatorNode {
+    return {
+      type: 'sine',
+      frequency: { value: 440 },
+      detune: { value: 0 },
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn()
+    } as unknown as OscillatorNode;
+  }
+
+  createPanner(): PannerNode {
+    return {
+      panningModel: 'equalpower',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      setPosition: vi.fn(),
+      setOrientation: vi.fn()
+    } as unknown as PannerNode;
+  }
+
+  createPeriodicWave(_real: Float32Array, _imag: Float32Array, _constraints?: PeriodicWaveConstraints): PeriodicWave {
+    return {} as PeriodicWave;
+  }
+
+  createStereoPanner(): StereoPannerNode {
+    return { pan: { value: 0 }, connect: vi.fn(), disconnect: vi.fn() } as unknown as StereoPannerNode;
+  }
+
+  createWaveShaper(): WaveShaperNode {
+    return { curve: null, oversample: '2x', connect: vi.fn(), disconnect: vi.fn() } as unknown as WaveShaperNode;
+  }
+
+  // Media operations
+  createMediaElementSource(element: HTMLMediaElement): MediaElementAudioSourceNode {
+    return { connect: vi.fn(), disconnect: vi.fn(), mediaElement: element } as unknown as MediaElementAudioSourceNode;
+  }
+
+  createMediaStreamSource(stream: MediaStream): MediaStreamAudioSourceNode {
+    return { connect: vi.fn(), disconnect: vi.fn(), mediaStream: stream } as unknown as MediaStreamAudioSourceNode;
+  }
+
+  createMediaStreamDestination(): MediaStreamAudioDestinationNode {
+    return { connect: vi.fn(), disconnect: vi.fn(), stream: new MediaStream() } as unknown as MediaStreamAudioDestinationNode;
+  }
+
+  // Analysis operations
+  createAnalyser(): AnalyserNode {
+    return {
+      fftSize: 2048,
+      frequencyBinCount: 1024,
+      minDecibels: -100,
+      maxDecibels: -30,
+      smoothingTimeConstant: 0.8,
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      getFloatFrequencyData: vi.fn(),
+      getByteFrequencyData: vi.fn(),
+      getFloatTimeDomainData: vi.fn(),
+      getByteTimeDomainData: vi.fn()
+    } as unknown as AnalyserNode;
+  }
+
+  // State management
+  async suspend(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  async resume(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  async close(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // Audio decoding
+  async decodeAudioData(_arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
+    return new MockAudioBuffer({
+      numberOfChannels: 2,
+      length: 44100,
+      sampleRate: 44100
+    });
+  }
+
+  // System operations
+  getOutputTimestamp(): AudioTimestamp {
+    return {
+      contextTime: this.currentTime,
+      performanceTime: performance.now()
+    };
+  }
+
+  // Event handling implementation
+  addEventListener = vi.fn();
+  removeEventListener = vi.fn();
+  dispatchEvent = vi.fn().mockReturnValue(true);
+}
+
+// Define MockAudioContext constructor type
+type AudioContextConstructor = {
+  new (contextOptions?: AudioContextOptions): AudioContext;
+  prototype: AudioContext;
+};
+
+// Convert MockAudioContext to match the expected constructor type
+const TypedMockAudioContext = MockAudioContext as unknown as AudioContextConstructor;
+
+// Mock the Web Audio API for testing
+const setupWebAudioAPI = () => {
+  // Define constructor types that match native interfaces
+  type AudioContextConstructor = {
+    new(contextOptions?: AudioContextOptions): AudioContext;
+    prototype: AudioContext;
+  };
+
+  type AudioBufferConstructor = {
+    new(options: AudioBufferOptions): AudioBuffer;
+    prototype: AudioBuffer;
+  };
+
+  // Cast our mocks to match the native types
+  const TypedAudioContext = MockAudioContext as unknown as AudioContextConstructor;
+  const TypedAudioBuffer = MockAudioBuffer as unknown as AudioBufferConstructor;
+
+  // Extend the global/window interfaces
+  declare global {
+    interface Window {
+      AudioContext: AudioContextConstructor;
+      webkitAudioContext: AudioContextConstructor;
+      AudioBuffer: AudioBufferConstructor;
+      electronAPI?: ElectronAPI;
+    }
+    var AudioContext: AudioContextConstructor;
+    var webkitAudioContext: AudioContextConstructor;
+    var AudioBuffer: AudioBufferConstructor;
+  }
+
+  // Set up the global objects
+  const globals = {
+    AudioContext: TypedAudioContext,
+    webkitAudioContext: TypedAudioContext,
+    AudioBuffer: TypedAudioBuffer
+  };
+
+  // Apply to globalThis
+  Object.entries(globals).forEach(([key, value]) => {
+    Object.defineProperty(globalThis, key, {
+      value,
+      writable: true,
+      configurable: true
+    });
+  });
+
+  // Apply to window if it exists
+  if (typeof window !== 'undefined') {
+    Object.entries(globals).forEach(([key, value]) => {
+      Object.defineProperty(window, key, {
+        value,
+        writable: true,
+        configurable: true
+      });
+    });
+  }
+};
+
+// Run the setup
+setupWebAudioAPI();
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  constructor(_callback: ResizeObserverCallback) {
+    // Prefix unused parameter with underscore
+  }
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+};
+
+// Define electron API types
+interface ElectronAPI {
+  openFile: () => Promise<string>;
+  saveFile: (content: string) => Promise<void>;
+}
+
+declare global {
+  interface Window {
+    electronAPI?: ElectronAPI;
+  }
+}
+
+// Set up window if it doesn't exist
+if (typeof window === "undefined") {
+  const win = {
+    ...global,
+    AudioContext: MockAudioContext,
+    webkitAudioContext: MockAudioContext,
+    AudioBuffer: MockAudioBuffer,
+    electronAPI: {
+      openFile: vi.fn().mockResolvedValue(""),
+      saveFile: vi.fn().mockResolvedValue(undefined),
+    },
+  };
+  global.window = win as unknown as Window & typeof globalThis;
+} else {
+  window.electronAPI = {
+    openFile: vi.fn().mockResolvedValue(""),
+    saveFile: vi.fn().mockResolvedValue(undefined),
+  };
+}
+
+// Setup global test utilities
+beforeEach(() => {
+  // Reset mocks before each test
+  vi.clearAllMocks();
+});
+
+// Mock React test errors and warnings
+const SUPPRESSED_ERRORS = [
+  "Warning:",
+  "Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]",
+  "The above error occurred in the <TestComponent> component",
+  "Consider adding an error boundary",
+];
+
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+beforeAll(() => {
+  // Mock console.error
+  console.error = (...args: Parameters<typeof console.error>) => {
+    const firstArg = args[0];
+    if (
+      typeof firstArg === "string" &&
+      SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))
+    ) {
+      return;
+    }
+    originalConsoleError.apply(console, args);
+  };
+
+  // Mock console.warn
+  console.warn = (...args: Parameters<typeof console.warn>) => {
+    const firstArg = args[0];
+    if (typeof firstArg === "string" && firstArg.includes("Warning:")) {
+      return;
+    }
+    originalConsoleWarn.apply(console, args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
+});
