@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { TimelinePosition, Track, Clip } from "../services/types/types";
 
 export interface WorkstationContextType {
-  adjustNumMeasures: (pos: TimelinePosition) => void;
+  adjustNumMeasures: (pos?: TimelinePosition) => void;
   allowMenuAndShortcuts: boolean;
   consolidateClip: (clip: Clip) => void;
   deleteClip: (clip: Clip) => void;
@@ -31,6 +31,28 @@ export interface WorkstationContextType {
   toggleMuteClip: (clip: Clip) => void;
   tracks: Track[];
   verticalScale: number;
+
+  // Missing properties from Editor.tsx
+  addTrack: (track?: Partial<Track>) => void;
+  createAudioClip: (
+    file: File,
+    trackId: string,
+    position: TimelinePosition
+  ) => Promise<void>;
+  insertClips: (
+    clips: Clip[],
+    trackId: string,
+    position: TimelinePosition
+  ) => void;
+  masterTrack: Track;
+  maxPos: TimelinePosition;
+  numMeasures: number;
+  setPlayheadPos: (pos: TimelinePosition) => void;
+  setTracks: (tracks: Track[]) => void;
+  setVerticalScale: (scale: number) => void;
+  songRegion: { start: TimelinePosition; end: TimelinePosition } | null;
+  updateTimelineSettings: (updater: (prev: any) => any) => void;
+  isPlaying: boolean;
 }
 
 export const WorkstationContext = createContext<WorkstationContextType | null>(

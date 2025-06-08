@@ -137,6 +137,11 @@ export function hslToHex(h: number, s: number, l: number): string {
 /**
  * Waits for a scroll wheel to stop moving
  */
+/**
+ * Function moved to avoid duplication. See the more advanced version of getScrollParent below
+ * that accepts the includeHidden parameter
+ */
+
 export function waitForScrollWheelStop(
   element: HTMLElement,
   callback: () => void,
@@ -210,45 +215,75 @@ export const shadeColor = (color: string, percent: number) => {
 };
 
 /**
- * Formats a duration in seconds to a human-readable string
+ * Finds the closest parent element that can scroll
+ * @param node The DOM element to start searching from
+ * @param includeHidden Whether to include elements with overflow:hidden
+ * @returns The closest scrollable parent element
+ */
+export function getScrollParent(
+  node: HTMLElement | null,
+  includeHidden = false
+): HTMLElement | null {
+  if (!node) {
+    return null;
+  }
+
+  if (node === document.body) {
+    return document.body;
+  }
+
+  const style = window.getComputedStyle(node);
+  const overflowRegex = includeHidden
+    ? /(auto|scroll|hidden)/
+    : /(auto|scroll)/;
+
+  if (
+    overflowRegex.test(style.overflow) ||
+    overflowRegex.test(style.overflowX) ||
+    overflowRegex.test(style.overflowY)
+  ) {
+    return node;
+  }
+
+  return getScrollParent(node.parentElement, includeHidden);
+}
+
+/**
+ * Formats a duration in seconds into a human-readable string (MM:SS format)
+ * @param seconds The duration in seconds
+ * @returns Formatted duration string
  */
 export function formatDuration(seconds: number): string {
-  const totalSeconds = Math.floor(seconds);
-  const minutes = Math.floor(totalSeconds / 60);
-  const remainingSeconds = totalSeconds % 60;
-
-  if (minutes > 0) {
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  }
-  return `${remainingSeconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+    .toString()
+    .padStart(2, "0")}`;
 }
 
 /**
- * Measures seconds and returns the value (identity function for consistency)
+ * Parses a duration string (MM:SS) into seconds
+ * @param durationStr Duration string in MM:SS format
+ * @returns Duration in seconds
  */
-export function measureSeconds(seconds: number): number {
-  return seconds;
+export function parseDuration(durationStr: string): number {
+  const [minutes, seconds] = durationStr.split(":").map(Number);
+  return minutes * 60 + seconds;
 }
 
 /**
- * Parses a duration string and returns seconds
+ * Converts a time value to seconds based on time signature and BPM
+ * @param measures Number of measures
+ * @param beatsPerMeasure Beats per measure (time signature numerator)
+ * @param bpm Beats per minute
+ * @returns Time in seconds
  */
-export function parseDuration(duration: string): number {
-  // Handle formats like "1:30", "90s", "1m30s"
-  if (duration.includes(":")) {
-    const parts = duration.split(":");
-    const minutes = parseInt(parts[0], 10) || 0;
-    const seconds = parseInt(parts[1], 10) || 0;
-    return minutes * 60 + seconds;
-  }
-
-  if (duration.endsWith("s")) {
-    return parseInt(duration.slice(0, -1), 10) || 0;
-  }
-
-  if (duration.endsWith("m")) {
-    return (parseInt(duration.slice(0, -1), 10) || 0) * 60;
-  }
-
-  return parseInt(duration, 10) || 0;
+export function measureSeconds(
+  measures: number,
+  beatsPerMeasure = 4,
+  bpm = 120
+): number {
+  const beatsPerSecond = bpm / 60;
+  const secondsPerMeasure = beatsPerMeasure / beatsPerSecond;
+  return measures * secondsPerMeasure;
 }

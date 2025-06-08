@@ -95,13 +95,19 @@ export class TimelinePosition {
   }
 
   snap(
-    gridSize: number,
+    gridSize: number | TimelinePosition,
     direction: "floor" | "ceil" | "round" = "round"
   ): TimelinePosition {
-    if (gridSize <= 0) return this.copy();
+    // Handle gridSize as TimelinePosition or number
+    const gridSizeValue =
+      gridSize instanceof TimelinePosition
+        ? gridSize.toTicks() / 480
+        : gridSize;
+
+    if (gridSizeValue <= 0) return this.copy();
 
     const totalTicks = this.toTicks();
-    const gridTicks = gridSize * 480;
+    const gridTicks = gridSizeValue * 480;
 
     let snappedTicks: number;
     switch (direction) {

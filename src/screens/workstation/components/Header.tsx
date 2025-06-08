@@ -1,4 +1,3 @@
-import { getVolumeGradient, sliceClip } from '@orpheus/utils/audio';
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   FastForward,
@@ -34,17 +33,17 @@ import {
   AutomationLaneEnvelope,
   TimelinePosition,
   TrackType,
-} from "@orpheus/types/core";
-import { SnapGridSizeOption } from "@orpheus/types/audio";
+} from "../../../types/core";
+import { SnapGridSizeOption } from "../../../types/audio";
 import { FaMagnet } from "react-icons/fa";
 import {
   sliceClip,
   volumeToNormalized,
-} from "@orpheus/utils/utils";
+} from '@orpheus/utils/utils';
 import { HoldActionButton } from "../../../components";
 import { Metronome, TrackVolumeSlider } from "./index";
 import { StretchAudio } from "../../../components/icons";
-import { parseDuration } from "@orpheus/utils/general";
+import { parseDuration } from '@orpheus/utils/general';
 import SettingsPanel from "../../../components/settings/SettingsPanel";
 
 const noteValues: { label: string; value: number }[] = [];

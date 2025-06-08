@@ -23,6 +23,7 @@ export {
   type PreferencesContextType,
 } from "./PreferencesContext";
 export { ClipboardItemType } from "../types/clipboard";
+export { useWorkstation } from "./useWorkstation";
 
 // Audio search exports (placeholder)
 export interface SearchResult {

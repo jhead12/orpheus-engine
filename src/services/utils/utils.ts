@@ -1,4 +1,13 @@
-import { Clip, TimelinePosition, AutomationLane, AutomationLaneEnvelope } from "../../types/core";
+import {
+  Clip,
+  TimelinePosition,
+  AutomationLane,
+  AutomationLaneEnvelope,
+} from "../../types/core";
+import { sliceClip as sliceClipFn } from "./clipUtils";
+
+// Re-export sliceClip from clipUtils
+export const sliceClip = sliceClipFn;
 
 // Timeline constants
 export const BASE_BEAT_WIDTH = 80;
@@ -28,12 +37,13 @@ export const isValidAudioTrackFileFormat = (type: string): boolean => {
 };
 
 // Window scroll thresholds
-export const timelineEditorWindowScrollThresholds: TimelineEditorWindowScrollThresholds = {
-  top: { slow: 25, medium: 50, fast: 100 },
-  right: { slow: 50, medium: 100, fast: 200 },
-  bottom: { slow: 25, medium: 50, fast: 100 },
-  left: { slow: 50, medium: 100, fast: 200 },
-};
+export const timelineEditorWindowScrollThresholds: TimelineEditorWindowScrollThresholds =
+  {
+    top: { slow: 25, medium: 50, fast: 100 },
+    right: { slow: 50, medium: 100, fast: 200 },
+    bottom: { slow: 25, medium: 50, fast: 100 },
+    left: { slow: 50, medium: 100, fast: 200 },
+  };
 
 // Track file format validation
 export const isValidTrackFileFormat = (type: string): boolean => {
@@ -77,7 +87,7 @@ export const getVolumeGradient = (volume: number): string => {
 export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
   const duration = clip.end.toTicks() - clip.start.toTicks();
   const endPosition = TimelinePosition.fromTicks(position.toTicks() + duration);
-  
+
   return {
     ...clip,
     start: position,
@@ -152,8 +162,15 @@ export const getLaneColor = (
   return idx >= 0 && idx < visibleLanes.length ? defaultColor : "transparent";
 };
 
-export const automatedValueAtPos = (position: TimelinePosition, automationLane: AutomationLane): number => {
-  if (!automationLane || !automationLane.nodes || automationLane.nodes.length === 0) {
+export const automatedValueAtPos = (
+  position: TimelinePosition,
+  automationLane: AutomationLane
+): number => {
+  if (
+    !automationLane ||
+    !automationLane.nodes ||
+    automationLane.nodes.length === 0
+  ) {
     // Return a default value based on the envelope type
     switch (automationLane.envelope) {
       case AutomationLaneEnvelope.Volume:
@@ -168,7 +185,9 @@ export const automatedValueAtPos = (position: TimelinePosition, automationLane: 
   }
 
   const positionTicks = position.toTicks();
-  const nodes = automationLane.nodes.sort((a, b) => a.pos.toTicks() - b.pos.toTicks());
+  const nodes = automationLane.nodes.sort(
+    (a, b) => a.pos.toTicks() - b.pos.toTicks()
+  );
 
   // Find the nodes surrounding this position
   let beforeNode = null;

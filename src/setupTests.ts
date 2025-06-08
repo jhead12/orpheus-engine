@@ -211,34 +211,75 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock TimelinePosition class
-const mockTimeline = {
-  ticks: 0,
-  compareTo: vi.fn().mockReturnValue(0),
-  toMargin: vi.fn().mockReturnValue(0),
-  copy: vi.fn().mockReturnThis(),
-  equals: vi.fn().mockReturnValue(true),
-  diff: vi.fn().mockReturnThis(),
-};
+vi.mock("@orpheus/types/core", () => {
+  const mockTimeline = {
+    ticks: 0,
+    bar: 0,
+    beat: 0,
+    tick: 0,
+    compareTo: vi.fn().mockReturnValue(0),
+    toMargin: vi.fn().mockReturnValue(0),
+    toTicks: vi.fn().mockReturnValue(0),
+    toSeconds: vi.fn().mockReturnValue(0),
+    copy: vi.fn().mockReturnThis(),
+    equals: vi.fn().mockReturnValue(true),
+    diff: vi.fn().mockReturnThis(),
+    add: vi.fn().mockReturnThis(),
+    snap: vi.fn().mockReturnThis(),
+    translate: vi.fn().mockReturnThis(),
+    diffInMargin: vi.fn().mockReturnValue(0),
+  };
 
-vi.mock("@orpheus/types/core", () => ({
-  TimelinePosition: vi.fn().mockImplementation(() => mockTimeline),
-  TrackType: { Audio: "audio" },
-  AutomationMode: { Off: "off", Read: "read" },
-  AutomationLaneEnvelope: { Volume: "volume" },
-}));
+  const MockTimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
 
-// Add static method to TimelinePosition
-const TimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
-TimelinePosition.parseFromString = vi.fn().mockImplementation((str) => {
-  if (!str) return null;
-  return mockTimeline;
+  // Add static methods to the mock constructor
+  Object.assign(MockTimelinePosition, {
+    parseFromString: vi.fn().mockImplementation((str) => {
+      if (!str) return null;
+      return mockTimeline;
+    }),
+    start: mockTimeline,
+    toDisplayString: vi.fn().mockImplementation(() => "0:00:00"),
+    fromTicks: vi.fn().mockImplementation(() => mockTimeline),
+    fromSpan: vi.fn().mockReturnValue(mockTimeline),
+    fromSixteenths: vi.fn().mockReturnValue(mockTimeline),
+    fromSeconds: vi.fn().mockReturnValue(mockTimeline),
+    fromMargin: vi.fn().mockReturnValue(mockTimeline),
+    add: vi.fn().mockReturnValue(mockTimeline),
+    subtract: vi.fn().mockReturnValue(mockTimeline),
+    compare: vi.fn().mockReturnValue(0),
+    max: vi.fn().mockReturnValue(mockTimeline),
+    min: vi.fn().mockReturnValue(mockTimeline),
+    defaultSettings: {
+      tempo: 120,
+      timeSignature: { beats: 4, noteValue: 4 },
+      snap: true,
+      snapUnit: "beat",
+      horizontalScale: 1,
+    },
+  });
+
+  return {
+    TimelinePosition: MockTimelinePosition,
+    TrackType: { Audio: "audio", Midi: "midi", Sequencer: "sequencer" },
+    AutomationMode: {
+      Off: "off",
+      Read: "read",
+      Write: "write",
+      Touch: "touch",
+      Latch: "latch",
+      Trim: "trim",
+    },
+    AutomationLaneEnvelope: {
+      Volume: "volume",
+      Pan: "pan",
+      Send: "send",
+      Filter: "filter",
+      Tempo: "tempo",
+      Effect: "effect",
+    },
+  };
 });
-TimelinePosition.start = mockTimeline;
-
-// Mock all other static methods used by AutomationLaneTrack
-TimelinePosition.toDisplayString = vi.fn().mockImplementation(() => "0:00:00");
-TimelinePosition.fromTicks = vi.fn().mockImplementation(() => mockTimeline);
 
 // Console error handling
 const SUPPRESSED_ERRORS = [

@@ -1,45 +1,68 @@
-import { useMemo } from "react"
-import Editor from "./Editor"
-import { Header, Mixer } from "./components"
+import { useMemo, useState } from "react";
+import Editor from "./Editor";
+import { Header, Mixer } from "./components";
 import { PaneResize } from "../../components";
-import { useWorkstation } from "../../contexts";
-import { InputPane, PaneResizeData } from "../../components/PaneResize"
+import { WorkstationContext } from "../../contexts";
+import { useContext } from "react";
+import { InputPane, PaneResizeData } from "../../components/PaneResize";
+
+// Create a simpler wrapper for WorkstationContext until we fix all imports
+function useWorkstation() {
+  const context = useContext(WorkstationContext);
+
+  if (!context) {
+    throw new Error("useWorkstation must be used within a WorkstationProvider");
+  }
+
+  return {
+    ...context,
+    // Add missing properties used in this component
+    showMixer: true,
+    mixerHeight: 200,
+    setMixerHeight: () => {},
+  };
+}
 
 export default function Workstation() {
-  const { mixerHeight, setAllowMenuAndShortcuts, setMixerHeight, showMixer } = useWorkstation();
+  const { mixerHeight, setAllowMenuAndShortcuts, setMixerHeight, showMixer } =
+    useWorkstation();
 
   const panes = useMemo(() => {
     const panes: InputPane[] = [
       {
         key: "0",
         handle: { style: { height: 2, bottom: -2 } },
-        children: <Editor />
-      }
+        children: <Editor />,
+      },
     ];
 
     if (showMixer)
       panes.push({
-        key: "1", 
-        max: 450, 
-        min: 229, 
-        children: <Mixer />, 
-        fixed: true, 
-        size: mixerHeight 
+        key: "1",
+        max: 450,
+        min: 229,
+        children: <Mixer />,
+        fixed: true,
+        size: mixerHeight,
       });
 
     return panes;
-  }, [showMixer, mixerHeight])
+  }, [showMixer, mixerHeight]);
 
   function handlePaneResizeStop(data: PaneResizeData) {
-    if (data.activeNext)
-      setMixerHeight(data.activeNext.size);
+    if (data.activeNext) setMixerHeight(data.activeNext.size);
     setAllowMenuAndShortcuts(true);
   }
 
   return (
-    <div 
+    <div
       className="m-0 p-0"
-      style={{ width: "100vw", height: "100vh", position: "relative", outline: "none" }}
+      style={{
+        width: "100vw",
+        height: "100vh",
+        position: "relative",
+        outline: "none",
+      }}
       tabIndex={0}
     >
       <Header />
@@ -48,8 +71,13 @@ export default function Workstation() {
         onPaneResize={() => setAllowMenuAndShortcuts(false)}
         onPaneResizeStop={handlePaneResizeStop}
         panes={panes}
-        style={{ flex: 1, height: "calc(100vh - 69px)", display: "flex", flexDirection: "column" }}
+        style={{
+          flex: 1,
+          height: "calc(100vh - 69px)",
+          display: "flex",
+          flexDirection: "column",
+        }}
       />
     </div>
-  )
+  );
 }
