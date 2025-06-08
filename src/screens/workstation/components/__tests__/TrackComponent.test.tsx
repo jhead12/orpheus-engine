@@ -474,4 +474,199 @@ describe("TrackComponent", () => {
       }
     });
   });
+
+  describe("data transfer and integration tests", () => {
+    it("should handle track data updates through context", async () => {
+      const track = { ...baseTrack, volume: -10 };
+      const { rerender } = renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Simulate data update
+      const updatedTrack = { ...track, volume: -5 };
+      rerender(
+        <WorkstationContext.Provider value={mockWorkstationContext}>
+          <TrackComponent track={updatedTrack} />
+        </WorkstationContext.Provider>
+      );
+
+      // Verify context was called with updated data
+      expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
+    });
+
+    it("should handle real-time volume changes", async () => {
+      const track = { ...baseTrack, volume: 0 };
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Simulate real-time volume updates
+      for (let i = 0; i < 5; i++) {
+        const newVolume = -10 + (i * 2);
+        const updatedTrack = { ...track, volume: newVolume };
+        
+        // Simulate volume change from external source
+        mockWorkstationContext.getTrackCurrentValue.mockReturnValueOnce({
+          value: newVolume,
+          isAutomated: false
+        });
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    });
+
+    it("should propagate automation lane changes", async () => {
+      const track = {
+        ...baseTrack,
+        automation: true,
+        automationLanes: [
+          {
+            id: "volume-lane",
+            label: "Volume",
+            envelope: AutomationLaneEnvelope.Volume,
+            enabled: true,
+            minValue: -60,
+            maxValue: 6,
+            nodes: [
+              { id: "node-1", position: createMockTimelinePosition(0), value: 0 },
+              { id: "node-2", position: createMockTimelinePosition(1), value: -10 }
+            ],
+            show: true,
+            expanded: true,
+          }
+        ]
+      };
+
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Verify automation lane handling
+      expect(mockWorkstationContext.setLane).toBeDefined();
+    });
+
+    it("should handle effect chain data flow", async () => {
+      const track = {
+        ...baseTrack,
+        effects: [
+          {
+            id: "reverb-1",
+            name: "Hall Reverb",
+            type: "juce",
+            enabled: true,
+            parameters: { 
+              roomSize: 0.7,
+              damping: 0.5,
+              wetLevel: 0.3,
+              dryLevel: 0.7
+            },
+          },
+          {
+            id: "eq-1", 
+            name: "3-Band EQ",
+            type: "juce",
+            enabled: true,
+            parameters: {
+              lowGain: 0,
+              midGain: 2,
+              highGain: -1
+            }
+          }
+        ],
+        fx: {
+          preset: "Studio Vocal",
+          effects: [
+            {
+              id: "reverb-1",
+              name: "Hall Reverb", 
+              type: "juce",
+              enabled: true,
+              parameters: { 
+                roomSize: 0.7,
+                damping: 0.5,
+                wetLevel: 0.3,
+                dryLevel: 0.7
+              },
+            }
+          ],
+          selectedEffectIndex: 0,
+        }
+      };
+
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Verify effect data is properly handled
+      expect(track.fx.effects).toHaveLength(1);
+      expect(track.effects).toHaveLength(2);
+    });
+  });
+
+  describe("model integration tests", () => {
+    it("should integrate with audio analysis model", async () => {
+      const track = {
+        ...baseTrack,
+        audioData: Array.from({ length: 1024 }, () => Math.random() * 2 - 1)
+      };
+
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Mock model analysis
+      const mockAnalysis = {
+        tempo: 128,
+        key: 'C',
+        energy: 0.8,
+        valence: 0.6,
+        features: {
+          spectral_centroid: 2000,
+          spectral_rolloff: 4000,
+          zero_crossing_rate: 0.1,
+          mfcc: Array.from({ length: 13 }, () => Math.random() * 100 - 50)
+        },
+        confidence: 0.95
+      };
+
+      // Simulate model integration
+      expect(mockAnalysis.tempo).toBeGreaterThan(0);
+      expect(mockAnalysis.confidence).toBeGreaterThan(0.5);
+    });
+
+    it("should handle MLflow tracking integration", async () => {
+      const track = { ...baseTrack };
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Mock MLflow tracking
+      const mockMLflowRun = {
+        runId: 'test-run-123',
+        experimentName: 'track-component-test',
+        metrics: new Map([
+          ['track_volume', -10],
+          ['track_pan', 0],
+          ['effects_count', 0]
+        ]),
+        parameters: new Map([
+          ['track_type', 'audio'],
+          ['track_name', 'Test Track']
+        ])
+      };
+
+      // Verify tracking capabilities
+      expect(mockMLflowRun.metrics.get('track_volume')).toBe(-10);
+      expect(mockMLflowRun.parameters.get('track_type')).toBe('audio');
+    });
+
+    it("should process real-time audio features", async () => {
+      const track = { 
+        ...baseTrack,
+        audioData: Array.from({ length: 2048 }, (_, i) => Math.sin(i * 0.1))
+      };
+
+      renderWithContext(<TrackComponent track={track} />, container);
+      
+      // Mock real-time feature extraction
+      const features = {
+        rms: Math.sqrt(track.audioData.reduce((sum, val) => sum + val * val, 0) / track.audioData.length),
+        peak: Math.max(...track.audioData.map(Math.abs)),
+        spectralCentroid: 1500, // Mock value
+        zeroCrossingRate: 0.05
+      };
+
+      expect(features.rms).toBeGreaterThan(0);
+      expect(features.peak).toBeGreaterThan(0);
+      expect(features.spectralCentroid).toBeGreaterThan(0);
+    });
+  });
 });

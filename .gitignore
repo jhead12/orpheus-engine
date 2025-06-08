@@ -43,6 +43,27 @@ test-screenshots/
 *.lock
 package-lock.json
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+env/
+
+# AI/ML and data files
+chroma_db/
+model/
+data/
+*.pkl
+*.h5
+*.model
+
+# Backup files
+*.bak
+*.backup
+
 # Development and debugging scripts
 scripts/debug-*
 scripts/find-*
