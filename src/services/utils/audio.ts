@@ -57,12 +57,18 @@ export const getAudioContext = () => {
 /**
  * Formats a panning value to a readable string
  * @param panning Value between -1 (full left) and 1 (full right)
+ * @param detailed Whether to include percentage symbol and space
  * @returns Formatted panning string
  */
-export const formatPanning = (panning: number): string => {
+export const formatPanning = (panning: number, detailed?: boolean): string => {
   if (panning === 0) return "C";
-  if (panning < 0) return `L ${Math.abs(Math.round(panning * 100))}%`;
-  return `R ${Math.round(panning * 100)}%`;
+  if (detailed) {
+    if (panning < 0) return `L ${Math.abs(Math.round(panning * 100))}%`;
+    return `R ${Math.round(panning * 100)}%`;
+  } else {
+    if (panning < 0) return `L${Math.abs(Math.round(panning * 100))}`;
+    return `R${Math.round(panning * 100)}`;
+  }
 };
 
 export const audioBufferToBuffer = async (
@@ -143,68 +149,68 @@ export const analyzeAudio = async (audioBuffer: AudioBuffer): Promise<any> => {
     duration: audioBuffer.duration,
     sampleRate: audioBuffer.sampleRate,
     numberOfChannels: audioBuffer.numberOfChannels,
-    length: audioBuffer.length
+    length: audioBuffer.length,
   };
 };
 
-export const normalizeAudio = async (audioBuffer: AudioBuffer): Promise<AudioBuffer> => {
+export const normalizeAudio = async (
+  audioBuffer: AudioBuffer
+): Promise<AudioBuffer> => {
   const numberOfChannels = audioBuffer.numberOfChannels;
   const length = audioBuffer.length;
   const sampleRate = audioBuffer.sampleRate;
-  
+
   const context = getAudioContext();
-  const normalizedBuffer = context.createBuffer(numberOfChannels, length, sampleRate);
-  
+  const normalizedBuffer = context.createBuffer(
+    numberOfChannels,
+    length,
+    sampleRate
+  );
+
   for (let channel = 0; channel < numberOfChannels; channel++) {
     const channelData = audioBuffer.getChannelData(channel);
     const normalizedData = new Float32Array(length);
-    
+
     // Find peak value
     let peak = 0;
     for (let i = 0; i < length; i++) {
       peak = Math.max(peak, Math.abs(channelData[i]));
     }
-    
+
     // Normalize if peak is greater than 0
     const gain = peak > 0 ? 1 / peak : 1;
     for (let i = 0; i < length; i++) {
       normalizedData[i] = channelData[i] * gain;
     }
-    
+
     normalizedBuffer.getChannelData(channel).set(normalizedData);
   }
-  
+
   return normalizedBuffer;
 };
 
-export const generateWaveform = (audioBuffer: AudioBuffer, width: number = 800): number[] => {
+export const generateWaveform = (
+  audioBuffer: AudioBuffer,
+  width: number = 800
+): number[] => {
   const channelData = audioBuffer.getChannelData(0); // Use first channel
   const blockSize = Math.floor(channelData.length / width);
   const waveform: number[] = [];
-  
+
   for (let i = 0; i < width; i++) {
     const start = i * blockSize;
     const end = Math.min(start + blockSize, channelData.length);
-    
+
     let peak = 0;
     for (let j = start; j < end; j++) {
       peak = Math.max(peak, Math.abs(channelData[j]));
     }
-    
+
     waveform.push(peak);
   }
-  
+
   return waveform;
 };
-
-/**
- * Format panning value for display
- */
-export function formatPanning(pan: number): string {
-  if (pan === 0) return 'C';
-  if (pan > 0) return `R${Math.round(pan * 100)}`;
-  return `L${Math.round(Math.abs(pan) * 100)}`;
-}
 
 /**
  * Get volume gradient for visual representation
@@ -213,11 +219,11 @@ export function getVolumeGradient(volume: number): string {
   // Convert dB to linear scale for gradient
   const linear = Math.pow(10, volume / 20);
   const clampedLinear = Math.max(0, Math.min(1, linear));
-  
+
   // Create gradient from green to red based on volume level
   const red = Math.round(255 * clampedLinear);
   const green = Math.round(255 * (1 - clampedLinear * 0.5));
-  
+
   return `rgb(${red}, ${green}, 0)`;
 }
 
@@ -230,6 +236,6 @@ export function sliceClip(clip: any, startTime: number, endTime: number): any {
     ...clip,
     start: startTime,
     end: endTime,
-    duration: endTime - startTime
+    duration: endTime - startTime,
   };
 }

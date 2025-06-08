@@ -14,7 +14,7 @@ import { Track, TrackType, TimelinePosition } from "../../../../types/core";
 // Mock the TimelinePosition class from core types
 vi.mock("../../../../types/core", async () => {
   const actual = await vi.importActual("../../../../types/core");
-  
+
   class MockTimelinePosition {
     bar: number;
     beat: number;
@@ -97,7 +97,7 @@ vi.mock("../../../../types/core", async () => {
 
   return {
     ...actual,
-    TimelinePosition: MockTimelinePosition
+    TimelinePosition: MockTimelinePosition,
   };
 });
 
@@ -201,7 +201,7 @@ const mockWorkstationContext = {
   paste: vi.fn(),
   cut: vi.fn(),
   deleteSelection: vi.fn(),
-  
+
   // Additional required properties from WorkstationContextType
   adjustNumMeasures: vi.fn(),
   allowMenuAndShortcuts: true,
@@ -718,6 +718,82 @@ describe("Timeline Component", () => {
       );
 
       expect(screen.getByText("No tracks")).toBeInTheDocument();
+    });
+  });
+
+  describe("Canvas Rendering", () => {
+    let mockCanvasContext: CanvasRenderingContext2D;
+
+    beforeEach(() => {
+      mockCanvasContext = {
+        clearRect: vi.fn(),
+        fillRect: vi.fn(),
+        strokeRect: vi.fn(),
+        beginPath: vi.fn(),
+        moveTo: vi.fn(),
+        lineTo: vi.fn(),
+        stroke: vi.fn(),
+        fillText: vi.fn(),
+        strokeText: vi.fn(),
+        measureText: vi.fn(() => ({ width: 50 })),
+        save: vi.fn(),
+        restore: vi.fn(),
+        translate: vi.fn(),
+        scale: vi.fn(),
+        setTransform: vi.fn(),
+        resetTransform: vi.fn(),
+        arc: vi.fn(),
+        closePath: vi.fn(),
+        clip: vi.fn(),
+        drawImage: vi.fn(),
+        getImageData: vi.fn(),
+        putImageData: vi.fn(),
+        setLineDash: vi.fn(),
+        getLineDash: vi.fn(() => []),
+        fillStyle: "#000",
+        strokeStyle: "#000",
+        lineWidth: 1,
+        font: "12px sans-serif",
+      } as unknown as CanvasRenderingContext2D;
+
+      // Mock HTMLCanvasElement
+      Object.defineProperty(global.HTMLCanvasElement.prototype, "getContext", {
+        value: vi.fn().mockReturnValue(mockCanvasContext),
+      });
+    });
+
+    it("should render timeline canvas correctly", () => {
+      const { container } = renderTimeline({
+        width: 800,
+        height: 400,
+        currentPosition: new TimelinePosition(1, 0, 0),
+      });
+
+      const canvas = container.querySelector("canvas");
+      expect(canvas).toBeTruthy();
+      expect(canvas?.tagName.toLowerCase()).toBe("canvas");
+    });
+
+    it("should handle canvas resize", async () => {
+      const { container } = renderTimeline({
+        width: 800,
+        height: 400,
+      });
+
+      const canvas = container.querySelector("canvas");
+      expect(canvas?.width).toBe(800);
+      expect(canvas?.height).toBe(400);
+    });
+
+    it("should draw playhead at correct position", () => {
+      renderTimeline({
+        currentPosition: new TimelinePosition(1, 2, 240),
+      });
+
+      expect(mockCanvasContext.beginPath).toHaveBeenCalled();
+      expect(mockCanvasContext.moveTo).toHaveBeenCalled();
+      expect(mockCanvasContext.lineTo).toHaveBeenCalled();
+      expect(mockCanvasContext.stroke).toHaveBeenCalled();
     });
   });
 });
