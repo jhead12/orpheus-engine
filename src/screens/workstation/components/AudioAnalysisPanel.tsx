@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Clip } from "../../../types/core";
-import { AudioAnalysisType, AudioAnalysisResults } from "../../../types/audio";
+import { Clip } from '@orpheus/types/core';
+import { AudioAnalysisType, AudioAnalysisResults } from '@orpheus/types/audio';
 import { useMCPAnalysis } from "../../../hooks/useMCPAnalysis";
 import { useAI } from "@orpheus/contexts/AIContext";
 import { invokePythonAnalysis } from "../../../services/pythonBridge";

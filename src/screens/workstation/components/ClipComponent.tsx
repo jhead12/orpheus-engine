@@ -10,7 +10,7 @@ import React, {
 import { createPortal, flushSync } from "react-dom";
 import DNR, { DNRData } from "../../../components/DNR";
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
-import { openContextMenu } from "../../../services/electron/utils";
+import { openContextMenu } from '@orpheus/services/electron/utils';
 import {
   AutomationLane,
   ContextMenuType,

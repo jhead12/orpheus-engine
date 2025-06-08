@@ -25,7 +25,7 @@ import {
   SortableList,
   SortableListItem,
 } from "@orpheus/widgets";
-import { openContextMenu } from "../../../services/electron/utils";
+import { openContextMenu } from '@orpheus/services/electron/utils';
 
 const MixerTrack = memo(
   ({ order, track }: { order?: number; track: Track }) => {

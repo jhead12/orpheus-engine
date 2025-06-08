@@ -6,7 +6,7 @@ import { AutomationNodeComponent } from "./index";
 import { v4 } from "uuid";
 ;
 import { AutomationLane, AutomationLaneEnvelope, AutomationNode, Track, ContextMenuType, TimelinePosition } from '@orpheus/types/core';
-import { openContextMenu } from "../../../services/electron/utils";
+import { openContextMenu } from '@orpheus/services/electron/utils';
 
 interface IProps {
   color: string;

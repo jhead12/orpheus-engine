@@ -36,12 +36,25 @@ const mockAudioContext = {
     start: vi.fn(),
     stop: vi.fn(),
   })),
-  decodeAudioData: vi.fn().mockResolvedValue({
-    duration: 1.0,
-    sampleRate: 44100,
-    numberOfChannels: 2,
-    length: 44100,
-    getChannelData: vi.fn(() => new Float32Array([0.1, 0.2, 0.3, 0.4])),
+  decodeAudioData: vi.fn().mockImplementation(async (_arrayBuffer: ArrayBuffer) => {
+    // Return a proper AudioBuffer-like object with working getChannelData
+    const mockAudioBuffer = {
+      duration: 1.0,
+      sampleRate: 44100,
+      numberOfChannels: 2,
+      length: 44100,
+      getChannelData(_channel: number): Float32Array {
+        // Return proper length audio data for testing
+        const data = new Float32Array(44100);
+        for (let i = 0; i < 44100; i++) {
+          data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
+        }
+        return data;
+      },
+      copyFromChannel: vi.fn(),
+      copyToChannel: vi.fn(),
+    };
+    return Promise.resolve(mockAudioBuffer as AudioBuffer);
   }),
   destination: {},
   state: 'running',
@@ -49,21 +62,28 @@ const mockAudioContext = {
   close: vi.fn(),
 };
 
-// Mock AudioContext constructor
+// Mock AudioContext constructor - this is the key fix for the "not a constructor" error
 const MockAudioContextConstructor = vi.fn().mockImplementation(() => mockAudioContext);
 
+// Set up global AudioContext mocks
 global.AudioContext = MockAudioContextConstructor;
 global.webkitAudioContext = MockAudioContextConstructor;
 
-// Ensure window AudioContext is also mocked - this is critical for browser environment tests
+// Critical: Mock window.AudioContext and window.webkitAudioContext as constructors
+// This ensures that "new (window.AudioContext || window.webkitAudioContext)()" works in tests
 Object.defineProperty(window, 'AudioContext', {
   writable: true,
+  configurable: true,
   value: MockAudioContextConstructor
 });
 Object.defineProperty(window, 'webkitAudioContext', {
   writable: true,
+  configurable: true,
   value: MockAudioContextConstructor
 });
+
+// Also ensure the constructor is available as a function that can be called with 'new'
+MockAudioContextConstructor.prototype = mockAudioContext;
 
 // Mock File and FileReader
 const createMockFile = (name: string, type: string, data?: Uint8Array) => {
@@ -76,12 +96,27 @@ const createMockFile = (name: string, type: string, data?: Uint8Array) => {
   } as unknown as File;
 };
 
-global.FileReader = vi.fn().mockImplementation(() => ({
-  readAsArrayBuffer: vi.fn(),
-  result: new ArrayBuffer(1024),
-  onload: null,
-  onerror: null,
-}));
+// Mock FileReader with proper constructor pattern
+const MockFileReaderConstructor = function(this: any) {
+  this.readAsArrayBuffer = vi.fn();
+  this.result = new ArrayBuffer(1024);
+  this.onload = null;
+  this.onerror = null;
+  this.readyState = 0; // EMPTY
+  return this;
+} as any;
+
+// Add static constants to match FileReader interface
+MockFileReaderConstructor.EMPTY = 0;
+MockFileReaderConstructor.LOADING = 1;
+MockFileReaderConstructor.DONE = 2;
+MockFileReaderConstructor.prototype = {};
+
+Object.defineProperty(global, 'FileReader', {
+  writable: true,
+  configurable: true,
+  value: MockFileReaderConstructor
+});
 
 describe('AudioService', () => {
   let audioService: AudioService;
@@ -91,20 +126,43 @@ describe('AudioService', () => {
     // Reset the singleton instance before each test
     (AudioService as any).instance = null;
     
-    // Make sure AudioContext mock is properly set up
+    // Clear all mocks
     vi.clearAllMocks();
     
-    // Ensure the AudioContext constructor is properly mocked
-    MockAudioContextConstructor.mockClear();
-    MockAudioContextConstructor.mockReturnValue(mockAudioContext);
-    
-    // Re-mock AudioContext with fresh mocks for each test
-    mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue({
+    // Create a fresh mock AudioBuffer for each test
+    const createMockAudioBuffer = () => ({
       duration: 1.0,
       sampleRate: 44100,
       numberOfChannels: 2,
       length: 44100,
-      getChannelData: vi.fn(() => new Float32Array([0.1, 0.2, 0.3, 0.4])),
+      getChannelData(_channel: number): Float32Array {
+        const data = new Float32Array(44100);
+        for (let i = 0; i < 44100; i++) {
+          data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
+        }
+        return data;
+      },
+      copyFromChannel: vi.fn(),
+      copyToChannel: vi.fn(),
+    } as AudioBuffer);
+    
+    // Update the mock AudioContext to always return a proper mock buffer
+    mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue(createMockAudioBuffer());
+    
+    // Ensure AudioContext constructor is properly mocked on window for each test
+    MockAudioContextConstructor.mockClear();
+    MockAudioContextConstructor.mockReturnValue(mockAudioContext);
+    
+    // Re-establish window mocks that might get cleared
+    Object.defineProperty(window, 'AudioContext', {
+      writable: true,
+      configurable: true,
+      value: MockAudioContextConstructor
+    });
+    Object.defineProperty(window, 'webkitAudioContext', {
+      writable: true,
+      configurable: true,
+      value: MockAudioContextConstructor
     });
     
     audioService = AudioService.getInstance();
@@ -114,7 +172,8 @@ describe('AudioService', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    // Only clear specific mocks, don't restore all which might break our setup
+    vi.clearAllMocks();
   });
 
   describe('Platform Detection', () => {
@@ -220,18 +279,43 @@ describe('AudioService', () => {
     });
 
     it('should analyze audio using Web Audio API', async () => {
+      // Ensure audioService has a mocked audioContext
+      if (!(audioService as any).audioContext) {
+        await audioService.initialize();
+      }
+
+      // Create a properly working mock AudioBuffer
       const mockAudioBuffer = {
         duration: 10.5,
         sampleRate: 44100,
         numberOfChannels: 2,
         length: 441000,
-        getChannelData: vi.fn().mockReturnValue(new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5]))
-      };
+        getChannelData(_channel: number): Float32Array {
+          const data = new Float32Array(441000);
+          for (let i = 0; i < 441000; i++) {
+            data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
+          }
+          return data;
+        },
+        copyFromChannel: vi.fn(),
+        copyToChannel: vi.fn(),
+      } as AudioBuffer;
 
-      const mockAudioContext = new AudioContext();
-      mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue(mockAudioBuffer);
+      // Directly replace the decodeAudioData method on the service's audioContext
+      const audioContext = (audioService as any).audioContext;
+      const originalDecodeAudioData = audioContext.decodeAudioData;
+      audioContext.decodeAudioData = vi.fn().mockResolvedValue(mockAudioBuffer);
 
-      const result = await audioService.analyzeAudio(mockFile);
+      try {
+        const result = await audioService.analyzeAudio(mockFile);
+
+        expect(result.duration).toBe(10.5);
+        expect(result.sampleRate).toBe(44100);
+        expect(result.waveform).toBeDefined();
+      } finally {
+        // Restore original method
+        audioContext.decodeAudioData = originalDecodeAudioData;
+      }
 
       expect(result.duration).toBe(10.5);
       expect(result.sampleRate).toBe(44100);

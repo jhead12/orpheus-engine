@@ -398,12 +398,20 @@ global.HTMLCanvasElement = MockCanvas as any;
 
 // Mock canvas creation
 const originalCreateElement = document.createElement;
-document.createElement = vi.fn().mockImplementation((tagName: string) => {
+document.createElement = function(tagName: string) {
   if (tagName === "canvas") {
-    return new MockCanvas();
+    const canvas = originalCreateElement.call(document, tagName) as HTMLCanvasElement;
+    // Override getContext to return our mock
+    canvas.getContext = vi.fn((contextType: string) => {
+      if (contextType === "2d") {
+        return mockCanvasContext;
+      }
+      return null;
+    }) as any;
+    return canvas;
   }
   return originalCreateElement.call(document, tagName);
-});
+} as any;
 
 vi.mock("@orpheus/types/core", () => createMockModule());
 

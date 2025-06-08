@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Track } from "../../../types/core";
+import { Track } from '@orpheus/types/core';
 import styled from "styled-components";
 
 interface StyledProps {

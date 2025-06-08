@@ -1,14 +1,14 @@
 import { CSSProperties, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from "../../../types/core";
+import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
 import {
   formatVolume,
   normalizedToVolume,
   volumeToNormalized,
-} from "../../../services/utils/utils";
-import Slider from "../../../components/widgets/Slider";
+} from '@orpheus/utils/utils';
+import Slider from '@orpheus/widgets/Slider';
 import { useContext } from "react";
-import { WorkstationContext } from "../../../contexts";
-import { TooltipProps } from "../../../components/widgets/Tooltip";
+import { WorkstationContext } from '@orpheus/contexts';
+import { TooltipProps } from '@orpheus/widgets/Tooltip';
 
 // Use standard React context hook instead of custom hook
 const useWorkstation = () => useContext(WorkstationContext);
