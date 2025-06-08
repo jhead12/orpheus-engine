@@ -1,11 +1,16 @@
+#!/usr/bin/env node
 /**
  * Helper script to launch Electron with the proper flags for local development
  */
 
 import { spawn } from "child_process";
 import path from "path";
-import electron from "electron";
+import { fileURLToPath } from "url";
 import http from "http";
+
+// Fix for ESM in Node.js
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Function to check if Vite server is running
 function waitForVite(port = 5174, timeout = 30000) {
@@ -87,8 +92,9 @@ async function launchElectron() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
     // Launch Electron with the proper flags
-    const electronProcess = spawn(electron, ["."].concat(args), {
+    const electronProcess = spawn("npx", ["electron", "."].concat(args), {
       stdio: "inherit",
+      shell: true,
       env: process.env,
     });
 

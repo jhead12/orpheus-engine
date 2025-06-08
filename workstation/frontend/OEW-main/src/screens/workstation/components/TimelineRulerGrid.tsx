@@ -1,11 +1,11 @@
-
 import { useContext, useLayoutEffect, useRef, useState } from "react";
-import { PreferencesContext, WorkstationContext } from "@orpheus/contexts";
-import { TimelinePosition } from "@orpheus/types/core";
-import { SnapGridSizeOption } from "@orpheus/types/audio";
-import { formatDuration, measureSeconds } from "@orpheus/utils/general";
-;
-
+import { PreferencesContext, WorkstationContext } from '@orpheus/contexts';
+import { TimelinePosition } from "../../../types/core";
+import { SnapGridSizeOption } from "../../../types/audio";
+import {
+  formatDuration,
+  measureSeconds,
+} from '@orpheus/utils/general';
 const TIME_MIN_INTERVAL_WIDTH = 68;
 const POS_MIN_INTERVAL_WIDTH = 34;
 const POS_MIN_SUBBEAT_INTERVAL_WIDTH = 68;
@@ -113,9 +113,9 @@ export default function TimelineRulerGrid() {
           BASE_BEAT_WIDTH * horizontalScale * (4 / timeSignature.noteValue);
 
         const snapGridSizeInterval =
-          TimelinePosition.fromSpan(snapGridSize).toFraction() / 1000;
+          TimelinePosition.fromSpan(snapGridSize).fraction / 1000;
         let minorGridInterval =
-          TimelinePosition.fromSpan(autoGridSize).toFraction() / 1000;
+          TimelinePosition.fromSpan(autoGridSize).fraction / 1000;
         let majorGridInterval;
 
         if (minorGridInterval < 2 ** -5) minorGridInterval = 2 ** -5;

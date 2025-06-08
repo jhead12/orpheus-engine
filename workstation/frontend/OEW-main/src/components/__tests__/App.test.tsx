@@ -3,10 +3,10 @@ import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import App from "../../App";
-import { PreferencesProvider } from "../../context/PreferencesContext";
-import { WorkstationProvider } from "../../context/WorkstationContext";
-import { MixerProvider } from "../../context/MixerContext";
-import { ClipboardProvider } from "../../context/ClipboardContext";
+import { PreferencesProvider } from "../../contexts/PreferencesContext";
+import { WorkstationProvider } from "../../contexts/WorkstationContext";
+import { MixerProvider } from "../../contexts/MixerContext";
+import { ClipboardProvider } from "../../contexts/ClipboardContext";
 
 // Mock matchMedia
 beforeAll(() => {

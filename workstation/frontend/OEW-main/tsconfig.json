@@ -6,38 +6,20 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "react",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@orpheus/*": ["src/*"],
-      "@orpheus/components/*": ["src/components/*"],
-      "@orpheus/services/*": ["src/services/*"],
-      "@orpheus/screens/*": ["src/screens/*"],
-      "@orpheus/contexts": ["src/contexts/index"],
-      "@orpheus/types/*": ["src/types/*", "src/services/types/*"],
-      "@orpheus/test/*": ["src/test/*"],
-      "@orpheus/utils/*": ["src/services/utils/*"],
-      "@orpheus/widgets/*": ["src/components/widgets/*"],
-      "@orpheus/workstation/*": ["src/screens/workstation/*"],
-      "@orpheus/electron": ["electron/index"],
-      "@orpheus/electron/*": ["electron/*"]
-    },
-    "types": ["vitest/globals", "vite/client", "node"]
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"],
-  "exclude": [
-    "src/test/visual-agent/templates/**/*.ts",
-    "src/test/visual-agent/templates/**/*.template.ts"
-  ],
+  "include": ["src", "electron"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

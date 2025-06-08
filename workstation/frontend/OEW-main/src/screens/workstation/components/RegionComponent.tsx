@@ -16,6 +16,8 @@
 import React, { Component, ContextType } from "react";
 import { WorkstationContext } from '@orpheus/contexts';
 import { Region, TimelinePosition } from '@orpheus/types/core';
+import { BASE_BEAT_WIDTH } from "../../../constants/timeline";
+import { timelineEditorWindowScrollThresholds } from "../../../services/utils/utils";
 import WindowAutoScroll from "../../../components/WindowAutoScroll";
 import { flushSync } from "react-dom";
 ;
@@ -263,6 +265,8 @@ export default class RegionComponent extends Component<RegionComponentProps, Reg
       <>
         <WindowAutoScroll
           active={this.state.isCreatingNewRegion || this.state.resizing}
+          eventType="drag"
+          thresholds={timelineEditorWindowScrollThresholds}
           onScroll={(by: number) => this.resize(by, this.state.resizeEdge || "end")}
         />
         <div

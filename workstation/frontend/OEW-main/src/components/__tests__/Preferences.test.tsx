@@ -7,7 +7,7 @@ import Preferences from '../Preferences';
 const mockUsePreferences = vi.fn();
 
 // Mock the module
-vi.mock('../../context/PreferencesContext', () => ({
+vi.mock('../../contexts/PreferencesContext', () => ({
   usePreferences: () => mockUsePreferences()
 }));
 

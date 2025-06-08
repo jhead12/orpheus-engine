@@ -1,4 +1,10 @@
 import { TimelinePosition } from "../../types/core";
+import { AudioAnalysisType as CoreAudioAnalysisType } from "../../types/audio";
+
+// Re-export TimelinePosition from the core types
+export { TimelinePosition } from "../../types/core";
+// Export unified AudioAnalysisType to ensure consistency across the app
+export { AudioAnalysisType } from "../../types/audio";
 
 export enum AutomationLaneEnvelope {
   Volume = "volume",
@@ -130,4 +136,12 @@ export interface FXChainPreset {
 export interface Region {
   start: TimelinePosition;
   end: TimelinePosition;
+}
+
+// Audio search exports (placeholder)
+export interface SearchResult {
+  id: string;
+  name: string;
+  path: string;
+  type: string;
 }

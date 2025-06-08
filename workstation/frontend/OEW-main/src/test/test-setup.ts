@@ -21,7 +21,7 @@ vi.mock("@orpheus/types/core", () => {
   };
 
   const MockTimelinePosition = vi.fn().mockImplementation(() => mockTimeline);
-  
+
   // Add static methods to the mock constructor
   Object.assign(MockTimelinePosition, {
     parseFromString: vi.fn().mockImplementation((str) => {
@@ -39,12 +39,33 @@ vi.mock("@orpheus/types/core", () => {
     max: vi.fn().mockReturnValue(mockTimeline),
     min: vi.fn().mockReturnValue(mockTimeline),
     start: mockTimeline,
+    defaultSettings: {
+      tempo: 120,
+      timeSignature: { beats: 4, noteValue: 4 },
+      snap: true,
+      snapUnit: "beat",
+      horizontalScale: 1,
+    },
   });
 
   return {
-    TrackType: { Audio: "audio" },
-    AutomationMode: { Off: "off", Read: "read" },
-    AutomationLaneEnvelope: { Volume: "volume" },
+    TrackType: { Audio: "audio", Midi: "midi", Sequencer: "sequencer" },
+    AutomationMode: {
+      Off: "off",
+      Read: "read",
+      Write: "write",
+      Touch: "touch",
+      Latch: "latch",
+      Trim: "trim",
+    },
+    AutomationLaneEnvelope: {
+      Volume: "volume",
+      Pan: "pan",
+      Send: "send",
+      Filter: "filter",
+      Tempo: "tempo",
+      Effect: "effect",
+    },
     TimelinePosition: MockTimelinePosition,
   };
 });

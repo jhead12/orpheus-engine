@@ -1,24 +1,31 @@
 // Core type definitions for the audio workstation
 
+// TimeSignature: Represents musical time signature (e.g., 4/4, 3/4, 6/8)
 export interface TimeSignature {
-  beats: number;
-  noteValue: number;
+  beats: number; // Number of beats per measure (numerator)
+  noteValue: number; // Note value that gets the beat (denominator)
 }
 
+// TimelineSettings: Configuration for the timeline view and behavior
 export interface TimelineSettings {
-  tempo: number;
-  timeSignature: { beats: number; noteValue: number };
-  snap: boolean;
-  snapUnit: "beat" | "bar" | "sixteenth";
-  horizontalScale: number;
-  beatWidth?: number;
+  tempo: number; // BPM (beats per minute)
+  timeSignature: { beats: number; noteValue: number }; // Time signature for the project
+  snap: boolean; // Whether grid snapping is enabled
+  snapUnit: "beat" | "bar" | "sixteenth"; // Grid resolution for snapping
+  horizontalScale: number; // Zoom level for timeline display
+  beatWidth?: number; // Optional: width of a beat in pixels
+}
+
+export interface Region {
+  start: TimelinePosition;
+  end: TimelinePosition;
 }
 
 // Track Types
 export enum TrackType {
-  Audio = "audio",
-  Midi = "midi",
-  Sequencer = "sequencer",
+  Audio = "audio", // Audio tracks for recorded/imported audio
+  Midi = "midi", // MIDI tracks for note data
+  Sequencer = "sequencer", // Sequencer tracks for step sequencing
 }
 
 export enum AutomationMode {
@@ -26,6 +33,7 @@ export enum AutomationMode {
   Write = "write",
   Touch = "touch",
   Latch = "latch",
+  Trim = "trim",
   Off = "off",
 }
 
@@ -183,13 +191,19 @@ export class TimelinePosition {
    * Snap position to grid
    */
   snap(
-    gridSize: number,
+    gridSize: number | TimelinePosition,
     direction: "floor" | "ceil" | "round" = "round"
   ): TimelinePosition {
-    if (gridSize <= 0) return this.copy();
+    // Handle gridSize as TimelinePosition or number
+    const gridSizeValue =
+      gridSize instanceof TimelinePosition
+        ? gridSize.toTicks() / 480
+        : gridSize;
+
+    if (gridSizeValue <= 0) return this.copy();
 
     const totalTicks = this.toTicks();
-    const gridTicks = gridSize * 480;
+    const gridTicks = gridSizeValue * 480;
 
     let snappedTicks: number;
     switch (direction) {
@@ -342,6 +356,34 @@ export class TimelinePosition {
     const additionalTicks = Math.round((seconds * (tempo * 480)) / 60);
     return TimelinePosition.fromTicks(position.toTicks() + additionalTicks);
   }
+
+  // Add missing static methods
+  static parseFromString(str: string): TimelinePosition {
+    // Parse format "bar:beat:tick" or similar
+    const parts = str.split(":").map(Number);
+    if (parts.length >= 3) {
+      return new TimelinePosition(parts[0] || 0, parts[1] || 0, parts[2] || 0);
+    }
+    return new TimelinePosition(0, 0, 0);
+  }
+
+  toDisplayString(): string {
+    return `${this.bar}:${this.beat}:${Math.floor(this.tick / 120)}`;
+  }
+
+  static toDisplayString(position: TimelinePosition): string {
+    return position.toDisplayString();
+  }
+
+  static durationToSpan(duration: number): number {
+    // Convert duration (in beats) to span (in ticks)
+    return duration * 480;
+  }
+
+  static fractionToSpan(fraction: number): number {
+    // Convert fraction (in milliseconds) to span (in ticks)
+    return (fraction * 480) / 1000;
+  }
 }
 
 export interface AutomationLane {
@@ -390,7 +432,7 @@ export interface BaseEffect {
 }
 
 export interface Effect extends BaseEffect {
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
 export interface FXChainPreset {
