@@ -33,9 +33,9 @@ export async function renderVisualTest(
   try {
     // Render component
     const componentProps = { ...config.props, ...(state.props || {}) };
-    
+
     // Create a div element with innerHTML for the component
-    const componentElement = document.createElement('div');
+    const componentElement = document.createElement("div");
     componentElement.innerHTML = `<div data-component="${config.componentName}" data-testid="${config.componentName}">Component Placeholder</div>`;
     container.appendChild(componentElement);
 

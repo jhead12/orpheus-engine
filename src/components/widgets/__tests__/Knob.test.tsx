@@ -229,47 +229,52 @@ describe("Knob Component", () => {
   });
 
   describe("Visual Tests", () => {
-    // Simplified visual tests without screenshot dependencies to avoid timeouts
-    it("visual test: renders knob at different values", () => {
-      const { container } = renderWithTheme(
-        <Knob value={75} min={0} max={100} />
-      );
-      const knobRotator = screen.getByTestId("knob-rotator");
+    it("visual test: renders knob at different values @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
 
-      // Verify the knob renders and rotates correctly for 75% value
-      expect(knobRotator).toBeInTheDocument();
-      expect(knobRotator).toHaveStyle({
-        transform: "translate(-50%, -50%) rotate(67.5deg)",
-      });
-      expect(container.firstChild).toBeInTheDocument();
+      render(<Knob value={75} min={0} max={100} />, { container });
+      await expectScreenshot(container, "knob-75-percent");
+      document.body.removeChild(container);
     });
 
-    it("visual test: renders knob at minimum value", () => {
-      const { container } = renderWithTheme(
-        <Knob value={0} min={0} max={100} />
-      );
-      const knobRotator = screen.getByTestId("knob-rotator");
+    it("visual test: renders knob at minimum value @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
 
-      // Verify the knob renders and rotates correctly for 0% value (minimum rotation)
-      expect(knobRotator).toBeInTheDocument();
-      expect(knobRotator).toHaveStyle({
-        transform: "translate(-50%, -50%) rotate(-135deg)",
-      });
-      expect(container.firstChild).toBeInTheDocument();
+      render(<Knob value={0} min={0} max={100} />, { container });
+      await expectScreenshot(container, "knob-min");
+      document.body.removeChild(container);
     });
 
-    it("visual test: renders knob at maximum value", () => {
-      const { container } = renderWithTheme(
-        <Knob value={100} min={0} max={100} />
-      );
-      const knobRotator = screen.getByTestId("knob-rotator");
+    it("visual test: renders knob at maximum value @visual", async () => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        width: 100px;
+        height: 100px;
+        background: #1e1e1e;
+        padding: 10px;
+        position: relative;
+      `;
+      document.body.appendChild(container);
 
-      // Verify the knob renders and rotates correctly for 100% value (maximum rotation)
-      expect(knobRotator).toBeInTheDocument();
-      expect(knobRotator).toHaveStyle({
-        transform: "translate(-50%, -50%) rotate(135deg)",
-      });
-      expect(container.firstChild).toBeInTheDocument();
+      render(<Knob value={100} min={0} max={100} />, { container });
+      await expectScreenshot(container, "knob-max");
+      document.body.removeChild(container);
     });
   });
 });
