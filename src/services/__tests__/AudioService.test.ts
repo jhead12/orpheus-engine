@@ -49,14 +49,21 @@ const mockAudioContext = {
   close: vi.fn(),
 };
 
-global.AudioContext = vi.fn().mockImplementation(() => mockAudioContext);
-global.webkitAudioContext = vi.fn().mockImplementation(() => mockAudioContext);
+// Mock AudioContext constructor
+const MockAudioContextConstructor = vi.fn().mockImplementation(() => mockAudioContext);
 
-// Ensure window AudioContext is also mocked
-if (typeof window !== 'undefined') {
-  window.AudioContext = global.AudioContext;
-  (window as any).webkitAudioContext = global.webkitAudioContext;
-}
+global.AudioContext = MockAudioContextConstructor;
+global.webkitAudioContext = MockAudioContextConstructor;
+
+// Ensure window AudioContext is also mocked - this is critical for browser environment tests
+Object.defineProperty(window, 'AudioContext', {
+  writable: true,
+  value: MockAudioContextConstructor
+});
+Object.defineProperty(window, 'webkitAudioContext', {
+  writable: true,
+  value: MockAudioContextConstructor
+});
 
 // Mock File and FileReader
 const createMockFile = (name: string, type: string, data?: Uint8Array) => {
@@ -81,9 +88,23 @@ describe('AudioService', () => {
   let mockFile: any;
 
   beforeEach(() => {
-    audioService = new AudioService();
-    mockFile = createMockFile('test.wav', 'audio/wav');
+    // Reset the singleton instance before each test
+    (AudioService as any).instance = null;
+    
+    // Make sure AudioContext mock is properly set up
     vi.clearAllMocks();
+    
+    // Re-mock AudioContext with fresh mocks for each test
+    mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue({
+      duration: 1.0,
+      sampleRate: 44100,
+      numberOfChannels: 2,
+      length: 44100,
+      getChannelData: vi.fn(() => new Float32Array([0.1, 0.2, 0.3, 0.4])),
+    });
+    
+    audioService = AudioService.getInstance();
+    mockFile = createMockFile('test.wav', 'audio/wav');
   });
 
   afterEach(() => {
@@ -124,9 +145,10 @@ describe('AudioService', () => {
       const result = await audioService.loadAudioFile(mockFile);
 
       expect(result).toBeDefined();
-      expect(result.buffer).toBe(mockArrayBuffer);
-      expect(result.name).toBe('test.wav');
-      expect(result.type).toBe('audio/wav');
+      expect(result).not.toBeNull();
+      expect(result!.buffer).toBe(mockArrayBuffer);
+      expect(result!.name).toBe('test.wav');
+      expect(result!.type).toBe('audio/wav');
     });
 
     it('should handle audio loading errors', async () => {
