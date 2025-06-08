@@ -446,15 +446,19 @@ describe("TrackComponent", () => {
       }
 
       renderWithContext(<TrackComponent track={baseTrack} />, container);
-
+      
       // Wait for any animations or async rendering to complete
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-audio");
       } catch (error) {
         // Visual tests might fail in CI environment, log but don't fail the test
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
 
@@ -466,13 +470,17 @@ describe("TrackComponent", () => {
 
       const track = { ...baseTrack, mute: true };
       renderWithContext(<TrackComponent track={track} />, container);
-
+      
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-muted");
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
 
@@ -484,13 +492,17 @@ describe("TrackComponent", () => {
 
       const track = { ...baseTrack, armed: true };
       renderWithContext(<TrackComponent track={track} />, container);
-
+      
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       try {
         await expectScreenshot(container, "track-component-armed");
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
   });

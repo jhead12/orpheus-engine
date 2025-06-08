@@ -450,7 +450,7 @@ const MixerTrack = memo(
   }
 );
 
-export default function Mixer() {
+function Mixer() {
   const { masterTrack, setAllowMenuAndShortcuts, setTracks, tracks } =
     useContext(WorkstationContext)!;
   const [edgeIndex, setEdgeIndex] = useState(-1);
@@ -511,3 +511,7 @@ export default function Mixer() {
     </div>
   );
 }
+
+// Export both default and named for tests
+export default Mixer;
+export { Mixer };

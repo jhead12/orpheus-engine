@@ -1,5 +1,8 @@
 /**
- * Helper script to launch Electron with the proper flags for local development
+ * Helper// Use electron executable path - don't try to import the module
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+const electronPath = join(dirname(fileURLToPath(import.meta.url)), 'node_modules', '.bin', 'electron');to launch Electron with the proper flags for local development
  */
 
 import { spawn } from "child_process";
@@ -100,8 +103,9 @@ async function launchElectron() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
     // Launch Electron with the proper flags
-    const electronProcess = spawn(electron, ["."].concat(args), {
+    const electronProcess = spawn('npx', ['electron', '.'].concat(args), {
       stdio: "inherit",
+      shell: true,
       env: process.env,
     });
 

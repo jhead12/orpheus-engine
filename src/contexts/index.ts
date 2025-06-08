@@ -18,4 +18,20 @@ export const PreferencesContext = {
   Provider: ({ children }: { children: React.ReactNode }) => children,
   Consumer: ({ children }: { children: (value: any) => React.ReactNode }) =>
     children({}),
+
+// Audio search exports (placeholder)
+export interface SearchResult {
+  id: string;
+  name: string;
+  path: string;
+  type: string;
+}
+
+export const useAudioSearch = () => {
+  // Placeholder implementation
+  return {
+    search: (query: string) => Promise.resolve([]),
+    results: [] as SearchResult[],
+    loading: false,
+  };
 };

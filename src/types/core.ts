@@ -16,7 +16,12 @@ export interface TimelineSettings {
   beatWidth?: number; // Optional: width of a beat in pixels
 }
 
-// TrackType: Enumeration of supported track types
+export interface Region {
+  start: TimelinePosition;
+  end: TimelinePosition;
+}
+
+// Track Types
 export enum TrackType {
   Audio = "audio", // Audio tracks for recorded/imported audio
   Midi = "midi", // MIDI tracks for note data
@@ -28,6 +33,7 @@ export enum AutomationMode {
   Write = "write",
   Touch = "touch",
   Latch = "latch",
+  Trim = "trim",
   Off = "off",
 }
 
@@ -343,6 +349,34 @@ export class TimelinePosition {
   ): TimelinePosition {
     const additionalTicks = Math.round((seconds * (tempo * 480)) / 60);
     return TimelinePosition.fromTicks(position.toTicks() + additionalTicks);
+  }
+
+  // Add missing static methods
+  static parseFromString(str: string): TimelinePosition {
+    // Parse format "bar:beat:tick" or similar
+    const parts = str.split(':').map(Number);
+    if (parts.length >= 3) {
+      return new TimelinePosition(parts[0] || 0, parts[1] || 0, parts[2] || 0);
+    }
+    return new TimelinePosition(0, 0, 0);
+  }
+
+  toDisplayString(): string {
+    return `${this.bar}:${this.beat}:${Math.floor(this.tick / 120)}`;
+  }
+
+  static toDisplayString(position: TimelinePosition): string {
+    return position.toDisplayString();
+  }
+
+  static durationToSpan(duration: number): number {
+    // Convert duration (in beats) to span (in ticks)
+    return duration * 480;
+  }
+
+  static fractionToSpan(fraction: number): number {
+    // Convert fraction (in milliseconds) to span (in ticks)
+    return fraction * 480 / 1000;
   }
 }
 
