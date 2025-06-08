@@ -33,6 +33,7 @@
     "cleanup:bak": "find ./workstation -name \"*.bak\" -type f -delete && find ./workstation -name \"*.bak\" -type d -exec rm -rf {} +",
     "cleanup:verify": "node scripts/verify-cleanup.js",
     "cleanup:all": "npm run cleanup && npm run cleanup:temp && npm run cleanup:archives && npm run cleanup:bak && npm run cleanup:verify",
+    "fix:permissions": "chmod +x scripts/fix-permissions.sh && ./scripts/fix-permissions.sh",
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.mjs\"",
     "dev:vite": "cross-env NODE_ENV=development vite",
@@ -75,13 +76,7 @@
     "generate:visual-test": "ts-node scripts/visual-agent.js generate",
     "test:visual:gif": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\"",
     "test:visual:gif:update": "vitest run \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual-gif\" -u",
-    "list:visual-tests": "ts-node scripts/visual-agent.js list",
-    "cleanup": "chmod +x scripts/cleanup-duplicates.sh && ./scripts/cleanup-duplicates.sh",
-    "cleanup:archives": "rm -rf archives/app-tsx-* archives/editor-consolidation-* archives/workstation-consolidation-* archives/oew-main-backup-*",
-    "cleanup:temp": "rm -f *.patch *.backup* && rm -rf temp_check/ backup_changes/",
-    "cleanup:bak": "find ./workstation -name \"*.bak\" -type f -delete && find ./workstation -name \"*.bak\" -type d -exec rm -rf {} +",
-    "cleanup:verify": "node scripts/verify-cleanup.js",
-    "cleanup:all": "npm run cleanup && npm run cleanup:temp && npm run cleanup:archives && npm run cleanup:bak && npm run cleanup:verify"
+    "list:visual-tests": "ts-node scripts/visual-agent.js list"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",

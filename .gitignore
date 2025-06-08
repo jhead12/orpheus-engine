@@ -120,3 +120,4 @@ checkpoints/
 # Git LFS patterns (consider using for large files)
 *.pack
 *.idx
+/archives/all_backups_20250529.zip
