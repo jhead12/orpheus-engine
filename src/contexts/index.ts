@@ -18,6 +18,7 @@ export const PreferencesContext = {
   Provider: ({ children }: { children: React.ReactNode }) => children,
   Consumer: ({ children }: { children: (value: any) => React.ReactNode }) =>
     children({}),
+};
 
 // Audio search exports (placeholder)
 export interface SearchResult {

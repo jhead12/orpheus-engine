@@ -92,7 +92,7 @@ async function launchElectron() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
     // Launch Electron with the proper flags
-    const electronProcess = spawn("npx", ["electron", "."].concat(args), {
+    const electronProcess = spawn('npx', ['electron', '.'].concat(args), {
       stdio: "inherit",
       shell: true,
       env: process.env,

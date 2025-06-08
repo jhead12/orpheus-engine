@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Timeline } from '../Timeline';
-import { WorkstationContext } from '../../../../contexts/WorkstationContext';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { TimelinePosition, Track, TrackType } from '../../../../types/core';
 
 // Mock ResizeObserver

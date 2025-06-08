@@ -191,13 +191,19 @@ export class TimelinePosition {
    * Snap position to grid
    */
   snap(
-    gridSize: number,
+    gridSize: number | TimelinePosition,
     direction: "floor" | "ceil" | "round" = "round"
   ): TimelinePosition {
-    if (gridSize <= 0) return this.copy();
+    // Handle gridSize as TimelinePosition or number
+    const gridSizeValue =
+      gridSize instanceof TimelinePosition
+        ? gridSize.toTicks() / 480
+        : gridSize;
+
+    if (gridSizeValue <= 0) return this.copy();
 
     const totalTicks = this.toTicks();
-    const gridTicks = gridSize * 480;
+    const gridTicks = gridSizeValue * 480;
 
     let snappedTicks: number;
     switch (direction) {
@@ -354,7 +360,7 @@ export class TimelinePosition {
   // Add missing static methods
   static parseFromString(str: string): TimelinePosition {
     // Parse format "bar:beat:tick" or similar
-    const parts = str.split(':').map(Number);
+    const parts = str.split(":").map(Number);
     if (parts.length >= 3) {
       return new TimelinePosition(parts[0] || 0, parts[1] || 0, parts[2] || 0);
     }
@@ -376,7 +382,7 @@ export class TimelinePosition {
 
   static fractionToSpan(fraction: number): number {
     // Convert fraction (in milliseconds) to span (in ticks)
-    return fraction * 480 / 1000;
+    return (fraction * 480) / 1000;
   }
 }
 

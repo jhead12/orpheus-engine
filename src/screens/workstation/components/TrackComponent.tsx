@@ -8,10 +8,10 @@ import {
   Track as CoreTrack,
 } from "../../../types/core";
 import type { AutomationLane, Effect } from "../../../types/core";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from '@orpheus/contexts';
 import { DialogContent } from "@mui/material";
-import { Dialog, HueInput } from "../../../components/widgets";
-import { hueFromHex, hslToHex } from "../../../services/utils/general";
+import { Dialog, HueInput } from '@orpheus/widgets';
+import { hueFromHex, hslToHex } from '@orpheus/utils/general';
 import { openContextMenu } from "../../../services/electron/utils";
 import AutomationLaneTrack from "./AutomationLaneTrack";
 

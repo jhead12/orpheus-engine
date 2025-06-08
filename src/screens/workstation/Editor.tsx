@@ -34,9 +34,16 @@ import {
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
 import { AnalysisContext, useWorkstation } from "../../contexts";
-import { Clip, ContextMenuType, Track, TrackType } from "../../types/core";
+import {
+  Clip,
+  ContextMenuType,
+  Track,
+  TrackType,
+  AutomationMode,
+} from "../../types/core";
 import { TimelinePosition } from "../../types/core";
 import { AudioAnalysisType } from "../../services/types/types";
+import { AudioAnalysisResults } from "../../types/audio";
 import {
   BASE_BEAT_WIDTH,
   BASE_HEIGHT,
@@ -77,6 +84,9 @@ const getBaseTrack = (type = "audio") => ({
   },
   mute: false,
   armed: false,
+  // Add missing required Track interface properties
+  automation: false,
+  automationMode: AutomationMode.Off,
 });
 
 export interface EditorDragData {
@@ -97,27 +107,32 @@ export function AudioAnalysisProvider({
     AudioAnalysisType.Spectral
   );
   const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [analysisResults, setAnalysisResults] =
+    useState<AudioAnalysisResults | null>(null);
 
   const runAudioAnalysis = async (
     audioBuffer: AudioBuffer,
     type: AudioAnalysisType
-  ) => {
-    let results = null;
+  ): Promise<AudioAnalysisResults | null> => {
+    let results: AudioAnalysisResults | null = null;
 
-    switch (type) {
-      case AudioAnalysisType.Spectral:
-        // Perform spectral analysis
-        results = await performSpectralAnalysis(audioBuffer);
-        break;
-      case AudioAnalysisType.Waveform:
-        // Perform waveform analysis
-        results = await performWaveformAnalysis(audioBuffer);
-        break;
-      case AudioAnalysisType.Features:
-        // Extract audio features
-        results = await extractAudioFeatures(audioBuffer);
-        break;
+    try {
+      switch (type) {
+        case AudioAnalysisType.Spectral:
+          // Perform spectral analysis
+          results = await performSpectralAnalysis(audioBuffer);
+          break;
+        case AudioAnalysisType.Waveform:
+          // Perform waveform analysis
+          results = await performWaveformAnalysis(audioBuffer);
+          break;
+        case AudioAnalysisType.Features:
+          // Extract audio features
+          results = await extractAudioFeatures(audioBuffer);
+          break;
+      }
+    } catch (error) {
+      console.error("Error running audio analysis:", error);
     }
 
     setAnalysisResults(results);
@@ -125,33 +140,60 @@ export function AudioAnalysisProvider({
   };
 
   // Mock implementation of analysis functions
-  const performSpectralAnalysis = async (_audioBuffer: AudioBuffer) => {
-    // Implementation would connect to Python backend for FFT analysis
+  const performSpectralAnalysis = async (
+    audioBuffer: AudioBuffer
+  ): Promise<import("../../contexts/AnalysisContext").AudioAnalysisResults> => {
+    // Get sample rate from audio buffer to make frequency scales realistic
+    const sampleRate = audioBuffer.sampleRate || 44100;
+    
+    // Generate mock spectral data as Float32Array[]
+    const spectralData: Float32Array[] = [];
+    for (let i = 0; i < 128; i++) {
+      const frame = new Float32Array(1024);
+      for (let j = 0; j < 1024; j++) {
+        frame[j] = Math.random() * 0.5;
+      }
+      spectralData.push(frame);
+    }
+    
     return {
-      type: "spectral",
-      data: [
-        /* frequency data */
-      ],
+      spectral: spectralData
     };
   };
 
-  const performWaveformAnalysis = async (_audioBuffer: AudioBuffer) => {
+  const performWaveformAnalysis = async (
+    audioBuffer: AudioBuffer
+  ): Promise<AudioAnalysisResults> => {
     // Implementation would analyze amplitude characteristics
+    const sampleData = new Array(1024);
+    const channelData = audioBuffer.getChannelData(0);
+    const step = Math.floor(channelData.length / sampleData.length);
+
+    for (let i = 0; i < sampleData.length; i++) {
+      sampleData[i] = channelData[i * step];
+    }
+
+    // Convert to Float32Array for compatibility with AudioAnalysisResults
+    const waveformData = new Float32Array(sampleData);
+
     return {
-      type: "waveform",
-      data: [
-        /* amplitude data */
-      ],
+      waveform: waveformData,
     };
   };
 
-  const extractAudioFeatures = async (_audioBuffer: AudioBuffer) => {
+  const extractAudioFeatures = async (
+    _audioBuffer: AudioBuffer
+  ): Promise<AudioAnalysisResults> => {
     // Implementation would extract MFCCs, onset detection, etc.
+    // Create a typed features object
+    const features: Record<string, number | number[]> = {
+      mfcc: Array.from({ length: 13 }, () => Math.random() * 2 - 1),
+      energy: Math.random() * 0.5,
+      spectralCentroid: 440 + Math.random() * 1000,
+    };
+
     return {
-      type: "features",
-      data: {
-        /* feature data */
-      },
+      features: features,
     };
   };
 
@@ -258,7 +300,7 @@ export default function Editor() {
       window.removeEventListener("keyup", handleKeyUp);
       setAllowMenuAndShortcuts(true);
     };
-  }, []);
+  }, [setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     function handleDragEnter(e: DragEvent) {
@@ -313,7 +355,7 @@ export default function Editor() {
       document.body.removeEventListener("dragleave", handleDragLeave);
       document.body.removeEventListener("dragover", handleDragOver);
     };
-  }, [dragData.target]);
+  }, [dragData.target, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (resetDragState) {
@@ -324,7 +366,7 @@ export default function Editor() {
       setAllowMenuAndShortcuts(true);
       setResetDragState(false);
     }
-  }, [resetDragState]);
+  }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (zoomAnchorPos.current) {
@@ -382,7 +424,7 @@ export default function Editor() {
         setScrollToItem(null);
       });
     }
-  }, [scrollToItem]);
+  }, [scrollToItem, setScrollToItem]);
 
   function centerOnPlayhead() {
     scrollToAndAlign(
@@ -570,13 +612,17 @@ export default function Editor() {
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params: any) => {
-      switch (params.action) {
-        case 1:
-          setSongRegion(null);
-          break;
+    openContextMenu(
+      ContextMenuType.Region,
+      {},
+      (params: { action: number }) => {
+        switch (params.action) {
+          case 1:
+            setSongRegion(null);
+            break;
+        }
       }
-    });
+    );
   }
 
   // Function to handle selecting an audio clip for analysis
@@ -590,7 +636,7 @@ export default function Editor() {
 
   // Function to handle clip context menu
   function handleClipContextMenu(_e: React.MouseEvent, clip: Clip) {
-    openContextMenu(ContextMenuType.Clip, {}, (params: any) => {
+    openContextMenu(ContextMenuType.Clip, {}, (params: { action: string }) => {
       switch (params.action) {
         case "analyze":
           handleSelectForAnalysis(clip);
@@ -686,7 +732,7 @@ export default function Editor() {
             zoomAnchorWindowAlignment.current =
               (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
-            updateTimelineSettings((prev: any) => {
+            updateTimelineSettings((prev) => {
               const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
@@ -961,7 +1007,7 @@ export default function Editor() {
                     thresholds: timelineEditorWindowScrollThresholds,
                   }}
                   cancel=".stop-reorder"
-                  onSortUpdate={(data: any) =>
+                  onSortUpdate={(data: { edgeIndex: number }) =>
                     setTrackReorderData({
                       ...trackReorderData,
                       edgeIndex: data.edgeIndex,

@@ -1,4 +1,4 @@
-import { formatPanning } from "../../../services/utils/audio";
+import { formatPanning } from '@orpheus/utils/audio';
 import React, {
   useCallback,
   useContext,
@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { Popover } from "@mui/material";
-import { WorkstationContext } from "../../../contexts";
+import { WorkstationContext } from '@orpheus/contexts';
 import {
   AutomationLane,
   AutomationLaneEnvelope,

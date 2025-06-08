@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import { WorkstationContext } from '../../../contexts/WorkstationContext';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { TimelinePosition, Track, TrackType } from '../../../types/core';
 
 export interface TimelineProps {
