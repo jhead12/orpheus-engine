@@ -33,6 +33,7 @@
     "cleanup:bak": "find ./workstation -name \"*.bak\" -type f -delete && find ./workstation -name \"*.bak\" -type d -exec rm -rf {} +",
     "cleanup:verify": "node scripts/verify-cleanup.js",
     "cleanup:all": "pnpm run cleanup && pnpm run cleanup:temp && pnpm run cleanup:archives && pnpm run cleanup:bak && pnpm run cleanup:verify",
+    "update:all": "chmod +x scripts/update-all.sh && ./scripts/update-all.sh",
     "fix:permissions": "node scripts/fix-permissions-win.js",
     "fix:permissions:win": "node scripts/fix-permissions-win.js",
     "fix:permissions:unix": "scripts\\fix-permissions.bat",
