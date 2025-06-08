@@ -11,3 +11,20 @@ export {
   type ClipboardItem,
 } from "./ClipboardContext";
 export { ClipboardItemType } from "../types/clipboard";
+
+// Audio search exports (placeholder)
+export interface SearchResult {
+  id: string;
+  name: string;
+  path: string;
+  type: string;
+}
+
+export const useAudioSearch = () => {
+  // Placeholder implementation
+  return {
+    search: (query: string) => Promise.resolve([]),
+    results: [] as SearchResult[],
+    loading: false,
+  };
+};

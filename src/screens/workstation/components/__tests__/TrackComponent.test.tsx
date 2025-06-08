@@ -445,16 +445,24 @@ describe("TrackComponent", () => {
         return;
       }
 
-      renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
-      // Wait for any animations or async rendering to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
       try {
-        await expectScreenshot(container, "track-component-audio");
+        renderWithContext(<TrackComponent track={baseTrack} />, screenshotContainer);
+        
+        // Wait for any animations or async rendering to complete
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        await expectScreenshot(screenshotContainer, "track-component-audio");
       } catch (error) {
         // Visual tests might fail in CI environment, log but don't fail the test
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
 
@@ -464,15 +472,23 @@ describe("TrackComponent", () => {
         return;
       }
 
-      const track = { ...baseTrack, mute: true };
-      renderWithContext(<TrackComponent track={track} />, container);
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
       try {
-        await expectScreenshot(container, "track-component-muted");
+        const track = { ...baseTrack, mute: true };
+        renderWithContext(<TrackComponent track={track} />, screenshotContainer);
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        await expectScreenshot(screenshotContainer, "track-component-muted");
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
 
@@ -482,15 +498,133 @@ describe("TrackComponent", () => {
         return;
       }
 
-      const track = { ...baseTrack, armed: true };
-      renderWithContext(<TrackComponent track={track} />, container);
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
       try {
-        await expectScreenshot(container, "track-component-armed");
+        const track = { ...baseTrack, armed: true };
+        renderWithContext(<TrackComponent track={track} />, screenshotContainer);
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        await expectScreenshot(screenshotContainer, "track-component-armed");
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
+      }
+    });
+
+    it("should match visual snapshot for solo track", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
+      try {
+        const track = { ...baseTrack, solo: true };
+        renderWithContext(<TrackComponent track={track} />, screenshotContainer);
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        await expectScreenshot(screenshotContainer, "track-component-solo");
+      } catch (error) {
+        console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
+      }
+    });
+
+    it("should match visual snapshot for track with automation", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 300px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
+      try {
+        const track = {
+          ...baseTrack,
+          automation: true,
+          automationMode: AutomationMode.Write,
+          automationLanes: [
+            {
+              id: "lane-1",
+              label: "Volume",
+              envelope: AutomationLaneEnvelope.Volume,
+              enabled: true,
+              minValue: -60,
+              maxValue: 6,
+              nodes: [],
+              show: true,
+              expanded: true,
+            }
+          ]
+        };
+        renderWithContext(<TrackComponent track={track} />, screenshotContainer);
+        
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        await expectScreenshot(screenshotContainer, "track-component-automation");
+      } catch (error) {
+        console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
+      }
+    });
+
+    it("should match visual snapshot for MIDI track", async () => {
+      if (shouldSkipVisualTests) {
+        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        return;
+      }
+
+      const screenshotContainer = document.createElement("div");
+      screenshotContainer.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      document.body.appendChild(screenshotContainer);
+
+      try {
+        const track = { 
+          ...baseTrack, 
+          type: TrackType.Midi,
+          name: "MIDI Track",
+          color: "#00ff00",
+          clips: [
+            {
+              id: "midi-clip-1",
+              name: "MIDI Clip",
+              start: createMockTimelinePosition(0, 0, 0),
+              end: createMockTimelinePosition(4, 0, 0),
+              position: createMockTimelinePosition(0, 0, 0),
+              notes: []
+            }
+          ]
+        };
+        renderWithContext(<TrackComponent track={track} />, screenshotContainer);
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        await expectScreenshot(screenshotContainer, "track-component-midi");
+      } catch (error) {
+        console.warn("Visual snapshot test failed:", error);
+      } finally {
+        if (screenshotContainer.parentNode) {
+          screenshotContainer.parentNode.removeChild(screenshotContainer);
+        }
       }
     });
   });

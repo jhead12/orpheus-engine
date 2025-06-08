@@ -1,4 +1,5 @@
 // Audio utilities and context management
+
 export type AudioContextConstructor = {
   new (contextOptions?: AudioContextOptions): AudioContext;
 };
@@ -8,6 +9,9 @@ declare global {
     webkitAudioContext: AudioContextConstructor;
   }
 }
+
+// Mock function for test environments
+const mockFn = () => () => {};
 
 // Basic audio utilities
 export function createAudioContext() {
@@ -23,15 +27,15 @@ export function createAudioContext() {
           sampleRate,
           duration: length / sampleRate,
           getChannelData: () => new Float32Array(length),
-          copyToChannel: vi.fn(),
-          copyFromChannel: vi.fn(),
+          copyToChannel: mockFn(),
+          copyFromChannel: mockFn(),
         };
       }
       createBufferSource() {
         return {
-          connect: vi.fn(),
-          start: vi.fn(),
-          stop: vi.fn(),
+          connect: mockFn(),
+          start: mockFn(),
+          stop: mockFn(),
           buffer: null,
         };
       }
@@ -119,4 +123,65 @@ export const reverseAudio = async (
   }
 
   return reversedBuffer;
+};
+
+// Additional audio utility functions
+export const analyzeAudio = async (audioBuffer: AudioBuffer): Promise<any> => {
+  // Basic audio analysis - placeholder implementation
+  return {
+    duration: audioBuffer.duration,
+    sampleRate: audioBuffer.sampleRate,
+    numberOfChannels: audioBuffer.numberOfChannels,
+    length: audioBuffer.length
+  };
+};
+
+export const normalizeAudio = async (audioBuffer: AudioBuffer): Promise<AudioBuffer> => {
+  const numberOfChannels = audioBuffer.numberOfChannels;
+  const length = audioBuffer.length;
+  const sampleRate = audioBuffer.sampleRate;
+  
+  const context = getAudioContext();
+  const normalizedBuffer = context.createBuffer(numberOfChannels, length, sampleRate);
+  
+  for (let channel = 0; channel < numberOfChannels; channel++) {
+    const channelData = audioBuffer.getChannelData(channel);
+    const normalizedData = new Float32Array(length);
+    
+    // Find peak value
+    let peak = 0;
+    for (let i = 0; i < length; i++) {
+      peak = Math.max(peak, Math.abs(channelData[i]));
+    }
+    
+    // Normalize if peak is greater than 0
+    const gain = peak > 0 ? 1 / peak : 1;
+    for (let i = 0; i < length; i++) {
+      normalizedData[i] = channelData[i] * gain;
+    }
+    
+    normalizedBuffer.getChannelData(channel).set(normalizedData);
+  }
+  
+  return normalizedBuffer;
+};
+
+export const generateWaveform = (audioBuffer: AudioBuffer, width: number = 800): number[] => {
+  const channelData = audioBuffer.getChannelData(0); // Use first channel
+  const blockSize = Math.floor(channelData.length / width);
+  const waveform: number[] = [];
+  
+  for (let i = 0; i < width; i++) {
+    const start = i * blockSize;
+    const end = Math.min(start + blockSize, channelData.length);
+    
+    let peak = 0;
+    for (let j = start; j < end; j++) {
+      peak = Math.max(peak, Math.abs(channelData[j]));
+    }
+    
+    waveform.push(peak);
+  }
+  
+  return waveform;
 };

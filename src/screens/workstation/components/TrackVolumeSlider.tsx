@@ -6,7 +6,7 @@ import {
   volumeToNormalized,
 } from "@orpheus/utils/utils";
 import Slider from "@orpheus/widgets/Slider";
-import { useWorkstation } from "../../../context/WorkstationContext";
+import { useWorkstation } from "@orpheus/contexts/WorkstationContext";
 import { TooltipProps } from "@orpheus/widgets/Tooltip";
 
 interface TrackVolumeSliderProps {
