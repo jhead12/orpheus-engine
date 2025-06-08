@@ -87,12 +87,16 @@ describe('AudioService', () => {
   let audioService: AudioService;
   let mockFile: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Reset the singleton instance before each test
     (AudioService as any).instance = null;
     
     // Make sure AudioContext mock is properly set up
     vi.clearAllMocks();
+    
+    // Ensure the AudioContext constructor is properly mocked
+    MockAudioContextConstructor.mockClear();
+    MockAudioContextConstructor.mockReturnValue(mockAudioContext);
     
     // Re-mock AudioContext with fresh mocks for each test
     mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue({
@@ -104,6 +108,8 @@ describe('AudioService', () => {
     });
     
     audioService = AudioService.getInstance();
+    // Force initialization to use our mocked AudioContext
+    await audioService.initialize();
     mockFile = createMockFile('test.wav', 'audio/wav');
   });
 

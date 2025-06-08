@@ -11,8 +11,6 @@ import {
 } from "@orpheus/types/core";
 import { hslToHex, hueFromHex } from "@orpheus/utils/general";
 import {
-  formatPanning,
-  getVolumeGradient,
   volumeToNormalized,
 } from "@orpheus/utils/utils";
 import { FXComponent, TrackVolumeSlider } from "./index";

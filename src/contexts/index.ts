@@ -10,6 +10,18 @@ export {
   type ClipboardContextType,
   type ClipboardItem,
 } from "./ClipboardContext";
+export {
+  MixerContext,
+  MixerProvider,
+  useMixer,
+  type MixerContextType,
+} from "./MixerContext";
+export {
+  PreferencesContext,
+  PreferencesProvider,
+  usePreferences,
+  type PreferencesContextType,
+} from "./PreferencesContext";
 export { ClipboardItemType } from "../types/clipboard";
 
 // Audio search exports (placeholder)

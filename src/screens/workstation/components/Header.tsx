@@ -38,7 +38,6 @@ import {
 import { SnapGridSizeOption } from "@orpheus/types/audio";
 import { FaMagnet } from "react-icons/fa";
 import {
-  getVolumeGradient,
   sliceClip,
   volumeToNormalized,
 } from "@orpheus/utils/utils";

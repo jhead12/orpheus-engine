@@ -50,8 +50,8 @@ import {
   WorkstationAudioInputFile,
 } from "../../types/audio";
 import { getGridSizeFromOption } from "../../services/utils/timeline-utils";
+import { BASE_BEAT_WIDTH } from "../../constants/timeline";
 import {
-  BASE_BEAT_WIDTH,
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
   isValidTrackFileFormat,

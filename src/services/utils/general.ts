@@ -208,3 +208,47 @@ export const shadeColor = (color: string, percent: number) => {
 
   return "#" + RR + GG + BB;
 };
+
+/**
+ * Formats a duration in seconds to a human-readable string
+ */
+export function formatDuration(seconds: number): string {
+  const totalSeconds = Math.floor(seconds);
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = totalSeconds % 60;
+
+  if (minutes > 0) {
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  }
+  return `${remainingSeconds}s`;
+}
+
+/**
+ * Measures seconds and returns the value (identity function for consistency)
+ */
+export function measureSeconds(seconds: number): number {
+  return seconds;
+}
+
+/**
+ * Parses a duration string and returns seconds
+ */
+export function parseDuration(duration: string): number {
+  // Handle formats like "1:30", "90s", "1m30s"
+  if (duration.includes(":")) {
+    const parts = duration.split(":");
+    const minutes = parseInt(parts[0], 10) || 0;
+    const seconds = parseInt(parts[1], 10) || 0;
+    return minutes * 60 + seconds;
+  }
+
+  if (duration.endsWith("s")) {
+    return parseInt(duration.slice(0, -1), 10) || 0;
+  }
+
+  if (duration.endsWith("m")) {
+    return (parseInt(duration.slice(0, -1), 10) || 0) * 60;
+  }
+
+  return parseInt(duration, 10) || 0;
+}

@@ -42,8 +42,8 @@ import {
   TrackType,
   AudioAnalysisType,
 } from "../../services/types/types";
+import { BASE_BEAT_WIDTH } from "../../constants/timeline";
 import {
-  BASE_BEAT_WIDTH,
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
   isValidTrackFileFormat,

@@ -185,3 +185,40 @@ export const generateWaveform = (audioBuffer: AudioBuffer, width: number = 800):
   
   return waveform;
 };
+
+/**
+ * Format panning value for display
+ */
+export function formatPanning(pan: number): string {
+  if (pan === 0) return 'C';
+  if (pan > 0) return `R${Math.round(pan * 100)}`;
+  return `L${Math.round(Math.abs(pan) * 100)}`;
+}
+
+/**
+ * Get volume gradient for visual representation
+ */
+export function getVolumeGradient(volume: number): string {
+  // Convert dB to linear scale for gradient
+  const linear = Math.pow(10, volume / 20);
+  const clampedLinear = Math.max(0, Math.min(1, linear));
+  
+  // Create gradient from green to red based on volume level
+  const red = Math.round(255 * clampedLinear);
+  const green = Math.round(255 * (1 - clampedLinear * 0.5));
+  
+  return `rgb(${red}, ${green}, 0)`;
+}
+
+/**
+ * Slice a clip (placeholder implementation)
+ */
+export function sliceClip(clip: any, startTime: number, endTime: number): any {
+  // Placeholder implementation for audio clip slicing
+  return {
+    ...clip,
+    start: startTime,
+    end: endTime,
+    duration: endTime - startTime
+  };
+}

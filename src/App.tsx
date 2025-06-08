@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { ClipboardProvider } from "./context/ClipboardContext";
-import { WorkstationProvider } from "./context/WorkstationContext";
-import { MixerProvider } from "./context/MixerContext";
-import { PreferencesProvider } from "./context/PreferencesContext";
+import { ClipboardProvider } from "./contexts/ClipboardContext";
+import { WorkstationProvider } from "./contexts/WorkstationContext";
+import { MixerProvider } from "./contexts/MixerContext";
+import { PreferencesProvider } from "./contexts/PreferencesContext";
 import Workstation from "./screens/workstation/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";

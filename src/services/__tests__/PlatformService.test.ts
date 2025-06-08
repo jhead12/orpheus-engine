@@ -25,6 +25,14 @@ describe('PlatformService', () => {
     // Reset global objects
     delete (global as any).process;
     delete (global as any).electronAPI;
+    
+    // Mock AudioContext for browser capability tests
+    (global as any).AudioContext = vi.fn();
+    Object.defineProperty(window, 'AudioContext', {
+      writable: true,
+      value: vi.fn()
+    });
+    
     vi.clearAllMocks();
   });
 
