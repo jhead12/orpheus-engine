@@ -27,6 +27,7 @@
     "pnpm": ">=10.6.4"
   },
   "scripts": {
+    "preinstall": "node scripts/fix-permissions.js",
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.mjs\"",
     "dev:vite": "cross-env NODE_ENV=development vite",
