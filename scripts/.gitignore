@@ -1,0 +1,24 @@
+# Scripts directory ignores
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Log files
+*.log
+debug.log
+
+# Generated files
+generated/
+output/
+
+# System files
+.DS_Store
+Thumbs.db

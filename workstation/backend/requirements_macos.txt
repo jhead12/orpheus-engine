@@ -1,0 +1,9 @@
+torch==2.1.0
+torchvision==0.16.0
+torchaudio==2.1.0
+tokenizers==0.19.1
+transformers==4.40.0
+sentence-transformers==2.6.1
+numpy>=1.24.3
+scipy>=1.10.1
+scikit-learn>=1.2.2

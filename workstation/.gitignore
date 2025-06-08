@@ -1,0 +1,47 @@
+# Workstation specific ignores
+
+# Build outputs
+dist/
+build/
+out/
+
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Audio processing cache
+audio_cache/
+audio_temp/
+rendered_audio/
+
+# ML models and data
+models/
+checkpoints/
+*.weights
+*.h5
+*.pth
+*.onnx
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Database files
+*.db
+*.sqlite
+chroma_db/
+
+# System files
+.DS_Store
+Thumbs.db
