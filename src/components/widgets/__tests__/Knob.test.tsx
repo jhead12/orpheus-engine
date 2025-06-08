@@ -192,10 +192,10 @@ describe("Knob Component", () => {
 
       try {
         render(<Knob value={75} min={0} max={100} />, { container });
-        
+
         // Reduced wait time for faster tests
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         await expectScreenshot(container, "knob-75-percent");
       } catch (error) {
         console.warn("Visual test failed:", error);
@@ -228,9 +228,9 @@ describe("Knob Component", () => {
 
       try {
         render(<Knob value={0} min={0} max={100} />, { container });
-        
+
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         await expectScreenshot(container, "knob-min");
       } catch (error) {
         console.warn("Visual test failed:", error);
@@ -262,9 +262,9 @@ describe("Knob Component", () => {
 
       try {
         render(<Knob value={100} min={0} max={100} />, { container });
-        
+
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         await expectScreenshot(container, "knob-max");
       } catch (error) {
         console.warn("Visual test failed:", error);

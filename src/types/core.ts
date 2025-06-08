@@ -1,17 +1,19 @@
 // Core type definitions for the audio workstation
 
+// TimeSignature: Represents musical time signature (e.g., 4/4, 3/4, 6/8)
 export interface TimeSignature {
-  beats: number;
-  noteValue: number;
+  beats: number; // Number of beats per measure (numerator)
+  noteValue: number; // Note value that gets the beat (denominator)
 }
 
+// TimelineSettings: Configuration for the timeline view and behavior
 export interface TimelineSettings {
-  tempo: number;
-  timeSignature: { beats: number; noteValue: number };
-  snap: boolean;
-  snapUnit: "beat" | "bar" | "sixteenth";
-  horizontalScale: number;
-  beatWidth?: number;
+  tempo: number; // BPM (beats per minute)
+  timeSignature: { beats: number; noteValue: number }; // Time signature for the project
+  snap: boolean; // Whether grid snapping is enabled
+  snapUnit: "beat" | "bar" | "sixteenth"; // Grid resolution for snapping
+  horizontalScale: number; // Zoom level for timeline display
+  beatWidth?: number; // Optional: width of a beat in pixels
 }
 
 export interface Region {
@@ -21,9 +23,9 @@ export interface Region {
 
 // Track Types
 export enum TrackType {
-  Audio = "audio",
-  Midi = "midi",
-  Sequencer = "sequencer",
+  Audio = "audio", // Audio tracks for recorded/imported audio
+  Midi = "midi", // MIDI tracks for note data
+  Sequencer = "sequencer", // Sequencer tracks for step sequencing
 }
 
 export enum AutomationMode {
@@ -424,7 +426,7 @@ export interface BaseEffect {
 }
 
 export interface Effect extends BaseEffect {
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
 export interface FXChainPreset {
