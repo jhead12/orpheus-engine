@@ -29,6 +29,9 @@
   "scripts": {
     "preinstall": "node scripts/fix-permissions.js",
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
+    "demo": "node scripts/setup-demo.js",
+    "demo:notebook": "cd demo && jupyter notebook OrpheusWebDemo.ipynb",
+    "demo:lab": "cd demo && jupyter lab OrpheusWebDemo.ipynb",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.mjs\"",
     "dev:vite": "cross-env NODE_ENV=development vite",
     "dev:local": "cross-env NODE_ENV=development VITE_PORT=3000 vite",

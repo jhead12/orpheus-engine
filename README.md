@@ -68,7 +68,26 @@ The application will be available at:
 - **Development Server**: http://localhost:5173 (Vite)
 - **Local Development**: http://localhost:3000 (custom port)
 
-### 3. Build for Production
+### 3. Web Demo & Jupyter Integration
+```bash
+# Start the interactive web demo (Jupyter notebook)
+npm run demo
+
+# Or run directly with Python
+cd demo && jupyter lab OrpheusWebDemo.ipynb
+
+# Install Python dependencies if needed
+pip install -r requirements.txt
+```
+
+The **Orpheus Web Demo** is accessible from the `/demo` folder and provides:
+- 🎛️ Interactive DAW component showcase
+- 🔍 Platform capability testing (Electron, Browser, Python)
+- 🎵 Real-time audio processing demonstrations
+- 📊 Cross-platform compatibility testing
+- 🧪 Component integration with existing Jupyter backend
+
+### 4. Build for Production
 ```bash
 # Build the application
 npm run build
