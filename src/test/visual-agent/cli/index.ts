@@ -6,7 +6,6 @@ import fs from "fs/promises";
 import path from "path";
 import { ComponentConfigs, getAllConfigs, getConfig } from "../configs";
 import { generateTestFromTemplate } from "../helpers/template-engine";
-import { VisualTestConfig } from "../types";
 
 /**
  * Main CLI entry point
