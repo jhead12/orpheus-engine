@@ -132,12 +132,14 @@ export const SortableList: React.FC<SortableListProps> = ({
 
       const finalDestIndex = destIndex === -1 ? items.length : destIndex;
 
-      // Call onEnd with final positions
-      onEnd(e, {
-        sourceIndex,
-        edgeIndex: finalDestIndex,
-        destIndex: finalDestIndex,
-      });
+      // Call onEnd with final positions (only if provided)
+      if (onEnd) {
+        onEnd(e, {
+          sourceIndex,
+          edgeIndex: finalDestIndex,
+          destIndex: finalDestIndex,
+        });
+      }
 
       // Reset drag state
       mouseDownRef.current = false;

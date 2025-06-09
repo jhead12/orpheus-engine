@@ -86,9 +86,9 @@ const MixerTrack = memo(
       }
     }
 
-    const isMaster = track.id === masterTrack.id;
+    const isMaster = masterTrack ? track.id === masterTrack.id : false;
     const selected = selectedTrackId === track.id;
-    const mutedByMaster = masterTrack.mute && !isMaster;
+    const mutedByMaster = masterTrack?.mute && !isMaster;
 
     const muteButtonTitle = mutedByMaster
       ? "Master is muted"
@@ -435,9 +435,11 @@ function Mixer() {
             <MixerTrack order={idx + 1} track={track} />
           </SortableListItem>
         ))}
-        <div className="col-auto">
-          <MixerTrack track={masterTrack} />
-        </div>
+        {masterTrack && (
+          <div className="col-auto">
+            <MixerTrack track={masterTrack} />
+          </div>
+        )}
       </div>
     </SortableList>
   );

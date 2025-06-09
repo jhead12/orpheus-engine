@@ -79,14 +79,29 @@ vi.mock('../../../../widgets', () => ({
 }));
 
 // Mock FXComponent and TrackVolumeSlider
+// Mock FXComponent and TrackVolumeSlider
 vi.mock('../FXComponent', () => ({
+  default: ({ track, ...props }: any) => 
+    <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
+      FX Component for {track?.name || 'Unknown Track'}
+    </div>,
   FXComponent: ({ track, ...props }: any) => 
-    <div data-testid={`fx-component-${track.id}`} {...props}>
-      FX Component for {track.name}
+    <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
+      FX Component for {track?.name || 'Unknown Track'}
     </div>,
 }));
 
 vi.mock('../TrackVolumeSlider', () => ({
+  default: ({ track, ...props }: any) => 
+    <input 
+      data-testid={`volume-slider-${track.id}`} 
+      type="range" 
+      min="0" 
+      max="1" 
+      step="0.01" 
+      value={track.volume?.value || track.volume || 0} 
+      {...props} 
+    />,
   TrackVolumeSlider: ({ track, ...props }: any) => 
     <input 
       data-testid={`volume-slider-${track.id}`} 
@@ -98,6 +113,763 @@ vi.mock('../TrackVolumeSlider', () => ({
       {...props} 
     />,
 }));
+
+// Mock Material-UI components with all required exports
+vi.mock('@mui/icons-material', () => ({
+  Check: () => <div data-testid="check-icon">Check</div>,
+  FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
+  ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
+  ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
+}));
+
+vi.mock('@mui/material', () => ({
+  DialogContent: ({ children, ...props }: any) => <div data-testid="dialog-content" {...props}>{children}</div>,
+  IconButton: ({ children, ...props }: any) => <button data-testid="icon-button" {...props}>{children}</button>,
+  Dialog: ({ children, open, onClose, ...props }: any) => 
+    open ? (
+      <div data-testid="mui-dialog" {...props}>
+        {children}
+      </div>
+    ) : null,
+  Tooltip: ({ children, title, ...props }: any) => 
+    <div data-testid="tooltip" title={title} {...props}>
+      {children}
+    </div>,
+}));
+
+// Mock orpheus widgets
+vi.mock('../../../../widgets', () => ({
+  Dialog: ({ children, open, title, onClose, ...props }: any) => 
+    open ? (
+      <div data-testid="dialog" {...props}>
+        <div data-testid="dialog-title">{title}</div>
+        {children}
+      </div>
+    ) : null,
+  HueInput: ({ value, onChange, ...props }: any) => 
+    <input 
+      data-testid="hue-input" 
+      type="range" 
+      min="0" 
+      max="360" 
+      value={value} 
+      onChange={(e) => onChange(Number(e.target.value))} 
+      {...props} 
+    />,
+  Knob: ({ value, onChange, title, ...props }: any) => 
+    <input 
+      data-testid="knob" 
+      type="range" 
+      min={props.min || -100} 
+      max={props.max || 100} 
+      value={value} 
+      onChange={(e) => onChange(Number(e.target.value))} 
+      title={title}
+      {...props} 
+    />,
+  Meter: ({ percent, vertical, ...props }: any) => 
+    <div 
+      data-testid="meter" 
+      style={{ height: vertical ? '100%' : 'auto', width: vertical ? 'auto' : '100%' }} 
+      aria-valuenow={percent}
+      {...props} 
+    />,
+  SelectSpinBox: ({ value, onChange, options, title, ...props }: any) => (
+    <select 
+      data-testid="select-spinbox" 
+      value={value} 
+      onChange={(e) => onChange(e.target.value)}
+      title={title}
+      {...props}
+    >
+      {options?.map((option: any) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  ),
+  SortableList: ({ children, onEnd, onStart, onSortUpdate, ...props }: any) => 
+    <div data-testid="sortable-list" {...props}>
+      {children}
+    </div>,
+  SortableListItem: ({ children, index, ...props }: any) => 
+    <div data-testid={`sortable-item-${index}`} {...props}>
+      {children}
+    </div>,
+}));
+
+// Mock FXComponent and TrackVolumeSlider
+vi.mock('../FXComponent', () => ({
+  default: ({ track, ...props }: any) => 
+    <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
+      FX Component for {track?.name || 'Unknown Track'}
+    </div>,
+  FXComponent: ({ track, ...props }: any) => 
+    <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
+      FX Component for {track?.name || 'Unknown Track'}
+    </div>,
+}));
+
+vi.mock('../TrackVolumeSlider', () => ({
+  default: ({ track, ...props }: any) => 
+    <input 
+      data-testid={`volume-slider-${track?.id || 'unknown'}`} 
+      type="range" 
+      min="0" 
+      max="1" 
+      step="0.01" 
+      value={track?.volume?.value || track?.volume || 0} 
+      {...props} 
+    />,
+  TrackVolumeSlider: ({ track, ...props }: any) => 
+    <input 
+      data-testid={`volume-slider-${track?.id || 'unknown'}`} 
+      type="range" 
+      min="0" 
+      max="1" 
+      step="0.01" 
+      value={track?.volume?.value || track?.volume || 0} 
+      {...props} 
+    />,
+}));
+
+// Enhanced error handling tests that check for null safety
+describe('Error Handling - Comprehensive', () => {
+  it('should handle null master track gracefully', () => {
+    const contextWithNullMaster = {
+      ...mockWorkstationContext,
+      masterTrack: null,
+    };
+
+    // Suppress expected error logs
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    let renderResult;
+    
+    // Test should not throw during render
+    expect(() => {
+      renderResult = render(
+        <WorkstationContext.Provider value={contextWithNullMaster as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should still render tracks
+    expect(screen.getByText('Vocals')).toBeInTheDocument();
+    expect(screen.getByText('Guitar')).toBeInTheDocument();
+    
+    // Should not render master track
+    expect(screen.queryByText('Master')).not.toBeInTheDocument();
+
+    // Clean up
+    consoleSpy.mockRestore();
+    if (renderResult) {
+      renderResult.unmount();
+    }
+  });
+
+  it('should handle undefined master track', () => {
+    const contextWithUndefinedMaster = {
+      ...mockWorkstationContext,
+      masterTrack: undefined,
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithUndefinedMaster as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should still render regular tracks
+    expect(screen.getByText('Vocals')).toBeInTheDocument();
+    expect(screen.getByText('Guitar')).toBeInTheDocument();
+  });
+
+  it('should handle tracks with missing properties safely', () => {
+    const minimalTrack = {
+      id: 'minimal-track',
+      name: 'Minimal Track',
+      type: TrackType.Audio,
+      // Intentionally missing many properties
+    };
+
+    const contextWithMinimalTrack = {
+      ...mockWorkstationContext,
+      tracks: [minimalTrack as any],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithMinimalTrack as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    expect(screen.getByText('Minimal Track')).toBeInTheDocument();
+  });
+
+  it('should handle tracks with null/undefined values', () => {
+    const trackWithNulls = {
+      ...mockTracks[0],
+      volume: null,
+      pan: null,
+      automationLanes: null,
+      fx: null,
+      mute: undefined,
+      solo: undefined,
+      armed: undefined,
+    };
+
+    const contextWithNulls = {
+      ...mockWorkstationContext,
+      tracks: [trackWithNulls],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithNulls as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    expect(screen.getByText('Vocals')).toBeInTheDocument();
+  });
+
+  it('should handle empty tracks array', () => {
+    const contextWithEmptyTracks = {
+      ...mockWorkstationContext,
+      tracks: [],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithEmptyTracks as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should still show master track
+    expect(screen.getByText('Master')).toBeInTheDocument();
+  });
+});
+
+// Comprehensive volume control tests
+describe('Volume Control System', () => {
+  it('should render volume sliders with proper fallback values', () => {
+    renderWorkstationMixer();
+    
+    const volumeSlider1 = screen.getByTestId('volume-slider-track-1');
+    const volumeSlider2 = screen.getByTestId('volume-slider-track-2');
+    
+    expect(volumeSlider1).toHaveValue('0.8');
+    expect(volumeSlider2).toHaveValue('0.6');
+  });
+
+  it('should handle volume changes with proper validation', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const volumeSlider = screen.getByTestId('volume-slider-track-1');
+    
+    await user.clear(volumeSlider);
+    await user.type(volumeSlider, '0.9');
+    
+    expect(volumeSlider).toHaveValue('0.9');
+  });
+
+  it('should show proper volume meters for each track', () => {
+    renderWorkstationMixer();
+    
+    const meters = screen.getAllByTestId('meter');
+    expect(meters.length).toBeGreaterThan(0);
+    
+    // Check for vertical meters
+    const verticalMeters = meters.filter(meter => 
+      meter.style.height === '100%'
+    );
+    expect(verticalMeters.length).toBeGreaterThan(0);
+  });
+
+  it('should display peak level indicators', () => {
+    renderWorkstationMixer();
+    
+    const peakDisplays = screen.getAllByText('-∞');
+    expect(peakDisplays.length).toBeGreaterThan(0);
+  });
+
+  it('should handle volume slider for tracks with missing volume data', () => {
+    const trackWithoutVolume = {
+      ...mockTracks[0],
+      volume: undefined,
+    };
+
+    const contextWithoutVolume = {
+      ...mockWorkstationContext,
+      tracks: [trackWithoutVolume],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithoutVolume as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    const volumeSlider = screen.getByTestId('volume-slider-track-1');
+    expect(volumeSlider).toHaveValue('0'); // Should default to 0
+  });
+});
+
+// Pan control system tests
+describe('Pan Control System', () => {
+  it('should render pan knobs with proper values', () => {
+    renderWorkstationMixer();
+    
+    const panKnobs = screen.getAllByTestId('knob');
+    expect(panKnobs.length).toBeGreaterThan(0);
+    
+    // Check that knobs have proper titles
+    const firstPanKnob = panKnobs[0];
+    expect(firstPanKnob).toHaveAttribute('title', expect.stringContaining('Pan:'));
+  });
+
+  it('should handle pan value changes', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const panKnob = screen.getAllByTestId('knob')[0];
+    
+    await user.clear(panKnob);
+    await user.type(panKnob, '25');
+    fireEvent.change(panKnob, { target: { value: '25' } });
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
+  });
+
+  it('should indicate automation state in pan controls', () => {
+    const mockContextWithAutomation = {
+      ...mockWorkstationContext,
+      getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+        if (lane && track.id === 'track-1') {
+          return { value: 0.1, isAutomated: true };
+        }
+        return { value: track.pan?.value || 0, isAutomated: false };
+      }),
+    };
+
+    render(
+      <WorkstationContext.Provider value={mockContextWithAutomation as any}>
+        <Mixer />
+      </WorkstationContext.Provider>
+    );
+    
+    const panKnobs = screen.getAllByTestId('knob');
+    const firstPanKnob = panKnobs[0];
+    
+    expect(firstPanKnob).toHaveAttribute('title', expect.stringContaining('automated'));
+  });
+
+  it('should handle tracks with null pan values', () => {
+    const trackWithNullPan = {
+      ...mockTracks[0],
+      pan: null,
+    };
+
+    const contextWithNullPan = {
+      ...mockWorkstationContext,
+      tracks: [trackWithNullPan],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithNullPan as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should still render pan controls with default values
+    const panKnobs = screen.getAllByTestId('knob');
+    expect(panKnobs.length).toBeGreaterThan(0);
+  });
+});
+
+// Track state management tests
+describe('Track State Management', () => {
+  it('should toggle mute state correctly', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const muteButtons = screen.getAllByText('M');
+    const trackMuteButton = muteButtons[1]; // Not master track
+    
+    await user.click(trackMuteButton);
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
+      ...mockTracks[0],
+      mute: !mockTracks[0].mute,
+    });
+  });
+
+  it('should toggle solo state correctly', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const soloButtons = screen.getAllByText('S');
+    const firstSoloButton = soloButtons[0];
+    
+    await user.click(firstSoloButton);
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
+      ...mockTracks[0],
+      solo: !mockTracks[0].solo,
+    });
+  });
+
+  it('should toggle arm state correctly', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const armButtons = screen.getAllByTestId('record-icon');
+    const firstArmButton = armButtons[0].closest('button');
+    
+    await user.click(firstArmButton!);
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
+      ...mockTracks[0],
+      armed: !mockTracks[0].armed,
+    });
+  });
+
+  it('should handle state changes for tracks with undefined states', () => {
+    const trackWithUndefinedStates = {
+      ...mockTracks[0],
+      mute: undefined,
+      solo: undefined,
+      armed: undefined,
+    };
+
+    const contextWithUndefinedStates = {
+      ...mockWorkstationContext,
+      tracks: [trackWithUndefinedStates],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithUndefinedStates as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should render buttons with default states
+    expect(screen.getAllByText('M').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('S').length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId('record-icon').length).toBeGreaterThan(0);
+  });
+});
+
+// Automation system tests  
+describe('Automation System', () => {
+  it('should display automation mode selectors', () => {
+    renderWorkstationMixer();
+    
+    const automationSelectors = screen.getAllByTestId('select-spinbox');
+    expect(automationSelectors.length).toBeGreaterThan(0);
+  });
+
+  it('should show current automation modes', () => {
+    renderWorkstationMixer();
+    
+    const automationSelectors = screen.getAllByTestId('select-spinbox');
+    expect(automationSelectors[0]).toHaveValue(AutomationMode.Read);
+    expect(automationSelectors[1]).toHaveValue(AutomationMode.Write);
+  });
+
+  it('should update automation mode when changed', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const automationSelector = screen.getAllByTestId('select-spinbox')[0];
+    await user.selectOptions(automationSelector, AutomationMode.Touch);
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalledWith({
+      ...mockTracks[0],
+      automationMode: AutomationMode.Touch,
+    });
+  });
+
+  it('should handle tracks without automation mode', () => {
+    const trackWithoutAutomation = {
+      ...mockTracks[0],
+      automationMode: undefined,
+    };
+
+    const contextWithoutAutomation = {
+      ...mockWorkstationContext,
+      tracks: [trackWithoutAutomation],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithoutAutomation as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    // Should still render automation selector
+    const automationSelectors = screen.getAllByTestId('select-spinbox');
+    expect(automationSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+// FX integration tests
+describe('FX Integration', () => {
+  it('should render FX components for all tracks', () => {
+    renderWorkstationMixer();
+    
+    expect(screen.getByTestId('fx-component-track-1')).toBeInTheDocument();
+    expect(screen.getByTestId('fx-component-track-2')).toBeInTheDocument();
+    expect(screen.getByTestId('fx-component-master')).toBeInTheDocument();
+  });
+
+  it('should display correct FX component content', () => {
+    renderWorkstationMixer();
+    
+    expect(screen.getByText('FX Component for Vocals')).toBeInTheDocument();
+    expect(screen.getByText('FX Component for Guitar')).toBeInTheDocument();
+    expect(screen.getByText('FX Component for Master')).toBeInTheDocument();
+  });
+
+  it('should handle tracks without FX data', () => {
+    const trackWithoutFX = {
+      ...mockTracks[0],
+      fx: undefined,
+    };
+
+    const contextWithoutFX = {
+      ...mockWorkstationContext,
+      tracks: [trackWithoutFX],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithoutFX as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+
+    expect(screen.getByTestId('fx-component-track-1')).toBeInTheDocument();
+  });
+
+  it('should handle FX components with null track data', () => {
+    const contextWithNullTrack = {
+      ...mockWorkstationContext,
+      tracks: [null as any],
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithNullTrack as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+  });
+});
+
+// Context menu and interaction tests
+describe('Context Menu System', () => {
+  it('should handle context menu cancellation gracefully', async () => {
+    const { openContextMenu } = await import('../../../../services/electron/utils');
+    (openContextMenu as any).mockImplementation((_type: any, _data: any, callback: any) => {
+      callback(null); // Cancelled
+    });
+
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const trackContainer = screen.getByText('Vocals').closest('div');
+    
+    expect(async () => {
+      await user.pointer({ target: trackContainer!, keys: '[MouseRight]' });
+    }).not.toThrow();
+
+    // Dialog should not appear
+    expect(screen.queryByTestId('dialog')).not.toBeInTheDocument();
+  });
+
+  it('should handle invalid context menu actions', async () => {
+    const { openContextMenu } = await import('../../../../services/electron/utils');
+    (openContextMenu as any).mockImplementation((_type: any, _data: any, callback: any) => {
+      callback({ action: 999 }); // Invalid action
+    });
+
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const trackContainer = screen.getByText('Vocals').closest('div');
+    
+    expect(async () => {
+      await user.pointer({ target: trackContainer!, keys: '[MouseRight]' });
+    }).not.toThrow();
+  });
+
+  it('should open color change dialog properly', async () => {
+    const { openContextMenu } = await import('../../../../services/electron/utils');
+    (openContextMenu as any).mockImplementation((_type: any, _data: any, callback: any) => {
+      callback({ action: 2 }); // Color change action
+    });
+
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const trackContainer = screen.getByText('Vocals').closest('div');
+    await user.pointer({ target: trackContainer!, keys: '[MouseRight]' });
+    
+    await waitFor(() => {
+      expect(screen.getByTestId('dialog')).toBeInTheDocument();
+      expect(screen.getByTestId('dialog-title')).toHaveTextContent('Change Hue for Vocals');
+    });
+  });
+});
+
+// Performance and edge case tests
+describe('Performance and Edge Cases', () => {
+  it('should handle rapid state changes without issues', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const muteButton = screen.getAllByText('M')[1];
+    
+    // Rapidly click mute button multiple times
+    for (let i = 0; i < 10; i++) {
+      await user.click(muteButton);
+    }
+    
+    expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
+  });
+
+  it('should handle component remounting gracefully', () => {
+    const { unmount } = renderWorkstationMixer();
+    
+    unmount();
+    
+    expect(() => {
+      renderWorkstationMixer();
+    }).not.toThrow();
+  });
+
+  it('should handle large numbers of tracks efficiently', () => {
+    const manyTracks = Array.from({ length: 100 }, (_, i) => ({
+      ...mockTracks[0],
+      id: `track-${i}`,
+      name: `Track ${i}`,
+    }));
+
+    const contextWithManyTracks = {
+      ...mockWorkstationContext,
+      tracks: manyTracks,
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithManyTracks as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+  });
+
+  it('should handle tracks with different types', () => {
+    const mixedTypeTracks = [
+      { ...mockTracks[0], type: TrackType.Audio },
+      { ...mockTracks[1], type: TrackType.MIDI },
+      { ...mockTracks[0], id: 'track-3', type: TrackType.Audio },
+    ];
+
+    const contextWithMixedTypes = {
+      ...mockWorkstationContext,
+      tracks: mixedTypeTracks,
+    };
+
+    expect(() => {
+      render(
+        <WorkstationContext.Provider value={contextWithMixedTypes as any}>
+          <Mixer />
+        </WorkstationContext.Provider>
+      );
+    }).not.toThrow();
+  });
+});
+
+// Track selection and UI interaction tests
+describe('Track Selection and UI', () => {
+  it('should select track on mouse interaction', async () => {
+    const user = userEvent.setup();
+    renderWorkstationMixer();
+    
+    const trackContainer = screen.getByText('Guitar').closest('div');
+    await user.pointer({ target: trackContainer!, keys: '[MouseLeft>][MouseLeft/]' });
+    
+    expect(mockWorkstationContext.setSelectedTrackId).toHaveBeenCalledWith('track-2');
+  });
+
+  it('should highlight selected track properly', () => {
+    renderWorkstationMixer();
+    
+    // The selected track should have overlay-1 class
+    const selectedTrackContainer = screen.getByText('Vocals').closest('.d-flex');
+    expect(selectedTrackContainer).toHaveClass('overlay-1');
+  });
+
+  it('should show track order numbers', () => {
+    renderWorkstationMixer();
+    
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('should display track icons with proper types', () => {
+    renderWorkstationMixer();
+    
+    const trackIcons = screen.getAllByTestId(/track-icon-/);
+    expect(trackIcons.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('track-icon-Audio')).toBeInTheDocument();
+  });
+});
+
+// Track reordering and sortable list tests
+describe('Track Reordering', () => {
+  it('should render sortable list with proper structure', () => {
+    renderWorkstationMixer();
+    
+    expect(screen.getByTestId('sortable-list')).toBeInTheDocument();
+    expect(screen.getByTestId('sortable-item-0')).toBeInTheDocument();
+    expect(screen.getByTestId('sortable-item-1')).toBeInTheDocument();
+  });
+
+  it('should handle sortable list interactions', () => {
+    renderWorkstationMixer();
+    
+    const sortableList = screen.getByTestId('sortable-list');
+    expect(sortableList).toBeInTheDocument();
+    
+    // Verify sortable items are present
+    const sortableItems = screen.getAllByTestId(/sortable-item-/);
+    expect(sortableItems.length).toBe(2);
+  });
+});
 
 // Mock TrackIcon
 vi.mock('../../../components/icons', () => ({
@@ -694,6 +1466,9 @@ describe('Workstation Mixer Component', () => {
           </WorkstationContext.Provider>
         );
       }).not.toThrow();
+      
+      // Should not render master track when it's null
+      expect(screen.queryByText('Master')).not.toBeInTheDocument();
     });
   });
 });
