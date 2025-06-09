@@ -1,0 +1,45 @@
+# Orpheus Engine Python Backend Dependencies
+# Core web framework and API
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+python-multipart>=0.0.6
+aiofiles>=23.0.0
+
+# Audio processing and analysis
+librosa>=0.10.0,<0.11.0
+soundfile>=0.12.0
+pydub>=0.25.0
+scipy>=1.11.0
+numpy>=1.24.0,<2.0.0
+
+# Data handling and configuration
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+PyYAML>=6.0
+python-dotenv>=1.0.0
+
+# System utilities
+psutil>=5.9.0
+matplotlib>=3.7.0
+
+# Real-time audio I/O (optional - may need system dependencies)
+pyaudio>=0.2.11
+
+# MIDI support (optional)
+rtmidi>=1.4.0
+mido>=1.3.0
+
+# Development dependencies (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+pre-commit>=3.0.0
+
+# GUI framework (optional - alternative to tkinter)
+# PyQt6>=6.6.0  # Uncomment if needed
+
+# Additional audio format support
+cffi>=1.15.0  # Required for some audio libraries

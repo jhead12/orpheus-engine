@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orpheus_backend"]
+
+[project]
+name = "orpheus-backend"
+version = "1.0.0"
+description = "Python audio engine backend for Orpheus Engine DAW"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Creative Organization DAO", email = "creatives@creativeplatform.xyz"},
+    {name = "JEH Ventures, LLC", email = "support@jeldonmusic.com"},
+]
+keywords = ["audio", "daw", "music", "production"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+    "librosa>=0.10.0,<0.11.0",  # Pin librosa version for compatibility
+    "soundfile>=0.12.0",
+    "numpy>=1.24.0,<2.0.0",     # Pin numpy version
+    "python-multipart>=0.0.6",
+    "pydub>=0.25.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.7.0",
+    "PyYAML>=6.0",
+    "python-dotenv>=1.0.0",
+    "aiofiles>=23.0.0",
+    "psutil>=5.9.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+audio = [
+    "pyaudio>=0.2.11",  # Real-time audio I/O
+    "rtmidi>=1.4.0",    # MIDI support
+    "mido>=1.3.0",      # MIDI file handling
+]
+gui = [
+    # tkinter is built into Python, no need to install separately
+    "PyQt6>=6.6.0",     # Alternative GUI framework
+]
+ml = [
+    "mlflow>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "pandas>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jhead12/orpheus-engine"
+Repository = "https://github.com/jhead12/orpheus-engine"
+Documentation = "https://github.com/jhead12/orpheus-engine/blob/main/README.md"
+Issues = "https://github.com/jhead12/orpheus-engine/issues"
+
+[project.scripts]
+orpheus-backend = "orpheus_backend.main:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"
