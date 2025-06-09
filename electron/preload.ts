@@ -34,10 +34,10 @@ contextBridge.exposeInMainWorld('orpheusAPI', {
       return ipcRenderer.invoke(channel, ...args);
     },
     on: (channel: string, func: (...args: any[]) => void) => {
-      ipcRenderer.on(channel, (_event, ...args) => func(...args));
+      ipcRenderer.on(channel, (_event: any, ...args: any[]) => func(...args));
     },
     once: (channel: string, func: ((...args: any[]) => void)) => {
-      ipcRenderer.once(channel, (_event, ...args) => func(...args));
+      ipcRenderer.once(channel, (_event: any, ...args: any[]) => func(...args));
     },
     removeAllListeners: (channel: string) => {
       ipcRenderer.removeAllListeners(channel);

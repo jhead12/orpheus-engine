@@ -6,7 +6,7 @@ export interface WindowAutoScrollThresholds {
   left?: number;
 }
 
-export interface Region {
+export interface NumericRegion {
   start: number;
   end: number;
 }

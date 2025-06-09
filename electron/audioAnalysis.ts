@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, type IpcMainInvokeEvent } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
@@ -16,7 +16,7 @@ if (!fs.existsSync(DATA_DIR)) {
 
 export function setupAudioAnalysisHandlers() {
   // List audio files in a directory
-  ipcMain.handle('audio:list-files', async (event, directoryPath = DATA_DIR) => {
+  ipcMain.handle('audio:list-files', async (_event: IpcMainInvokeEvent, directoryPath: string = DATA_DIR) => {
     try {
       const files = fs.readdirSync(directoryPath);
       return files.filter(file => {
@@ -30,7 +30,7 @@ export function setupAudioAnalysisHandlers() {
   });
 
   // Analyze audio file
-  ipcMain.handle('audio:analyze', async (event, filePath) => {
+  ipcMain.handle('audio:analyze', async (_event: IpcMainInvokeEvent, filePath: string) => {
     try {
       // First get basic metadata using ffprobe
       const { stdout: metadata } = await execPromise(

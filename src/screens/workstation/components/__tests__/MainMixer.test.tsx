@@ -2,33 +2,53 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Mixer from '../Mixer';
-import { MixerContext } from '@orpheus/contexts/MixerContext';
-import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
-import { Track, TrackType } from '@orpheus/types/core';
+import { WorkstationContext } from '../../../../contexts/WorkstationContext';
+import { Track, TrackType } from '../../../../types/core';
 
-// Mock audio-related APIs
-global.AudioContext = vi.fn().mockImplementation(() => ({
-  createGain: vi.fn(() => ({
-    gain: { value: 1 },
-    connect: vi.fn(),
-    disconnect: vi.fn(),
-  })),
-  createAnalyser: vi.fn(() => ({
-    fftSize: 2048,
-    frequencyBinCount: 1024,
-    getByteFrequencyData: vi.fn(),
-    connect: vi.fn(),
-    disconnect: vi.fn(),
-  })),
-  destination: {},
-  state: 'running',
+// Mock components and dependencies
+vi.mock('../../../components/widgets', () => ({
+  Dialog: ({ children, open, title, onClose }: any) => 
+    open ? <div data-testid="dialog">{title}{children}</div> : null,
+  HueInput: ({ value, onChange }: any) => 
+    <input data-testid="hue-input" value={value} onChange={(e) => onChange(Number(e.target.value))} />,
+  SelectSpinBox: ({ value, onChange, options }: any) => 
+    <select data-testid="select-spinbox" value={value} onChange={(e) => onChange(e.target.value)}>
+      {options?.map((opt: any) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+    </select>,
+  Knob: ({ value, onChange, title, ...props }: any) => 
+    <input data-testid="knob" type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} title={title} {...props} />,
+  Meter: ({ percent, ...props }: any) => 
+    <div data-testid="meter" aria-valuenow={percent} {...props} />,
+  SortableList: ({ children, onSortEnd }: any) => 
+    <div data-testid="sortable-list">{children}</div>,
+  SortableListItem: ({ children, index }: any) => 
+    <div data-testid={`sortable-item-${index}`}>{children}</div>,
 }));
 
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
+vi.mock('./index', () => ({
+  FXComponent: ({ track }: any) => 
+    <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>,
+  TrackVolumeSlider: ({ track, ...props }: any) => 
+    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume} {...props} />,
+}));
+
+vi.mock('../../../components/icons/TrackIcon', () => ({
+  default: ({ type, color }: any) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
+}));
+
+vi.mock('../editor-utils', () => ({
+  openContextMenu: vi.fn(),
+  SortData: {},
+}));
+
+vi.mock('../../../services/utils/utils', () => ({
+  formatPanning: (value: number, short?: boolean) => {
+    if (value === 0) return 'C';
+    return value > 0 ? `R${Math.abs(value * 100)}` : `L${Math.abs(value * 100)}`;
+  },
+  getVolumeGradient: () => '#00ff00',
+  hslToHex: (h: number, s: number, l: number) => '#ff0000',
+  volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
 }));
 
 const mockTracks: Track[] = [
@@ -202,7 +222,7 @@ const renderMixer = (props = {}) => {
   );
 };
 
-describe('Mixer Component', () => {
+describe('Main Mixer Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -217,8 +237,8 @@ describe('Mixer Component', () => {
       
       expect(screen.getByTestId('mixer-channel-track-1')).toBeInTheDocument();
       expect(screen.getByTestId('mixer-channel-track-2')).toBeInTheDocument();
-      expect(screen.getByText('Vocals')).toBeInTheDocument();
-      expect(screen.getByText('Guitar')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Vocals')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Guitar')).toBeInTheDocument();
     });
 
     it('should render master channel', () => {
@@ -226,31 +246,31 @@ describe('Mixer Component', () => {
       
       const masterChannel = screen.getByTestId('mixer-master-channel');
       expect(masterChannel).toBeInTheDocument();
-      expect(screen.getByText('Master')).toBeInTheDocument();
+      expect(screen.getByText('MASTER')).toBeInTheDocument();
     });
 
-    it('should show track colors', () => {
+    it('should show track colors as border top', () => {
       renderMixer();
       
       const channel1 = screen.getByTestId('mixer-channel-track-1');
       const channel2 = screen.getByTestId('mixer-channel-track-2');
       
-      expect(channel1).toHaveStyle({ borderColor: '#ff6b6b' });
-      expect(channel2).toHaveStyle({ borderColor: '#4ecdc4' });
+      expect(channel1).toHaveStyle({ borderTop: '2px solid #ff6b6b' });
+      expect(channel2).toHaveStyle({ borderTop: '2px solid #4ecdc4' });
     });
 
     it('should show mute/solo/arm states', () => {
       renderMixer();
       
-      const muteButton1 = screen.getByTestId('mixer-mute-track-1');
-      const muteButton2 = screen.getByTestId('mixer-mute-track-2');
-      const soloButton1 = screen.getByTestId('mixer-solo-track-1');
-      const armButton2 = screen.getByTestId('mixer-arm-track-2');
+      const muteButton1 = screen.getByTestId('mixer-mute-track-track-1');
+      const muteButton2 = screen.getByTestId('mixer-mute-track-track-2');
+      const soloButton1 = screen.getByTestId('mixer-solo-track-track-1');
+      const armButton2 = screen.getByTestId('mixer-arm-track-track-2');
       
-      expect(muteButton1).not.toHaveClass('active');
-      expect(muteButton2).toHaveClass('active'); // track-2 is muted
-      expect(soloButton1).not.toHaveClass('active');
-      expect(armButton2).toHaveClass('active'); // track-2 is armed
+      expect(muteButton1.style.color).not.toBe('#ff004c');
+      expect(muteButton2.style.color).toBe('#ff004c'); // track-2 is muted
+      expect(soloButton1.style.color).not.toBe('var(--fg2)');
+      expect(armButton2.style.color).toBe('#ff004c'); // track-2 is armed
     });
   });
 

@@ -9,7 +9,7 @@ type AnalysisResult = {
 };
 
 const AudioAnalysisPanel: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{ name: string; path: string } | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
     null
   );
@@ -27,7 +27,7 @@ const AudioAnalysisPanel: React.FC = () => {
       // Use Electron's IPC renderer to send the file path to the main process
       // @ts-expect-error - window.electronAPI is injected by Electron but not typed
       const result: AnalysisResult = await window.electronAPI.analyzeAudio(
-        selectedFile.path
+        (selectedFile as any).path || selectedFile.name
       );
       setAnalysisResult(result);
     } catch (err: unknown) {
@@ -37,23 +37,35 @@ const AudioAnalysisPanel: React.FC = () => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
-      setAnalysisResult(null);
-      setError(null);
+  const handleFileChange = async () => {
+    try {
+      // @ts-expect-error - window.electronAPI is injected by Electron but not typed
+      const result = await window.electronAPI.openFileDialog({
+        filters: [{ name: 'Audio files', extensions: ['mp3', 'wav', 'flac', 'ogg'] }]
+      });
+      if (result && !result.canceled && result.filePaths.length > 0) {
+        const filePath = result.filePaths[0];
+        const fileName = filePath.split('/').pop() || 'Unknown';
+        setSelectedFile({ name: fileName, path: filePath });
+        setAnalysisResult(null);
+        setError(null);
+      }
+    } catch (err) {
+      setError('Failed to open file dialog');
     }
   };
 
   return (
     <div style={{ padding: 24, maxWidth: 600 }}>
       <h2>Audio Analysis Panel</h2>
-      <input
-        type="file"
-        accept="audio/*"
-        onChange={handleFileChange}
+      <button
+        onClick={handleFileChange}
         disabled={loading}
-      />
+        style={{ marginRight: 12 }}
+      >
+        Select Audio File
+      </button>
+      {selectedFile && <span>Selected: {selectedFile.name}</span>}
       <button
         onClick={handleAnalyze}
         disabled={!selectedFile || loading}

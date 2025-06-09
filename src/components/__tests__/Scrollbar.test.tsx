@@ -1,5 +1,4 @@
-import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import Scrollbar from "../Scrollbar";
 
@@ -40,11 +39,14 @@ describe("Scrollbar", () => {
     expect(thumb).toBeTruthy();
 
     // Set up initial position and mock scrollTo method
-    targetEl.scrollTo = vi.fn((options) => {
+    targetEl.scrollTo = vi.fn((options: ScrollToOptions | number, y?: number) => {
       if (typeof options === "object" && options.top !== undefined) {
         targetEl.scrollTop = options.top;
+      } else if (typeof options === "number" && y !== undefined) {
+        targetEl.scrollLeft = options;
+        targetEl.scrollTop = y;
       }
-    });
+    }) as any;
 
     // Initial mouse position
     fireEvent.mouseDown(thumb, {
@@ -79,11 +81,14 @@ describe("Scrollbar", () => {
     expect(thumb).toBeTruthy();
 
     // Set up initial position and mock scrollTo method
-    targetEl.scrollTo = vi.fn((options) => {
+    targetEl.scrollTo = vi.fn((options: ScrollToOptions | number, y?: number) => {
       if (typeof options === "object" && options.left !== undefined) {
         targetEl.scrollLeft = options.left;
+      } else if (typeof options === "number" && y !== undefined) {
+        targetEl.scrollLeft = options;
+        targetEl.scrollTop = y;
       }
-    });
+    }) as any;
 
     // Initial mouse position
     fireEvent.mouseDown(thumb, {

@@ -133,11 +133,6 @@ export interface FXChainPreset {
   effects: Effect[];
 }
 
-export interface Region {
-  start: TimelinePosition;
-  end: TimelinePosition;
-}
-
 // Audio search exports (placeholder)
 export interface SearchResult {
   id: string;

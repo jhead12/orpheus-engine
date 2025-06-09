@@ -38,7 +38,7 @@ function createWindow () {
     // Add error handling for loading the URL
     mainWindow.loadURL(viteUrl).then(() => {
       console.log('✅ DAW loaded successfully');
-    }).catch((error) => {
+    }).catch((error: any) => {
       console.error('❌ Failed to load DAW:', error);
     });
     
@@ -50,7 +50,7 @@ function createWindow () {
     });
     
     // Add listener for any loading errors
-    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    mainWindow.webContents.on('did-fail-load', (_event: any, errorCode: any, errorDescription: any) => {
       console.error(`❌ Page failed to load: ${errorCode} - ${errorDescription}`);
     });
   }
@@ -61,6 +61,9 @@ function createWindow () {
   menuBuilder.buildMenu();
   contextMenuBuilder.buildContextMenus();
   buildHandlers(mainWindow);
+  setupAudioAnalysisHandlers();
+  
+  return mainWindow;
 }
 
 // Add these handlers for the preload script
@@ -68,33 +71,23 @@ ipcMain.handle('app:getVersion', () => {
   return app.getVersion();
 });
 
-ipcMain.handle('app:getUserDataPath', (_, subFolder) => {
+ipcMain.handle('app:getUserDataPath', (_: any, subFolder: any) => {
   return path.join(app.getPath('userData'), subFolder);
 });
 
 app.whenReady().then(() => {
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      sandbox: false,
-    },
-  });
-
   if (process.getuid && process.getuid() === 0) {
     app.commandLine.appendSwitch('no-sandbox');
   }
 
-  createWindow()
+  createWindow();
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0)
-      createWindow()
-  })
-})
+      createWindow();
+  });
+});
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') app.quit();
 });

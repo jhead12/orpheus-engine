@@ -112,6 +112,8 @@ export interface WorkstationContextType {
   play: () => void;
   pause: () => void;
   stop: () => void;
+  skipToStart: () => void;
+  skipToEnd: () => void;
   metronome: boolean;
   setMetronome: (enabled: boolean) => void;
 
@@ -134,6 +136,8 @@ export interface WorkstationContextType {
   paste: () => void;
   cut: () => void;
   deleteSelection: () => void;
+  pasteClip: (clipData: any) => void;
+  createClipFromTrackRegion: () => void;
 
   // Missing methods for undo/redo
   canUndo: boolean;
@@ -144,6 +148,17 @@ export interface WorkstationContextType {
   // Missing properties for mixer/track components
   selectedTrackId: string | null;
   setSelectedTrackId: (id: string | null) => void;
+
+  // Missing properties for UI state
+  showMaster: boolean;
+  showTimeRuler: boolean;
+  setShowTimeRuler: (show: boolean) => void;
+  snapGridSizeOption: any;
+  setSnapGridSizeOption: (option: any) => void;
+  autoGridSize: number;
+  stretchAudio: boolean;
+  setStretchAudio: (stretch: boolean) => void;
+  setTimeSignature: (signature: any) => void;
 }
 
 // Create the context with a default value of null
@@ -720,6 +735,40 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     console.log(`Consolidating clip ${clip.id}`);
   }, []);
 
+  // Missing methods for UI state and additional functionality
+  const [showMaster, setShowMaster] = useState<boolean>(true);
+  const [showTimeRuler, setShowTimeRuler] = useState<boolean>(true);
+  const [snapGridSizeOption, setSnapGridSizeOption] = useState<any>("beat");
+  const [autoGridSize, setAutoGridSize] = useState<number>(1);
+  const [stretchAudio, setStretchAudio] = useState<boolean>(false);
+
+  const skipToStart = useCallback(() => {
+    setPlayheadPos(new TimelinePosition(0, 0, 0));
+  }, []);
+
+  const skipToEnd = useCallback(() => {
+    setPlayheadPos(new TimelinePosition(numMeasures, 0, 0));
+  }, [numMeasures]);
+
+  const pasteClip = useCallback((clipData: any) => {
+    // Placeholder implementation for pasting clip data
+    console.log("Pasting clip data:", clipData);
+  }, []);
+
+  const createClipFromTrackRegion = useCallback(() => {
+    if (!trackRegion) return;
+    
+    // Placeholder implementation for creating clip from track region
+    console.log("Creating clip from track region:", trackRegion);
+  }, [trackRegion]);
+
+  const setTimeSignature = useCallback((signature: any) => {
+    setTimelineSettings(prev => ({
+      ...prev,
+      timeSignature: signature
+    }));
+  }, []);
+
   const toggleMuteClip = useCallback((clip: Clip) => {
     setTracks((prevTracks) =>
       prevTracks.map((track) => ({
@@ -795,6 +844,20 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     redo,
     selectedTrackId,
     setSelectedTrackId,
+    // Missing methods and properties
+    skipToStart,
+    skipToEnd,
+    pasteClip,
+    createClipFromTrackRegion,
+    showMaster,
+    showTimeRuler,
+    setShowTimeRuler,
+    snapGridSizeOption,
+    setSnapGridSizeOption,
+    autoGridSize,
+    stretchAudio,
+    setStretchAudio,
+    setTimeSignature,
   };
 
   return (
