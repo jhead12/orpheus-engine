@@ -17,9 +17,24 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@orpheus/*": ["./src/*"],
+      "@orpheus/components/*": ["./src/components/*"],
+      "@orpheus/services/*": ["./src/services/*"],
+      "@orpheus/screens/*": ["./src/screens/*"],
+      "@orpheus/contexts": ["./src/contexts/index"],
+      "@orpheus/contexts/*": ["./src/contexts/*"],
+      "@orpheus/types/*": ["./src/types/*"],
+      "@orpheus/test/*": ["./src/test/*"],
+      "@orpheus/utils/*": ["./src/services/utils/*"],
+      "@orpheus/widgets": ["./src/components/widgets"],
+      "@orpheus/widgets/*": ["./src/components/widgets/*"],
+      "@orpheus/workstation/*": ["./src/screens/workstation/*"]
     }
   },
   "include": ["src", "electron"],
+  "exclude": [
+    "src/test/visual-agent/templates/**/*.template.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

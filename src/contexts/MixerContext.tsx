@@ -12,9 +12,11 @@ export interface MixerContextType {
   masterVolume: number;
   masterPan: number;
   masterMute: boolean;
+  mixerHeight: number;
   setMasterVolume: (volume: number) => void;
   setMasterPan: (pan: number) => void;
   setMasterMute: (mute: boolean) => void;
+  setMixerHeight: (height: number) => void;
   setTrackVolume: (trackId: string, volume: number) => void;
   setTrackPan: (trackId: string, pan: number) => void;
   setTrackMute: (trackId: string, mute: boolean) => void;
@@ -52,6 +54,7 @@ export const MixerProvider: React.FC<MixerProviderProps> = ({ children }) => {
   const [masterVolume, setMasterVolume] = useState(1);
   const [masterPan, setMasterPan] = useState(0);
   const [masterMute, setMasterMute] = useState(false);
+  const [mixerHeight, setMixerHeight] = useState(300);
   const [meters, setMeters] = useState<Record<string, MeterData>>({
     master: { left: 0, right: 0, peak: 0 }
   });
@@ -60,13 +63,29 @@ export const MixerProvider: React.FC<MixerProviderProps> = ({ children }) => {
 
   const setTrackVolume = (trackId: string, volume: number) => {
     setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, volume } : track
+      track.id === trackId 
+        ? { 
+            ...track, 
+            volume: { 
+              value: volume, 
+              isAutomated: track.volume.isAutomated 
+            } 
+          } 
+        : track
     ));
   };
 
   const setTrackPan = (trackId: string, pan: number) => {
     setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, pan } : track
+      track.id === trackId 
+        ? { 
+            ...track, 
+            pan: { 
+              value: pan, 
+              isAutomated: track.pan.isAutomated 
+            } 
+          } 
+        : track
     ));
   };
 
@@ -177,9 +196,11 @@ export const MixerProvider: React.FC<MixerProviderProps> = ({ children }) => {
     masterVolume,
     masterPan,
     masterMute,
+    mixerHeight,
     setMasterVolume,
     setMasterPan,
     setMasterMute,
+    setMixerHeight,
     setTrackVolume,
     setTrackPan,
     setTrackMute,

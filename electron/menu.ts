@@ -1,6 +1,6 @@
 import { app, Menu, BrowserWindow, MenuItemConstructorOptions } from 'electron';
-import { ADD_TRACK, OPEN_PREFERENCES, TOGGLE_MASTER_TRACK, TOGGLE_MIXER } from "../src/services/electron/channels";
-import { TrackType } from "../src/services/types/types";
+import { ADD_TRACK, OPEN_PREFERENCES, TOGGLE_MASTER_TRACK, TOGGLE_MIXER } from "./channels";
+import { TrackType } from "./types";
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;

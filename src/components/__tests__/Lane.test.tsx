@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Lane from '@orpheus/screens/workstation/components/Lane';
 import { ClipboardContext } from '@orpheus/contexts/ClipboardContext';
@@ -258,8 +258,8 @@ describe('Lane Component', () => {
     mute: false,
     solo: false,
     armed: false,
-    volume: 0,
-    pan: 0,
+    volume: { value: 0, min: -60, max: 12, default: 0, isAutomated: false },
+    pan: { value: 0, min: -1, max: 1, default: 0, isAutomated: false },
     automation: false,
     automationMode: AutomationMode.Off,
     automationLanes: [],
@@ -291,6 +291,63 @@ describe('Lane Component', () => {
     allowMenuAndShortcuts: true,
     trackRegion: null,
     selectedTrackId: null,
+    selectedClipId: null,
+    // Playback controls
+    play: vi.fn(),
+    pause: vi.fn(),
+    stop: vi.fn(),
+    skipToStart: vi.fn(),
+    skipToEnd: vi.fn(),
+    metronome: false,
+    setMetronome: vi.fn(),
+    // Settings
+    settings: {
+      tempo: 120,
+      timeSignature: { beats: 4, noteValue: 4 },
+      snap: true,
+      snapUnit: '1/16',
+      horizontalScale: 1,
+    },
+    setSettings: vi.fn(),
+    // Zoom controls
+    zoomIn: vi.fn(),
+    zoomOut: vi.fn(),
+    zoomToFit: vi.fn(),
+    // Selection
+    selection: {
+      tracks: [],
+      clips: [],
+      region: null,
+    },
+    setSelection: vi.fn(),
+    // Clipboard operations
+    clipboard: null,
+    copy: vi.fn(),
+    paste: vi.fn(),
+    cut: vi.fn(),
+    deleteSelection: vi.fn(),
+    // Undo/redo
+    canUndo: false,
+    canRedo: false,
+    undo: vi.fn(),
+    redo: vi.fn(),
+    // UI state
+    showTimeRuler: true,
+    setShowTimeRuler: vi.fn(),
+    snapGridSizeOption: '1/16',
+    setSnapGridSizeOption: vi.fn(),
+    autoGridSize: 16,
+    stretchAudio: false,
+    setStretchAudio: vi.fn(),
+    setTimeSignature: vi.fn(),
+    // Track management
+    removeTrack: vi.fn(),
+    updateTrack: vi.fn(),
+    duplicateTrack: vi.fn(),
+    deleteTrack: vi.fn(),
+    getTrackCurrentValue: vi.fn(),
+    updateTimelineSettings: vi.fn(),
+    // Existing methods
     setTracks: vi.fn(),
     setPlayheadPos: vi.fn(),
     setSongRegion: vi.fn(),
@@ -311,7 +368,6 @@ describe('Lane Component', () => {
     consolidateClip: vi.fn(),
     toggleMuteClip: vi.fn(),
     setSelectedClipId: vi.fn(),
-    selectedClipId: null,
     pasteClip: vi.fn(),
   };
 

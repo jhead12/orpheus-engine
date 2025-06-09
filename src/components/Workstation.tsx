@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMixer } from '../context/MixerContext'; 
+import { useMixer } from '../contexts/MixerContext'; 
 import AudioSearchPanel from './search/AudioSearchPanel';
 import Editor, { AudioAnalysisProvider } from '../screens/workstation/Editor';
 import './Workstation.css';

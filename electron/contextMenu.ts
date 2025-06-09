@@ -1,16 +1,16 @@
-import { BrowserWindow, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, shell } from "electron";
-import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "../src/services/types/types";
-import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "../src/services/electron/channels";
+import { BrowserWindow, ipcMain, Menu, shell, type IpcMainEvent, type MenuItemConstructorOptions } from "electron";
+import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "./types";
+import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "./channels";
 
 export default class ContextMenuBuilder {
   mainWindow: BrowserWindow;
 
-  constructor(mainWindow : BrowserWindow) {
+  constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
   }
 
   buildContextMenus() {
-    ipcMain.on(OPEN_CONTEXT_MENU, (event: IpcMainEvent, contextMenuType: ContextMenuType, params: Record<string, any>) => {
+    ipcMain.on(OPEN_CONTEXT_MENU, (_event: IpcMainEvent, contextMenuType: ContextMenuType, params: Record<string, any>) => {
       let menu: MenuItemConstructorOptions[] = [];
 
       switch (contextMenuType) {
@@ -47,8 +47,9 @@ export default class ContextMenuBuilder {
       }
 
       if (menu.length) {
-        Menu.buildFromTemplate(menu).popup({ 
-          window: this.mainWindow, 
+        const contextMenu = Menu.buildFromTemplate(menu);
+        contextMenu.popup({ 
+          window: this.mainWindow,
           callback: () => this.mainWindow.webContents.send(CLOSE_CONTEXT_MENU) 
         });
       }

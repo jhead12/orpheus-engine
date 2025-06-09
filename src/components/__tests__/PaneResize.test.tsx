@@ -4,7 +4,7 @@ import PaneResize from "../PaneResize";
 
 describe("PaneResize", () => {
   it("renders without crashing", () => {
-    const mockOnResize = vi.fn();
+    const mockOnPaneResize = vi.fn();
     const testPanes = [
       {
         key: "test-pane",
@@ -12,7 +12,7 @@ describe("PaneResize", () => {
       },
     ];
 
-    render(<PaneResize panes={testPanes} onResize={mockOnResize} />);
+    render(<PaneResize panes={testPanes} onPaneResize={mockOnPaneResize} />);
     expect(screen.getByText("Test Content")).toBeInTheDocument();
   });
 });

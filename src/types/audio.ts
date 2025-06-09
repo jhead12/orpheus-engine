@@ -29,7 +29,11 @@ export interface WorkstationAudioInputFile {
 }
 
 export enum SnapGridSizeOption {
+  None = "none",
   Auto = "auto",
+  HundredTwentyEighthBeat = "128th",
+  SixtyFourthBeat = "64th",
+  ThirtySecondBeat = "32nd",
   SixteenthBeat = "sixteenth",
   EighthBeat = "eighth",
   QuarterBeat = "quarter",
