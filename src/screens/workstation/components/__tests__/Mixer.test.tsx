@@ -54,6 +54,19 @@ const mockTracks: Track[] = [
       },
     ],
     automationLanes: [],
+    fx: {
+      preset: null,
+      effects: [
+        {
+          id: 'reverb-1',
+          name: 'Hall Reverb',
+          type: 'native',
+          enabled: true,
+          parameters: { wetness: 0.3, roomSize: 0.7 },
+        },
+      ],
+      selectedEffectIndex: 0,
+    },
   },
   {
     id: 'track-2',
@@ -69,6 +82,11 @@ const mockTracks: Track[] = [
     clips: [],
     effects: [],
     automationLanes: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    },
   },
 ];
 
@@ -116,6 +134,11 @@ const mockMasterTrack: Track = {
   clips: [],
   effects: [],
   automationLanes: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
 };
 
 const mockWorkstationContext = {
@@ -126,7 +149,47 @@ const mockWorkstationContext = {
   duplicateTrack: vi.fn(),
   selection: { tracks: [], clips: [], region: null },
   setSelection: vi.fn(),
-  getTrackCurrentValue: vi.fn().mockReturnValue({ value: 0.8, isAutomated: false }),
+  fxChainPresets: [
+    {
+      id: 'preset-1',
+      name: 'Hall Reverb Preset',
+      effects: [
+        {
+          id: 'reverb-preset-1',
+          name: 'Hall Reverb',
+          type: 'native',
+          enabled: true,
+          parameters: { wetness: 0.4, roomSize: 0.8 },
+        },
+      ],
+    },
+    {
+      id: 'preset-2',
+      name: 'Compression Preset',
+      effects: [
+        {
+          id: 'compressor-preset-1',
+          name: 'Compressor',
+          type: 'native',
+          enabled: true,
+          parameters: { threshold: -12, ratio: 4 },
+        },
+      ],
+    },
+  ],
+  setFXChainPresets: vi.fn(),
+  setTrack: vi.fn(),
+  setTracks: vi.fn(),
+  setSelectedTrackId: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn(),
+  getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+    // If lane is provided and is an automation lane, return automation value
+    if (lane) {
+      return { value: 0.8, isAutomated: true };
+    }
+    // If no lane provided, return the track's current value (non-automated)
+    return { value: 0.8, isAutomated: false };
+  }),
 };
 
 const renderMixer = (props = {}) => {

@@ -1,20 +1,21 @@
 import { CSSProperties, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
+import { AutomationLaneEnvelope, Track } from "../../../types/core";
 import {
   formatVolume,
   normalizedToVolume,
   volumeToNormalized,
-} from '@orpheus/utils/utils';
-import Slider from '@orpheus/widgets/Slider';
+} from "../../../services/utils/utils";
+import Slider from "../../../components/widgets/Slider";
 import { useContext } from "react";
-import { WorkstationContext } from '@orpheus/contexts';
-import { TooltipProps } from '@orpheus/widgets/Tooltip';
+import { WorkstationContext } from "../../../contexts/WorkstationContext";
+import { TooltipProps } from "../../../components/widgets/Tooltip";
 
 // Use standard React context hook instead of custom hook
-const useWorkstation = () => useContext(WorkstationContext);
+const useWorkstation = () => useContext(WorkstationContext)!;
 
 interface TrackVolumeSliderProps {
   className?: string;
+  'data-testid'?: string;
   labelProps?: Partial<TooltipProps>;
   orientation?: "horizontal" | "vertical";
   style?: CSSProperties;
@@ -40,6 +41,7 @@ const markVolumes = [
 export default function TrackVolumeSlider({
   style,
   track,
+  'data-testid': dataTestId,
   ...rest
 }: TrackVolumeSliderProps) {
   const { getTrackCurrentValue, setTrack } = useWorkstation();
@@ -84,6 +86,7 @@ export default function TrackVolumeSlider({
     >
       <Slider
         {...rest}
+        data-testid={dataTestId}
         disabled={isAutomated}
         onChange={(_, value) =>
           setVolume(normalizedToVolume((value as number) / 1000))

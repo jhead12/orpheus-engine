@@ -37,9 +37,20 @@ interface IProps {
   compact?: boolean;
   track: Track;
   style: FXElements<CSSProperties>;
+  'data-testid'?: string;
+  'data-add-effect-testid'?: string;
+  'data-effect-testid-prefix'?: string;
 }
 
-export default function FXComponent({ classes, compact, track, ...rest }: IProps) {
+export default function FXComponent({ 
+  classes, 
+  compact, 
+  track, 
+  'data-testid': dataTestId,
+  'data-add-effect-testid': addEffectTestId,
+  'data-effect-testid-prefix': effectTestIdPrefix,
+  ...rest 
+}: IProps) {
   const { fxChainPresets, masterTrack, setFXChainPresets, setTrack, setTracks, tracks } = useContext(WorkstationContext)!;
 
   const [containerWidth, setContainerWidth] = useState(0)
@@ -407,6 +418,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
               onClick={addEffect}
               title="Add an effect"
               style={{ marginLeft: 2, ...rest.style?.add?.button }}
+              data-testid={addEffectTestId}
             >
               <Add className={classes?.add?.icon} style={style.addIcon} />
             </IconButton>
@@ -415,6 +427,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
             className={`d-flex align-items-center h-100 overflow-hidden show-on-hover ${classes?.effect?.container}`}
             style={{ flex: 1, paddingLeft: 2, cursor: "pointer", ...rest.style?.effect?.container }}
             tabIndex={0}
+            data-testid={effect ? `${effectTestIdPrefix || 'effect'}-${effect.id}` : undefined}
           >
             {effect && (
               <React.Fragment>
@@ -472,6 +485,7 @@ export default function FXComponent({ classes, compact, track, ...rest }: IProps
                     className="p-0"
                     onClick={toggleEffectEnabled}
                     title={(effect.enabled ? "Disable" : "Enable") + " effect"}
+                    data-testid={`effect-bypass-${effect.id}`}
                   >
                     <PowerSettingsNew className={classes?.enableIcon} style={style.enableIcon(effect)} />
                   </IconButton>
