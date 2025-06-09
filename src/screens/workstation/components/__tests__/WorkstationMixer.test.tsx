@@ -9,11 +9,30 @@ import { Track, TrackType, AutomationMode } from '../../../../types/core';
 vi.mock('@mui/icons-material', () => ({
   Check: () => <div data-testid="check-icon">Check</div>,
   FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
+  ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
+  ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
 }));
 
 vi.mock('@mui/material', () => ({
   DialogContent: ({ children, ...props }: any) => <div data-testid="dialog-content" {...props}>{children}</div>,
+  DialogTitle: ({ children, ...props }: any) => <div data-testid="dialog-title" {...props}>{children}</div>,
   IconButton: ({ children, ...props }: any) => <button data-testid="icon-button" {...props}>{children}</button>,
+  Dialog: ({ children, open, onClose, ...props }: any) => 
+    open ? (
+      <div data-testid="mui-dialog" {...props}>
+        {children}
+      </div>
+    ) : null,
+  Tooltip: ({ children, title, ...props }: any) => 
+    <div data-testid="tooltip" title={title} {...props}>
+      {children}
+    </div>,
+  Popover: ({ children, open, anchorEl, ...props }: any) =>
+    open ? (
+      <div data-testid="popover" {...props}>
+        {children}
+      </div>
+    ) : null,
 }));
 
 // Mock orpheus widgets
@@ -120,10 +139,12 @@ vi.mock('@mui/icons-material', () => ({
   FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
   ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
   ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
+  Close: () => <div data-testid="close-icon">Close</div>,
 }));
 
 vi.mock('@mui/material', () => ({
   DialogContent: ({ children, ...props }: any) => <div data-testid="dialog-content" {...props}>{children}</div>,
+  DialogTitle: ({ children, ...props }: any) => <div data-testid="dialog-title" {...props}>{children}</div>,
   IconButton: ({ children, ...props }: any) => <button data-testid="icon-button" {...props}>{children}</button>,
   Dialog: ({ children, open, onClose, ...props }: any) => 
     open ? (
@@ -135,6 +156,12 @@ vi.mock('@mui/material', () => ({
     <div data-testid="tooltip" title={title} {...props}>
       {children}
     </div>,
+  Popover: ({ children, open, anchorEl, ...props }: any) =>
+    open ? (
+      <div data-testid="popover" {...props}>
+        {children}
+      </div>
+    ) : null,
 }));
 
 // Mock orpheus widgets
@@ -794,7 +821,7 @@ describe('Performance and Edge Cases', () => {
   it('should handle tracks with different types', () => {
     const mixedTypeTracks = [
       { ...mockTracks[0], type: TrackType.Audio },
-      { ...mockTracks[1], type: TrackType.MIDI },
+      { ...mockTracks[1], type: TrackType.Midi },
       { ...mockTracks[0], id: 'track-3', type: TrackType.Audio },
     ];
 
