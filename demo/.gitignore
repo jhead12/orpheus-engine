@@ -1,0 +1,56 @@
+# Demo folder .gitignore
+# This keeps development artifacts away from judges
+
+# Jupyter Notebook checkpoints and temp files
+.ipynb_checkpoints/
+*.ipynb.bak
+*.ipynb.backup
+
+# MLflow tracking data (generated during development)
+mlflow_runs/
+mlruns/
+artifacts/
+
+# Development and testing files
+dev-files/
+archive/
+*.log
+*.temp
+*.tmp
+
+# Generated reports and analysis outputs
+orpheus_analysis_report_*.json
+*.wav
+*.mp3
+*.flac
+demo_audio_*.wav
+
+# Python cache and virtual environments
+__pycache__/
+.venv/
+venv/
+env/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary web deployment files
+orpheus_web_app.py
+DEPLOYMENT_GUIDE.md
+
+# Test and verification files
+*_test_results.json
+verify_*.py
+test_*.py
+
+# Backup and recovery files
+*_backup.*
+*_corrupted_*
+*_restore.*
+RECOVERY_*.md
+
+# HP AI Studio integration logs
+hp_ai_studio_integration_test_results.json
+HP_AI_STUDIO_SETUP_COMPLETE.md
+ORPHEUS_WEB_DEMO_RECOVERY_SUCCESS.md

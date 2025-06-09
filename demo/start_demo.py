@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Orpheus Audio Analysis MLflow Demo
-HP AI Studio Competition Entry
+Orpheus Engine Demo Launcher
+HP AI Studio Compatible Judge Evaluation Platform
 
-This script sets up and runs the MLflow tracking server for the audio analysis demo.
+This script provides an interactive launcher for the Orpheus Engine demo notebooks
+and supporting services, designed for competition judges and HP AI Studio integration.
 """
 
 import os
@@ -11,41 +12,122 @@ import sys
 import subprocess
 import time
 import webbrowser
+import json
 from pathlib import Path
+from datetime import datetime
 
-def setup_mlflow_environment():
-    """Set up MLflow environment and directories."""
+def check_hp_ai_studio_compatibility():
+    """Check if the environment is compatible with HP AI Studio Project Manager."""
+    print("🔍 HP AI Studio Compatibility Check")
+    print("=" * 40)
+    
+    compatible = True
+    
+    # Check Python version
+    python_version = sys.version_info
+    if python_version >= (3, 8):
+        print(f"✅ Python {python_version.major}.{python_version.minor}.{python_version.micro}")
+    else:
+        print(f"❌ Python {python_version.major}.{python_version.minor} (requires 3.8+)")
+        compatible = False
+    
+    # Check critical packages
+    try:
+        import mlflow
+        if mlflow.__version__ == "2.15.0":
+            print(f"✅ MLflow {mlflow.__version__} (Project Manager Compatible)")
+        else:
+            print(f"⚠️ MLflow {mlflow.__version__} (Project Manager requires 2.15.0)")
+            compatible = False
+    except ImportError:
+        print("❌ MLflow not installed")
+        compatible = False
+    
+    # Check audio processing libraries
+    audio_libs = []
+    try:
+        import librosa
+        audio_libs.append(f"librosa {librosa.__version__}")
+    except ImportError:
+        audio_libs.append("librosa (missing)")
+        compatible = False
+    
+    try:
+        import pyloudnorm
+        audio_libs.append("pyloudnorm")
+    except ImportError:
+        audio_libs.append("pyloudnorm (missing)")
+        compatible = False
+    
+    try:
+        import soundfile
+        audio_libs.append("soundfile")
+    except ImportError:
+        audio_libs.append("soundfile (missing)")
+        compatible = False
+    
+    try:
+        import plotly
+        audio_libs.append(f"plotly {plotly.__version__}")
+    except ImportError:
+        audio_libs.append("plotly (missing)")
+        compatible = False
+    
+    if audio_libs:
+        print(f"🎵 Audio Libraries: {', '.join(audio_libs)}")
+    
+    print(f"\n🏢 HP AI Studio Compatible: {'✅' if compatible else '❌'}")
+    
+    if not compatible:
+        print("\n💡 To fix compatibility issues:")
+        print("   pip install -r requirements.txt")
+        print("   This ensures MLflow 2.15.0 and all dependencies")
+    
+    return compatible
+
+def setup_demo_environment():
+    """Set up the demo environment and directories."""
     demo_dir = Path(__file__).parent
-    mlruns_dir = demo_dir / "mlruns"
+    mlflow_runs_dir = demo_dir / "mlflow_runs"
     artifacts_dir = demo_dir / "artifacts"
     
     # Create directories
-    mlruns_dir.mkdir(exist_ok=True)
+    mlflow_runs_dir.mkdir(exist_ok=True)
     artifacts_dir.mkdir(exist_ok=True)
     
-    # Set environment variables
-    os.environ["MLFLOW_TRACKING_URI"] = f"file://{mlruns_dir}"
+    # Set environment variables for HP AI Studio compatibility
+    os.environ["MLFLOW_TRACKING_URI"] = f"file://{mlflow_runs_dir}"
     os.environ["MLFLOW_DEFAULT_ARTIFACT_ROOT"] = f"file://{artifacts_dir}"
     
-    return mlruns_dir, artifacts_dir
+    print(f"📁 Demo Directory: {demo_dir}")
+    print(f"📁 MLflow Tracking: {mlflow_runs_dir}")
+    print(f"📁 Artifacts: {artifacts_dir}")
+    
+    return demo_dir, mlflow_runs_dir, artifacts_dir
 
-def start_mlflow_server(mlruns_dir, port=5000):
-    """Start MLflow tracking server."""
+def start_mlflow_server(mlflow_runs_dir, port=5000):
+    """Start MLflow tracking server with HP AI Studio compatibility."""
     cmd = [
-        sys.executable, "-m", "mlflow", "ui",
-        "--backend-store-uri", f"file://{mlruns_dir}",
+        sys.executable, "-m", "mlflow", "server",
+        "--backend-store-uri", f"file://{mlflow_runs_dir}",
+        "--default-artifact-root", f"file://{mlflow_runs_dir}/artifacts",
         "--host", "0.0.0.0",
         "--port", str(port)
     ]
     
-    print(f"Starting MLflow server on port {port}...")
-    print(f"Command: {' '.join(cmd)}")
+    print(f"🚀 Starting MLflow server on port {port}...")
+    print(f"   Command: {' '.join(cmd)}")
     
     try:
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(
+            cmd, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+            text=True
+        )
         
         # Give the server time to start
-        time.sleep(3)
+        time.sleep(4)
         
         # Check if the process is still running
         if process.poll() is None:
@@ -55,49 +137,110 @@ def start_mlflow_server(mlruns_dir, port=5000):
         else:
             stdout, stderr = process.communicate()
             print(f"❌ Failed to start MLflow server")
-            print(f"STDOUT: {stdout.decode()}")
-            print(f"STDERR: {stderr.decode()}")
+            if stdout:
+                print(f"STDOUT: {stdout}")
+            if stderr:
+                print(f"STDERR: {stderr}")
             return None
             
     except Exception as e:
         print(f"❌ Error starting MLflow server: {e}")
         return None
 
-def start_demo_frontend():
-    """Start the demo frontend application."""
-    demo_dir = Path(__file__).parent / "audio-analysis-demo"
+def start_jupyter_lab(demo_dir, port=8888):
+    """Start Jupyter Lab for the demo notebooks."""
     
-    if not demo_dir.exists():
-        print(f"❌ Demo directory not found: {demo_dir}")
-        return None
-    
-    print("Installing frontend dependencies...")
-    install_cmd = ["npm", "install"]
+    # Check if Jupyter is available
     try:
-        subprocess.run(install_cmd, cwd=demo_dir, check=True)
-        print("✅ Dependencies installed successfully!")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to install dependencies: {e}")
-        return None
+        subprocess.run([sys.executable, "-m", "jupyter", "--version"], 
+                      capture_output=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("❌ Jupyter not installed. Installing...")
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", "jupyterlab"], 
+                          check=True)
+            print("✅ Jupyter Lab installed successfully!")
+        except subprocess.CalledProcessError:
+            print("❌ Failed to install Jupyter Lab")
+            return None
     
-    print("Starting demo frontend...")
-    start_cmd = ["npm", "run", "dev"]
+    cmd = [
+        sys.executable, "-m", "jupyter", "lab",
+        "--port", str(port),
+        "--ip", "0.0.0.0",
+        "--no-browser",
+        "--allow-root"
+    ]
+    
+    print(f"🚀 Starting Jupyter Lab on port {port}...")
     
     try:
-        process = subprocess.Popen(start_cmd, cwd=demo_dir)
-        time.sleep(3)
+        process = subprocess.Popen(
+            cmd,
+            cwd=demo_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        # Give Jupyter time to start
+        time.sleep(5)
         
         if process.poll() is None:
-            print("✅ Demo frontend started successfully!")
-            print("🎵 Demo App: http://localhost:3001")
+            print(f"✅ Jupyter Lab started successfully!")
+            print(f"📓 Jupyter Lab: http://localhost:{port}")
             return process
         else:
-            print("❌ Failed to start demo frontend")
+            stdout, stderr = process.communicate()
+            print(f"❌ Failed to start Jupyter Lab")
+            if stderr:
+                print(f"STDERR: {stderr}")
             return None
             
     except Exception as e:
-        print(f"❌ Error starting demo frontend: {e}")
+        print(f"❌ Error starting Jupyter Lab: {e}")
         return None
+
+def create_demo_status_file(demo_dir):
+    """Create a status file with demo information."""
+    status = {
+        "demo_name": "Orpheus Engine Judge Evaluation Platform",
+        "hp_ai_studio_compatible": True,
+        "started_at": datetime.now().isoformat(),
+        "notebooks": [
+            {
+                "name": "OrpheusWebDemo.ipynb",
+                "description": "Web interface and professional audio analysis",
+                "focus": "Competition management and HP AI Studio integration"
+            },
+            {
+                "name": "HP_AI_Studio_Judge_Evaluation_Demo.ipynb", 
+                "description": "Complete judge evaluation workflow",
+                "focus": "Professional judging and model registry"
+            },
+            {
+                "name": "Orpheus_MLflow_Demo.ipynb",
+                "description": "MLflow integration and experiment tracking",
+                "focus": "HP AI Studio Project Manager compatibility"
+            }
+        ],
+        "services": {
+            "mlflow_ui": "http://localhost:5000",
+            "jupyter_lab": "http://localhost:8888"
+        },
+        "hp_ai_studio": {
+            "phoenix_mlflow_path": "/phoenix/mlflow",
+            "project_manager_compatible": True,
+            "mlflow_version_required": "2.15.0"
+        }
+    }
+    
+    status_file = demo_dir / "demo_status.json"
+    with open(status_file, 'w') as f:
+        json.dump(status, f, indent=2)
+    
+    print(f"📋 Demo status saved to: {status_file}")
+    return status_file
 
 def create_sample_experiment():
     """Create a sample MLflow experiment for demonstration."""
@@ -105,49 +248,58 @@ def create_sample_experiment():
         import mlflow
         
         # Set up experiment
-        experiment_name = "orpheus-audio-analysis-demo"
+        experiment_name = "orpheus-judge-evaluation-demo"
         experiment = mlflow.set_experiment(experiment_name)
         
-        with mlflow.start_run():
+        with mlflow.start_run(run_name="Demo_Audio_Analysis"):
             # Log sample parameters
             mlflow.log_param("demo_mode", "true")
-            mlflow.log_param("audio_format", "webm")
+            mlflow.log_param("audio_format", "wav")
             mlflow.log_param("analysis_engine", "orpheus-ai")
+            mlflow.log_param("competition", "HP AI Studio")
+            mlflow.log_param("demo_type", "judge_evaluation")
             
-            # Log sample metrics
-            mlflow.log_metric("demo_quality_score", 95.5)
-            mlflow.log_metric("demo_tempo", 128.0)
-            mlflow.log_metric("demo_energy", 0.85)
+            # Log sample metrics for demonstration
+            mlflow.log_metric("quality_score", 95.5)
+            mlflow.log_metric("tempo_bpm", 128.0)
+            mlflow.log_metric("energy_level", 0.85)
+            mlflow.log_metric("spectral_centroid", 2500.0)
+            mlflow.log_metric("zero_crossing_rate", 0.15)
             
             # Create a sample artifact
-            sample_report = """# Orpheus Audio Analysis Demo Report
+            sample_report = f"""# Orpheus Judge Evaluation Demo Report
 
-## System Information
-- Engine: Orpheus AI Audio Analysis
-- Version: 1.0.0
-- Competition: HP AI Studio
+## Competition Information
+- Platform: HP AI Studio Project Manager
+- Event: Judge Evaluation Demo
+- Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ## Capabilities Demonstrated
-- Real-time audio recording
-- Spectral analysis and FFT processing
-- AI-powered genre classification
-- Professional audio quality assessment
-- MLflow experiment tracking
+- Professional audio analysis and scoring
+- Real-time audio quality assessment
+- AI-powered genre and style classification
+- MLflow experiment tracking and model registry
+- HP AI Studio integration
 
 ## Technical Features
-- WebRTC audio capture
-- Advanced signal processing
-- Machine learning inference
+- Advanced signal processing and spectral analysis
+- Machine learning inference pipeline
 - Professional audio standards compliance
+- Competition-grade evaluation metrics
 
-Generated by Orpheus Engine Demo System
+## Demo Notebooks Available
+1. **OrpheusWebDemo.ipynb** - Web interface and professional audio analysis
+2. **HP_AI_Studio_Judge_Evaluation_Demo.ipynb** - Complete judge workflow
+3. **Orpheus_MLflow_Demo.ipynb** - MLflow integration demonstration
+
+Generated by Orpheus Engine Demo System for HP AI Studio
 """
             
-            with open("demo_report.md", "w") as f:
+            with open("judge_evaluation_demo_report.md", "w") as f:
                 f.write(sample_report)
             
-            mlflow.log_artifact("demo_report.md")
-            os.remove("demo_report.md")
+            mlflow.log_artifact("judge_evaluation_demo_report.md")
+            os.remove("judge_evaluation_demo_report.md")
             
         print(f"✅ Sample experiment created: {experiment_name}")
         
@@ -156,44 +308,78 @@ Generated by Orpheus Engine Demo System
     except Exception as e:
         print(f"⚠️  Could not create sample experiment: {e}")
 
+def display_demo_options():
+    """Display available demo options for judges."""
+    print("\n📚 Available Judge Evaluation Notebooks:")
+    print("=" * 50)
+    print("1. 🎵 OrpheusWebDemo.ipynb")
+    print("   - Web interface and professional audio analysis")
+    print("   - Competition management and HP AI Studio integration")
+    print("   - Perfect for interactive judging sessions")
+    print()
+    print("2. 🏆 HP_AI_Studio_Judge_Evaluation_Demo.ipynb")
+    print("   - Complete judge evaluation workflow")
+    print("   - Professional judging and model registry")
+    print("   - Designed specifically for competition judges")
+    print()
+    print("3. 📊 Orpheus_MLflow_Demo.ipynb")
+    print("   - MLflow integration and experiment tracking")
+    print("   - HP AI Studio Project Manager compatibility")
+    print("   - Model versioning and evaluation tracking")
+    print()
+    print("🌐 Access all notebooks at: http://localhost:8888")
+    print("📈 MLflow tracking at: http://localhost:5000")
+
 def main():
     """Main demo startup function."""
-    print("🎵 Orpheus Audio Analysis Demo - HP AI Studio Competition")
+    print("🎵 Orpheus Engine Judge Evaluation Platform")
+    print("🏢 HP AI Studio Competition Demo")
     print("=" * 60)
     
-    # Setup MLflow environment
-    mlruns_dir, artifacts_dir = setup_mlflow_environment()
-    print(f"📁 MLflow data directory: {mlruns_dir}")
-    print(f"📁 Artifacts directory: {artifacts_dir}")
+    # Check HP AI Studio compatibility first
+    if not check_hp_ai_studio_compatibility():
+        print("\n❌ System not ready for HP AI Studio integration")
+        print("💡 Please install requirements: pip install -r requirements.txt")
+        sys.exit(1)
     
-    # Create sample experiment
+    print()
+    
+    # Setup demo environment
+    demo_dir, mlruns_dir, artifacts_dir = setup_demo_environment()
+    
+    # Create demo status file
+    create_demo_status_file(demo_dir)
+    
+    # Create sample experiment for demonstration
     create_sample_experiment()
     
-    # Start MLflow server
+    print()
+    
+    # Start services
     mlflow_process = start_mlflow_server(mlruns_dir)
+    jupyter_process = start_jupyter_lab(demo_dir)
     
-    # Start demo frontend
-    frontend_process = start_demo_frontend()
-    
-    if mlflow_process and frontend_process:
-        print("\n🚀 Demo is now running!")
-        print("=" * 40)
-        print("🎵 Audio Analysis Demo: http://localhost:3001")
-        print("📊 MLflow Tracking UI:  http://localhost:5000")
-        print("=" * 40)
-        print("\nPress Ctrl+C to stop all services...")
+    if mlflow_process and jupyter_process:
+        print("\n🚀 Orpheus Judge Evaluation Platform Ready!")
+        print("=" * 50)
         
-        # Open browser tabs
+        # Display demo options
+        display_demo_options()
+        
+        print("\n🎯 Ready for Judge Evaluation!")
+        print("Press Ctrl+C to stop all services...")
+        
+        # Auto-open browser for judges
         try:
+            time.sleep(3)
+            webbrowser.open("http://localhost:8888")
             time.sleep(2)
-            webbrowser.open("http://localhost:3001")
-            time.sleep(1)
             webbrowser.open("http://localhost:5000")
         except:
             pass
         
         try:
-            # Keep the script running
+            # Keep the script running and monitor services
             while True:
                 time.sleep(1)
                 
@@ -202,26 +388,27 @@ def main():
                     print("❌ MLflow server stopped unexpectedly")
                     break
                     
-                if frontend_process.poll() is not None:
-                    print("❌ Frontend server stopped unexpectedly")
+                if jupyter_process.poll() is not None:
+                    print("❌ Jupyter Lab stopped unexpectedly")
                     break
                     
         except KeyboardInterrupt:
-            print("\n🛑 Shutting down demo services...")
+            print("\n🛑 Shutting down Judge Evaluation Platform...")
             
             if mlflow_process:
                 mlflow_process.terminate()
                 mlflow_process.wait()
                 print("✅ MLflow server stopped")
                 
-            if frontend_process:
-                frontend_process.terminate()
-                frontend_process.wait()
-                print("✅ Frontend server stopped")
+            if jupyter_process:
+                jupyter_process.terminate()
+                jupyter_process.wait()
+                print("✅ Jupyter Lab stopped")
                 
-            print("👋 Demo shutdown complete!")
+            print("👋 Judge Evaluation Platform shutdown complete!")
     else:
         print("❌ Failed to start demo services")
+        print("💡 Please check requirements and try again")
         sys.exit(1)
 
 if __name__ == "__main__":
