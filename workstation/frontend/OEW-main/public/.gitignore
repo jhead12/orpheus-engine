@@ -1,0 +1,24 @@
+# Public directory ignores
+
+# Generated files
+generated/
+
+# Temporary files
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Keep assets but ignore large media files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Audio files (if any get placed here)
+*.wav
+*.mp3
+*.flac

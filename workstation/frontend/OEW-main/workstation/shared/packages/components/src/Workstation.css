@@ -1,0 +1,505 @@
+/* Workstation Main Styles */
+.workstation {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.workstation.desktop {
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.workstation.web {
+  border-radius: 0;
+}
+
+/* Header Styles */
+.workstation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  height: 60px;
+}
+
+.workstation-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Transport Controls */
+.transport-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.transport-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transport-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.transport-btn.active {
+  background: #ff6b6b;
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+}
+
+.transport-btn.recording {
+  background: #ff4757;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Tempo Controls */
+.tempo-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tempo-controls label {
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.tempo-controls input[type="range"] {
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.tempo-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #4ecdc4;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Timeline Styles */
+.timeline {
+  position: relative;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.timeline-ruler {
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+.measure-marker {
+  position: relative;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 60px;
+}
+
+.measure-marker:first-child {
+  border-left: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ff6b6b;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+}
+
+/* Track List Styles */
+.track-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.track-list-header {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.add-track-btn {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-track-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Track Styles */
+.track {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.track:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.track.selected {
+  background: rgba(78, 205, 196, 0.1);
+  border-left: 3px solid #4ecdc4;
+}
+
+.track-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  height: 60px;
+}
+
+.track-expand {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.track-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.track-type {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.track-controls {
+  display: flex;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+.track-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.track-btn.active {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+  color: #ffffff;
+}
+
+.track-btn.mute.active {
+  background: #ffa502;
+  border-color: #ffa502;
+}
+
+.track-btn.solo.active {
+  background: #3742fa;
+  border-color: #3742fa;
+}
+
+.track-delete {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.track-delete:hover {
+  color: #ff6b6b;
+}
+
+/* Track Content */
+.track-content {
+  padding: 0 12px 12px 44px;
+}
+
+.track-clips {
+  position: relative;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.clip {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.clip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.clip-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-clip-btn {
+  padding: 6px 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-clip-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mixer Styles */
+.mixer {
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.mixer-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mixer-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mixer-channels {
+  display: flex;
+  padding: 12px;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.mixer-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  height: 120px;
+}
+
+.channel-label {
+  font-size: 10px;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60px;
+}
+
+.volume-fader {
+  flex: 1;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: slider-vertical;
+  writing-mode: bt-lr;
+  margin: 8px 0;
+}
+
+.channel-meter {
+  width: 8px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.meter-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to top, #ff6b6b, #ffa502, #4ecdc4);
+  transition: height 0.1s ease;
+}
+
+/* Footer Styles */
+.workstation-footer {
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 20px;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .workstation-header {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 60px;
+  }
+  
+  .transport-controls {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  
+  .tempo-controls {
+    order: 1;
+  }
+  
+  .track-header {
+    padding: 8px;
+  }
+  
+  .mixer-channels {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .mixer-channel {
+    min-width: 50px;
+  }
+}
+
+/* Dark mode specific overrides */
+@media (prefers-color-scheme: dark) {
+  .workstation {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  }
+}
+
+/* Scrollbar Styling */
+.track-list::-webkit-scrollbar,
+.timeline::-webkit-scrollbar,
+.mixer-channels::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.track-list::-webkit-scrollbar-track,
+.timeline::-webkit-scrollbar-track,
+.mixer-channels::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.track-list::-webkit-scrollbar-thumb,
+.timeline::-webkit-scrollbar-thumb,
+.mixer-channels::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.track-list::-webkit-scrollbar-thumb:hover,
+.timeline::-webkit-scrollbar-thumb:hover,
+.mixer-channels::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

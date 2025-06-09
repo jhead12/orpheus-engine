@@ -1,0 +1,777 @@
+electron/audioAnalysis.ts(1,10): error TS2305: Module '"electron"' has no exported member 'app'.
+electron/audioAnalysis.ts(1,15): error TS2305: Module '"electron"' has no exported member 'ipcMain'.
+electron/audioAnalysis.ts(1,29): error TS2305: Module '"electron"' has no exported member 'IpcMainInvokeEvent'.
+electron/contextMenu.ts(1,10): error TS2305: Module '"electron"' has no exported member 'BrowserWindow'.
+electron/contextMenu.ts(1,25): error TS2305: Module '"electron"' has no exported member 'ipcMain'.
+electron/contextMenu.ts(1,34): error TS2305: Module '"electron"' has no exported member 'Menu'.
+electron/contextMenu.ts(1,40): error TS2305: Module '"electron"' has no exported member 'shell'.
+electron/contextMenu.ts(1,52): error TS2305: Module '"electron"' has no exported member 'IpcMainEvent'.
+electron/contextMenu.ts(1,71): error TS2305: Module '"electron"' has no exported member 'MenuItemConstructorOptions'.
+electron/handlers.ts(1,10): error TS2305: Module '"electron"' has no exported member 'BrowserWindow'.
+electron/handlers.ts(1,25): error TS2305: Module '"electron"' has no exported member 'dialog'.
+electron/handlers.ts(1,33): error TS2305: Module '"electron"' has no exported member 'ipcMain'.
+electron/main.ts(1,10): error TS2305: Module '"electron"' has no exported member 'app'.
+electron/main.ts(1,15): error TS2305: Module '"electron"' has no exported member 'BrowserWindow'.
+electron/main.ts(1,30): error TS2305: Module '"electron"' has no exported member 'ipcMain'.
+electron/menu.ts(1,10): error TS2305: Module '"electron"' has no exported member 'app'.
+electron/menu.ts(1,15): error TS2305: Module '"electron"' has no exported member 'Menu'.
+electron/menu.ts(1,21): error TS2305: Module '"electron"' has no exported member 'BrowserWindow'.
+electron/menu.ts(1,36): error TS2305: Module '"electron"' has no exported member 'MenuItemConstructorOptions'.
+electron/preload.ts(1,10): error TS2305: Module '"electron"' has no exported member 'contextBridge'.
+electron/preload.ts(1,25): error TS2305: Module '"electron"' has no exported member 'ipcRenderer'.
+src/components/__tests__/LaneImport.test.tsx(357,60): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type '{ tracks: never[]; masterTrack: { id: string; name: string; type: "audio"; color: string; mute: boolean; solo: boolean; armed: boolean; volume: { value: number; min: number; max: number; default: number; isAutomated: boolean; }; ... 5 more ...; fx: { ...; }; }; ... 92 more ...; setTimeSignature: Mock<...>; }' is not assignable to type 'WorkstationContextType'.
+      The types of 'masterTrack.type' are incompatible between these types.
+        Type '"audio"' is not assignable to type 'TrackType'.
+src/components/__tests__/SortableList.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/__tests__/SortableList.test.tsx(25,25): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+src/components/__tests__/SortableList.test.tsx(40,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+  The types of 'thresholds.top' are incompatible between these types.
+    Type '{ slow: number; medium: number; fast: number; }' is not assignable to type 'number'.
+src/components/__tests__/SortableList.test.tsx(57,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/__tests__/SortableList.test.tsx(108,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/__tests__/SortableList.test.tsx(130,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/__tests__/SyncScroll.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/__tests__/SyncScroll.test.tsx(53,11): error TS6133: 'mockSyncScrollBehavior' is declared but its value is never read.
+src/components/__tests__/SyncScrollPane.test.tsx(16,7): error TS6133: 'TestProvider' is declared but its value is never read.
+src/components/__tests__/SyncScrollPane.test.tsx(57,16): error TS18047: 'pane1' is possibly 'null'.
+src/components/__tests__/SyncScrollPane.test.tsx(58,17): error TS18047: 'pane1' is possibly 'null'.
+src/components/__tests__/WindowAutoScroll.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/__tests__/WindowAutoScroll.test.tsx(2,18): error TS6133: 'fireEvent' is declared but its value is never read.
+src/components/__tests__/WindowAutoScroll.test.tsx(2,29): error TS6133: 'screen' is declared but its value is never read.
+src/components/docs/ImageService.ts(133,11): error TS6133: 'parseComponentName' is declared but its value is never read.
+src/components/docs/ImageService.ts(141,11): error TS6133: 'parseTestName' is declared but its value is never read.
+src/components/docs/ImageService.ts(152,11): error TS6133: 'getFileType' is declared but its value is never read.
+src/components/icons/Automation.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/icons/Metronome.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/icons/Sequencer.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/icons/TrackIcon.tsx(8,48): error TS6133: 'type' is declared but its value is never read.
+src/components/search/AudioSearch.tsx(30,20): error TS2339: Property 'isSearching' does not exist on type '{ search: (query: string) => Promise<never[]>; results: SearchResult[]; loading: boolean; }'.
+src/components/search/AudioSearch.tsx(30,33): error TS2339: Property 'error' does not exist on type '{ search: (query: string) => Promise<never[]>; results: SearchResult[]; loading: boolean; }'.
+src/components/search/AudioSearch.tsx(30,48): error TS2339: Property 'selectResult' does not exist on type '{ search: (query: string) => Promise<never[]>; results: SearchResult[]; loading: boolean; }'.
+src/components/search/AudioSearch.tsx(108,54): error TS2339: Property 'text' does not exist on type 'SearchResult'.
+src/components/search/AudioSearch.tsx(111,40): error TS2339: Property 'start_time' does not exist on type 'SearchResult'.
+src/components/search/AudioSearch.tsx(111,74): error TS2339: Property 'end_time' does not exist on type 'SearchResult'.
+src/components/search/AudioSearch.tsx(114,47): error TS2339: Property 'confidence' does not exist on type 'SearchResult'.
+src/components/search/AudioSearchPanel.tsx(3,30): error TS2307: Cannot find module '../../services/AudioService' or its corresponding type declarations.
+src/components/search/AudioSearchPanel.tsx(62,20): error TS2322: Type '(result: SearchResult) => Promise<void>' is not assignable to type '(result: SearchResult) => void'.
+  Types of parameters 'result' and 'result' are incompatible.
+    Type 'SearchResult' is missing the following properties from type 'SearchResult': text, confidence, start_time, end_time
+src/components/settings/tabs/AudioSettings.tsx(22,15): error TS2339: Property 'inputs' does not exist on type 'MediaDeviceInfo[]'.
+src/components/settings/tabs/AudioSettings.tsx(22,23): error TS2339: Property 'outputs' does not exist on type 'MediaDeviceInfo[]'.
+src/components/settings/tabs/AudioSettings.tsx(35,13): error TS2339: Property 'inputs' does not exist on type 'MediaDeviceInfo[]'.
+src/components/settings/tabs/AudioSettings.tsx(35,21): error TS2339: Property 'outputs' does not exist on type 'MediaDeviceInfo[]'.
+src/components/widgets/Dialog.tsx(20,9): error TS2322: Type '{ paper: { style: { accentColor?: Property.AccentColor | undefined; alignContent?: Property.AlignContent | undefined; alignItems?: Property.AlignItems | undefined; ... 821 more ...; vectorEffect?: Property.VectorEffect | undefined; }; }; }' is not assignable to type '{ root?: SlotComponentProps<"div", ModalComponentsPropsOverrides, ModalOwnerState> | undefined; backdrop?: SlotComponentProps<...> | undefined; }'.
+  Object literal may only specify known properties, and 'paper' does not exist in type '{ root?: SlotComponentProps<"div", ModalComponentsPropsOverrides, ModalOwnerState> | undefined; backdrop?: SlotComponentProps<...> | undefined; }'.
+src/components/widgets/SelectSpinBox.tsx(156,48): error TS2345: Argument of type '(e: MouseEvent | TouchEvent) => void' is not assignable to parameter of type '() => void'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0.
+src/components/widgets/SelectSpinBox.tsx(353,27): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/widgets/SortableList.tsx(34,3): error TS6133: 'direction' is declared but its value is never read.
+src/components/widgets/SortableListItem.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/widgets/Tooltip.tsx(89,47): error TS2345: Argument of type '"horizontal"' is not assignable to parameter of type 'boolean | undefined'.
+src/components/widgets/Tooltip.tsx(90,47): error TS2345: Argument of type '"vertical"' is not assignable to parameter of type 'boolean | undefined'.
+src/components/widgets/__tests__/DebugMeterStructure.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/widgets/__tests__/DebugMeterStructure.test.tsx(36,43): error TS2339: Property 'style' does not exist on type 'Element'.
+src/components/widgets/__tests__/DebugMeterStructure.test.tsx(36,84): error TS2339: Property 'style' does not exist on type 'Element'.
+src/components/widgets/__tests__/Meter.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/widgets/__tests__/SortableList.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/widgets/__tests__/SortableList.test.tsx(27,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+  The types of 'thresholds.top' are incompatible between these types.
+    Type '{ slow: number; medium: number; fast: number; }' is not assignable to type 'number'.
+src/components/widgets/__tests__/SortableList.test.tsx(44,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/widgets/__tests__/SortableList.test.tsx(69,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/widgets/__tests__/SortableList.test.tsx(88,11): error TS6133: 'container' is declared but its value is never read.
+src/components/widgets/__tests__/SortableList.test.tsx(90,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/widgets/__tests__/SortableList.test.tsx(117,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
+src/components/widgets/__tests__/debug-dom.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/workstation/Lane.tsx(10,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/components/workstation/Lane.tsx(49,3): error TS6133: 'SnapGridSizeOption' is declared but its value is never read.
+src/components/workstation/Lane.tsx(50,3): error TS6133: 'WorkstationAudioInputFile' is declared but its value is never read.
+src/components/workstation/Lane.tsx(53,1): error TS6133: 'BASE_BEAT_WIDTH' is declared but its value is never read.
+src/components/workstation/Lane.tsx(90,3): error TS2322: Type 'AutomationMode.Off' is not assignable to type 'AutomationMode'.
+src/components/workstation/Lane.tsx(192,31): error TS2322: Type '{ analysisType: AudioAnalysisType; setAnalysisType: React.Dispatch<React.SetStateAction<AudioAnalysisType>>; selectedClip: Clip | null; setSelectedClip: React.Dispatch<...>; analysisResults: any; runAudioAnalysis: (audioBuffer: AudioBuffer, type: AudioAnalysisType) => Promise<...>; }' is not assignable to type 'AnalysisContextType'.
+  The types returned by 'runAudioAnalysis(...)' are incompatible between these types.
+    Type 'Promise<AudioAnalysisResults>' is not assignable to type 'Promise<AudioAnalysisResults | null>'.
+      Type 'import("/workspaces/orpheus-engine/src/types/audio").AudioAnalysisResults' is not assignable to type 'import("/workspaces/orpheus-engine/src/contexts/types").AudioAnalysisResults'.
+        Types of property 'waveform' are incompatible.
+          Type 'number[] | undefined' is not assignable to type 'Float32Array | undefined'.
+            Type 'number[]' is missing the following properties from type 'Float32Array': BYTES_PER_ELEMENT, buffer, byteLength, byteOffset, and 3 more.
+src/components/workstation/Lane.tsx(347,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'TimelinePosition'.
+src/components/workstation/Lane.tsx(471,5): error TS2345: Argument of type '(e: React.DragEvent, track: Track | null) => void' is not assignable to parameter of type '(...args: unknown[]) => unknown'.
+  Types of parameters 'e' and 'args' are incompatible.
+    Type 'unknown' is not assignable to type 'DragEvent<Element>'.
+src/components/workstation/Lane.tsx(535,35): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'SnapGridSizeOption'.
+src/components/workstation/Lane.tsx(536,11): error TS6133: 'pos' is declared but its value is never read.
+src/components/workstation/Lane.tsx(551,17): error TS2345: Argument of type '{ id: any; name: string; path: string; type: string; size: number; lastModified: number; buffer: Buffer; }' is not assignable to parameter of type 'File | Blob'.
+  Object literal may only specify known properties, and 'id' does not exist in type 'File | Blob'.
+src/components/workstation/Lane.tsx(583,9): error TS2554: Expected 2 arguments, but got 1.
+src/components/workstation/Lane.tsx(591,19): error TS2345: Argument of type '(Track | { name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; ... 5 more ...; outputs?: { ...; }[] | undefined; })[]' is not assignable to parameter of type 'Track[]'.
+  Type 'Track | { name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; ... 5 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+    Type '{ name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: AutomationMode; ... 4 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+      Types of property 'volume' are incompatible.
+        Type 'number' is not assignable to type 'AutomatableParameter'.
+src/components/workstation/Lane.tsx(683,32): error TS2345: Argument of type '(e: React.WheelEvent) => void' is not assignable to parameter of type '(...args: unknown[]) => unknown'.
+  Types of parameters 'e' and 'args' are incompatible.
+    Type 'unknown' is not assignable to type 'WheelEvent<Element>'.
+src/components/workstation/Lane.tsx(927,19): error TS2322: Type '{ children: Element[]; ariaLabel: string; direction: "right"; icon: Element; slotProps: { transition: { style: { readonly boxShadow: "none"; readonly backgroundColor: "var(--color1)"; readonly width: 24; readonly height: 24; readonly minHeight: 0; }; }; }; sx: { ...; }; }' is not assignable to type 'IntrinsicAttributes & SpeedDialProps'.
+  Property 'slotProps' does not exist on type 'IntrinsicAttributes & SpeedDialProps'.
+src/components/workstation/Lane.tsx(979,42): error TS2345: Argument of type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to parameter of type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
+  Types of property 'volume' are incompatible.
+    Type 'AutomatableParameter' is not assignable to type 'number'.
+src/components/workstation/Lane.tsx(980,47): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'Track'.
+src/components/workstation/Lane.tsx(985,21): error TS2322: Type 'TimelineEditorWindowScrollThresholds' is not assignable to type 'WindowAutoScrollThresholds'.
+src/components/workstation/Lane.tsx(997,31): error TS2345: Argument of type '(track: Track, idx: number) => JSX.Element' is not assignable to parameter of type '(value: Track, index: number, array: Track[]) => Element'.
+  Types of parameters 'track' and 'value' are incompatible.
+    Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
+src/components/workstation/Lane.tsx(1004,57): error TS2322: Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track' is not assignable to type 'Track'.
+  Types of property 'effects' are incompatible.
+    Type 'Effect[] | undefined' is not assignable to type 'Effect[]'.
+      Type 'undefined' is not assignable to type 'Effect[]'.
+src/components/workstation/Lane.tsx(1021,23): error TS2322: Type '{ name: string; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: AutomationMode; ... 5 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+  Types of property 'effects' are incompatible.
+    Type 'Effect[] | undefined' is not assignable to type 'Effect[]'.
+      Type 'undefined' is not assignable to type 'Effect[]'.
+src/components/workstation/Lane.tsx(1083,44): error TS2345: Argument of type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to parameter of type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
+src/components/workstation/Lane.tsx(1085,25): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
+src/components/workstation/Lane.tsx(1091,33): error TS2345: Argument of type '(track: Track, idx: number) => JSX.Element' is not assignable to parameter of type '(value: Track, index: number, array: Track[]) => Element'.
+  Types of parameters 'track' and 'value' are incompatible.
+    Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
+src/components/workstation/Lane.tsx(1095,27): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
+src/components/workstation/Lane.tsx(1096,27): error TS2322: Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/core").Track'.
+src/components/workstation/Lane.tsx(1109,25): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
+  Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; }' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; }'.
+    Types of property 'track' are incompatible.
+      Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track | null' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/core").Track | null'.
+        Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/core").Track'.
+          Types of property 'volume' are incompatible.
+            Type 'number' is not assignable to type 'AutomatableParameter'.
+src/components/workstation/Lane.tsx(1111,25): error TS2322: Type '{ name: string; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: AutomationMode; ... 5 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number' is not assignable to type 'AutomatableParameter'.
+src/components/workstation/Lane.tsx(1198,17): error TS2322: Type 'AudioAnalysisResults | null' is not assignable to type 'AudioAnalysisResults | null | undefined'.
+  Type 'import("/workspaces/orpheus-engine/src/contexts/types").AudioAnalysisResults' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/audio").AudioAnalysisResults'.
+    Types of property 'waveform' are incompatible.
+      Type 'Float32Array | undefined' is not assignable to type 'number[] | undefined'.
+        Type 'Float32Array' is missing the following properties from type 'number[]': pop, push, concat, shift, and 5 more.
+src/contexts/WorkstationContext.tsx(739,22): error TS6133: 'setShowMaster' is declared but its value is never read.
+src/contexts/WorkstationContext.tsx(742,24): error TS6133: 'setAutoGridSize' is declared but its value is never read.
+src/contexts/__tests__/WorkstationContext.test.tsx(5,28): error TS6133: 'Track' is declared but its value is never read.
+src/contexts/__tests__/WorkstationContext.test.tsx(187,11): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/contexts/__tests__/WorkstationContext.test.tsx(491,14): error TS18047: 'result.current.clipboard' is possibly 'null'.
+src/contexts/__tests__/WorkstationContext.test.tsx(492,14): error TS18047: 'result.current.clipboard' is possibly 'null'.
+src/contexts/__tests__/WorkstationContext.test.tsx(492,14): error TS18048: 'result.current.clipboard.tracks' is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(527,14): error TS18047: 'result.current.clipboard' is possibly 'null'.
+src/contexts/__tests__/WorkstationContext.test.tsx(661,18): error TS18046: 'error' is of type 'unknown'.
+src/contexts/index.ts(5,32): error TS2724: '"./AnalysisContext"' has no exported member named 'AnalysisContextType'. Did you mean 'AnalysisContext'?
+src/contexts/index.ts(20,3): error TS2614: Module '"./PreferencesContext"' has no exported member 'PreferencesContext'. Did you mean to use 'import PreferencesContext from "./PreferencesContext"' instead?
+src/contexts/index.ts(23,8): error TS2614: Module '"./PreferencesContext"' has no exported member 'PreferencesContextType'. Did you mean to use 'import PreferencesContextType from "./PreferencesContext"' instead?
+src/contexts/index.ts(39,14): error TS6133: 'query' is declared but its value is never read.
+src/graphql/datasources/automationLanes.ts(2,30): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/graphql/datasources/automationLanes.ts(96,7): error TS2740: Type '{ bar: number; beat: number; tick: number; }' is missing the following properties from type 'TimelinePosition': sixteenth, fraction, measure, add, and 10 more.
+src/graphql/datasources/clips.ts(2,30): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/graphql/datasources/effects.ts(2,30): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/graphql/datasources/effects.ts(3,18): error TS6133: 'BaseEffect' is declared but its value is never read.
+src/graphql/datasources/fxChainPresets.ts(2,30): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/graphql/datasources/tracks.ts(2,30): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/graphql/datasources/tracks.ts(51,7): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/datasources/tracks.ts(52,7): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/datasources/tracks.ts(75,11): error TS2322: Type '{ mute: boolean; solo: boolean; armed: boolean; volume: number | AutomatableParameter; pan: number | AutomatableParameter; automation: boolean; ... 10 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number | AutomatableParameter' is not assignable to type 'AutomatableParameter'.
+      Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/resolvers.ts(7,3): error TS2322: Type '(value: AudioBuffer) => { numberOfChannels: number; length: number; sampleRate: number; duration: number; channels: number[][]; }' is not assignable to type 'GraphQLScalarSerializer<{ numberOfChannels: number; length: number; sampleRate: number; duration: number; channels: number[][]; }>'.
+  Types of parameters 'value' and 'outputValue' are incompatible.
+    Type 'unknown' is not assignable to type 'AudioBuffer'.
+src/graphql/resolvers.ts(46,16): error TS2304: Cannot find name 'TimelinePosition'.
+src/hooks/__tests__/useDrag.test.ts(12,25): error TS2304: Cannot find name 'vi'.
+src/hooks/__tests__/useDrag.test.ts(28,24): error TS2304: Cannot find name 'vi'.
+src/hooks/__tests__/useDrag.test.ts(57,36): error TS2304: Cannot find name 'vi'.
+src/hooks/useTracksManager.ts(48,15): error TS2339: Property 'tracks' does not exist on type '{} | { tracks: never[]; }'.
+src/index.ts(1,35): error TS2307: Cannot find module '../graphql/server' or its corresponding type declarations.
+src/main-test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/main.browser.tsx(103,13): error TS2339: Property 'ORPHEUS_BROWSER_ENV' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(104,10): error TS2339: Property 'ORPHEUS_BROWSER_ENV' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(108,34): error TS2339: Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(110,38): error TS2339: Property 'audioWorklet' does not exist on type 'never'.
+src/main/index.ts(1,10): error TS2305: Module '"electron"' has no exported member 'app'.
+src/main/index.ts(8,9): error TS2304: Cannot find name 'BrowserWindow'.
+src/main/window.ts(1,10): error TS2305: Module '"electron"' has no exported member 'BrowserWindow'.
+src/main/window.ts(1,25): error TS2305: Module '"electron"' has no exported member 'app'.
+src/main/window.ts(24,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/screens/workstation/Editor.tsx(146,11): error TS6133: '_sampleRate' is declared but its value is never read.
+src/screens/workstation/Editor.tsx(564,15): error TS2554: Expected 1-2 arguments, but got 3.
+src/screens/workstation/Editor.tsx(584,54): error TS2554: Expected 2 arguments, but got 3.
+src/screens/workstation/Editor.tsx(592,19): error TS2345: Argument of type '(Track | { name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; ... 5 more ...; automationMode: AutomationMode; })[]' is not assignable to parameter of type 'Track[]'.
+  Type 'Track | { name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; ... 5 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+    Type '{ name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; volume: number; ... 4 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+      Types of property 'volume' are incompatible.
+        Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/Editor.tsx(614,7): error TS2345: Argument of type '(params: {    action: number;}) => void' is not assignable to parameter of type '(params: ContextMenuParams) => void'.
+  Types of parameters 'params' and 'params' are incompatible.
+    Type 'ContextMenuParams' is not assignable to type '{ action: number; }'.
+      Types of property 'action' are incompatible.
+        Type 'string' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(670,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(763,5): error TS2304: Cannot find name 'BASE_BEAT_WIDTH'.
+src/screens/workstation/Editor.tsx(945,19): error TS2322: Type '{ children: Element[]; ariaLabel: string; direction: "right"; icon: Element; slotProps: { transition: { style: { readonly boxShadow: "none"; readonly backgroundColor: "var(--color1)"; readonly width: 24; readonly height: 24; readonly minHeight: 0; }; }; }; sx: { ...; }; }' is not assignable to type 'IntrinsicAttributes & SpeedDialProps'.
+  Property 'slotProps' does not exist on type 'IntrinsicAttributes & SpeedDialProps'.
+src/screens/workstation/Editor.tsx(998,47): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'AutomatableParameter' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(1003,21): error TS2322: Type 'TimelineEditorWindowScrollThresholds' is not assignable to type 'WindowAutoScrollThresholds'.
+  Types of property 'top' are incompatible.
+    Type '{ slow: number; medium: number; fast: number; }' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(1022,57): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'Track'.
+src/screens/workstation/Editor.tsx(1131,25): error TS2322: Type '{ name: string; id: string; automationLanes: never[]; clips: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; volume: number; ... 4 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/Editor.tsx(1218,18): error TS2304: Cannot find name 'JudgeEvaluationPanel'.
+src/screens/workstation/Workstation.tsx(1,19): error TS6133: 'useState' is declared but its value is never read.
+src/screens/workstation/Workstation.tsx(53,41): error TS2554: Expected 0 arguments, but got 1.
+src/screens/workstation/components/AudioAnalysisPanel.tsx(95,37): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'AudioBuffer' is not assignable to parameter of type 'ArrayBufferLike'.
+src/screens/workstation/components/AudioClipComponent.tsx(9,10): error TS2614: Module '"../../../components/DNR"' has no exported member 'ResizeDNRData'. Did you mean to use 'import ResizeDNRData from "../../../components/DNR"' instead?
+src/screens/workstation/components/AudioClipComponent.tsx(63,42): error TS2322: Type 'AudioBuffer' is not assignable to type 'BlobPart'.
+src/screens/workstation/components/AudioClipComponent.tsx(63,79): error TS2339: Property 'type' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/AudioClipComponent.tsx(98,64): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/AudioClipComponent.tsx(99,36): error TS2339: Property 'sourceDuration' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/AudioClipComponent.tsx(153,19): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type 'AudioBuffer'.
+  No index signature with a parameter of type 'number' was found on type 'AudioBuffer'.
+src/screens/workstation/components/AudioClipComponent.tsx(155,83): error TS2339: Property 'decodeAudioData' does not exist on type 'AudioContext | MockAudioContext'.
+  Property 'decodeAudioData' does not exist on type 'MockAudioContext'.
+src/screens/workstation/components/AudioClipComponent.tsx(185,36): error TS2322: Type 'Promise<AudioBuffer>' is not assignable to type 'AudioBuffer'.
+src/screens/workstation/components/AudioClipComponent.tsx(185,65): error TS2740: Type 'Promise<Buffer>' is missing the following properties from type 'AudioBuffer': duration, length, numberOfChannels, sampleRate, and 3 more.
+src/screens/workstation/components/AudioClipComponent.tsx(185,93): error TS2345: Argument of type 'Promise<AudioBuffer>' is not assignable to parameter of type 'AudioBuffer'.
+  Type 'Promise<AudioBuffer>' is missing the following properties from type 'AudioBuffer': duration, length, numberOfChannels, sampleRate, and 3 more.
+src/screens/workstation/components/AutomationLaneComponent.tsx(9,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/screens/workstation/components/AutomationLaneComponent.tsx(35,5): error TS2339: Property 'addNode' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(37,5): error TS2339: Property 'pasteNode' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(39,5): error TS2339: Property 'setLane' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(70,13): error TS2345: Argument of type '{ tempo: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'tempo' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(80,37): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(87,37): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(94,61): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(96,24): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(164,26): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(167,26): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(170,43): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(197,68): error TS2339: Property 'Node' does not exist on type 'typeof ClipboardItemType'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(304,20): error TS2304: Cannot find name 'BASE_HEIGHT'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(311,20): error TS2304: Cannot find name 'BASE_HEIGHT'.
+src/screens/workstation/components/AutomationLaneComponent.tsx(322,17): error TS2304: Cannot find name 'BASE_HEIGHT'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(9,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/screens/workstation/components/AutomationLaneTrack.tsx(22,5): error TS2339: Property 'addNode' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(26,5): error TS2339: Property 'setLane' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(27,5): error TS2339: Property 'setSelectedNodeId' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(45,32): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(102,28): error TS2304: Cannot find name 'automatedValueAtPos'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(109,15): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(112,15): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(115,40): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(188,27): error TS2304: Cannot find name 'BASE_HEIGHT'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(42,5): error TS2339: Property 'deleteNode' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(44,5): error TS2339: Property 'selectedNodeId' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(47,5): error TS2339: Property 'setSelectedNodeId' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(126,9): error TS2304: Cannot find name 'waitForScrollWheelStop'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(137,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(147,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(159,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(170,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(254,16): error TS2304: Cannot find name 'formatVolume'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(264,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(270,35): error TS2304: Cannot find name 'timelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/ClipComponent.tsx(457,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/FXComponent.tsx(5,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/screens/workstation/components/FXComponent.tsx(54,11): error TS2339: Property 'fxChainPresets' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/FXComponent.tsx(54,40): error TS2339: Property 'setFXChainPresets' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/FXComponent.tsx(67,38): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(152,53): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(161,43): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(257,13): error TS2322: Type '{ id: string; name: string; enabled: boolean; type: "native" | "juce" | "python"; source: string; parameters: {}; }' is not assignable to type 'Effect'.
+  Object literal may only specify known properties, and 'source' does not exist in type 'Effect'.
+src/screens/workstation/components/FXComponent.tsx(391,41): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/Header.tsx(57,5): error TS2339: Property 'isLooping' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Header.tsx(59,5): error TS2339: Property 'isRecording' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Header.tsx(63,5): error TS2339: Property 'setIsLooping' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Header.tsx(64,5): error TS2339: Property 'setIsPlaying' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Header.tsx(65,5): error TS2339: Property 'setIsRecording' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Header.tsx(93,36): error TS2339: Property 'toTimeString' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(102,46): error TS2554: Expected 0 arguments, but got 1.
+src/screens/workstation/components/Header.tsx(133,54): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+src/screens/workstation/components/Header.tsx(136,28): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(139,32): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(142,26): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(146,32): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(151,35): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(156,34): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(160,32): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+src/screens/workstation/components/Header.tsx(162,21): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(162,31): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(162,38): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(166,35): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+src/screens/workstation/components/Header.tsx(168,18): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(168,28): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(168,35): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(172,70): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(174,18): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(174,28): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(174,35): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(177,68): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(180,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(180,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(180,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(182,46): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+src/screens/workstation/components/Header.tsx(191,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(191,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(191,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(193,74): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(197,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(197,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(197,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(199,74): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(202,32): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+src/screens/workstation/components/Header.tsx(215,51): error TS2345: Argument of type '{ tempo: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'tempo' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/Header.tsx(242,17): error TS2339: Property 'hours' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,24): error TS2339: Property 'minutes' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,33): error TS2339: Property 'seconds' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,42): error TS2339: Property 'milliseconds' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(256,11): error TS2339: Property 'normalize' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(267,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 12 more.
+src/screens/workstation/components/Header.tsx(281,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 12 more.
+src/screens/workstation/components/Header.tsx(284,14): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+src/screens/workstation/components/Header.tsx(308,22): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/Header.tsx(749,20): error TS2304: Cannot find name 'getVolumeGradient'.
+src/screens/workstation/components/Header.tsx(753,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Header.tsx(757,20): error TS2304: Cannot find name 'getVolumeGradient'.
+src/screens/workstation/components/Header.tsx(761,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Lane.tsx(50,11): error TS2339: Property 'clipboardData' does not exist on type 'ClipboardContextType'.
+src/screens/workstation/components/Lane.tsx(95,38): error TS2339: Property 'trackId' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/Lane.tsx(117,55): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Lane.tsx(181,13): error TS18048: 'window.electronAPI' is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(181,32): error TS2339: Property 'ipcRenderer' does not exist on type '{ openFile: () => Promise<string>; saveFile: (content: string) => Promise<void>; }'.
+src/screens/workstation/components/Lane.tsx(190,58): error TS2345: Argument of type 'WorkstationAudioInputFile' is not assignable to parameter of type 'File | Blob'.
+  Type 'WorkstationAudioInputFile' is missing the following properties from type 'File': webkitRelativePath, arrayBuffer, slice, stream, text
+src/screens/workstation/components/Lane.tsx(206,36): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/Lane.tsx(212,47): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/Lane.tsx(257,49): error TS2339: Property 'trackId' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/Lane.tsx(315,25): error TS7053: Element implicitly has an 'any' type because expression of type '0' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '0' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/Lane.tsx(316,26): error TS7053: Element implicitly has an 'any' type because expression of type '1' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '1' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/Lane.tsx(323,43): error TS2345: Argument of type '{ region: any; trackId: string; } | null' is not assignable to parameter of type '{ start: TimelinePosition; end: TimelinePosition; } | null'.
+  Type '{ region: any; trackId: string; }' is not assignable to type '{ start: TimelinePosition; end: TimelinePosition; }'.
+    Object literal may only specify known properties, and 'region' does not exist in type '{ start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/Lane.tsx(325,49): error TS2339: Property 'region' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/Metronome.tsx(70,28): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/Metronome.tsx(81,56): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/Mixer.tsx(2,10): error TS6133: 'Check' is declared but its value is never read.
+src/screens/workstation/components/Mixer.tsx(17,3): error TS2305: Module '"../../../services/utils/utils"' has no exported member 'hslToHex'.
+src/screens/workstation/components/Mixer.tsx(51,7): error TS6133: 'deleteTrack' is declared but its value is never read.
+src/screens/workstation/components/Mixer.tsx(52,7): error TS6133: 'duplicateTrack' is declared but its value is never read.
+src/screens/workstation/components/Mixer.tsx(55,7): error TS6133: 'playheadPos' is declared but its value is never read.
+src/screens/workstation/components/Mixer.tsx(59,7): error TS6133: 'timelineSettings' is declared but its value is never read.
+src/screens/workstation/components/Mixer.tsx(205,15): error TS2322: Type '{ readonly add: { readonly button: { readonly marginTop: 1; readonly marginRight: -1; }; }; readonly preset: { readonly height: 17; }; readonly top: { readonly backgroundColor: "#0000"; }; readonly effect: { ...; }; readonly select: { ...; }; }' is not assignable to type 'FXElements<CSSProperties>'.
+  Types of property 'preset' are incompatible.
+    Type '{ readonly height: 17; }' has no properties in common with type '{ container?: CSSProperties | undefined; text?: CSSProperties | undefined; optionsList?: CSSProperties | undefined; }'.
+src/screens/workstation/components/Mixer.tsx(223,15): error TS2322: Type '{ readonly icon: { readonly color: "var(--border6)"; readonly fontSize: 12; }; readonly next: { readonly icon: { readonly fontSize: 20; }; }; readonly prev: { readonly icon: { readonly fontSize: 20; }; }; readonly spinButton: { ...; }; readonly text: { ...; }; readonly top: { ...; }; }' is not assignable to type 'SelectSpinBoxElements<CSSProperties>'.
+  Types of property 'next' are incompatible.
+    Type '{ readonly icon: { readonly fontSize: 20; }; }' has no properties in common with type 'Properties<string | number, string & {}>'.
+src/screens/workstation/components/Mixer.tsx(232,46): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(233,49): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(238,46): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(239,49): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(254,29): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/screens/workstation/components/Mixer.tsx(271,52): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/Mixer.tsx(282,23): error TS2322: Type '{ disabled: boolean; onDoubleClick: () => void; onChange: (value: number) => void; style: { readonly knob: { readonly backgroundColor: "#0000"; }; readonly indicator: { readonly backgroundColor: "var(--border6)"; }; readonly meter: { ...; }; }; title: string; value: number; valueDisplay: (value: any) => string; "dat...' is not assignable to type 'IntrinsicAttributes & IntrinsicClassAttributes<Knob> & Pick<Readonly<KnobProps>, "value" | ... 11 more ... | "tooltipProps"> & InexactPartial<...> & InexactPartial<...>'.
+  Property 'onDoubleClick' does not exist on type 'IntrinsicAttributes & IntrinsicClassAttributes<Knob> & Pick<Readonly<KnobProps>, "value" | ... 11 more ... | "tooltipProps"> & InexactPartial<...> & InexactPartial<...>'.
+src/screens/workstation/components/Mixer.tsx(283,46): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/Mixer.tsx(286,46): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/Mixer.tsx(293,38): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/screens/workstation/components/Mixer.tsx(294,46): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/Mixer.tsx(357,33): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(431,19): error TS2322: Type '{ children: Element; onSortEnd: (data: SortData) => void; }' is not assignable to type 'IntrinsicAttributes & SortableListProps'.
+  Property 'onSortEnd' does not exist on type 'IntrinsicAttributes & SortableListProps'.
+src/screens/workstation/components/SidePanel.tsx(2,1): error TS6133: 'Track' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(3,35): error TS6133: 'TrackType' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(29,3): error TS6133: 'onSelectionChange' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(34,21): error TS6133: 'setSelection' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(76,68): error TS6133: 'h' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(123,26): error TS2339: Property 'startTime' does not exist on type 'Clip'.
+src/screens/workstation/components/Timeline.tsx(124,30): error TS2339: Property 'duration' does not exist on type 'Clip'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(33,11): error TS2339: Property 'darkMode' does not exist on type '{}'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(117,37): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/TrackComponent.tsx(66,9): error TS6133: 'useColor' is declared but its value is never read.
+src/screens/workstation/components/TrackComponent.tsx(204,18): error TS2352: Conversion of type 'Track' to type 'import("/workspaces/orpheus-engine/src/types/core").Track' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'volume' are incompatible.
+    Type 'number' is not comparable to type 'AutomatableParameter'.
+src/screens/workstation/components/ZoomControls.tsx(51,53): error TS2345: Argument of type '{ horizontalScale: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/ZoomControls.tsx(65,53): error TS2345: Argument of type '{ horizontalScale: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+src/screens/workstation/components/__tests__/AudioAnalysisPanel.test.tsx(87,9): error TS2739: Type '{ id: string; audio: { audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }; name: string; }' is missing the following properties from type 'Clip': type, start, end, loopEnd, muted
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(10,37): error TS6133: 'onClose' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(22,30): error TS6133: 'onSortEnd' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(45,34): error TS6133: 'short' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(50,14): error TS6133: 'h' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(50,25): error TS6133: 's' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(50,36): error TS6133: 'l' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(63,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(64,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(99,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(100,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(151,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(152,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(205,32): error TS6133: 'track' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(218,8): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(220,9): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(279,13): error TS6133: 'user' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(291,13): error TS6133: 'user' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(409,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(411,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(452,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(454,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(530,18): error TS2488: Type 'Effect[] | undefined' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(546,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(548,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(646,13): error TS6133: 'user' is declared but its value is never read.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(685,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(687,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(720,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(722,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(741,12): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(743,13): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(774,14): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(776,15): error TS2304: Cannot find name 'MixerContext'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(81,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(82,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(197,36): error TS2740: Type '{ tracks: Track[]; masterTrack: Track; isPlaying: boolean; playheadPos: TimelinePosition; maxPos: TimelinePosition; allowMenuAndShortcuts: boolean; ... 24 more ...; updateTimelineSettings: Mock<...>; }' is missing the following properties from type 'WorkstationContextType': trackRegion, removeTrack, updateTrack, duplicateTrack, and 39 more.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(224,36): error TS2322: Type '{ tracks: Track[]; masterTrack: Track; isPlaying: boolean; playheadPos: TimelinePosition; maxPos: TimelinePosition; allowMenuAndShortcuts: boolean; ... 24 more ...; updateTimelineSettings: Mock<...>; }' is not assignable to type 'WorkstationContextType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(459,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(460,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(460,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(481,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(482,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(482,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(503,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(504,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(504,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(141,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(142,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(151,9): error TS2322: Type '{ id: string; envelope: any; points: { time: number; value: number; }[]; }' is not assignable to type 'AutomationLane'.
+  Object literal may only specify known properties, and 'points' does not exist in type 'AutomationLane'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(168,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(169,5): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(191,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(192,3): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(557,48): error TS2307: Cannot find module '../../../services/electron/utils' or its corresponding type declarations.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(558,52): error TS6133: 'type' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(558,63): error TS6133: 'data' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(576,48): error TS2307: Cannot find module '../../../services/electron/utils' or its corresponding type declarations.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(577,52): error TS6133: 'type' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(577,63): error TS6133: 'data' is declared but its value is never read.
+src/services/audio/AudioService.ts(2,29): error TS2307: Cannot find module '../types/core' or its corresponding type declarations.
+src/services/audio/BrowserAudioProvider.tsx(63,24): error TS2367: This comparison appears to be unintentional because the types '"suspended"' and '"running"' have no overlap.
+src/services/browser/BrowserServices.ts(230,21): error TS2339: Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
+src/services/electron/utils.ts(4,3): error TS6133: 'type' is declared but its value is never read.
+src/services/electron/utils.ts(5,3): error TS6133: 'data' is declared but its value is never read.
+src/services/hooks/useClickAway.ts(58,10): error TS6133: 'isTouchEvent' is declared but its value is never read.
+src/services/pythonBridge.ts(1,10): error TS2305: Module '"electron"' has no exported member 'ipcRenderer'.
+src/services/settings.ts(116,3): error TS2739: Type 'Context<Context<SettingsContextType>>' is missing the following properties from type 'SettingsContextType': settings, updateSettings, resetSettings
+src/services/types/types.ts(2,1): error TS6133: 'CoreAudioAnalysisType' is declared but its value is never read.
+src/services/utils/__tests__/audio.test.ts(39,28): error TS6133: 'channel' is declared but its value is never read.
+src/services/utils/__tests__/audio.test.ts(81,5): error TS2345: Argument of type '(numChannels: number, length: number, sampleRate: number) => { numberOfChannels: number; length: number; sampleRate: number; duration: number; getChannelData: Mock<[channel: any], Float32Array>; copyFromChannel: Mock<...>; copyToChannel: Mock<...>; }' is not assignable to parameter of type '(channels: number, length: number, sampleRate: number) => { length: number; numberOfChannels: number; sampleRate: number; duration: number; getChannelData: () => Float32Array; copyToChannel: () => void; copyFromChannel: () => void; }'.
+  Call signature return types '{ numberOfChannels: number; length: number; sampleRate: number; duration: number; getChannelData: Mock<[channel: any], Float32Array>; copyFromChannel: Mock<any, any>; copyToChannel: Mock<...>; }' and '{ length: number; numberOfChannels: number; sampleRate: number; duration: number; getChannelData: () => Float32Array; copyToChannel: () => void; copyFromChannel: () => void; }' are incompatible.
+    The types of 'getChannelData' are incompatible between these types.
+      Type 'Mock<[channel: any], Float32Array>' is not assignable to type '() => Float32Array'.
+        Target signature provides too few arguments. Expected 1 or more, but got 0.
+src/services/utils/__tests__/audio.test.ts(107,11): error TS6133: 'inputChannel' is declared but its value is never read.
+src/services/utils/clipUtils.ts(1,40): error TS2307: Cannot find module '../types/core' or its corresponding type declarations.
+src/setupTests.ts(4,1): error TS6133: 'Mock' is declared but its value is never read.
+src/setupTests.ts(47,7): error TS6196: 'MockAudioContext' is declared but never used.
+src/setupTests.ts(186,1): error TS2739: Type 'Mock<[module: any], { ipcRenderer: { invoke: Mock<any, any>; send: Mock<any, any>; on: Mock<any, any>; removeListener: Mock<any, any>; }; } | { ipcRenderer?: undefined; }>' is missing the following properties from type 'Require': cache, extensions, main, resolve
+src/tempData.ts(1,28): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+src/test/helpers-new.ts(7,60): error TS6133: 'name' is declared but its value is never read.
+src/test/helpers.ts(7,60): error TS6133: 'name' is declared but its value is never read.
+src/test/helpers/processing-monitor.ts(274,15): error TS6133: 'currentTime' is declared but its value is never read.
+src/test/helpers/processing-monitor.ts(282,14): error TS2367: This comparison appears to be unintentional because the types '"closed" | "suspended"' and '"running"' have no overlap.
+src/test/mocks/audioMock.ts(26,18): error TS6133: 'channel' is declared but its value is never read.
+src/test/mocks/audioMock.ts(117,28): error TS6133: 'arrayBuffer' is declared but its value is never read.
+src/test/mocks/domMock.ts(57,30): error TS6133: 'channel' is declared but its value is never read.
+src/test/mocks/domMock.ts(109,28): error TS6133: 'audioData' is declared but its value is never read.
+src/test/screenshot.ts(3,10): error TS2305: Module '"node-html-to-image"' has no exported member 'createScreenshot'.
+src/test/screenshot.ts(3,34): error TS2497: This module can only be referenced with ECMAScript imports/exports by turning on the 'allowSyntheticDefaultImports' flag and referencing its default export.
+src/test/setup.new.ts(7,3): error TS2322: Type '{ <TArgs extends any[] = any, R = any>(): Mock<TArgs, R>; <TArgs extends any[] = any[], R = any>(implementation: (...args: TArgs) => R): Mock<TArgs, R>; }' is not assignable to type '{ (): Mock<any, any, any>; <T, Y extends any[], C = any>(implementation?: ((this: C, ...args: Y) => T) | undefined): Mock<T, Y, C>; }'.
+  Call signature return types 'Mock<any, any>' and 'Mock<any, any, any>' are incompatible.
+    The types of 'mock' are incompatible between these types.
+      Property 'contexts' is missing in type 'MockContext<any, any>' but required in type 'MockContext<any, any, any>'.
+src/test/setup.new.ts(8,3): error TS2322: Type '{ <T, S extends Properties<Required<T>>>(obj: T, methodName: S, accessType: "get"): MockInstance<[], T[S]>; <T, G extends Properties<Required<T>>>(obj: T, methodName: G, accessType: "set"): MockInstance<...>; <T, M extends Classes<...> | keyof { [K in keyof Required<...> as Required<...>[K] extends Procedure ? K : n...' is not assignable to type '{ <T extends {}, Key extends keyof T, A extends PropertyAccessors<Key, T> = PropertyAccessors<Key, T>, Value extends Required<T>[Key] = Required<T>[Key]>(object: T, method: Key, accessType: A): A extends "set" ? SpyInstance<...> : A extends "get" ? SpyInstance<...> : Value extends Constructor ? SpyInstance<...> : Va...'.
+  Type 'MockInstance<[], any>' is not assignable to type 'SpyInstance<void, [any], any> | SpyInstance<any, [], any> | SpyInstance<any, unknown[], any>'.
+    Type 'MockInstance<[], any>' is not assignable to type 'SpyInstance<any, unknown[], any>'.
+      Types of property 'mock' are incompatible.
+        Property 'contexts' is missing in type 'MockContext<[], any>' but required in type 'MockContext<any, unknown[], any>'.
+src/test/setup.new.ts(12,11): error TS6196: 'MockAudioParam' is declared but never used.
+src/test/setup.new.ts(25,11): error TS6196: 'MockAudioNode' is declared but never used.
+src/test/setup.new.ts(88,7): error TS2420: Class 'MockAudioContext' incorrectly implements interface 'AudioContext'.
+  Type 'MockAudioContext' is missing the following properties from type 'AudioContext': createMediaElementSource, createMediaStreamDestination, createMediaStreamSource, getOutputTimestamp, and 14 more.
+src/test/setup.new.ts(206,5): error TS2717: Subsequent property declarations must have the same type.  Property 'webkitAudioContext' must be of type 'AudioContextConstructor', but here has type 'AudioContextConstructor'.
+src/test/setup.ts(3,1): error TS6133: 'Mock' is declared but its value is never read.
+src/test/setup.ts(15,11): error TS6196: 'MockEventTarget' is declared but never used.
+src/test/setup.ts(337,5): error TS2717: Subsequent property declarations must have the same type.  Property 'AudioContext' must be of type 'AudioContextConstructor', but here has type 'AudioContextConstructor'.
+src/test/setup.ts(346,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'AudioContext' must be of type '{ new (contextOptions?: AudioContextOptions | undefined): AudioContext; prototype: AudioContext; }', but here has type 'AudioContextConstructor'.
+src/test/setup.ts(347,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'webkitAudioContext' must be of type 'AudioContextConstructor', but here has type 'AudioContextConstructor'.
+src/test/visual-agent/configs/AudioAnalysisPanelConfig.ts(64,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/AudioAnalysisPanelConfig.ts(75,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/ClipComponentConfig.ts(76,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/ClipComponentConfig.ts(99,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/KnobConfig.ts(64,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/KnobConfig.ts(99,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MeterConfig.ts(74,7): error TS2322: Type '{ name: string; captureGif: true; props: { percent: number; }; interactions: { type: "input"; target: string; value: number; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MeterConfig.ts(107,7): error TS2322: Type '{ name: string; captureGif: true; props: { percent: number; showPeaks: true; color: string; }; interactions: { type: "input"; target: string; value: number; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MixerConfig.ts(57,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "drag"; target: string; value: { startY: number; endY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MixerConfig.ts(75,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/SidePanelConfig.ts(63,11): error TS2322: Type '"mouseenter"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(68,11): error TS2322: Type '"mouseleave"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(73,11): error TS2322: Type '"mouseenter"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(81,7): error TS2322: Type '{ name: string; captureGif: true; props: { collapsed: false; }; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/SidePanelConfig.ts(105,7): error TS2322: Type '{ name: string; captureGif: true; props: { collapsed: false; }; interactions: { type: "hover"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TimelineConfig.ts(58,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; value: { clientX: number; clientY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TrackComponentConfig.ts(136,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TrackComponentConfig.ts(157,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "drag"; target: string; value: { startY: number; endY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/gif-recorder.ts(150,7): error TS2322: Type '"gif"' is not assignable to type 'ImageType | undefined'.
+src/test/visual-agent/gif-recorder.ts(155,7): error TS2578: Unused '@ts-expect-error' directive.
+src/test/visual-agent/helpers/gif-recorder.ts(64,7): error TS2322: Type '"gif"' is not assignable to type 'ImageType | undefined'.
+src/test/visual-agent/helpers/gif.ts(2,3): error TS6133: 'container' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(1,1): error TS6133: 'render' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(3,10): error TS2305: Module '"./gif-recorder"' has no exported member 'recordGif'.
+src/test/visual-agent/helpers/render.ts(5,1): error TS6133: 'React' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(35,11): error TS6133: 'componentProps' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(69,15): error TS2339: Property 'captureGif' does not exist on type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/helpers/template-engine.ts(42,6): error TS6133: 'match' is declared but its value is never read.
+src/test/visual-agent/helpers/template-engine.ts(82,27): error TS2339: Property 'componentPath' does not exist on type 'VisualTestConfig'.
+workstation/frontend/OEW-main/src/components/icons/Automation.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+workstation/frontend/OEW-main/src/components/icons/TrackIcon.tsx(8,48): error TS6133: 'type' is declared but its value is never read.
+workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.tsx(22,15): error TS2339: Property 'inputs' does not exist on type 'MediaDeviceInfo[]'.
+workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.tsx(22,23): error TS2339: Property 'outputs' does not exist on type 'MediaDeviceInfo[]'.
+workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.tsx(35,13): error TS2339: Property 'inputs' does not exist on type 'MediaDeviceInfo[]'.
+workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.tsx(35,21): error TS2339: Property 'outputs' does not exist on type 'MediaDeviceInfo[]'.
+workstation/frontend/OEW-main/src/components/widgets/Tooltip.tsx(89,47): error TS2345: Argument of type '"horizontal"' is not assignable to parameter of type 'boolean | undefined'.
+workstation/frontend/OEW-main/src/components/widgets/Tooltip.tsx(90,47): error TS2345: Argument of type '"vertical"' is not assignable to parameter of type 'boolean | undefined'.
+workstation/frontend/OEW-main/src/contexts/index.ts(5,32): error TS2724: '"./AnalysisContext"' has no exported member named 'AnalysisContextType'. Did you mean 'AnalysisContext'?
+workstation/frontend/OEW-main/src/contexts/index.ts(24,8): error TS2306: File '/workspaces/orpheus-engine/workstation/frontend/OEW-main/src/contexts/PreferencesContext.tsx' is not a module.
+workstation/frontend/OEW-main/src/contexts/index.ts(39,14): error TS6133: 'query' is declared but its value is never read.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioAnalysisPanel.tsx(95,37): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'AudioBuffer' is not assignable to parameter of type 'ArrayBufferLike'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(9,10): error TS2614: Module '"../../../components/DNR"' has no exported member 'ResizeDNRData'. Did you mean to use 'import ResizeDNRData from "../../../components/DNR"' instead?
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(63,42): error TS2322: Type 'AudioBuffer' is not assignable to type 'BlobPart'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(63,79): error TS2339: Property 'type' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(98,64): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(99,36): error TS2339: Property 'sourceDuration' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(153,19): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type 'AudioBuffer'.
+  No index signature with a parameter of type 'number' was found on type 'AudioBuffer'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(155,83): error TS2339: Property 'decodeAudioData' does not exist on type 'AudioContext | MockAudioContext'.
+  Property 'decodeAudioData' does not exist on type 'MockAudioContext'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(185,36): error TS2322: Type 'Promise<AudioBuffer>' is not assignable to type 'AudioBuffer'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(185,65): error TS2322: Type 'Promise<Buffer>' is not assignable to type 'AudioBuffer'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx(185,93): error TS2345: Argument of type 'Promise<AudioBuffer>' is not assignable to parameter of type 'AudioBuffer'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(6,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(21,5): error TS2339: Property 'addNode' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(23,5): error TS2339: Property 'pasteNode' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(25,5): error TS2339: Property 'setLane' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(42,32): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(45,32): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(48,57): error TS2345: Argument of type '{ tempo: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'tempo' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(57,37): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(64,37): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(71,61): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(73,24): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(136,26): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(139,26): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(142,43): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(169,68): error TS2339: Property 'Node' does not exist on type 'typeof ClipboardItemType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(251,20): error TS2304: Cannot find name 'BASE_HEIGHT'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(258,20): error TS2304: Cannot find name 'BASE_HEIGHT'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx(269,17): error TS2304: Cannot find name 'BASE_HEIGHT'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(9,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(22,5): error TS2339: Property 'addNode' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(26,5): error TS2339: Property 'setLane' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(27,5): error TS2339: Property 'setSelectedNodeId' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(45,32): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(102,28): error TS2304: Cannot find name 'automatedValueAtPos'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(109,15): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(112,15): error TS2322: Type 'AutomatableParameter' is not assignable to type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(115,40): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx(188,27): error TS2304: Cannot find name 'BASE_HEIGHT'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(42,5): error TS2339: Property 'deleteNode' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(44,5): error TS2339: Property 'selectedNodeId' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(47,5): error TS2339: Property 'setSelectedNodeId' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(126,9): error TS2304: Cannot find name 'waitForScrollWheelStop'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(137,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(147,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(159,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(170,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(254,16): error TS2304: Cannot find name 'formatVolume'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(264,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx(270,35): error TS2304: Cannot find name 'timelineEditorWindowScrollThresholds'.
+workstation/frontend/OEW-main/src/screens/workstation/components/ClipComponent.tsx(457,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(5,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(43,11): error TS2339: Property 'fxChainPresets' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(43,40): error TS2339: Property 'setFXChainPresets' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(56,38): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(141,53): error TS7006: Parameter 'p' implicitly has an 'any' type.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(150,43): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(246,13): error TS2322: Type '{ id: string; name: string; enabled: boolean; type: "native" | "juce" | "python"; source: string; parameters: {}; }' is not assignable to type 'Effect'.
+  Object literal may only specify known properties, and 'source' does not exist in type 'Effect'.
+workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx(380,41): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(57,5): error TS2339: Property 'isLooping' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(59,5): error TS2339: Property 'isRecording' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(63,5): error TS2339: Property 'setIsLooping' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(64,5): error TS2339: Property 'setIsPlaying' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(65,5): error TS2339: Property 'setIsRecording' does not exist on type 'WorkstationContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(93,36): error TS2339: Property 'toTimeString' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(102,46): error TS2554: Expected 0 arguments, but got 1.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(133,54): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(136,28): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(139,32): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(142,26): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(146,32): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(151,35): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(156,34): error TS2339: Property 'diff' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(160,32): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(162,21): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(162,31): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(162,38): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(166,35): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(168,18): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(168,28): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(168,35): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(172,70): error TS2554: Expected 3 arguments, but got 4.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(174,18): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(174,28): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(174,35): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(177,68): error TS2554: Expected 3 arguments, but got 4.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(180,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(180,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(180,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(182,46): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(191,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(191,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(191,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(193,74): error TS2554: Expected 3 arguments, but got 4.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(197,20): error TS2339: Property 'measures' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(197,30): error TS2339: Property 'beats' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(197,37): error TS2339: Property 'fraction' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(199,74): error TS2554: Expected 3 arguments, but got 4.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(202,32): error TS2339: Property 'timelineSettings' does not exist on type 'typeof TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(215,51): error TS2345: Argument of type '{ tempo: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'tempo' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(242,17): error TS2339: Property 'hours' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(242,24): error TS2339: Property 'minutes' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(242,33): error TS2339: Property 'seconds' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(242,42): error TS2339: Property 'milliseconds' does not exist on type 'Number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(256,11): error TS2339: Property 'normalize' does not exist on type 'TimelinePosition'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(267,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 12 more.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(281,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 12 more.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(284,14): error TS2576: Property 'subtract' does not exist on type 'TimelinePosition'. Did you mean to access the static member 'TimelinePosition.subtract' instead?
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(308,22): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(746,13): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/workstation/frontend/OEW-main/src/types/core").Track'.
+  Types of property 'volume' are incompatible.
+    Type 'AutomatableParameter' is not assignable to type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(749,20): error TS2304: Cannot find name 'getVolumeGradient'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(753,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(757,20): error TS2304: Cannot find name 'getVolumeGradient'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(761,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(824,58): error TS2339: Property 'None' does not exist on type 'typeof SnapGridSizeOption'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(828,43): error TS2339: Property 'HundredTwentyEighthBeat' does not exist on type 'typeof SnapGridSizeOption'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(830,63): error TS2339: Property 'SixtyFourthBeat' does not exist on type 'typeof SnapGridSizeOption'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx(833,43): error TS2339: Property 'ThirtySecondBeat' does not exist on type 'typeof SnapGridSizeOption'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(50,11): error TS2339: Property 'clipboardData' does not exist on type 'ClipboardContextType'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(95,38): error TS2339: Property 'trackId' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(117,55): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(181,13): error TS18048: 'window.electronAPI' is possibly 'undefined'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(181,32): error TS2339: Property 'ipcRenderer' does not exist on type '{ openFile: () => Promise<string>; saveFile: (content: string) => Promise<void>; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(190,58): error TS2345: Argument of type 'WorkstationAudioInputFile' is not assignable to parameter of type 'File | Blob'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(206,36): error TS2554: Expected 1 arguments, but got 2.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(212,47): error TS2554: Expected 1 arguments, but got 2.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(257,49): error TS2339: Property 'trackId' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(315,25): error TS7053: Element implicitly has an 'any' type because expression of type '0' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '0' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(316,26): error TS7053: Element implicitly has an 'any' type because expression of type '1' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '1' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(323,43): error TS2345: Argument of type '{ region: any; trackId: string; } | null' is not assignable to parameter of type '{ start: TimelinePosition; end: TimelinePosition; } | null'.
+  Type '{ region: any; trackId: string; }' is not assignable to type '{ start: TimelinePosition; end: TimelinePosition; }'.
+    Object literal may only specify known properties, and 'region' does not exist in type '{ start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx(325,49): error TS2339: Property 'region' does not exist on type '{ start: TimelinePosition; end: TimelinePosition; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Metronome.tsx(70,28): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Metronome.tsx(81,56): error TS2339: Property 'tempo' does not exist on type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(37,7): error TS6133: 'playheadPos' is declared but its value is never read.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(41,7): error TS6133: 'timelineSettings' is declared but its value is never read.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(68,30): error TS2345: Argument of type 'Track' is not assignable to parameter of type 'string'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(270,46): error TS2345: Argument of type 'boolean' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(277,49): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(282,46): error TS2345: Argument of type 'boolean' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(289,49): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(297,19): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/workstation/frontend/OEW-main/src/types/core").Track'.
+workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx(319,44): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+workstation/frontend/OEW-main/src/screens/workstation/components/RegionComponent.tsx(19,33): error TS2307: Cannot find module '../../../constants/timeline' or its corresponding type declarations.
+workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx(32,11): error TS2339: Property 'darkMode' does not exist on type '{}'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx(113,11): error TS2304: Cannot find name 'BASE_BEAT_WIDTH'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx(116,37): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx(156,41): error TS2304: Cannot find name 'GRID_MIN_INTERVAL_WIDTH'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx(255,13): error TS2304: Cannot find name 'BASE_BEAT_WIDTH'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TrackComponent.tsx(66,9): error TS6133: 'useColor' is declared but its value is never read.
+workstation/frontend/OEW-main/src/screens/workstation/components/TrackComponent.tsx(204,11): error TS2322: Type 'import("/workspaces/orpheus-engine/workstation/frontend/OEW-main/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/core").Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number' is not assignable to type 'AutomatableParameter'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TrackVolumeSlider.tsx(45,11): error TS2339: Property 'getTrackCurrentValue' does not exist on type 'WorkstationContextType | null'.
+workstation/frontend/OEW-main/src/screens/workstation/components/TrackVolumeSlider.tsx(45,33): error TS2339: Property 'setTrack' does not exist on type 'WorkstationContextType | null'.
+workstation/frontend/OEW-main/src/screens/workstation/components/ZoomControls.tsx(51,53): error TS2345: Argument of type '{ horizontalScale: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/screens/workstation/components/ZoomControls.tsx(65,53): error TS2345: Argument of type '{ horizontalScale: number; beatWidth: number; timeSignature: { beats: number; noteValue: number; }; }' is not assignable to parameter of type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }) => { beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }'.
+workstation/frontend/OEW-main/src/services/electron/utils.ts(4,3): error TS6133: 'type' is declared but its value is never read.
+workstation/frontend/OEW-main/src/services/electron/utils.ts(5,3): error TS6133: 'data' is declared but its value is never read.
+workstation/frontend/OEW-main/src/services/hooks/useClickAway.ts(58,10): error TS6133: 'isTouchEvent' is declared but its value is never read.
+workstation/frontend/OEW-main/src/services/pythonBridge.ts(1,10): error TS2305: Module '"electron"' has no exported member 'ipcRenderer'.
+workstation/frontend/OEW-main/src/services/settings.ts(116,3): error TS2739: Type 'Context<Context<SettingsContextType>>' is missing the following properties from type 'SettingsContextType': settings, updateSettings, resetSettings
+workstation/frontend/OEW-main/src/services/types/types.ts(2,1): error TS6133: 'CoreAudioAnalysisType' is declared but its value is never read.
+workstation/frontend/OEW-main/src/services/utils/clipUtils.ts(1,40): error TS2307: Cannot find module '../types/core' or its corresponding type declarations.
+workstation/frontend/OEW-main/src/types/index.ts(6,1): error TS2308: Module "./core" has already exported a member named 'Region'. Consider explicitly re-exporting to resolve the ambiguity.

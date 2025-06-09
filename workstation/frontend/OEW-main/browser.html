@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Orpheus Engine - Professional Digital Audio Workstation in your browser" />
+    <meta name="author" content="Creative Organization DAO" />
+    
+    <!-- Progressive Web App support -->
+    <meta name="theme-color" content="#1a1a1a" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Orpheus Engine - Browser DAW" />
+    <meta property="og:description" content="Professional Digital Audio Workstation running in your browser" />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Audio Worklet and Web Audio API optimization -->
+    <meta http-equiv="origin-trial" content="" />
+    
+    <title>Orpheus Engine - Browser DAW</title>
+    
+    <style>
+      /* Loading screen styles */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #333;
+        border-top: 3px solid #4CAF50;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      
+      .loading-subtext {
+        font-size: 14px;
+        opacity: 0.7;
+        text-align: center;
+        max-width: 400px;
+      }
+      
+      /* Hide loading screen when app loads */
+      .loaded #loading-screen {
+        display: none;
+      }
+      
+      /* Ensure app container takes full height */
+      #root {
+        min-height: 100vh;
+        background: #1a1a1a;
+      }
+      
+      /* Browser compatibility notices */
+      .browser-notice {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 193, 7, 0.9);
+        color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        max-width: 300px;
+        z-index: 10000;
+        display: none;
+      }
+      
+      .browser-notice.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading screen -->
+    <div id="loading-screen">
+      <div class="loader"></div>
+      <div class="loading-text">Loading Orpheus Engine...</div>
+      <div class="loading-subtext">
+        Initializing audio engine and workspace components
+      </div>
+    </div>
+    
+    <!-- Browser compatibility notice -->
+    <div id="browser-notice" class="browser-notice">
+      <strong>Notice:</strong> For the best experience, please use a modern browser with Web Audio API support (Chrome, Firefox, Safari, or Edge).
+    </div>
+    
+    <!-- Main application container -->
+    <div id="root"></div>
+    
+    <!-- Browser-specific initialization script -->
+    <script>
+      // Check browser compatibility
+      function checkBrowserSupport() {
+        const hasAudioContext = !!(window.AudioContext || window.webkitAudioContext);
+        const hasWebAudio = 'createScriptProcessor' in (window.AudioContext?.prototype || window.webkitAudioContext?.prototype || {});
+        const hasFileAPI = !!(window.File && window.FileReader && window.FileList && window.Blob);
+        
+        if (!hasAudioContext || !hasWebAudio) {
+          document.getElementById('browser-notice').classList.add('show');
+          console.warn('Limited audio support detected');
+        }
+        
+        return {
+          hasAudioContext,
+          hasWebAudio,
+          hasFileAPI,
+          isSupported: hasAudioContext && hasWebAudio && hasFileAPI
+        };
+      }
+      
+      // Initialize browser environment
+      window.ORPHEUS_BROWSER_ENV = {
+        compatibility: checkBrowserSupport(),
+        features: {
+          electronIPC: false,
+          nativeFileSystem: !!window.showOpenFilePicker,
+          webMIDI: !!navigator.requestMIDIAccess,
+          audioWorklet: !!(window.AudioContext?.prototype?.audioWorklet || window.webkitAudioContext?.prototype?.audioWorklet)
+        },
+        platform: {
+          isBrowser: true,
+          isElectron: false,
+          userAgent: navigator.userAgent,
+          vendor: navigator.vendor
+        }
+      };
+      
+      // Remove loading screen when React app loads
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          document.body.classList.add('loaded');
+        }, 500);
+      });
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            console.log('Orpheus Engine load time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+          }, 0);
+        });
+      }
+      
+      // Service Worker registration for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
+    <!-- Main application entry point -->
+    <script type="module" src="/src/main.browser.tsx"></script>
+  </body>
+</html>

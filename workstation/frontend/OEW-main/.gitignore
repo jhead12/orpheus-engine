@@ -1,0 +1,274 @@
+# Orpheus Engine - Comprehensive .gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ===============================
+# Dependencies
+# ===============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+/.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ===============================
+# Build Output
+# ===============================
+dist/
+build/
+/build
+out/
+.next/
+.nuxt/
+.vuepress/dist/
+.cache/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ===============================
+# Environment Variables
+# ===============================
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.production
+
+# ===============================
+# Testing & Coverage
+# ===============================
+coverage/
+.nyc_output/
+.vitest/
+test-results/
+test-reports/
+__snapshots__/diffs
+screenshots/
+.playwright/
+junit.xml
+
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+venv/
+.venv/
+env/
+.env
+ENV/
+env.bak/
+venv.bak/
+.spyderproject
+.spyproject
+.ropeproject
+
+# ===============================
+# Jupyter Notebooks
+# ===============================
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+.jupyter/
+.virtual_documents/
+
+# ===============================
+# AI/ML Files
+# ===============================
+*.weights
+*.h5
+*.hdf5
+*.onnx
+*.pkl
+*.pickle
+*.pth
+*.bin
+*.model
+*.pt
+*.safetensors
+*.ckpt
+*.npy
+*.npz
+*.tflite
+*.mlmodel
+*.joblib
+*.gguf
+*.ggml
+models/
+weights/
+datasets/
+checkpoints/
+wandb/
+mlruns/
+.mlflow/
+lightning_logs/
+
+# ===============================
+# Audio Files (DAW specific)
+# ===============================
+*.wav
+*.mp3
+*.aiff
+*.flac
+*.ogg
+*.m4a
+*.wma
+*.aac
+*.au
+audio_cache/
+audio_temp/
+rendered_audio/
+
+# ===============================
+# Electron
+# ===============================
+app/dist/
+release/
+dist_electron/
+.electron-builder-config.js
+.electron-vue/
+electron-builder.env
+
+# ===============================
+# System Files
+# ===============================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===============================
+# IDEs & Editors
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ===============================
+# Logs
+# ===============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ===============================
+# Runtime & Temporary
+# ===============================
+.tmp/
+tmp/
+temp/
+.temp/
+*.tmp
+*.temp
+.lock-wscript
+.grunt
+.sass-cache/
+.nyc_output/
+
+# ===============================
+# Archives & Compressed Files
+# ===============================
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+*.iso
+*.img
+*.dmg
+*.gz
+*.bz2
+*.xz
+
+# ===============================
+# Database Files
+# ===============================
+*.db
+*.sqlite
+*.sqlite3
+chroma_db/
+.chroma/
+
+# ===============================
+# Large Files & Git LFS
+# ===============================
+.git/objects/pack/pack-*.pack
+.git/objects/pack/tmp_pack_*
+*.pack
+*.idx
+
+# ===============================
+# Docker
+# ===============================
+.dockerignore
+docker-compose.override.yml
+
+# ===============================
+# Backup Files
+# ===============================
+*.bak
+*.backup
+*.old
+*~
+archives/
+backups/
+backup_*/
+
+# ===============================
+# Package Manager Lock Files (keep)
+# ===============================
+# Uncomment if you want to ignore lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ===============================
+# Custom Orpheus Engine
+# ===============================
+workstation/node_modules/
+workstation/logs/
+orpheus_cache/
+audio_analysis_cache/
+visualization_cache/

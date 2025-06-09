@@ -1,0 +1,29 @@
+# Demo specific ignores
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Output files
+output/
+results/
+plots/
+
+# Temporary files
+.tmp/
+temp/
+
+# Large data files
+*.csv
+*.json
+data/
+datasets/
