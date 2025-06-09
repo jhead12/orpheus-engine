@@ -170,3 +170,43 @@ class SystemInfo(BaseModel):
     memory_available: int
     disk_usage: int
     hostname: str
+
+
+class EffectInstance(BaseModel):
+    """Audio effect instance model."""
+    id: str
+    type: str
+    name: str
+    enabled: bool = True
+    parameters: Dict[str, Any] = {}
+    wet_dry_mix: float = 1.0
+
+
+class EffectChain(BaseModel):
+    """Collection of effects in processing order."""
+    id: str
+    name: str
+    effects: List[EffectInstance] = []
+    enabled: bool = True
+
+
+class PerformanceMetrics(BaseModel):
+    """Audio engine performance metrics."""
+    cpu_usage: float = 0.0
+    memory_usage: float = 0.0
+    audio_latency: float = 0.0
+    buffer_underruns: int = 0
+    active_tracks: int = 0
+
+
+class TransportState(BaseModel):
+    """Transport control state."""
+    is_playing: bool = False
+    is_recording: bool = False
+    is_paused: bool = False
+    playhead_position: float = 0.0
+    tempo: float = 120.0
+    time_signature: tuple = (4, 4)
+    loop_enabled: bool = False
+    loop_start: float = 0.0
+    loop_end: float = 0.0
