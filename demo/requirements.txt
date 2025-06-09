@@ -1,8 +1,12 @@
 # Orpheus Audio Analysis Demo - MLflow Requirements
 
 # Core MLflow
+<<<<<<< HEAD
 mlflow>=3.0.0
 
+=======
+mlflow
+>>>>>>> 020187a (Enhance Orpheus MLflow Demo and Setup Scripts)
 
 # Data science and analysis
 numpy>=1.24.0
