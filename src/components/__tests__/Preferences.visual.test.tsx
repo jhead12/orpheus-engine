@@ -2,7 +2,7 @@ import { describe, it, beforeEach, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { fireEvent } from "@testing-library/react";
 import Preferences from "../Preferences";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
+import { expectScreenshot } from "../../test/helpers/screenshot";
 import { PreferencesProvider } from "../../contexts/PreferencesContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
@@ -17,7 +17,8 @@ describe("Preferences Visual Tests", () => {
   const isCI = process.env.CI === 'true';
   const isCodespaces = process.env.CODESPACES === 'true';
   const hasDisplay = process.env.DISPLAY || process.env.WAYLAND_DISPLAY;
-  const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
+  const forceVisualTests = process.env.FORCE_VISUAL_TESTS === 'true';
+  const shouldSkipVisualTests = !forceVisualTests && (isCI || isCodespaces || !hasDisplay);
 
   // Mock preferences context values
   const mockPreferences = {

@@ -1,13 +1,14 @@
 import { describe, it } from "vitest";
 import { render } from "@testing-library/react";
 import DNR from "../DNR";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
+import { expectScreenshot } from "../../test/helpers/screenshot";
 
 describe("DNR Visual Tests", () => {
   const isCI = process.env.CI === 'true';
   const isCodespaces = process.env.CODESPACES === 'true';
   const hasDisplay = process.env.DISPLAY || process.env.WAYLAND_DISPLAY;
-  const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
+  const forceVisualTests = process.env.FORCE_VISUAL_TESTS === 'true';
+  const shouldSkipVisualTests = !forceVisualTests && (isCI || isCodespaces || !hasDisplay);
 
   it("renders DNR in default state @visual", async () => {
     if (shouldSkipVisualTests) {

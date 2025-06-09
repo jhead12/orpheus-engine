@@ -146,7 +146,7 @@ describe('AudioService', () => {
       copyToChannel: vi.fn(),
     } as AudioBuffer);
     
-    // Update the mock AudioContext to always return a proper mock buffer
+    // Reset the mock AudioContext for each test
     mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue(createMockAudioBuffer());
     
     // Ensure AudioContext constructor is properly mocked on window for each test
@@ -168,6 +168,11 @@ describe('AudioService', () => {
     audioService = AudioService.getInstance();
     // Force initialization to use our mocked AudioContext
     await audioService.initialize();
+    
+    // Verify that the AudioService is using our mocked AudioContext
+    const internalContext = (audioService as any).audioContext;
+    expect(internalContext).toBe(mockAudioContext);
+    
     mockFile = createMockFile('test.wav', 'audio/wav');
   });
 
@@ -272,19 +277,25 @@ describe('AudioService', () => {
   });
 
   describe('Audio Analysis - Browser Platform', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       (PlatformService.isElectron as any).mockReturnValue(false);
       (PlatformService.isBrowser as any).mockReturnValue(true);
       (PlatformService.isPython as any).mockReturnValue(false);
+      
+      // Reset the audioContext to null so initialize() will be called
+      (audioService as any).audioContext = null;
+      
+      // Ensure that when initialize() is called, it uses our mocked AudioContext
+      // The initialize method calls: new (window.AudioContext || window.webkitAudioContext)()
+      // So our window mocks should be used
+      await audioService.initialize();
+      
+      // Verify that our mock was used
+      expect((audioService as any).audioContext).toBe(mockAudioContext);
     });
 
     it('should analyze audio using Web Audio API', async () => {
-      // Ensure audioService has a mocked audioContext
-      if (!(audioService as any).audioContext) {
-        await audioService.initialize();
-      }
-
-      // Create a properly working mock AudioBuffer
+      // Create a properly working mock AudioBuffer with getChannelData method
       const mockAudioBuffer = {
         duration: 10.5,
         sampleRate: 44100,
@@ -301,21 +312,10 @@ describe('AudioService', () => {
         copyToChannel: vi.fn(),
       } as AudioBuffer;
 
-      // Directly replace the decodeAudioData method on the service's audioContext
-      const audioContext = (audioService as any).audioContext;
-      const originalDecodeAudioData = audioContext.decodeAudioData;
-      audioContext.decodeAudioData = vi.fn().mockResolvedValue(mockAudioBuffer);
+      // Mock the decodeAudioData to return our proper AudioBuffer
+      mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue(mockAudioBuffer);
 
-      try {
-        const result = await audioService.analyzeAudio(mockFile);
-
-        expect(result.duration).toBe(10.5);
-        expect(result.sampleRate).toBe(44100);
-        expect(result.waveform).toBeDefined();
-      } finally {
-        // Restore original method
-        audioContext.decodeAudioData = originalDecodeAudioData;
-      }
+      const result = await audioService.analyzeAudio(mockFile);
 
       expect(result.duration).toBe(10.5);
       expect(result.sampleRate).toBe(44100);
@@ -323,9 +323,9 @@ describe('AudioService', () => {
     });
 
     it('should handle Web Audio API errors', async () => {
-      const mockAudioContext = new AudioContext();
+      // Mock the decodeAudioData to reject - this should happen BEFORE any getChannelData calls
       mockAudioContext.decodeAudioData = vi.fn().mockRejectedValue(new Error('Decode failed'));
-
+      
       await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('Decode failed');
     });
   });
@@ -399,7 +399,7 @@ describe('AudioService', () => {
 
       expect(waveform).toHaveLength(4); // 8 samples / 2 samplesPerPixel
       expect(waveform[0]).toBeCloseTo(0.15); // Average of 0.1 and 0.2
-      expect(waveform[1]).toBeCloseTo(0.2);  // Average of abs(-0.1) and 0.5
+      expect(waveform[1]).toBeCloseTo(0.3);  // Average of abs(-0.1) and 0.5
     });
 
     it('should handle empty audio data', () => {
@@ -482,11 +482,22 @@ describe('AudioService', () => {
     });
 
     it('should handle missing AudioContext in browser', async () => {
+      // Properly mock platform detection for browser environment
+      (PlatformService.isElectron as any).mockReturnValue(false);
       (PlatformService.isBrowser as any).mockReturnValue(true);
+      (PlatformService.isPython as any).mockReturnValue(false);
+      
+      // Clear all AudioContext references
       delete (global as any).AudioContext;
       delete (global as any).webkitAudioContext;
+      delete (window as any).AudioContext;
+      delete (window as any).webkitAudioContext;
 
-      await expect(audioService.analyzeAudio(mockFile))
+      // Create a new AudioService instance that will detect the missing AudioContext
+      (AudioService as any).instance = null;
+      const newAudioService = AudioService.getInstance();
+
+      await expect(newAudioService.analyzeAudio(mockFile))
         .rejects.toThrow('Web Audio API not supported');
     });
 
