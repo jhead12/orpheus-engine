@@ -90,14 +90,17 @@ def setup_demo_environment():
     demo_dir = Path(__file__).parent
     mlflow_runs_dir = demo_dir / "mlflow_runs"
     artifacts_dir = demo_dir / "artifacts"
+    tensorboard_logs_dir = demo_dir / "tensorboard_logs"
     
     # Create directories
     mlflow_runs_dir.mkdir(exist_ok=True)
     artifacts_dir.mkdir(exist_ok=True)
+    tensorboard_logs_dir.mkdir(exist_ok=True)
     
     # Set environment variables for HP AI Studio compatibility
     os.environ["MLFLOW_TRACKING_URI"] = f"file://{mlflow_runs_dir}"
     os.environ["MLFLOW_DEFAULT_ARTIFACT_ROOT"] = f"file://{artifacts_dir}"
+    os.environ["TENSORBOARD_LOG_DIR"] = f"{tensorboard_logs_dir}"
     
     print(f"📁 Demo Directory: {demo_dir}")
     print(f"📁 MLflow Tracking: {mlflow_runs_dir}")
@@ -145,6 +148,60 @@ def start_mlflow_server(mlflow_runs_dir, port=5000):
             
     except Exception as e:
         print(f"❌ Error starting MLflow server: {e}")
+        return None
+
+def start_tensorboard_server(tensorboard_logs_dir, port=6006):
+    """Start TensorBoard server for real-time monitoring."""
+    
+    # Check if TensorBoard is available
+    try:
+        import tensorboard
+        print(f"🔍 TensorBoard version: {tensorboard.__version__}")
+    except ImportError:
+        print("⚠️ TensorBoard not installed. Will attempt to install...")
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", "tensorboard>=2.15.0"], 
+                          check=True)
+            print("✅ TensorBoard installed successfully!")
+        except subprocess.CalledProcessError:
+            print("❌ Failed to install TensorBoard")
+            return None
+    
+    cmd = [
+        sys.executable, "-m", "tensorboard.main", "serve",
+        "--logdir", str(tensorboard_logs_dir),
+        "--host", "0.0.0.0",
+        "--port", str(port),
+        "--reload_interval", "1"
+    ]
+    
+    print(f"🚀 Starting TensorBoard server on port {port}...")
+    print(f"   Log Directory: {tensorboard_logs_dir}")
+    
+    try:
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        # Give TensorBoard time to start
+        time.sleep(4)
+        
+        if process.poll() is None:
+            print(f"✅ TensorBoard server started successfully!")
+            print(f"📊 TensorBoard UI: http://localhost:{port}")
+            return process
+        else:
+            stdout, stderr = process.communicate()
+            print(f"❌ Failed to start TensorBoard server")
+            if stderr:
+                print(f"STDERR: {stderr}")
+            return None
+            
+    except Exception as e:
+        print(f"❌ Error starting TensorBoard server: {e}")
         return None
 
 def start_jupyter_lab(demo_dir, port=8888):
@@ -329,6 +386,7 @@ def display_demo_options():
     print()
     print("🌐 Access all notebooks at: http://localhost:8888")
     print("📈 MLflow tracking at: http://localhost:5000")
+    print("📊 TensorBoard monitoring at: http://localhost:6006")
 
 def main():
     """Main demo startup function."""
@@ -346,6 +404,7 @@ def main():
     
     # Setup demo environment
     demo_dir, mlruns_dir, artifacts_dir = setup_demo_environment()
+    tensorboard_logs_dir = demo_dir / "tensorboard_logs"
     
     # Create demo status file
     create_demo_status_file(demo_dir)
@@ -355,8 +414,12 @@ def main():
     
     print()
     
-    # Start services
+    # Start services with dual platform monitoring
+    print("🚀 Starting Unified Monitoring Platform...")
+    print("=" * 40)
+    
     mlflow_process = start_mlflow_server(mlruns_dir)
+    tensorboard_process = start_tensorboard_server(tensorboard_logs_dir)
     jupyter_process = start_jupyter_lab(demo_dir)
     
     if mlflow_process and jupyter_process:
@@ -392,6 +455,10 @@ def main():
                     print("❌ Jupyter Lab stopped unexpectedly")
                     break
                     
+                if tensorboard_process and tensorboard_process.poll() is not None:
+                    print("⚠️ TensorBoard server stopped unexpectedly")
+                    # Don't break for TensorBoard - it's optional
+                    
         except KeyboardInterrupt:
             print("\n🛑 Shutting down Judge Evaluation Platform...")
             
@@ -399,6 +466,11 @@ def main():
                 mlflow_process.terminate()
                 mlflow_process.wait()
                 print("✅ MLflow server stopped")
+                
+            if tensorboard_process:
+                tensorboard_process.terminate()
+                tensorboard_process.wait()
+                print("✅ TensorBoard server stopped")
                 
             if jupyter_process:
                 jupyter_process.terminate()

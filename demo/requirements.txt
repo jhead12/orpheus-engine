@@ -25,6 +25,12 @@ pyloudnorm>=0.1.1  # EBU R128 compliance (latest available version)
 soundfile>=0.12.0
 scipy>=1.10.0
 
+# TensorBoard Integration (Real-time Monitoring)
+tensorboard>=2.15.0  # Compatible with TensorFlow ecosystem
+tensorboard-plugin-profile>=2.14.0  # Performance profiling
+torch>=2.0.0  # For TensorBoard SummaryWriter
+tensorflow>=2.15.0  # TensorBoard backend support
+
 # Web and API (HP AI Studio Compatible)
 fastapi>=0.104.0
 uvicorn>=0.24.0

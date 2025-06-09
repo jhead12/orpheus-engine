@@ -31,6 +31,7 @@ python start_demo.py
 
 This will automatically:
 - 🏃‍♂️ Start MLflow tracking server on port 5000
+- 📊 Start TensorBoard monitoring server on port 6006
 - 🎵 Launch the audio analysis demo on port 3001
 - 🌐 Open both applications in your browser
 
@@ -40,10 +41,32 @@ This will automatically:
 # Terminal 1: Start MLflow
 mlflow ui --host 0.0.0.0 --port 5000
 
-# Terminal 2: Start Demo Frontend
+# Terminal 2: Start TensorBoard  
+tensorboard --logdir=./tensorboard_logs --port=6006
+
+# Terminal 3: Start Demo Frontend
 cd audio-analysis-demo
 npm run dev
 ```
+
+## 📊 Unified Monitoring Platform
+
+### MLflow Integration
+- **Experiment Tracking**: Complete audit trail of all analyses
+- **Model Registry**: Version control for audio analysis models
+- **Metrics Comparison**: Side-by-side performance evaluation
+- **HP AI Studio Compatible**: Phoenix MLflow server integration
+
+### TensorBoard Integration  
+- **Real-time Monitoring**: Live metrics during audio processing
+- **Audio Visualizations**: Waveforms, spectrograms, and frequency analysis
+- **Performance Tracking**: Processing times and efficiency metrics
+- **Quality Monitoring**: LUFS compliance and professional standards
+
+### Dual Platform Benefits
+- **MLflow**: Long-term experiment management and model deployment
+- **TensorBoard**: Real-time monitoring and visual debugging
+- **Combined**: Complete ML workflow visibility for audio processing
 
 ## 🎯 Demo Features
 
