@@ -2,7 +2,8 @@ export {
   WorkstationContext,
   type WorkstationContextType,
 } from "./WorkstationContext";
-export { AnalysisContext, type AnalysisContextType } from "./AnalysisContext";
+export { AnalysisContext } from "./AnalysisContext";
+export type { AnalysisContextType } from "./types";
 export {
   ClipboardContext,
   ClipboardProvider,
@@ -17,10 +18,7 @@ export {
   type MixerContextType,
 } from "./MixerContext";
 export {
-  PreferencesContext,
-  PreferencesProvider,
   usePreferences,
-  type PreferencesContextType,
 } from "./PreferencesContext";
 export { ClipboardItemType } from "../types/clipboard";
 export { useWorkstation } from "./useWorkstation";
@@ -28,16 +26,22 @@ export { useWorkstation } from "./useWorkstation";
 // Audio search exports (placeholder)
 export interface SearchResult {
   id: string;
-  name: string;
-  path: string;
-  type: string;
+  text: string;
+  confidence: number;
+  start_time: number;
+  end_time: number;
+  file_path?: string;
+  audio_file?: string;
 }
 
 export const useAudioSearch = () => {
   // Placeholder implementation
   return {
-    search: (query: string) => Promise.resolve([]),
+    search: (_query: string) => Promise.resolve([]),
     results: [] as SearchResult[],
     loading: false,
+    isSearching: false,
+    error: null as string | null,
+    selectResult: (_result: SearchResult) => {},
   };
 };

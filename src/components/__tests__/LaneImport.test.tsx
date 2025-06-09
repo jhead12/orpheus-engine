@@ -6,20 +6,8 @@ import type { Clip } from "@orpheus/types/core";
 import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
 import { ClipboardContext } from "@orpheus/contexts/ClipboardContext";
 
-// Define the enums for testing since they need to be available at runtime
-const TrackType = {
-  Audio: "audio" as const,
-  Midi: "midi" as const,
-  Sequencer: "sequencer" as const,
-};
-
-const AutomationMode = {
-  Read: "read" as const,
-  Write: "write" as const,
-  Touch: "touch" as const,
-  Latch: "latch" as const,
-  Off: "off" as const,
-};
+// Import the actual enums from types
+import { TrackType, AutomationMode } from "@orpheus/types/core";
 
 // Mock the required contexts
 vi.mock("@orpheus/contexts/WorkstationContext", () => ({
@@ -166,11 +154,17 @@ describe("Lane Component Import and Type Tests", () => {
   });
 
   describe("Lane Component with Different Track Types", () => {
-    const mockTimelinePosition = {
+    const mockTimelinePosition: any = {
+      bar: 0,
+      beat: 0,
+      tick: 0,
+      sixteenth: 0,
+      fraction: 0,
+      measure: 0,
       ticks: 0,
       toMargin: () => 0,
-      fromMargin: () => ({ ticks: 0 }),
-      snap: () => ({ ticks: 0 }),
+      fromMargin: () => mockTimelinePosition,
+      snap: () => mockTimelinePosition,
       diff: vi.fn(),
       fromTicks: vi.fn(),
       fromSpan: vi.fn(),
@@ -178,11 +172,14 @@ describe("Lane Component Import and Type Tests", () => {
       fromSeconds: vi.fn(),
       durationToSpan: vi.fn(() => 100),
       toSeconds: vi.fn(() => 1.0),
-      translate: vi.fn(),
+      toTicks: vi.fn(() => 0),
+      diffInMargin: vi.fn(() => 0),
+      toDisplayString: vi.fn(() => '0:00:00'),
+      translate: vi.fn(() => mockTimelinePosition),
       toString: vi.fn(() => '0:00:00'),
-      copy: vi.fn(),
+      copy: vi.fn(() => mockTimelinePosition),
       equals: vi.fn(() => true),
-      add: vi.fn(),
+      add: vi.fn(() => mockTimelinePosition),
       compareTo: vi.fn(() => 0),
     };
 
@@ -203,8 +200,8 @@ describe("Lane Component Import and Type Tests", () => {
         mute: false,
         solo: false,
         armed: false,
-        volume: 0,
-        pan: 0,
+        volume: { value: 0, min: -60, max: 12, default: 0, isAutomated: false },
+        pan: { value: 0, min: -1, max: 1, default: 0, isAutomated: false },
         automation: false,
         automationMode: AutomationMode.Off,
         automationLanes: [],
@@ -241,6 +238,7 @@ describe("Lane Component Import and Type Tests", () => {
       recordEnabled: false,
       overdubEnabled: false,
       automationWriteEnabled: false,
+      // Required methods
       setTracks: vi.fn(),
       setPlayheadPos: vi.fn(),
       setSongRegion: vi.fn(),
@@ -266,6 +264,8 @@ describe("Lane Component Import and Type Tests", () => {
       removeTrack: vi.fn(),
       updateTrack: vi.fn(),
       duplicateTrack: vi.fn(),
+      deleteTrack: vi.fn(),
+      getTrackCurrentValue: vi.fn(),
       addTrack: vi.fn(),
       adjustNumMeasures: vi.fn(),
       createAudioClip: vi.fn(),
@@ -284,9 +284,39 @@ describe("Lane Component Import and Type Tests", () => {
       stop: vi.fn(),
       record: vi.fn(),
       pasteClip: vi.fn(),
-      showMaster: true,
       setShowMaster: vi.fn(),
-      pasteClip: vi.fn(),
+      // Missing required methods
+      metronome: false,
+      setMetronome: vi.fn(),
+      settings: {
+        tempo: 120,
+        timeSignature: { beats: 4, noteValue: 4 },
+        snap: true,
+        snapUnit: '1/16',
+        horizontalScale: 1,
+      },
+      setSettings: vi.fn(),
+      zoomIn: vi.fn(),
+      zoomOut: vi.fn(),
+      zoomToFit: vi.fn(),
+      selection: {
+        tracks: [],
+        clips: [],
+        region: null,
+      },
+      setSelection: vi.fn(),
+      clipboard: null,
+      copy: vi.fn(),
+      paste: vi.fn(),
+      cut: vi.fn(),
+      deleteSelection: vi.fn(),
+      canUndo: false,
+      canRedo: false,
+      undo: vi.fn(),
+      redo: vi.fn(),
+      stretchAudio: false,
+      setStretchAudio: vi.fn(),
+      setTimeSignature: vi.fn(),
     };
 
     const createMockTrack = (type: typeof TrackType[keyof typeof TrackType]): any => ({

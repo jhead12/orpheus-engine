@@ -1,5 +1,5 @@
 // AudioService for handling audio operations in Electron, browser, and Python backend environments
-import { Track, Clip } from '../types/core';
+import { Track, Clip } from '../../types/core';
 import { PlatformService } from '../PlatformService';
 
 export interface AudioSearchResult {
@@ -256,6 +256,13 @@ export class AudioService {
     });
 
     return results;
+  }
+
+  async getSegmentDetails(segmentId: string): Promise<{ file_path: string } | null> {
+    // Placeholder implementation for audio segment details
+    // In a real implementation, this would query a database or API
+    console.log('Getting segment details for:', segmentId);
+    return null;
   }
 }
 

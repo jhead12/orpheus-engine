@@ -33,8 +33,8 @@ import {
 } from "../../screens/workstation/components";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
-import WorkstationContext from "../../context/WorkstationContext";
-import { AnalysisContext } from "../../context/AnalysisContext";
+import WorkstationContext from "../../contexts/WorkstationContext";
+import { AnalysisContext } from "../../contexts/AnalysisContext";
 import { ContextMenuType } from "../../types/context-menu";
 import {
   TimelinePosition,

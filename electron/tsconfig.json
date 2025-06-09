@@ -17,9 +17,9 @@
     "lib": ["ES2020"],
     "typeRoots": [
       "../node_modules/@types",
-      "../node_modules/electron"
+      "../node_modules"
     ],
-    "types": ["node"]
+    "types": ["node", "electron"]
   },
   "include": [
     "./**/*.ts"

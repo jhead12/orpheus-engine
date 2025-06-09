@@ -19,14 +19,11 @@ electron/menu.ts(1,21): error TS2305: Module '"electron"' has no exported member
 electron/menu.ts(1,36): error TS2305: Module '"electron"' has no exported member 'MenuItemConstructorOptions'.
 electron/preload.ts(1,10): error TS2305: Module '"electron"' has no exported member 'contextBridge'.
 electron/preload.ts(1,25): error TS2305: Module '"electron"' has no exported member 'ipcRenderer'.
-src/components/__tests__/Lane.test.tsx(407,12): error TS2322: Type '{ dragDataTarget: null; track: { id: string; name: string; type: TrackType; color: string; volume: number; pan: number; mute: boolean; solo: boolean; armed: boolean; automation: boolean; automationMode: AutomationMode; clips: never[]; automationLanes: never[]; fx: { ...; }; }; onClipContextMenu: Mock<...>; }' is not assignable to type 'Omit<LaneComponentProps & RefAttributes<HTMLDivElement>, "ref">'.
-  The types of 'track.volume' are incompatible between these types.
-    Type 'number' is not assignable to type 'AutomatableParameter'.
-src/components/__tests__/LaneImport.test.tsx(287,7): error TS1117: An object literal cannot have multiple properties with the same name.
-src/components/__tests__/LaneImport.test.tsx(289,7): error TS1117: An object literal cannot have multiple properties with the same name.
-src/components/__tests__/LaneImport.test.tsx(315,60): error TS2769: No overload matches this call.
+src/components/__tests__/LaneImport.test.tsx(357,60): error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Type '{ tracks: never[]; masterTrack: { id: string; name: string; type: "audio"; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: "off"; automationLanes: never[]; clips: never[]; fx: { ...; }; }; ... 69 more ...; setShowMaster: Mock<...>; }' is missing the following properties from type 'WorkstationContextType': deleteTrack, getTrackCurrentValue, metronome, setMetronome, and 19 more.
+    Type '{ tracks: never[]; masterTrack: { id: string; name: string; type: "audio"; color: string; mute: boolean; solo: boolean; armed: boolean; volume: { value: number; min: number; max: number; default: number; isAutomated: boolean; }; ... 5 more ...; fx: { ...; }; }; ... 92 more ...; setTimeSignature: Mock<...>; }' is not assignable to type 'WorkstationContextType'.
+      The types of 'masterTrack.type' are incompatible between these types.
+        Type '"audio"' is not assignable to type 'TrackType'.
 src/components/__tests__/SortableList.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
 src/components/__tests__/SortableList.test.tsx(25,25): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
 src/components/__tests__/SortableList.test.tsx(40,9): error TS2322: Type '{ thresholds: { top: { slow: number; medium: number; fast: number; }; right: { slow: number; medium: number; fast: number; }; bottom: { slow: number; medium: number; fast: number; }; left: { slow: number; medium: number; fast: number; }; }; }' is not assignable to type '{ thresholds: WindowAutoScrollThresholds; }'.
@@ -90,48 +87,44 @@ src/components/widgets/__tests__/SortableList.test.tsx(117,9): error TS2322: Typ
 src/components/widgets/__tests__/debug-dom.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
 src/components/workstation/Lane.tsx(10,20): error TS7016: Could not find a declaration file for module 'uuid'. '/workspaces/orpheus-engine/node_modules/uuid/dist/esm-browser/index.js' implicitly has an 'any' type.
   Try `npm i --save-dev @types/uuid` if it exists or add a new declaration (.d.ts) file containing `declare module 'uuid';`
-src/components/workstation/Lane.tsx(36,32): error TS2307: Cannot find module '../../context/WorkstationContext' or its corresponding type declarations.
-src/components/workstation/Lane.tsx(37,33): error TS2307: Cannot find module '../../context/AnalysisContext' or its corresponding type declarations.
 src/components/workstation/Lane.tsx(49,3): error TS6133: 'SnapGridSizeOption' is declared but its value is never read.
 src/components/workstation/Lane.tsx(50,3): error TS6133: 'WorkstationAudioInputFile' is declared but its value is never read.
 src/components/workstation/Lane.tsx(53,1): error TS6133: 'BASE_BEAT_WIDTH' is declared but its value is never read.
 src/components/workstation/Lane.tsx(90,3): error TS2322: Type 'AutomationMode.Off' is not assignable to type 'AutomationMode'.
-src/components/workstation/Lane.tsx(200,5): error TS2339: Property 'addTrack' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(201,5): error TS2339: Property 'adjustNumMeasures' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(202,5): error TS2339: Property 'createAudioClip' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(203,5): error TS2339: Property 'insertClips' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(204,5): error TS2339: Property 'masterTrack' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(205,5): error TS2339: Property 'maxPos' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(206,5): error TS2339: Property 'numMeasures' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(207,5): error TS2339: Property 'playheadPos' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(208,5): error TS2339: Property 'scrollToItem' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(209,5): error TS2339: Property 'setAllowMenuAndShortcuts' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(210,5): error TS2339: Property 'setPlayheadPos' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(211,5): error TS2339: Property 'setScrollToItem' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(212,5): error TS2339: Property 'setSongRegion' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(213,5): error TS2339: Property 'setTracks' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(214,5): error TS2339: Property 'setVerticalScale' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(215,5): error TS2339: Property 'snapGridSize' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(216,5): error TS2339: Property 'songRegion' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(217,5): error TS2339: Property 'timelineSettings' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(218,5): error TS2339: Property 'tracks' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(219,5): error TS2339: Property 'updateTimelineSettings' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(220,5): error TS2339: Property 'verticalScale' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(221,5): error TS2339: Property 'isPlaying' does not exist on type '{}'.
+src/components/workstation/Lane.tsx(192,31): error TS2322: Type '{ analysisType: AudioAnalysisType; setAnalysisType: React.Dispatch<React.SetStateAction<AudioAnalysisType>>; selectedClip: Clip | null; setSelectedClip: React.Dispatch<...>; analysisResults: any; runAudioAnalysis: (audioBuffer: AudioBuffer, type: AudioAnalysisType) => Promise<...>; }' is not assignable to type 'AnalysisContextType'.
+  The types returned by 'runAudioAnalysis(...)' are incompatible between these types.
+    Type 'Promise<AudioAnalysisResults>' is not assignable to type 'Promise<AudioAnalysisResults | null>'.
+      Type 'import("/workspaces/orpheus-engine/src/types/audio").AudioAnalysisResults' is not assignable to type 'import("/workspaces/orpheus-engine/src/contexts/types").AudioAnalysisResults'.
+        Types of property 'waveform' are incompatible.
+          Type 'number[] | undefined' is not assignable to type 'Float32Array | undefined'.
+            Type 'number[]' is missing the following properties from type 'Float32Array': BYTES_PER_ELEMENT, buffer, byteLength, byteOffset, and 3 more.
+src/components/workstation/Lane.tsx(347,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'TimelinePosition'.
 src/components/workstation/Lane.tsx(471,5): error TS2345: Argument of type '(e: React.DragEvent, track: Track | null) => void' is not assignable to parameter of type '(...args: unknown[]) => unknown'.
   Types of parameters 'e' and 'args' are incompatible.
     Type 'unknown' is not assignable to type 'DragEvent<Element>'.
+src/components/workstation/Lane.tsx(535,35): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'SnapGridSizeOption'.
 src/components/workstation/Lane.tsx(536,11): error TS6133: 'pos' is declared but its value is never read.
+src/components/workstation/Lane.tsx(551,17): error TS2345: Argument of type '{ id: any; name: string; path: string; type: string; size: number; lastModified: number; buffer: Buffer; }' is not assignable to parameter of type 'File | Blob'.
+  Object literal may only specify known properties, and 'id' does not exist in type 'File | Blob'.
+src/components/workstation/Lane.tsx(583,9): error TS2554: Expected 2 arguments, but got 1.
+src/components/workstation/Lane.tsx(591,19): error TS2345: Argument of type '(Track | { name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; ... 5 more ...; outputs?: { ...; }[] | undefined; })[]' is not assignable to parameter of type 'Track[]'.
+  Type 'Track | { name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; ... 5 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+    Type '{ name: string; clips: Clip[]; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: AutomationMode; ... 4 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+      Types of property 'volume' are incompatible.
+        Type 'number' is not assignable to type 'AutomatableParameter'.
 src/components/workstation/Lane.tsx(683,32): error TS2345: Argument of type '(e: React.WheelEvent) => void' is not assignable to parameter of type '(...args: unknown[]) => unknown'.
   Types of parameters 'e' and 'args' are incompatible.
     Type 'unknown' is not assignable to type 'WheelEvent<Element>'.
-src/components/workstation/Lane.tsx(867,18): error TS2339: Property 'selectedClip' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(884,16): error TS2339: Property 'setAnalysisType' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(885,16): error TS2339: Property 'runAudioAnalysis' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(886,18): error TS2339: Property 'selectedClip' does not exist on type '{}'.
 src/components/workstation/Lane.tsx(927,19): error TS2322: Type '{ children: Element[]; ariaLabel: string; direction: "right"; icon: Element; slotProps: { transition: { style: { readonly boxShadow: "none"; readonly backgroundColor: "var(--color1)"; readonly width: 24; readonly height: 24; readonly minHeight: 0; }; }; }; sx: { ...; }; }' is not assignable to type 'IntrinsicAttributes & SpeedDialProps'.
   Property 'slotProps' does not exist on type 'IntrinsicAttributes & SpeedDialProps'.
+src/components/workstation/Lane.tsx(979,42): error TS2345: Argument of type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to parameter of type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
+  Types of property 'volume' are incompatible.
+    Type 'AutomatableParameter' is not assignable to type 'number'.
+src/components/workstation/Lane.tsx(980,47): error TS2322: Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'Track'.
 src/components/workstation/Lane.tsx(985,21): error TS2322: Type 'TimelineEditorWindowScrollThresholds' is not assignable to type 'WindowAutoScrollThresholds'.
+src/components/workstation/Lane.tsx(997,31): error TS2345: Argument of type '(track: Track, idx: number) => JSX.Element' is not assignable to parameter of type '(value: Track, index: number, array: Track[]) => Element'.
+  Types of parameters 'track' and 'value' are incompatible.
+    Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
 src/components/workstation/Lane.tsx(1004,57): error TS2322: Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track' is not assignable to type 'Track'.
   Types of property 'effects' are incompatible.
     Type 'Effect[] | undefined' is not assignable to type 'Effect[]'.
@@ -140,7 +133,11 @@ src/components/workstation/Lane.tsx(1021,23): error TS2322: Type '{ name: string
   Types of property 'effects' are incompatible.
     Type 'Effect[] | undefined' is not assignable to type 'Effect[]'.
       Type 'undefined' is not assignable to type 'Effect[]'.
+src/components/workstation/Lane.tsx(1083,44): error TS2345: Argument of type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to parameter of type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
 src/components/workstation/Lane.tsx(1085,25): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
+src/components/workstation/Lane.tsx(1091,33): error TS2345: Argument of type '(track: Track, idx: number) => JSX.Element' is not assignable to parameter of type '(value: Track, index: number, array: Track[]) => Element'.
+  Types of parameters 'track' and 'value' are incompatible.
+    Type 'import("/workspaces/orpheus-engine/src/types/core").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/services/types/types").Track'.
 src/components/workstation/Lane.tsx(1095,27): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
 src/components/workstation/Lane.tsx(1096,27): error TS2322: Type 'import("/workspaces/orpheus-engine/src/services/types/types").Track' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/core").Track'.
 src/components/workstation/Lane.tsx(1109,25): error TS2322: Type '{ track: import("/workspaces/orpheus-engine/src/services/types/types").Track | null; incompatible?: boolean | undefined; } | null' is not assignable to type '{ track: import("/workspaces/orpheus-engine/src/types/core").Track | null; incompatible?: boolean | undefined; } | null'.
@@ -153,9 +150,11 @@ src/components/workstation/Lane.tsx(1109,25): error TS2322: Type '{ track: impor
 src/components/workstation/Lane.tsx(1111,25): error TS2322: Type '{ name: string; id: string; type: TrackType; color: string; mute: boolean; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: AutomationMode; ... 5 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
   Types of property 'volume' are incompatible.
     Type 'number' is not assignable to type 'AutomatableParameter'.
-src/components/workstation/Lane.tsx(1197,32): error TS2339: Property 'analysisType' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(1198,35): error TS2339: Property 'analysisResults' does not exist on type '{}'.
-src/components/workstation/Lane.tsx(1199,32): error TS2339: Property 'selectedClip' does not exist on type '{}'.
+src/components/workstation/Lane.tsx(1198,17): error TS2322: Type 'AudioAnalysisResults | null' is not assignable to type 'AudioAnalysisResults | null | undefined'.
+  Type 'import("/workspaces/orpheus-engine/src/contexts/types").AudioAnalysisResults' is not assignable to type 'import("/workspaces/orpheus-engine/src/types/audio").AudioAnalysisResults'.
+    Types of property 'waveform' are incompatible.
+      Type 'Float32Array | undefined' is not assignable to type 'number[] | undefined'.
+        Type 'Float32Array' is missing the following properties from type 'number[]': pop, push, concat, shift, and 5 more.
 src/contexts/WorkstationContext.tsx(739,22): error TS6133: 'setShowMaster' is declared but its value is never read.
 src/contexts/WorkstationContext.tsx(742,24): error TS6133: 'setAutoGridSize' is declared but its value is never read.
 src/contexts/__tests__/WorkstationContext.test.tsx(5,28): error TS6133: 'Track' is declared but its value is never read.

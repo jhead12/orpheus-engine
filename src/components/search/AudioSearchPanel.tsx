@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import AudioSearch from './AudioSearch';
-import { audioService } from '../../services/AudioService';
+import { AudioService } from '../../services/audio/AudioService';
 import './AudioSearchPanel.css';
+
+const audioService = AudioService.getInstance();
 
 interface SearchResult {
   id: string;
