@@ -59,17 +59,12 @@ export const SortableList: React.FC<SortableListProps> = ({
         return;
       }
       
-      // Find closest sortable item - check for data-index first, then fallback
-      let item = (e.target as HTMLElement).closest('[data-index]');
-      if (!item) {
-        // If no data-index found, use the target element directly
-        // This handles the case where data-index was removed for testing
-        item = e.target as HTMLElement;
-      }
+      // Find closest sortable item
+      const item = (e.target as HTMLElement).closest('[data-index]');
       if (!item) return;
       
-      const sourceIndex = parseInt((item as HTMLElement).dataset?.index ?? '-1');
-      // Allow invalid sourceIndex for test compatibility - don't return early
+      const sourceIndex = parseInt((item as HTMLElement).dataset.index || '-1');
+      if (sourceIndex === -1) return;
       
       // Set up initial drag state
       mouseDownRef.current = true;
@@ -79,7 +74,7 @@ export const SortableList: React.FC<SortableListProps> = ({
       const mouseEvent = e as unknown as React.MouseEvent;
       onStart(mouseEvent, { 
         sourceIndex, 
-        edgeIndex: sourceIndex >= 0 ? sourceIndex : -1
+        edgeIndex: sourceIndex 
       });
     };
     
@@ -88,7 +83,7 @@ export const SortableList: React.FC<SortableListProps> = ({
       if (!mouseDownRef.current || !dragItemRef.current) return;
       
       // Calculate position and determine edge index
-      const currentIndex = parseInt(dragItemRef.current.dataset?.index ?? '-1');
+      const currentIndex = parseInt(dragItemRef.current.dataset.index || '-1');
       const y = e.clientY;
       
       // Find items and calculate positions
@@ -96,7 +91,7 @@ export const SortableList: React.FC<SortableListProps> = ({
       const destIndex = items.findIndex((item) => {
         const rect = item.getBoundingClientRect();
         const midpoint = rect.top + rect.height / 2;
-        return y <= midpoint; // Use <= for consistency with mouseUp
+        return y < midpoint;
       });
       
       const edgeIndex = destIndex === -1 ? items.length : destIndex;
@@ -112,7 +107,7 @@ export const SortableList: React.FC<SortableListProps> = ({
     const handleMouseUp = (e: MouseEvent) => {
       if (!mouseDownRef.current || !dragItemRef.current) return;
       
-      const sourceIndex = parseInt(dragItemRef.current.dataset?.index ?? '-1');
+      const sourceIndex = parseInt(dragItemRef.current.dataset.index || '-1');
       
       // Calculate destination index
       const items = Array.from(listElement.querySelectorAll('[data-index]'));
@@ -126,11 +121,9 @@ export const SortableList: React.FC<SortableListProps> = ({
       
       const finalDestIndex = destIndex === -1 ? items.length : destIndex;
       
-      // Call onEnd with final positions - include edgeIndex for compatibility
-      // Note: Always call onEnd even with invalid sourceIndex for test compatibility
+      // Call onEnd with final positions
       onEnd(e, { 
         sourceIndex, 
-        edgeIndex: finalDestIndex,
         destIndex: finalDestIndex 
       });
       

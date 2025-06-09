@@ -71,8 +71,6 @@ export const formatVolume = (volume: number): string => {
 };
 
 export const formatPanning = (panning: number): string => {
-  // Handle null, undefined, or non-number values
-  if (typeof panning !== 'number' || isNaN(panning)) return "C";
   if (panning === 0) return "C";
   if (panning < 0) return `L${Math.abs(panning).toFixed(0)}`;
   return `R${panning.toFixed(0)}`;

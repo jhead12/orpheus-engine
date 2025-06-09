@@ -1,30 +1,27 @@
 import React from "react";
-import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import { SortableList, SortableListItem } from "../SortableList";
-
-// Move mock variables outside describe blocks for global access
-const mockAutoScroll = {
-  thresholds: {
-    top: { slow: 5, medium: 10, fast: 20 },
-    right: { slow: 5, medium: 10, fast: 20 },
-    bottom: { slow: 5, medium: 10, fast: 20 },
-    left: { slow: 5, medium: 10, fast: 20 },
-  },
-};
-
-const mockOnSortUpdate = vi.fn();
-const mockOnStart = vi.fn();
-const mockOnEnd = vi.fn();
+import { SortableList, SortableListItem } from "../widgets/SortableList";
 
 describe("SortableList Component", () => {
+  const mockAutoScroll = {
+    thresholds: {
+      top: { slow: 5, medium: 10, fast: 20 },
+      right: { slow: 5, medium: 10, fast: 20 },
+      bottom: { slow: 5, medium: 10, fast: 20 },
+      left: { slow: 5, medium: 10, fast: 20 },
+    },
+  };
+
+  const mockOnSortUpdate = vi.fn();
+  const mockOnStart = vi.fn();
+  const mockOnEnd = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
     
     // Mock element getBoundingClientRect for position calculations
-    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function(this: Element) {
+    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function() {
       const dataIndex = this.getAttribute('data-index');
       return {
         top: dataIndex === '0' ? 0 : 50,
@@ -158,20 +155,6 @@ describe("SortableList Component", () => {
 });
 describe("SortableList handleMouseUp", () => {
   it("should call onEnd with correct indices when drag completes", () => {
-    // Set up proper mock for 3 items
-    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function(this: Element) {
-      const dataIndex = this.getAttribute('data-index');
-      const indexNum = parseInt(dataIndex || '0');
-      return {
-        top: indexNum * 50, // Each item is 50px apart
-        height: 50,
-        left: 0,
-        right: 100,
-        bottom: (indexNum + 1) * 50,
-        width: 100,
-      };
-    });
-
     render(
       <SortableList
         autoScroll={mockAutoScroll}
