@@ -1,54 +1,82 @@
 # Orpheus Engine Workstation - Python Dependencies
 # Install with: pip install -r requirements.txt
+# Compatible with HP AI Studio and Project Manager requirements
 
-# Core MLFlow and Jupyter Integration
-mlflow>=2.0.0
+# Core MLFlow and Jupyter Integration (Project Manager Compatible)
+mlflow==2.15.0  # Required for HP AI Studio Project Manager compatibility
 jupyter>=1.0.0
 jupyterlab>=3.0.0
 jupyter-book>=0.13.0
-
-# Audio Processing Libraries
-librosa>=0.9.0
-soundfile>=0.10.0
-audioread>=2.1.9
-
-# Scientific Computing
-numpy>=1.21.0
-pandas>=1.3.0
-scipy>=1.7.0
-
-# Machine Learning
-scikit-learn>=1.0.0
-tensorflow>=2.8.0  # Optional, for deep learning
-torch>=1.11.0       # Optional, alternative to TensorFlow
-
-# Visualization and Analysis
-matplotlib>=3.5.0
-seaborn>=0.11.0
-plotly>=5.0.0
-
-# Jupyter Extensions
-ipywidgets>=7.6.0
 notebook>=6.4.0
+ipywidgets>=7.6.0
 
-# Optional: HP AI Studio Framework
-# hpai-studio-framework  # Uncomment if available
+# HP AI Studio Framework Dependencies
+# Following HP AI Blueprints patterns
+transformers==4.48.0
+tf_keras==2.19.0
+evaluate==0.4.3
+accelerate==1.5.2
+datasets==3.4.0
+
+# Audio Processing Libraries (Professional Grade)
+librosa>=0.10.0
+pyloudnorm>=0.2.1  # EBU R128 loudness standards
+soundfile>=0.12.0
+audioread>=2.1.9
+resampy>=0.4.2
+
+# Scientific Computing (Stable Versions)
+numpy>=1.24.0,<2.0.0  # Compatibility constraint
+pandas>=2.0.0,<3.0.0
+scipy>=1.10.0
+
+# Machine Learning (Project Manager Compatible)
+scikit-learn>=1.3.0
+torch>=2.0.0        # Latest stable PyTorch
+tensorflow>=2.15.0  # Compatible with tf_keras
+
+# Visualization and Analysis (HP AI Studio Compatible)
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.17.0
+
+# Project Manager and MLflow Integration
+mlflow-skinny==2.15.0  # Lightweight MLflow for compatibility
+protobuf>=4.21.0,<5.0.0  # Version compatibility
+pydantic>=2.0.0,<3.0.0
+sqlalchemy>=1.4.0,<3.0.0
+
+# HP AI Studio Deployment Dependencies
+fastapi>=0.104.0
+uvicorn>=0.24.0
+gunicorn>=21.0.0
+requests>=2.31.0
+click>=8.0.0
+
+# Audio Format Support (Professional)
+pydub>=0.25.1
+ffmpeg-python>=0.2.0  # For advanced audio processing
 
 # Development and Testing
-pytest>=6.0.0
-pytest-cov>=2.0.0
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=23.0.0  # Code formatting
+flake8>=6.0.0  # Linting
 
-# Audio Format Support
-pydub>=0.25.1
-resampy>=0.2.2
+# Data Processing and Utilities
+joblib>=1.3.0
+pathlib2>=2.3.0  # Enhanced path operations
+python-dotenv>=1.0.0  # Environment management
 
-# API and Web Integration
-flask>=2.0.0        # For REST API endpoints
-fastapi>=0.70.0     # Alternative API framework
-uvicorn>=0.15.0     # ASGI server for FastAPI
+# Jupyter Notebook Extensions and Widgets
+ipykernel>=6.25.0
+ipython>=8.14.0
+jupyter-client>=8.3.0
+jupyter-core>=5.3.0
 
-# Data Processing
-joblib>=1.1.0
+# Optional: Additional Audio Analysis
+essentia>=2.1b6.dev1085  # Advanced audio analysis (optional)
+madmom>=0.16.1  # Music information retrieval (optional)
 tqdm>=4.62.0
 
 # Configuration Management

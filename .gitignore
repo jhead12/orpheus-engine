@@ -121,3 +121,14 @@ checkpoints/
 *.pack
 *.idx
 /archives/all_backups_20250529.zip
+
+# Demo-specific patterns (keep development artifacts away from judges)
+demo/mlflow_runs/
+demo/mlruns/
+demo/artifacts/
+demo/dev-files/
+demo/archive/
+demo/orpheus_analysis_report_*.json
+demo/*_backup.*
+demo/*_corrupted_*
+demo/*_test_results.json
