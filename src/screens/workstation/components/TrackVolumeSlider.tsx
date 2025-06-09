@@ -1,14 +1,14 @@
 import { CSSProperties, useEffect, useMemo, useState } from "react";
-import { AutomationLaneEnvelope, Track } from '@orpheus/types/core';
+import { AutomationLaneEnvelope, Track } from "@orpheus/types/core";
 import {
   formatVolume,
   normalizedToVolume,
   volumeToNormalized,
-} from '@orpheus/utils/utils';
-import Slider from '@orpheus/widgets/Slider';
+} from "@orpheus/utils/utils";
+import Slider from "@orpheus/widgets/Slider";
 import { useContext } from "react";
-import { WorkstationContext } from '@orpheus/contexts';
-import { TooltipProps } from '@orpheus/widgets/Tooltip';
+import { WorkstationContext } from "@orpheus/contexts";
+import { TooltipProps } from "@orpheus/widgets/Tooltip";
 
 // Use standard React context hook instead of custom hook
 const useWorkstation = () => useContext(WorkstationContext);
@@ -44,8 +44,8 @@ export default function TrackVolumeSlider({
 }: TrackVolumeSliderProps) {
   const { getTrackCurrentValue, setTrack } = useWorkstation();
 
-  // Initialize volume state with track's volume property
-  const [volume, setVolume] = useState(track.volume ?? 0);
+  // Initialize volume state with track's volume value
+  const [volume, setVolume] = useState(track.volume?.value ?? 0);
 
   const { isAutomated, value } = useMemo(() => {
     const lane = track.automationLanes?.find(
@@ -88,7 +88,9 @@ export default function TrackVolumeSlider({
         onChange={(_, value) =>
           setVolume(normalizedToVolume((value as number) / 1000))
         }
-        onChangeCommitted={() => setTrack({ ...track, volume })}
+        onChangeCommitted={() =>
+          setTrack({ ...track, volume: { ...track.volume, value: volume } })
+        }
         marks={markVolumes.map((volume) => ({
           value: volumeToNormalized(volume) * 1000,
         }))}

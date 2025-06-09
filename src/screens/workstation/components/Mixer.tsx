@@ -317,7 +317,7 @@ const MixerTrack = memo(
                     max={100}
                     min={-100}
                     onChange={(value: number) =>
-                      setTrack({ ...track, pan: value })
+                      setTrack({ ...track, pan: { ...track.pan, value } })
                     }
                     origin={0}
                     size={20}
@@ -466,7 +466,11 @@ function Mixer() {
   }
 
   function handleSortEnd(_: MouseEvent, data: SortData) {
-    if (data.edgeIndex !== undefined && data.edgeIndex > -1 && data.sourceIndex !== data.destIndex) {
+    if (
+      data.edgeIndex !== undefined &&
+      data.edgeIndex > -1 &&
+      data.sourceIndex !== data.destIndex
+    ) {
       const destIndex =
         data.edgeIndex - (data.edgeIndex > data.sourceIndex ? 1 : 0);
       const newTracks = tracks.slice();
