@@ -1,0 +1,15 @@
+artifact_uri: file:///Volumes/PRO-BLADE/Github/orpheus-engine/demo/mlruns/724534003361084067/3fc4df3bd9e745178a73c8c177361569/artifacts
+end_time: 1749456997473
+entry_point_name: ''
+experiment_id: '724534003361084067'
+lifecycle_stage: active
+run_id: 3fc4df3bd9e745178a73c8c177361569
+run_name: sedate-doe-425
+run_uuid: 3fc4df3bd9e745178a73c8c177361569
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1749456997323
+status: 3
+tags: []
+user_id: jeldonmusic
