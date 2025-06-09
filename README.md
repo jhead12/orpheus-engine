@@ -1,8 +1,8 @@
-# Orpheus Engine Workstation
+# Orpheus Engine
 
-Orpheus Engine Workstation (OEW) is a modern Digital Audio & Video Workstation built with React, TypeScript, and Electron. This repository contains the frontend workstation component of the larger Orpheus Engine ecosystem.
+Orpheus Engine is a comprehensive Digital Audio Workstation (DAW) ecosystem built with React, TypeScript, Python, and Electron. This repository contains the complete Orpheus Engine with integrated frontend workstation, backend services, AI/ML capabilities, and professional audio processing tools.
 
-![OEW Development](/assets/screenshots/2022-12-20.png)
+![OEW Development](workstation/assets/screenshots/2022-12-20.png)
 
 ## 🆕 What's New in v1.0.10
 
@@ -35,46 +35,54 @@ Orpheus Engine Workstation (OEW) is a modern Digital Audio & Video Workstation b
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** v16+ (v18+ recommended)
-- **npm** v7+ or **pnpm** 1.x
+- **Node.js** v20.11.1+ (as specified in package.json engines)
+- **pnpm** v10.6.4+ (required package manager)
+- **Python** 3.8+ (for AI/ML backend services)
 - **Git** (for version control)
 
 ### 1. Clone and Setup
 ```bash
 # Clone the repository
-git clone https://github.com/jhead12/orpheus-engine.git
+git clone https://github.com/sirgawain0x/orpheus-engine.git
 cd orpheus-engine
 
-# Install dependencies
-npm install
+# Install all dependencies and setup the project
+pnpm run setup
 
-# Make shell scripts executable (if needed)
+# Or install dependencies manually
+pnpm install
+
+# Make shell scripts executable (if needed on Unix systems)
 chmod +x scripts/*.sh
 ```
 
 ### 2. Start the Application
 ```bash
-# Start in development mode
-npm run dev
+# Start in development mode (Electron + Vite)
+pnpm run dev
 
 # Or start Vite dev server only
-npm run dev:vite
+pnpm run dev:vite
 
 # For local development with custom port
-npm run dev:local
+pnpm run dev:local
 ```
 
 The application will be available at:
 - **Development Server**: http://localhost:5173 (Vite)
 - **Local Development**: http://localhost:3000 (custom port)
+- **Electron Desktop App**: Launches automatically with `pnpm run dev`
 
 ### 3. Web Demo & Jupyter Integration
 ```bash
 # Start the interactive web demo (Jupyter notebook)
-npm run demo
+pnpm run demo
 
-# Or run directly with Python
-cd demo && jupyter lab OrpheusWebDemo.ipynb
+# Or run Jupyter Lab directly
+pnpm run demo:lab
+
+# Or run Jupyter Notebook directly  
+pnpm run demo:notebook
 
 # Install Python dependencies if needed
 pip install -r requirements.txt
@@ -86,6 +94,7 @@ The **Orpheus Web Demo** is accessible from the `/demo` folder and provides:
 - 🎵 Real-time audio processing demonstrations
 - 📊 Cross-platform compatibility testing
 - 🧪 Component integration with existing Jupyter backend
+- 🤖 HP AI Studio integration for ML-powered audio analysis
 
 ### 4. Build for Production
 ```bash

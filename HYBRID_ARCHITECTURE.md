@@ -6,30 +6,36 @@ This document outlines the approach for building a hybrid web component architec
 ## Current State Analysis
 
 ### Project Structure
-- **Frontend**: React/TypeScript with Vite build system
+- **Frontend**: React/TypeScript with Vite build system located in `/workstation/frontend/`
+- **OEW-main**: Advanced React components in `/workstation/frontend/OEW-main/`
 - **Desktop**: Electron wrapper for native desktop functionality
 - **Browser**: Pure web deployment with Web Audio API
-- **Backend**: Python services for audio processing and AI features
+- **Backend**: Python services in `/workstation/backend/` for audio processing and monitoring
 
 ### Existing Components (React-based)
-Located in `/src/screens/workstation/components/`:
-- AudioClipComponent
-- AutomationLaneComponent
-- AutomationLaneTrack
-- AutomationNodeComponent
-- ClipComponent
-- FXComponent
-- Header
-- Lane
-- Metronome
-- Mixer
-- RegionComponent
-- TimelineRulerGrid
-- TrackComponent
-- TrackVolumeSlider
-- Waveform
-- ZoomControls
-- AudioAnalysisPanel
+
+#### Main Frontend Components (`/workstation/frontend/src/`)
+- **Workstation** - Main workstation container
+- **PaneResize** - Resizable panel system
+- **PluginMarketplace** - Plugin marketplace interface
+- **DynamicComponent** - Dynamic component loading
+- **Placeholders** - Header, Mixer placeholder components
+
+#### OEW-main Advanced Components (`/workstation/frontend/OEW-main/src/screens/workstation/components/`)
+- **ClipComponent** - Advanced audio clip management
+- **TrackComponent** - Individual track management with automation
+- **Lane** - Track lanes with drag/drop functionality
+- **Header** - Main navigation and transport controls
+- **FXComponent** - Audio effects processing
+- **TimelineRulerGrid** - Timeline visualization
+- **AutomationLaneTrack** - Parameter automation
+- **Waveform** - Audio visualization (referenced)
+- **ZoomControls** - Timeline navigation
+- **AudioAnalysisPanel** - AI-powered analysis
+
+#### Widget Components (`/workstation/frontend/OEW-main/src/components/widgets/`)
+- **Tooltip** - Advanced tooltip system
+- **PaneResize** - Enhanced resizable panels
 
 ## Hybrid Architecture Design
 
@@ -61,8 +67,14 @@ abstract class OrpheusComponentBase extends HTMLElement {
 ```typescript
 // Platform detection and capability management
 class PlatformDetector {
-  static isElectron(): boolean
-  static isBrowser(): boolean
+  static isElectron(): boolean {
+    return typeof window !== 'undefined' && window.electronAPI !== undefined
+  }
+  
+  static isBrowser(): boolean {
+    return !this.isElectron()
+  }
+  
   static getCapabilities(): PlatformCapabilities
   static getBridge(): ElectronBridge | WebBridge
 }
@@ -74,8 +86,13 @@ class PlatformDetector {
 ```typescript
 class ElectronBridge {
   // Direct IPC communication with main process
-  sendToMain(channel: string, data: any): void
-  onFromMain(channel: string, callback: Function): void
+  sendToMain(channel: string, data: any): void {
+    window.electronAPI?.send(channel, data)
+  }
+  
+  onFromMain(channel: string, callback: Function): void {
+    window.electronAPI?.on(channel, callback)
+  }
   
   // Python backend communication through Electron
   callPython(method: string, params: any): Promise<any>
@@ -90,7 +107,14 @@ class ElectronBridge {
 ```typescript
 class WebBridge {
   // HTTP/WebSocket communication with Python backend
-  callPython(method: string, params: any): Promise<any>
+  async callPython(method: string, params: any): Promise<any> {
+    const response = await fetch('/api/' + method, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    })
+    return response.json()
+  }
   
   // File API access
   openFile(accept?: string): Promise<File[]>
@@ -112,38 +136,38 @@ Transform each React component into a hybrid web component:
 3. **Set up component registry** for dynamic loading
 4. **Create Python integration layer**
 
-#### Phase 2: Essential Components
-Convert high-priority components:
-1. **Header** - Main navigation and controls
-2. **Mixer** - Audio mixing interface
-3. **TrackComponent** - Individual track management
-4. **Waveform** - Audio visualization
-5. **Metronome** - Timing and tempo
+#### Phase 2: Essential Components (from main frontend)
+Convert basic components first:
+1. **Header** - Main navigation placeholder → full transport controls
+2. **Workstation** - Main container component
+3. **PaneResize** - Resizable panel system
+4. **DynamicComponent** - Component loading system
+5. **PluginMarketplace** - Plugin interface
 
-#### Phase 3: Advanced Components
-Convert specialized components:
-1. **FXComponent** - Audio effects
-2. **AutomationLaneComponent** - Parameter automation
-3. **AudioAnalysisPanel** - AI-powered analysis
+#### Phase 3: Advanced Components (from OEW-main)
+Convert specialized OEW-main components:
+1. **ClipComponent** - Advanced audio clip management
+2. **TrackComponent** - Individual track management
+3. **Lane** - Track lanes with automation
+4. **FXComponent** - Audio effects
+5. **TimelineRulerGrid** - Timeline visualization
+
+#### Phase 4: Widget System (from OEW-main widgets)
+Complete the widget ecosystem:
+1. **Tooltip** - Advanced tooltip system
+2. **Enhanced PaneResize** - Advanced resizable panels
+3. **AutomationLaneTrack** - Parameter automation
 4. **ZoomControls** - Timeline navigation
-5. **AudioClipComponent** - Audio clip management
-
-#### Phase 4: Integration Components
-Complete the ecosystem:
-1. **TimelineRulerGrid** - Timeline visualization
-2. **RegionComponent** - Selection and editing
-3. **AutomationNodeComponent** - Automation points
-4. **Lane** - Track lanes
-5. **TrackVolumeSlider** - Volume controls
+5. **AudioAnalysisPanel** - AI-powered analysis
 
 ## Implementation Guidelines
 
 ### Component Structure Template
 
 ```typescript
-// Example: Hybrid Mixer Component
-class OrpheusMixer extends OrpheusComponentBase {
-  private mixerState: MixerState
+// Example: Hybrid Clip Component (based on existing ClipComponent)
+class OrpheusClip extends OrpheusComponentBase {
+  private clipState: ClipState
   private audioNodes: AudioNode[]
   
   constructor() {
@@ -161,47 +185,48 @@ class OrpheusMixer extends OrpheusComponentBase {
   render() {
     this.shadowRoot!.innerHTML = `
       <style>${this.getStyles()}</style>
-      <div class="mixer-container">
-        ${this.renderChannels()}
-        ${this.renderMasterSection()}
+      <div class="clip-container">
+        ${this.renderClipContent()}
+        ${this.renderAutomationLanes()}
       </div>
     `
   }
   
   handleElectronEvents() {
     // Electron-specific functionality
-    this.bridge.onFromMain('audio-device-changed', this.handleDeviceChange)
+    this.bridge.onFromMain('clip-updated', this.handleClipUpdate)
   }
   
   handleBrowserEvents() {
     // Browser-specific functionality
-    navigator.mediaDevices.addEventListener('devicechange', this.handleDeviceChange)
+    window.addEventListener('clip-updated', this.handleClipUpdate)
   }
   
   // Python backend integration
-  async analyzeMix(): Promise<MixAnalysis> {
-    return this.pythonBridge?.call('analyze_mix', {
-      tracks: this.mixerState.tracks,
-      settings: this.mixerState.settings
+  async analyzeClip(): Promise<ClipAnalysis> {
+    return this.pythonBridge?.call('analyze_clip', {
+      clipData: this.clipState,
+      settings: this.getAnalysisSettings()
     })
   }
 }
 
-customElements.define('orpheus-mixer', OrpheusMixer)
+customElements.define('orpheus-clip', OrpheusClip)
 ```
 
 ### Python Backend Integration
 
 #### Web Component → Python Communication
 ```python
-# Python backend service
+# Python backend service (workstation/backend/)
 class OrpheusAudioService:
-    def analyze_mix(self, tracks, settings):
-        """AI-powered mix analysis"""
+    def analyze_clip(self, clip_data, settings):
+        """AI-powered clip analysis"""
         return {
-            'balance_score': self.calculate_balance(tracks),
-            'frequency_analysis': self.analyze_frequency_spectrum(tracks),
-            'suggestions': self.generate_mix_suggestions(tracks, settings)
+            'tempo': self.detect_tempo(clip_data),
+            'key': self.detect_key(clip_data),
+            'audio_features': self.extract_features(clip_data),
+            'suggestions': self.generate_suggestions(clip_data, settings)
         }
     
     def process_audio_effect(self, audio_data, effect_type, parameters):
@@ -232,9 +257,16 @@ class ComponentRegistry {
 ```typescript
 // vite.hybrid.config.ts
 export default defineConfig({
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+    }),
+  ],
+  base: "./",
+  root: "./workstation/frontend",
   build: {
     lib: {
-      entry: 'src/components/index.ts',
+      entry: 'src/components/hybrid/index.ts',
       formats: ['es', 'umd'],
       name: 'OrpheusComponents'
     },
@@ -248,25 +280,49 @@ export default defineConfig({
       }
     }
   },
+  resolve: {
+    alias: [
+      { find: "@", replacement: path.resolve(__dirname, "./workstation/frontend/src") },
+      { find: "@orpheus/utils", replacement: path.resolve(__dirname, "./workstation/frontend/src/services/utils") },
+      { find: "@orpheus/components", replacement: path.resolve(__dirname, "./workstation/frontend/src/components") },
+      { find: "@orpheus/hybrid", replacement: path.resolve(__dirname, "./workstation/frontend/src/components/hybrid") },
+      { find: "@oew-main/components", replacement: path.resolve(__dirname, "./workstation/frontend/OEW-main/src/components") },
+      { find: "@oew-main/widgets", replacement: path.resolve(__dirname, "./workstation/frontend/OEW-main/src/components/widgets") },
+      { find: "@oew-main/workstation", replacement: path.resolve(__dirname, "./workstation/frontend/OEW-main/src/screens/workstation") }
+    ]
+  },
   define: {
     __ELECTRON__: process.env.ELECTRON_MODE === 'true',
     __BROWSER__: process.env.BROWSER_MODE === 'true'
+  },
+  server: {
+    port: parseInt(process.env.VITE_PORT || '5174'),
+    strictPort: false,
+    proxy: {
+      '/api': {
+        target: process.env.API_URL || 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 })
 ```
 
 ### Component Bundle Strategy
-1. **Core Bundle**: Essential components for both platforms
-2. **Electron Bundle**: Desktop-specific enhancements
-3. **Browser Bundle**: Web-optimized components
-4. **Python Bundle**: Backend integration modules
+1. **Core Bundle**: Essential components from `/workstation/frontend/src/components/`
+2. **Advanced Bundle**: OEW-main components from `/workstation/frontend/OEW-main/src/`
+3. **Electron Bundle**: Desktop-specific enhancements
+4. **Browser Bundle**: Web-optimized components
+5. **Python Bundle**: Backend integration modules from `/workstation/backend/`
 
 ## Testing Strategy
 
-### Cross-Platform Testing
+### Cross-Platform Testing (using existing Vitest setup)
 ```typescript
 // Test suite for hybrid components
-describe('OrpheusMixer', () => {
+describe('OrpheusClip', () => {
   beforeEach(() => {
     // Mock both Electron and browser environments
     mockElectronEnvironment()
@@ -275,15 +331,15 @@ describe('OrpheusMixer', () => {
   
   it('should work in Electron mode', async () => {
     setPlatform('electron')
-    const mixer = new OrpheusMixer()
-    expect(mixer.isElectron).toBe(true)
+    const clip = new OrpheusClip()
+    expect(clip.isElectron).toBe(true)
     // Test Electron-specific functionality
   })
   
   it('should work in browser mode', async () => {
     setPlatform('browser')
-    const mixer = new OrpheusMixer()
-    expect(mixer.isElectron).toBe(false)
+    const clip = new OrpheusClip()
+    expect(clip.isElectron).toBe(false)
     // Test browser-specific functionality
   })
 })
@@ -292,87 +348,97 @@ describe('OrpheusMixer', () => {
 ## Migration Roadmap
 
 ### Phase 1: Foundation (Week 1-2)
-- [ ] Create base classes and interfaces
+- [ ] Create base classes in `/workstation/frontend/src/components/hybrid/`
 - [ ] Implement platform detection
 - [ ] Set up communication bridges
 - [ ] Create component registry system
 
 ### Phase 2: Core Components (Week 3-4)
-- [ ] Convert Header component
-- [ ] Convert Mixer component
-- [ ] Convert TrackComponent
+- [ ] Convert Workstation container component
+- [ ] Convert PaneResize component (merge main + OEW-main versions)
+- [ ] Convert Header component (upgrade placeholder to full)
 - [ ] Implement Python integration layer
 
-### Phase 3: Audio Components (Week 5-6)
-- [ ] Convert Waveform component
-- [ ] Convert Metronome component
-- [ ] Convert FXComponent
+### Phase 3: Advanced Components (Week 5-6)
+- [ ] Convert ClipComponent from OEW-main
+- [ ] Convert TrackComponent from OEW-main
+- [ ] Convert Lane component
 - [ ] Add real-time audio processing
 
-### Phase 4: Advanced Features (Week 7-8)
-- [ ] Convert automation components
+### Phase 4: Widget System (Week 7-8)
+- [ ] Convert Tooltip widget
+- [ ] Convert FXComponent
+- [ ] Convert TimelineRulerGrid
 - [ ] Add AI-powered features
-- [ ] Implement advanced audio analysis
-- [ ] Performance optimization
 
 ### Phase 5: Integration & Testing (Week 9-10)
 - [ ] Complete component ecosystem
-- [ ] Cross-platform testing
+- [ ] Cross-platform testing with existing Vitest setup
 - [ ] Performance benchmarking
 - [ ] Documentation and examples
 
-## Development Commands
+## Development Commands (updated for current structure)
 
 ```bash
 # Development
 npm run dev:hybrid          # Start hybrid development mode
-npm run dev:electron        # Electron-specific development
-npm run dev:browser         # Browser-specific development
+npm run dev:vite           # Current Vite development
+npm run dev:local          # Local development on port 3000
 
 # Building
 npm run build:hybrid        # Build hybrid components
-npm run build:electron      # Build Electron version
-npm run build:browser       # Build browser version
+npm run build              # Current build process
+npm run preview            # Preview built application
 
 # Testing
 npm run test:hybrid         # Test all platforms
-npm run test:electron       # Test Electron compatibility
-npm run test:browser        # Test browser compatibility
+npm run test               # Current test suite
+npm run test:visual        # Visual regression tests
+npm run test:ui            # Test UI with Vitest UI
 ```
 
 ## Key Benefits
 
 1. **Universal Compatibility**: Same codebase works in Electron and browser
-2. **Python Integration**: Seamless backend communication for AI features
+2. **Python Integration**: Seamless backend communication via existing Flask API
 3. **Performance**: Web components are lightweight and fast
 4. **Modularity**: Each component is self-contained and reusable
 5. **Future-Proof**: Standards-based approach ensures longevity
 6. **Incremental Migration**: Can migrate components one by one
+7. **Existing Asset Leverage**: Reuse advanced OEW-main components
 
 ## AI Agent Continuation Points
 
 When an AI agent continues this architecture:
 
-1. **Start with** creating the base classes in `/src/components/hybrid/`
-2. **Implement** platform detection and bridges
-3. **Convert** one component at a time, starting with Header
-4. **Test** each component in both environments before proceeding
-5. **Document** any platform-specific gotchas or limitations
-6. **Optimize** for performance after basic functionality works
+1. **Start with** creating the base classes in `/workstation/frontend/src/components/hybrid/`
+2. **Leverage existing** OEW-main components as reference implementations
+3. **Implement** platform detection and bridges
+4. **Convert** one component at a time, starting with simpler ones
+5. **Test** each component in both environments before proceeding
+6. **Document** any platform-specific gotchas or limitations
+7. **Optimize** for performance after basic functionality works
 
 ## Files to Create/Modify
 
 ### New Files Needed:
-- `/src/components/hybrid/OrpheusComponentBase.ts`
-- `/src/components/hybrid/PlatformDetector.ts`
-- `/src/components/hybrid/bridges/ElectronBridge.ts`
-- `/src/components/hybrid/bridges/WebBridge.ts`
-- `/src/components/hybrid/registry/ComponentRegistry.ts`
+- `/workstation/frontend/src/components/hybrid/OrpheusComponentBase.ts`
+- `/workstation/frontend/src/components/hybrid/PlatformDetector.ts`
+- `/workstation/frontend/src/components/hybrid/bridges/ElectronBridge.ts`
+- `/workstation/frontend/src/components/hybrid/bridges/WebBridge.ts`
+- `/workstation/frontend/src/components/hybrid/registry/ComponentRegistry.ts`
 - `/vite.hybrid.config.ts`
 
 ### Existing Files to Modify:
-- `/package.json` - Add hybrid build scripts
-- `/src/main.tsx` - Add component registry initialization
-- `/src/main.browser.tsx` - Add browser-specific component loading
+- `/package.json` - Add hybrid build scripts (in root)
+- `/workstation/frontend/src/main.tsx` - Add component registry initialization
+- `/workstation/frontend/src/App.tsx` - Add hybrid component loading
+- `/workstation/frontend/vite.config.ts` - Extend for hybrid mode
 
-This architecture provides a clear path forward for creating a truly hybrid DAW that leverages the best of both desktop and web technologies while maintaining seamless Python backend integration.
+### Reference Files for Migration:
+- `/workstation/frontend/OEW-main/src/screens/workstation/components/ClipComponent.tsx` - Advanced clip management
+- `/workstation/frontend/OEW-main/src/screens/workstation/components/TrackComponent.tsx` - Track management
+- `/workstation/frontend/OEW-main/src/components/widgets/Tooltip.tsx` - Widget system
+- `/workstation/frontend/OEW-main/src/components/PaneResize.tsx` - Enhanced panels
+
+This architecture provides a clear path forward for creating a truly hybrid DAW that leverages the existing codebase structure, advanced OEW-main components, and Python backend integration while maintaining compatibility across desktop and web platforms.
