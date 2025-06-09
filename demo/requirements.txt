@@ -21,7 +21,7 @@ seaborn>=0.12.0
 
 # Audio processing (Professional Grade)
 librosa>=0.10.0
-pyloudnorm>=0.2.1  # EBU R128 compliance
+pyloudnorm>=0.1.1  # EBU R128 compliance (latest available version)
 soundfile>=0.12.0
 scipy>=1.10.0
 

@@ -1,6 +1,6 @@
 # 🎵 Orpheus Audio Analysis Demo
 
-**Real-time Audio Recording and AI-Powered Analysis System**  
+**Real-time Audio Recording, AI-Powered Analysis & Professional DAW Pipeline System**  
 *HP AI Studio Competition Entry*
 
 ## 🚀 Quick Start
@@ -49,6 +49,17 @@ npm run dev
 
 ### 🎙️ **Real-time Audio Recording**
 - WebRTC-based high-quality audio capture (48kHz, stereo)
+- Live audio level monitoring and visualization
+- Pause/resume functionality
+- Professional recording standards
+
+### 🎛️ **Professional DAW Audio Processing Pipeline**
+- **Speech Detection**: Agentic RAG speech detection and content analysis
+- **Audio Editing**: Noise reduction, EQ, compression, LUFS normalization
+- **Speaker Identification**: Multi-speaker conversation processing and diarization
+- **Transcription**: Speech-to-text with confidence scoring and sentiment analysis
+- **Batch Processing**: Automated conversation clip editing with metadata tracking
+- **Professional Standards**: EBU R128 broadcast compliance and quality metrics
 - Live audio level monitoring and visualization
 - Pause/resume functionality
 - Professional recording standards
@@ -116,6 +127,7 @@ demo/
 │   │   ├── components/          # UI components
 │   │   └── types/               # TypeScript definitions
 │   └── package.json
+├── HP_AI_Studio_Judge_Evaluation_Demo.ipynb  # DAW Audio Processing Pipeline Demo
 ├── start_demo.py               # Integrated demo launcher
 ├── requirements.txt            # Python dependencies
 └── README.md                  # This file
@@ -144,13 +156,23 @@ demo/
 
 ## 🎵 Usage Examples
 
-### 1. Record and Analyze
+### 1. DAW Audio Processing Pipeline (Jupyter Notebook)
+1. Open `HP_AI_Studio_Judge_Evaluation_Demo.ipynb` in Jupyter
+2. Run the notebook to experience the complete DAW workflow:
+   - Generate realistic conversation audio with multiple speakers
+   - Perform professional audio editing (noise reduction, EQ, compression)
+   - Apply LUFS normalization for broadcast standards
+   - Analyze speaker patterns and generate transcriptions
+   - Track experiments with MLflow integration
+3. View comprehensive visualizations and quality metrics
+
+### 2. Record and Analyze (Web Demo)
 1. Click "Start Recording" to capture audio
 2. Speak, sing, or play music into your microphone
 3. Click "Stop & Analyze" to process the recording
 4. View real-time analysis results and visualizations
 
-### 2. Upload and Process
+### 2. Upload and Process (Web Demo)
 1. Click the upload area to select an audio file
 2. Choose any supported audio format (MP3, WAV, etc.)
 3. Automatic analysis begins immediately
@@ -166,11 +188,12 @@ demo/
 
 This demo showcases **HP AI Studio's capabilities** for:
 
-- **Real-world AI Applications**: Music production and audio analysis
+- **Real-world AI Applications**: Music production, audio analysis, and professional DAW workflows
 - **Professional ML Workflows**: MLflow integration and experiment tracking
 - **Scalable Architecture**: Cloud-ready deployment patterns
 - **Industry Standards**: Professional audio compliance and quality
-- **Interactive Innovation**: Modern web-based AI demonstration
+- **Interactive Innovation**: Modern web-based AI demonstration + Jupyter notebook workflows
+- **Conversation Processing**: Advanced speech detection, editing, and transcription capabilities
 
 Perfect for judges to evaluate:
 - ✅ Technical sophistication
@@ -200,8 +223,9 @@ npm run preview  # Preview production build
 - 🌐 **Cloud Deployment**: Deploy to HP AI Studio cloud infrastructure
 - 📱 **Mobile Support**: Extend to mobile web applications
 - 🎛️ **Advanced Features**: Multi-track analysis, MIDI integration
+- 🎙️ **DAW Enhancement**: Real-time conversation processing and live broadcast integration
 
 ---
 
 **Built with ❤️ for the HP AI Studio Competition**  
-*Demonstrating the future of AI-powered audio analysis*
+*Demonstrating the future of AI-powered audio analysis and professional DAW workflows*
