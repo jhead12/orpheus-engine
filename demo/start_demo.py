@@ -283,6 +283,7 @@ def create_demo_status_file(demo_dir):
         ],
         "services": {
             "mlflow_ui": "http://localhost:5000",
+            "tensorboard_ui": "http://localhost:6006", 
             "jupyter_lab": "http://localhost:8888"
         },
         "hp_ai_studio": {
@@ -387,6 +388,11 @@ def display_demo_options():
     print("🌐 Access all notebooks at: http://localhost:8888")
     print("📈 MLflow tracking at: http://localhost:5000")
     print("📊 TensorBoard monitoring at: http://localhost:6006")
+    print()
+    print("🔧 Unified Monitoring Platform:")
+    print("  • MLflow: Experiment tracking and model management")
+    print("  • TensorBoard: Real-time metrics and audio visualization")
+    print("  • HP AI Studio: Enterprise-compatible dual platform monitoring")
 
 def main():
     """Main demo startup function."""

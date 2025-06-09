@@ -20,7 +20,7 @@ datasets==3.4.0
 
 # Audio Processing Libraries (Professional Grade)
 librosa>=0.10.0
-pyloudnorm>=0.2.1  # EBU R128 loudness standards
+pyloudnorm>=0.1.1  # EBU R128 loudness standards (latest available version)
 soundfile>=0.12.0
 audioread>=2.1.9
 resampy>=0.4.2
