@@ -3,11 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Mixer from '../Mixer';
 import { WorkstationContext } from '../../../../contexts/WorkstationContext';
-import { Track, TrackType } from '../../../../types/core';
+import { MixerContext } from '../../../../contexts/MixerContext';
+import { Track, TrackType, AutomationMode } from '../../../../types/core';
 
 // Mock components and dependencies
 vi.mock('../../../components/widgets', () => ({
-  Dialog: ({ children, open, title, onClose }: any) => 
+  Dialog: ({ children, open, title }: any) => 
     open ? <div data-testid="dialog">{title}{children}</div> : null,
   HueInput: ({ value, onChange }: any) => 
     <input data-testid="hue-input" value={value} onChange={(e) => onChange(Number(e.target.value))} />,
@@ -19,8 +20,13 @@ vi.mock('../../../components/widgets', () => ({
     <input data-testid="knob" type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} title={title} {...props} />,
   Meter: ({ percent, ...props }: any) => 
     <div data-testid="meter" aria-valuenow={percent} {...props} />,
-  SortableList: ({ children, onSortEnd }: any) => 
-    <div data-testid="sortable-list">{children}</div>,
+  SortableList: ({ children, onSortEnd, onStart, onEnd }: any) => {
+    const handleSort = () => {
+      if (onSortEnd) onSortEnd();
+      if (onEnd) onEnd();
+    };
+    return <div data-testid="sortable-list" onMouseDown={onStart} onMouseUp={handleSort}>{children}</div>;
+  },
   SortableListItem: ({ children, index }: any) => 
     <div data-testid={`sortable-item-${index}`}>{children}</div>,
 }));
@@ -29,7 +35,7 @@ vi.mock('./index', () => ({
   FXComponent: ({ track }: any) => 
     <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>,
   TrackVolumeSlider: ({ track, ...props }: any) => 
-    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume} {...props} />,
+    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume?.value || track.volume || 0} {...props} />,
 }));
 
 vi.mock('../../../components/icons/TrackIcon', () => ({
@@ -42,12 +48,12 @@ vi.mock('../editor-utils', () => ({
 }));
 
 vi.mock('../../../services/utils/utils', () => ({
-  formatPanning: (value: number, short?: boolean) => {
+  formatPanning: (value: number, _short?: boolean) => {
     if (value === 0) return 'C';
     return value > 0 ? `R${Math.abs(value * 100)}` : `L${Math.abs(value * 100)}`;
   },
-  getVolumeGradient: () => '#00ff00',
-  hslToHex: (h: number, s: number, l: number) => '#ff0000',
+  getVolumeGradient: vi.fn(() => '#00ff00'),
+  hslToHex: (_h: number, _s: number, _l: number) => '#ff0000',
   volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
 }));
 
@@ -60,9 +66,10 @@ const mockTracks: Track[] = [
     mute: false,
     solo: false,
     armed: false,
-    volume: 0.8,
-    pan: 0.1,
+    volume: { value: 0.8, isAutomated: false },
+    pan: { value: 0.1, isAutomated: false },
     automation: false,
+    automationMode: AutomationMode.Read,
     clips: [],
     effects: [
       {
@@ -96,9 +103,10 @@ const mockTracks: Track[] = [
     mute: true,
     solo: false,
     armed: true,
-    volume: 0.6,
-    pan: -0.2,
+    volume: { value: 0.6, isAutomated: false },
+    pan: { value: -0.2, isAutomated: false },
     automation: false,
+    automationMode: AutomationMode.Write,
     clips: [],
     effects: [],
     automationLanes: [],
@@ -115,9 +123,11 @@ const mockMixerContext = {
   masterVolume: 0.8,
   masterPan: 0,
   masterMute: false,
+  mixerHeight: 300,
   setMasterVolume: vi.fn(),
   setMasterPan: vi.fn(),
   setMasterMute: vi.fn(),
+  setMixerHeight: vi.fn(),
   setTrackVolume: vi.fn(),
   setTrackPan: vi.fn(),
   setTrackMute: vi.fn(),
@@ -148,9 +158,10 @@ const mockMasterTrack: Track = {
   mute: false,
   solo: false,
   armed: false,
-  volume: 0.8,
-  pan: 0,
+  volume: { value: 0.8, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
   automation: false,
+  automationMode: AutomationMode.Read,
   clips: [],
   effects: [],
   automationLanes: [],
@@ -202,7 +213,7 @@ const mockWorkstationContext = {
   setTracks: vi.fn(),
   setSelectedTrackId: vi.fn(),
   setAllowMenuAndShortcuts: vi.fn(),
-  getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+  getTrackCurrentValue: vi.fn((_track: Track, lane?: any) => {
     // If lane is provided and is an automation lane, return automation value
     if (lane) {
       return { value: 0.8, isAutomated: true };
@@ -276,7 +287,6 @@ describe('Main Mixer Component', () => {
 
   describe('Volume Controls', () => {
     it('should update track volume on fader change', async () => {
-      const user = userEvent.setup();
       renderMixer();
       
       const volumeFader = screen.getByTestId('mixer-volume-track-1');
@@ -288,7 +298,6 @@ describe('Main Mixer Component', () => {
     });
 
     it('should update master volume on master fader change', async () => {
-      const user = userEvent.setup();
       renderMixer();
       
       const masterVolumeFader = screen.getByTestId('mixer-master-volume');
@@ -527,7 +536,7 @@ describe('Main Mixer Component', () => {
           {
             ...mockTracks[0],
             effects: [
-              ...mockTracks[0].effects,
+              ...(mockTracks[0].effects || []),
               {
                 id: 'compressor-1',
                 name: 'Compressor',
@@ -643,7 +652,6 @@ describe('Main Mixer Component', () => {
     });
 
     it('should announce level changes', async () => {
-      const user = userEvent.setup();
       renderMixer();
       
       const volumeFader = screen.getByTestId('mixer-volume-track-1');
@@ -665,12 +673,18 @@ describe('Main Mixer Component', () => {
         mute: false,
         solo: false,
         armed: false,
-        volume: 0.8,
-        pan: 0,
+        volume: { value: 0.8, isAutomated: false },
+        pan: { value: 0, isAutomated: false },
         automation: false,
+        automationMode: AutomationMode.Read,
         clips: [],
         effects: [],
         automationLanes: [],
+        fx: {
+          preset: null,
+          effects: [],
+          selectedEffectIndex: 0,
+        },
       }));
 
       const contextWithManyTracks = {
@@ -702,12 +716,18 @@ describe('Main Mixer Component', () => {
         mute: false,
         solo: false,
         armed: false,
-        volume: 0.8,
-        pan: 0,
+        volume: { value: 0.8, isAutomated: false },
+        pan: { value: 0, isAutomated: false },
         automation: false,
+        automationMode: AutomationMode.Read,
         clips: [],
         effects: [],
         automationLanes: [],
+        fx: {
+          preset: null,
+          effects: [],
+          selectedEffectIndex: 0,
+        },
       }));
 
       const contextWithManyTracks = {

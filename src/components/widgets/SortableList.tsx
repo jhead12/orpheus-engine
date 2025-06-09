@@ -2,10 +2,26 @@ import React, { useEffect, useRef } from "react";
 
 // Define WindowAutoScrollThresholds here to avoid import issues
 export interface WindowAutoScrollThresholds {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
+  top: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  right: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  bottom?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
+  left?: {
+    slow: number;
+    medium: number;
+    fast: number;
+  };
 }
 
 // Define SortData interface for sorting operations

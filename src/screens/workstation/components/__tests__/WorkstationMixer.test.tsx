@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Mixer } from '../../../../../workstation/frontend/OEW-main/src/screens/workstation/components/Mixer';
+import { Mixer } from '../Mixer';
 import { WorkstationContext } from '../../../../contexts/WorkstationContext';
 import { Track, TrackType, AutomationMode } from '../../../../types/core';
 
@@ -17,7 +17,7 @@ vi.mock('@mui/material', () => ({
 }));
 
 // Mock orpheus widgets
-vi.mock('@orpheus/widgets', () => ({
+vi.mock('../../../../widgets', () => ({
   Dialog: ({ children, open, title, onClose, ...props }: any) => 
     open ? (
       <div data-testid="dialog" {...props}>
@@ -79,11 +79,14 @@ vi.mock('@orpheus/widgets', () => ({
 }));
 
 // Mock FXComponent and TrackVolumeSlider
-vi.mock('../../../../workstation/frontend/OEW-main/src/screens/workstation/components', () => ({
+vi.mock('../FXComponent', () => ({
   FXComponent: ({ track, ...props }: any) => 
     <div data-testid={`fx-component-${track.id}`} {...props}>
       FX Component for {track.name}
     </div>,
+}));
+
+vi.mock('../TrackVolumeSlider', () => ({
   TrackVolumeSlider: ({ track, ...props }: any) => 
     <input 
       data-testid={`volume-slider-${track.id}`} 
@@ -91,7 +94,7 @@ vi.mock('../../../../workstation/frontend/OEW-main/src/screens/workstation/compo
       min="0" 
       max="1" 
       step="0.01" 
-      value={track.volume} 
+      value={track.volume?.value || track.volume || 0} 
       {...props} 
     />,
 }));
@@ -105,12 +108,12 @@ vi.mock('../../../components/icons', () => ({
 }));
 
 // Mock electron utils
-vi.mock('@orpheus/services/electron/utils', () => ({
+vi.mock('../../../../services/electron/utils', () => ({
   openContextMenu: vi.fn(),
 }));
 
 // Mock audio utils
-vi.mock('@orpheus/utils/audio', () => ({
+vi.mock('../../../../utils/audio', () => ({
   formatPanning: (value: number, short?: boolean) => {
     if (value === 0) return 'C';
     if (value > 0) return short ? `R${Math.round(value)}` : `Right ${Math.round(value)}%`;
@@ -120,13 +123,14 @@ vi.mock('@orpheus/utils/audio', () => ({
 }));
 
 // Mock other utils
-vi.mock('@orpheus/utils/general', () => ({
+vi.mock('../../../../utils/general', () => ({
   hslToHex: (h: number, s: number, l: number) => `#${h.toString(16).padStart(2, '0')}${s.toString(16).padStart(2, '0')}${l.toString(16).padStart(2, '0')}`,
   hueFromHex: (hex: string) => parseInt(hex.slice(1, 3), 16),
 }));
 
-vi.mock('@orpheus/utils/utils', () => ({
+vi.mock('../../../../utils/utils', () => ({
   volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
+  getVolumeGradient: vi.fn(() => '#00ff00'),
 }));
 
 const mockTracks: Track[] = [
@@ -138,8 +142,8 @@ const mockTracks: Track[] = [
     mute: false,
     solo: false,
     armed: false,
-    volume: 0.8,
-    pan: 0.1,
+    volume: { value: 0.8, isAutomated: false },
+    pan: { value: 0.1, isAutomated: false },
     automation: false,
     automationMode: AutomationMode.Read,
     clips: [],
@@ -147,8 +151,14 @@ const mockTracks: Track[] = [
     automationLanes: [
       {
         id: 'pan-lane-1',
+        label: 'Pan',
         envelope: 'Pan' as any,
-        points: [{ time: 0, value: 0.1 }],
+        enabled: true,
+        expanded: false,
+        minValue: -1,
+        maxValue: 1,
+        nodes: [{ id: 'node-1', pos: { ticks: 0 } as any, value: 0.1 }],
+        show: true,
       },
     ],
     fx: {
@@ -165,8 +175,8 @@ const mockTracks: Track[] = [
     mute: true,
     solo: false,
     armed: true,
-    volume: 0.6,
-    pan: -0.2,
+    volume: { value: 0.6, isAutomated: false },
+    pan: { value: -0.2, isAutomated: false },
     automation: false,
     automationMode: AutomationMode.Write,
     clips: [],
@@ -188,8 +198,8 @@ const mockMasterTrack: Track = {
   mute: false,
   solo: false,
   armed: false,
-  volume: 0.8,
-  pan: 0,
+  volume: { value: 0.8, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
   automation: false,
   automationMode: AutomationMode.Read,
   clips: [],
@@ -219,9 +229,9 @@ const mockWorkstationContext = {
   },
   getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
     if (lane) {
-      return { value: lane.points[0]?.value || 0, isAutomated: true };
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
     }
-    return { value: track.pan || 0, isAutomated: false };
+    return { value: track.pan?.value || 0, isAutomated: false };
   }),
 };
 
@@ -554,8 +564,8 @@ describe('Workstation Mixer Component', () => {
   describe('Color Change Dialog', () => {
     it('should open color change dialog from context menu', async () => {
       // Mock the context menu to trigger color change
-      const { openContextMenu } = await import('../../../services/electron/utils');
-      (openContextMenu as any).mockImplementation((type: any, data: any, callback: any) => {
+      const { openContextMenu } = await import('../../../../services/electron/utils');
+      (openContextMenu as any).mockImplementation((_type: any, _data: any, callback: any) => {
         callback({ action: 2 }); // Color change action
       });
 
@@ -573,8 +583,8 @@ describe('Workstation Mixer Component', () => {
 
     it('should update track color when hue changes', async () => {
       // Mock the context menu and open dialog
-      const { openContextMenu } = await import('../../../services/electron/utils');
-      (openContextMenu as any).mockImplementation((type: any, data: any, callback: any) => {
+      const { openContextMenu } = await import('../../../../services/electron/utils');
+      (openContextMenu as any).mockImplementation((_type: any, _data: any, callback: any) => {
         callback({ action: 2 });
       });
 
