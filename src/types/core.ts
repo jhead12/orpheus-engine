@@ -46,6 +46,11 @@ export enum AutomationLaneEnvelope {
   Effect = "effect",
 }
 
+export interface AutomatableParameter {
+  value: number;
+  isAutomated: boolean;
+}
+
 export interface Track {
   id: string;
   name: string;
@@ -54,8 +59,8 @@ export interface Track {
   mute: boolean;
   solo: boolean;
   armed: boolean;
-  volume: number;
-  pan: number;
+  volume: AutomatableParameter;
+  pan: AutomatableParameter;
   automation: boolean;
   automationMode: AutomationMode;
   automationLanes: AutomationLane[];
