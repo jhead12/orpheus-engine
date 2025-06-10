@@ -1,0 +1,15 @@
+artifact_uri: file:///Volumes/PRO-BLADE/Github/orpheus-engine/demo/orpheus_mlflow_demo/684094645672163162/031cb1393eb3420ba445b7597397121c/artifacts
+end_time: 1749546491990
+entry_point_name: ''
+experiment_id: '684094645672163162'
+lifecycle_stage: active
+run_id: 031cb1393eb3420ba445b7597397121c
+run_name: audio_analysis_3
+run_uuid: 031cb1393eb3420ba445b7597397121c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1749546491927
+status: 3
+tags: []
+user_id: jeldonmusic

@@ -1,30 +1,76 @@
-# Orpheus Engine Demo Requirements
-# Required packages for running the HP AI Studio competition demo
+# Orpheus Audio Analysis Demo - HP AI Studio Compatible Requirements
+# Compatible with MLflow 2.15.0 and HP AI Studio Project Manager
 
-# Core Jupyter dependencies
+# Core MLflow (Project Manager Compatible Version)
+mlflow==2.15.0
+mlflow-skinny==2.15.0
+
+# HP AI Studio Framework Dependencies (HP AI Blueprints Compatible)
+transformers==4.48.0
+tf_keras==2.19.0
+evaluate==0.4.3
+accelerate==1.5.2
+datasets==3.4.0
+
+# Data science and analysis (Stable Versions)
+numpy>=1.24.0,<2.0.0
+pandas>=2.0.0,<3.0.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Audio processing (Professional Grade)
+librosa>=0.10.0
+pyloudnorm>=0.1.1  # EBU R128 compliance (latest available version)
+soundfile>=0.12.0
+scipy>=1.10.0
+
+# TensorBoard Integration (Real-time Monitoring)
+tensorboard>=2.15.0  # Compatible with TensorFlow ecosystem
+tensorboard-plugin-profile>=2.14.0  # Performance profiling
+torch>=2.0.0  # For TensorBoard SummaryWriter
+tensorflow>=2.15.0  # TensorBoard backend support
+
+# Web and API (HP AI Studio Compatible)
+fastapi>=0.104.0
+uvicorn>=0.24.0
+gunicorn>=21.0.0
+
+# Jupyter Integration (Project Manager Compatible)
 jupyter>=1.0.0
-jupyterlab>=3.0.0
-notebook>=6.0.0
+jupyterlab>=4.0.0
+notebook>=7.0.0
+ipywidgets>=8.0.0
+ipykernel>=6.25.0
 
-# Data science and visualization
-numpy>=1.21.0
-matplotlib>=3.5.0
-pandas>=1.3.0
+# MLflow Dependencies (Exact Compatibility)
+protobuf>=4.21.0,<5.0.0
+pydantic>=2.0.0,<3.0.0
+sqlalchemy>=1.4.0,<3.0.0
+alembic>=1.8.0,<2.0.0
+click>=8.0.0
+requests>=2.31.0
 
-# Audio processing
-librosa>=0.9.0
-soundfile>=0.10.0
+# Visualization and Interactive Features
+plotly>=5.17.0
+dash>=2.14.0  # For interactive dashboards
+bokeh>=3.2.0  # Alternative visualization
 
-# Web and API
-requests>=2.25.0
-flask>=2.0.0
+# Development and Testing
+pytest>=7.0.0
+black>=23.0.0
+flake8>=6.0.0
+requests>=2.31.0
 
-# IPython widgets for interactive demo
-ipywidgets>=7.6.0
+# Jupyter and visualization
+jupyter>=1.0.0
+ipywidgets>=8.0.0
+plotly>=5.17.0
 
-# Additional ML/AI packages for HP AI Studio integration
-scikit-learn>=1.0.0
-scipy>=1.7.0
+# Development and testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
 
-# Optional but recommended for better performance
-numba>=0.56.0
+# Optional GPU acceleration
+# torch>=2.0.0  # Uncomment if using PyTorch models
+# tensorflow>=2.13.0  # Uncomment if using TensorFlow models
