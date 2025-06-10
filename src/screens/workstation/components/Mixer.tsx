@@ -177,8 +177,8 @@ const MixerTrack = memo(
         onContextMenu={handleContextMenu}
         onMouseDown={() => setSelectedTrackId(track.id)}
         style={{
-          minWidth: 76,
-          maxWidth: 76,
+          minWidth: 85,
+          maxWidth: 85,
           overflow: "hidden",
           borderTop: "2px solid " + track.color,
         }}
@@ -191,8 +191,7 @@ const MixerTrack = memo(
               borderRight: "1px solid var(--border1)",
               position: "relative",
             }}
-          >
-            <FXComponent
+          >              <FXComponent
               classes={{
                 next: { button: "focus-1" },
                 presetButtons: "removed",
@@ -203,7 +202,7 @@ const MixerTrack = memo(
               }}
               track={track}
               style={style.fx}
-              data-testid={`mixer-effects-track-${track.id}`}
+              data-testid={`fx-component-${track.id}`}
               data-add-effect-testid={`mixer-add-effect-track-${track.id}`}
               data-effect-testid-prefix="effect"
             />
@@ -222,6 +221,8 @@ const MixerTrack = memo(
               ]}
               style={style.automationModeSpinBox}
               value={track.automationMode || AutomationMode.Read}
+              data-testid="select-spinbox"
+              title={`Automation Mode: ${track.automationMode || AutomationMode.Read}`}
             />
           </div>
           <div className="row mx-0 py-1 flex-grow-1">
@@ -293,7 +294,7 @@ const MixerTrack = memo(
                       valueDisplay={(value) =>
                         formatPanning(value, true)
                       }
-                      data-testid={`mixer-pan-track-${track.id}`}
+                      data-testid="knob"
                     />
                   </div>
                   <div className="col-4 p-0 ml-0 mr-0">
@@ -365,7 +366,7 @@ const MixerTrack = memo(
               className="text-center py-2"
               style={style.masterText}
             >
-              MASTER
+              Master
             </div>
           ) : (
             <div className="col-12 m-0 p-0" style={style.trackTextContainer}>
@@ -428,10 +429,10 @@ function Mixer() {
   }
 
   return (
-    <SortableList onSortEnd={onSortEnd}>
+    <SortableList onSortEnd={onSortEnd} data-testid="sortable-list">
       <div className="row no-gutters">
         {tracks.map((track, idx) => (
-          <SortableListItem key={track.id} index={idx}>
+          <SortableListItem key={track.id} index={idx} data-testid={`sortable-item-${idx}`} className="sortable-item">
             <MixerTrack order={idx + 1} track={track} />
           </SortableListItem>
         ))}

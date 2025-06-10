@@ -1482,4 +1482,11 @@ describe('Workstation Mixer Component', () => {
       expect(screen.queryByText('Master')).not.toBeInTheDocument();
     });
   });
+
+  describe('Debugging', () => {
+    it('should print the HTML structure', () => {
+      const { container } = renderWorkstationMixer();
+      console.log('HTML STRUCTURE:', container.innerHTML);
+    });
+  });
 });
