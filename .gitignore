@@ -40,8 +40,7 @@ test-screenshots/
 .env.production.local
 /.vscode
 *.log
-*.lock
-package-lock.json
+
 
 # Python
 __pycache__/
@@ -59,6 +58,7 @@ data/
 *.pkl
 *.h5
 *.model
+__snapshots__
 
 # Backup files
 *.bak

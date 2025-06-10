@@ -14,6 +14,11 @@ import { fileURLToPath } from 'url';
 // Convert __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const projectRoot = path.dirname(__dirname);
+
+// Cache file to track when permissions were last fixed
+const PERMISSIONS_CACHE_FILE = path.join(projectRoot, '.permissions-cache');
+const CACHE_VALIDITY_MS = 30 * 60 * 1000; // 30 minutes
 
 // ANSI colors for better output
 const colors = {
@@ -66,6 +71,40 @@ function getCurrentUserInfo() {
       return { userId: '1000', groupId: '1000', isWindows: false };
     }
   }
+}
+
+// Cache management functions
+function isPermissionsCacheValid() {
+  try {
+    if (!fs.existsSync(PERMISSIONS_CACHE_FILE)) {
+      return false;
+    }
+    const cacheStats = fs.statSync(PERMISSIONS_CACHE_FILE);
+    const cacheAge = Date.now() - cacheStats.mtime.getTime();
+    return cacheAge < CACHE_VALIDITY_MS;
+  } catch (error) {
+    return false;
+  }
+}
+
+function updatePermissionsCache() {
+  try {
+    fs.writeFileSync(PERMISSIONS_CACHE_FILE, JSON.stringify({
+      timestamp: Date.now(),
+      platform: platform(),
+      user: getCurrentUserInfo()
+    }));
+  } catch (error) {
+    // Silently fail if we can't write cache
+  }
+}
+
+function skipIfCached(operation, operationName) {
+  if (isPermissionsCacheValid()) {
+    log(`⚡ Skipping ${operationName} (recently completed)`, colors.yellow);
+    return true;
+  }
+  return operation();
 }
 
 function fixNpmPermissions() {
@@ -298,6 +337,12 @@ function main() {
   logHeader('Orpheus Engine Permissions Fixer');
   log('This script will fix common permission issues', colors.blue);
   
+  // Check if permissions were recently fixed
+  if (isPermissionsCacheValid()) {
+    log('⚡ Permissions were recently fixed, skipping...', colors.yellow);
+    return true;
+  }
+  
   const results = {
     npm: fixNpmPermissions(),
     pnpm: fixPnpmPermissions(),
@@ -317,6 +362,7 @@ function main() {
   if (allFixed) {
     log('🎉 All permissions have been fixed!', colors.green);
     log('You can now run npm/pnpm/yarn commands without permission issues', colors.green);
+    updatePermissionsCache(); // Update cache after successful fix
   } else {
     log('⚠️ Some permission issues remain:', colors.yellow);
     

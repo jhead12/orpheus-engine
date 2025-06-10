@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "oew",
-  "version": "1.0.10",
+  "version": "1.1.0-beta.1",
   "type": "module",
   "authors": [
     {
@@ -37,14 +37,13 @@
     "fix:permissions": "node scripts/fix-permissions.js",
     "fix:permissions:win": "node scripts/fix-permissions.js",
     "fix:permissions:unix": "node scripts/fix-permissions.js",
-    "preinstall": "node scripts/fix-permissions.js",
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "setup:electron:win": "scripts\\setup-electron.bat",
     "install:all": "node scripts/install-all.js",
     "install:ffmpeg": "node scripts/install-ffmpeg.js",
     "install:vite": "node scripts/install-vite-deps.js",
     "install:monitor": "node scripts/install-monitor-backend.js",
-    "postinstall": "node scripts/fix-permissions.js && node scripts/install-all.js",
+    "postinstall": "node scripts/install-all.js",
     "setup": "pnpm run fix:permissions && pnpm install && pnpm run install:all && pnpm run setup:electron",
     "demo": "node scripts/setup-demo.js",
     "demo:notebook": "cd demo && jupyter notebook OrpheusWebDemo.ipynb",
