@@ -45,6 +45,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
     "pretest": "mkdir -p __snapshots__/screenshots __snapshots__/diffs __snapshots__/gifs",
     "test:screenshots": "pnpm pretest && vitest run --config vitest.config.ts \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" || true && node scripts/list-screenshots.js",
     "list:screenshots": "node scripts/list-screenshots.js",

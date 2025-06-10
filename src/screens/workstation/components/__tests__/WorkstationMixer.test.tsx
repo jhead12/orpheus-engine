@@ -2,9 +2,30 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Mixer } from '../Mixer';
-import { WorkstationContext } from '../../../../contexts/WorkstationContext';
-import { Track, TrackType, AutomationMode } from '../../../../types/core';
-import { expectScreenshot } from '../../../../test/helpers/screenshot';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { Track, TrackType, AutomationMode } from '@orpheus/types/core';
+import { expectScreenshot } from '@orpheus/test/helpers/screenshot';
+
+// Mock @orpheus/types/core to provide ContextMenuType
+vi.mock('@orpheus/types/core', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    ContextMenuType: {
+      AddAutomationLane: "add-automation-lane",
+      Automation: "automation",
+      Clip: "clip",
+      FXChainPreset: "fx-chain-preset",
+      Lane: "lane",
+      Mixer: "mixer",
+      Node: "node",
+      Region: "region",
+      Text: "text",
+      Timeline: "timeline", 
+      Track: "track"
+    }
+  };
+});
 
 // Mock editor-utils to handle SortData import
 vi.mock('../editor-utils', () => ({
@@ -1019,11 +1040,13 @@ const mockWorkstationContext = {
 };
 
 const renderWorkstationMixer = (props = {}) => {
-  return render(
+  const result = render(
     <WorkstationContext.Provider value={mockWorkstationContext as any}>
       <Mixer {...props} />
     </WorkstationContext.Provider>
   );
+  console.log('DEBUG HTML:', result.container.innerHTML);
+  return result;
 };
 
 describe('Workstation Mixer Component', () => {
@@ -1337,9 +1360,17 @@ describe('Workstation Mixer Component', () => {
       const user = userEvent.setup();
       renderWorkstationMixer();
       
-      const trackContainer = screen.getByText('Guitar').closest('div[style*="width: 85"]');
+      // FIXED: Use getByTestId instead of finding by text content
+      // Find the FX component directly by test ID
+      const fxComponent = screen.getByTestId('fx-component-track-2');
+      
+      // Find the mixer track container
+      const trackContainer = fxComponent.closest('.mixer-track');
+      
+      // Click on the track
       await user.pointer({ target: trackContainer!, keys: '[MouseLeft>][MouseLeft/]' });
       
+      // Verify that the correct track ID is selected
       expect(mockWorkstationContext.setSelectedTrackId).toHaveBeenCalledWith('track-2');
     });
   });
@@ -1355,11 +1386,14 @@ describe('Workstation Mixer Component', () => {
       const user = userEvent.setup();
       renderWorkstationMixer();
       
-      const trackContainer = screen.getByText('Vocals').closest('div[style*="width: 85"]');
+      // FIXED: Use getByTestId instead of finding by text content with width
+      // Find track container by test ID instead of text content
+      const trackContainer = screen.getByTestId('mixer-channel-track-1');
       await user.pointer({ target: trackContainer!, keys: '[MouseRight]' });
       
       await waitFor(() => {
         expect(screen.getByTestId('dialog')).toBeInTheDocument();
+        // We know this track is "Vocals" from the mock data
         expect(screen.getByTestId('dialog-title')).toHaveTextContent('Change Hue for Vocals');
       });
     });
@@ -1374,7 +1408,8 @@ describe('Workstation Mixer Component', () => {
       const user = userEvent.setup();
       renderWorkstationMixer();
       
-      const trackContainer = screen.getByText('Vocals').closest('div[style*="width: 85"]');
+      // FIXED: Use getByTestId instead of finding by text content with width
+      const trackContainer = screen.getByTestId('mixer-channel-track-1');
       await user.pointer({ target: trackContainer!, keys: '[MouseRight]' });
       
       await waitFor(async () => {
