@@ -73,12 +73,32 @@ async function fixPermissions() {
   logHeader('Fixing Permissions');
   
   try {
-    // Import and run the permissions fixer
+    // Import and check cache first
     const permissionsFixer = await import('./fix-permissions.js');
-    return permissionsFixer.fixNpmPermissions() && 
-           permissionsFixer.fixPnpmPermissions() && 
-           permissionsFixer.fixYarnPermissions() && 
-           permissionsFixer.fixScriptPermissions();
+    
+    // Check if permissions were recently fixed
+    const { isPermissionsCacheValid } = permissionsFixer;
+    if (typeof isPermissionsCacheValid === 'function' && isPermissionsCacheValid()) {
+      log('⚡ Permissions were recently fixed, skipping...', colors.green);
+      return true;
+    }
+    
+    // Run permission fixes
+    const results = {
+      npm: permissionsFixer.fixNpmPermissions(),
+      pnpm: permissionsFixer.fixPnpmPermissions(), 
+      yarn: permissionsFixer.fixYarnPermissions(),
+      scripts: permissionsFixer.fixScriptPermissions()
+    };
+    
+    const allFixed = Object.values(results).every(Boolean);
+    
+    // Update cache if all fixes succeeded
+    if (allFixed && typeof permissionsFixer.updatePermissionsCache === 'function') {
+      permissionsFixer.updatePermissionsCache();
+    }
+    
+    return allFixed;
   } catch (error) {
     log('⚠️ Could not run permissions fixer automatically', colors.yellow);
     log('You may need to fix permissions manually', colors.yellow);

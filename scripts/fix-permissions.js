@@ -391,7 +391,9 @@ export {
   fixYarnPermissions,
   fixScriptPermissions,
   fixProjectPermissions,
-  testPermissions
+  testPermissions,
+  isPermissionsCacheValid,
+  updatePermissionsCache
 };
 
 // Run if called directly
