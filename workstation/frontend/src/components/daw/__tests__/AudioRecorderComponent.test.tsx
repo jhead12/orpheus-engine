@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { renderWithProviders as render, screen, fireEvent, act } from '../../../test/testUtils';
 import AudioRecorderComponent from '../AudioRecorderComponent';
 import { AudioRecorder } from '../../../services/audio/audioRecorder';
 

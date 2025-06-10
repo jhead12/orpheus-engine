@@ -2,6 +2,8 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import AudioRecorderComponent from './AudioRecorderComponent';
 import { AudioRecorder } from '../../services/audio/audioRecorder';
+import { DAWProvider } from '../../contexts/DAWContext';
+import { MixerProvider } from '../../contexts/MixerContext';
 
 // Mock AudioRecorder
 vi.mock('../../services/audio/audioRecorder', () => {
@@ -19,13 +21,26 @@ vi.mock('../../services/audio/audioRecorder', () => {
   };
 });
 
+// Test wrapper with required providers
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <MixerProvider>
+    <DAWProvider>
+      {children}
+    </DAWProvider>
+  </MixerProvider>
+);
+
 describe('AudioRecorderComponent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
   
   test('renders with device selection', async () => {
-    render(<AudioRecorderComponent />);
+    render(
+      <TestWrapper>
+        <AudioRecorderComponent />
+      </TestWrapper>
+    );
     
     // Wait for device loading to complete
     await screen.findByText('Audio Recorder');
@@ -42,7 +57,11 @@ describe('AudioRecorderComponent', () => {
   
   test('starts and stops recording', async () => {
     const mockOnRecordingComplete = vi.fn();
-    render(<AudioRecorderComponent onRecordingComplete={mockOnRecordingComplete} />);
+    render(
+      <TestWrapper>
+        <AudioRecorderComponent onRecordingComplete={mockOnRecordingComplete} />
+      </TestWrapper>
+    );
     
     // Wait for device loading
     await screen.findByText('Audio Recorder');
@@ -66,7 +85,11 @@ describe('AudioRecorderComponent', () => {
   });
   
   test('handles device selection', async () => {
-    render(<AudioRecorderComponent />);
+    render(
+      <TestWrapper>
+        <AudioRecorderComponent />
+      </TestWrapper>
+    );
     
     // Wait for device loading
     await screen.findByText('Audio Recorder');

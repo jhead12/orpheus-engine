@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es6",
     "module": "esnext",
@@ -26,10 +25,27 @@
     "typeRoots": [
       "../../node_modules/@types",
       "./node_modules/@types"
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@orpheus/*": ["./src/*"],
+      "@orpheus/utils/*": ["./src/services/utils/*"],
+      "@orpheus/components/*": ["./src/components/*"],
+      "@orpheus/services/*": ["./src/services/*"],
+      "@orpheus/screens/*": ["./src/screens/*"],
+      "@orpheus/contexts/*": ["./src/contexts/*"],
+      "@orpheus/types/*": ["./src/types/*"],
+      "@orpheus/test/*": ["./src/test/*"],
+      "@oew-main/*": ["./OEW-main/src/*"],
+      "@oew-main/components/*": ["./OEW-main/src/components/*"],
+      "@oew-main/contexts/*": ["./OEW-main/src/contexts/*"],
+      "@oew-main/services/*": ["./OEW-main/src/services/*"],
+      "@oew-main/types/*": ["./OEW-main/src/types/*"]
+    }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "OEW-main/src/**/*"
   ],
   "exclude": [
     "node_modules",
