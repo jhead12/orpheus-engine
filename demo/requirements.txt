@@ -1,6 +1,9 @@
 # Orpheus Audio Analysis Demo - HP AI Studio Compatible Requirements
 # Compatible with MLflow 2.15.0 and HP AI Studio Project Manager
 
+# Build dependencies (install these first)
+Cython>=0.29.0
+
 # Core MLflow (Project Manager Compatible Version)
 mlflow==2.15.0
 mlflow-skinny==2.15.0
@@ -24,6 +27,8 @@ librosa>=0.10.0
 pyloudnorm>=0.1.1  # EBU R128 compliance (latest available version)
 soundfile>=0.12.0
 scipy>=1.10.0
+pooch>=1.6.0  # Required by librosa for remote data access
+audioread>=3.0.0  # Required for audio file loading
 
 # TensorBoard Integration (Real-time Monitoring)
 tensorboard>=2.15.0  # Compatible with TensorFlow ecosystem
