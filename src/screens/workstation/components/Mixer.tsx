@@ -144,7 +144,7 @@ const MixerTrack = memo(
         meter: { color: "var(--border6)", sizeRatio: 1.1, width: 1.5 },
       },
       muteButton: {
-        color: track.mute || masterTrack.mute ? "#ff004c" : "var(--border6)",
+        color: track.mute || masterTrack?.mute ? "#ff004c" : "var(--border6)",
       },
       armIcon: {
         fontSize: 14,
@@ -268,7 +268,7 @@ const MixerTrack = memo(
                         style={{ fontSize: 12, color: "var(--border6)" }}
                         data-testid={`mixer-pan-display-track-${track.id}`}
                       >
-                        {formatPanning(pan.value!, true)}
+                        {formatPanning(pan.value ?? 0, true)}
                       </span>
                     </div>
                   </div>
@@ -286,10 +286,10 @@ const MixerTrack = memo(
                         setTrack({ ...track, pan: value })
                       }
                       style={style.panKnob}
-                      title={`Pan: ${formatPanning(pan.value!)}${
+                      title={`Pan: ${formatPanning(pan.value ?? 0)}${
                         pan.isAutomated ? " (automated)" : ""
                       }`}
-                      value={pan.value!}
+                      value={pan.value ?? 0}
                       valueDisplay={(value) =>
                         formatPanning(value, true)
                       }

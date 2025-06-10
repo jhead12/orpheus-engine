@@ -4,15 +4,28 @@ import userEvent from '@testing-library/user-event';
 import { Mixer } from '../Mixer';
 import { WorkstationContext } from '../../../../contexts/WorkstationContext';
 import { Track, TrackType, AutomationMode } from '../../../../types/core';
+import { expectScreenshot } from '../../../../test/helpers/screenshot';
 
-// Mock Material-UI components
+// Mock editor-utils to handle SortData import
+vi.mock('../editor-utils', () => ({
+  openContextMenu: vi.fn(),
+  SortData: class {
+    sourceIndex: number = 0;
+    edgeIndex: number = 0;
+    destIndex: number = 0;
+  }
+}));
+
+// Mock Material-UI icons (consolidated, with Close icon)
 vi.mock('@mui/icons-material', () => ({
   Check: () => <div data-testid="check-icon">Check</div>,
+  Close: () => <div data-testid="close-icon">×</div>,
   FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
   ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
   ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
 }));
 
+// Mock Material-UI components (consolidated)
 vi.mock('@mui/material', () => ({
   DialogContent: ({ children, ...props }: any) => <div data-testid="dialog-content" {...props}>{children}</div>,
   DialogTitle: ({ children, ...props }: any) => <div data-testid="dialog-title" {...props}>{children}</div>,
@@ -131,37 +144,6 @@ vi.mock('../TrackVolumeSlider', () => ({
       value={track.volume?.value || track.volume || 0} 
       {...props} 
     />,
-}));
-
-// Mock Material-UI components with all required exports
-vi.mock('@mui/icons-material', () => ({
-  Check: () => <div data-testid="check-icon">Check</div>,
-  FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
-  ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
-  ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
-  Close: () => <div data-testid="close-icon">Close</div>,
-}));
-
-vi.mock('@mui/material', () => ({
-  DialogContent: ({ children, ...props }: any) => <div data-testid="dialog-content" {...props}>{children}</div>,
-  DialogTitle: ({ children, ...props }: any) => <div data-testid="dialog-title" {...props}>{children}</div>,
-  IconButton: ({ children, ...props }: any) => <button data-testid="icon-button" {...props}>{children}</button>,
-  Dialog: ({ children, open, onClose, ...props }: any) => 
-    open ? (
-      <div data-testid="mui-dialog" {...props}>
-        {children}
-      </div>
-    ) : null,
-  Tooltip: ({ children, title, ...props }: any) => 
-    <div data-testid="tooltip" title={title} {...props}>
-      {children}
-    </div>,
-  Popover: ({ children, open, anchorEl, ...props }: any) =>
-    open ? (
-      <div data-testid="popover" {...props}>
-        {children}
-      </div>
-    ) : null,
 }));
 
 // Mock orpheus widgets
@@ -272,8 +254,7 @@ describe('Error Handling - Comprehensive', () => {
     // Suppress expected error logs
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    let renderResult;
-    
+    let renderResult: ReturnType<typeof render> | undefined;
     // Test should not throw during render
     expect(() => {
       renderResult = render(
@@ -286,13 +267,12 @@ describe('Error Handling - Comprehensive', () => {
     // Should still render tracks
     expect(screen.getByText('Vocals')).toBeInTheDocument();
     expect(screen.getByText('Guitar')).toBeInTheDocument();
-    
     // Should not render master track
     expect(screen.queryByText('Master')).not.toBeInTheDocument();
 
     // Clean up
     consoleSpy.mockRestore();
-    if (renderResult) {
+    if (renderResult && typeof renderResult.unmount === 'function') {
       renderResult.unmount();
     }
   });
@@ -912,13 +892,17 @@ vi.mock('../../../../services/electron/utils', () => ({
 }));
 
 // Mock audio utils
-vi.mock('../../../../utils/audio', () => ({
+vi.mock('../../../../services/utils/utils', () => ({
   formatPanning: (value: number, short?: boolean) => {
-    if (value === 0) return 'C';
-    if (value > 0) return short ? `R${Math.round(value)}` : `Right ${Math.round(value)}%`;
-    return short ? `L${Math.round(Math.abs(value))}` : `Left ${Math.round(Math.abs(value))}%`;
+    // Ensure value is a number
+    const numValue = typeof value === 'number' ? value : 0;
+    if (numValue === 0) return 'C';
+    if (numValue > 0) return short ? `R${Math.round(numValue * 100)}` : `Right ${Math.round(numValue * 100)}%`;
+    return short ? `L${Math.round(Math.abs(numValue) * 100)}` : `Left ${Math.round(Math.abs(numValue) * 100)}%`;
   },
   getVolumeGradient: vi.fn(() => '#00ff00'),
+  volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
+  hslToHex: (h: number, s: number, l: number) => `#${h.toString(16).padStart(2, '0')}${s.toString(16).padStart(2, '0')}${l.toString(16).padStart(2, '0')}`,
 }));
 
 // Mock other utils
