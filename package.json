@@ -18,7 +18,7 @@
   "description": "Digital Audio Workstation (DAW) made in React",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sirgawain0x/orpheus-engine.git"
+    "url": "git+https://github.com/jhead12/orpheus-engine.git"
   },
   "private": true,
   "main": "build/electron/main.js",
@@ -107,6 +107,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.1.3",
     "@testing-library/react": "^14.0.0",
