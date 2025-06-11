@@ -82,7 +82,31 @@ case $CHOICE in
         else
             echo "❌ MLFlow not available. Installing..."
             pip3 install mlflow jupyter librosa soundfile numpy pandas scikit-learn
-            echo "✅ Please run option 2 again"
+            if [ $? -eq 0 ]; then
+                echo "✅ MLFlow installed successfully. Restarting demo..."
+                echo "🤖 Starting Full Demo with MLFlow..."
+                
+                # Start MLFlow in background
+                echo "Starting MLFlow tracking server..."
+                mlflow server --host 0.0.0.0 --port 5002 --backend-store-uri sqlite:///mlflow.db &
+                MLFLOW_PID=$!
+                
+                # Wait a moment for MLFlow to start
+                sleep 3
+                
+                echo "✅ MLFlow UI: http://localhost:5002"
+                echo "✅ Orpheus Engine: http://localhost:5173"
+                
+                # Start main application
+                npm run dev
+                
+                # Cleanup when done
+                kill $MLFLOW_PID 2>/dev/null
+            else
+                echo "❌ Failed to install MLFlow. Please install manually:"
+                echo "    pip3 install mlflow jupyter librosa soundfile numpy pandas scikit-learn"
+                exit 1
+            fi
         fi
         ;;
     3)
