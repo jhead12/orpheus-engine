@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixer Visual Test Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        .mixer-container {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            height: 100vh;
+            overflow-x: auto;
+        }
+        
+        .mixer-channel {
+            width: 80px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 3px solid;
+        }
+        
+        .mixer-channel[data-testid="mixer-channel-track-1"] {
+            border-top-color: #ff6b6b;
+        }
+        
+        .mixer-channel[data-testid="mixer-channel-track-2"] {
+            border-top-color: #4ecdc4;
+        }
+        
+        .track-name {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .volume-fader {
+            height: 200px;
+            width: 20px;
+            margin: 0 auto;
+            background: #444;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .volume-fader input[type="range"] {
+            writing-mode: bt-lr; /* IE */
+            -webkit-appearance: slider-vertical; /* WebKit */
+            width: 20px;
+            height: 200px;
+            outline: none;
+            background: transparent;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .control-button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .mute-button {
+            background: #666;
+            color: white;
+        }
+        
+        .mute-button.active {
+            background: #ff004c;
+        }
+        
+        .solo-button {
+            background: #666;
+            color: white;
+        }
+        
+        .solo-button.active {
+            background: #ffff00;
+            color: black;
+        }
+        
+        .arm-button {
+            background: #666;
+            color: white;
+        }
+        
+        .arm-button.active {
+            background: #ff004c;
+        }
+        
+        .pan-knob {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #444;
+            margin: 0 auto;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .pan-knob input[type="range"] {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            appearance: none;
+            background: transparent;
+            outline: none;
+        }
+        
+        .meter {
+            width: 10px;
+            height: 150px;
+            background: #333;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 2px;
+        }
+        
+        .meter::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--meter-level, 50%);
+            background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+        
+        .effects-section {
+            min-height: 60px;
+            background: #333;
+            border-radius: 4px;
+            padding: 5px;
+            margin: 5px 0;
+        }
+        
+        .effect-item {
+            background: #555;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin: 2px 0;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .effect-item.bypassed {
+            opacity: 0.5;
+        }
+        
+        .master-channel {
+            background: #444;
+            border-top-color: #888;
+        }
+        
+        .volume-display {
+            text-align: center;
+            font-size: 10px;
+            margin: 2px 0;
+        }
+        
+        .pan-display {
+            text-align: center;
+            font-size: 10px;
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="mixer-container" data-testid="main-mixer">
+        <!-- Track 1 -->
+        <div class="mixer-channel" data-testid="mixer-channel-track-1">
+            <div class="track-name">Vocals</div>
+            <div class="meter" data-testid="mixer-meter-track-1" aria-valuenow="50"></div>
+            <div class="volume-fader">
+                <input type="range" min="0" max="1" step="0.01" value="0.8" 
+                       data-testid="mixer-volume-track-1" orient="vertical">
+            </div>
+            <div class="volume-display" data-testid="mixer-volume-display-track-1">80</div>
+            <div class="pan-knob">
+                <input type="range" min="-1" max="1" step="0.01" value="0.1" 
+                       data-testid="mixer-pan-track-1">
+            </div>
+            <div class="pan-display" data-testid="mixer-pan-display-track-1">R10</div>
+            <div class="controls">
+                <button class="control-button mute-button" data-testid="mixer-mute-track-1">M</button>
+                <button class="control-button solo-button" data-testid="mixer-solo-track-1">S</button>
+                <button class="control-button arm-button" data-testid="mixer-arm-track-1">R</button>
+            </div>
+            <div class="effects-section" data-testid="mixer-effects-track-1">
+                <div class="effect-item" data-testid="effect-reverb-1">Hall Reverb</div>
+                <button data-testid="mixer-add-effect-track-1">+</button>
+            </div>
+        </div>
+        
+        <!-- Track 2 -->
+        <div class="mixer-channel" data-testid="mixer-channel-track-2">
+            <div class="track-name">Guitar</div>
+            <div class="meter" data-testid="mixer-meter-track-2" aria-valuenow="30"></div>
+            <div class="volume-fader">
+                <input type="range" min="0" max="1" step="0.01" value="0.6" 
+                       data-testid="mixer-volume-track-2" orient="vertical">
+            </div>
+            <div class="volume-display" data-testid="mixer-volume-display-track-2">60</div>
+            <div class="pan-knob">
+                <input type="range" min="-1" max="1" step="0.01" value="-0.2" 
+                       data-testid="mixer-pan-track-2">
+            </div>
+            <div class="pan-display" data-testid="mixer-pan-display-track-2">L20</div>
+            <div class="controls">
+                <button class="control-button mute-button active" data-testid="mixer-mute-track-2">M</button>
+                <button class="control-button solo-button" data-testid="mixer-solo-track-2">S</button>
+                <button class="control-button arm-button active" data-testid="mixer-arm-track-2">R</button>
+            </div>
+            <div class="effects-section" data-testid="mixer-effects-track-2">
+                <button data-testid="mixer-add-effect-track-2">+</button>
+            </div>
+        </div>
+        
+        <!-- Master Channel -->
+        <div class="mixer-channel master-channel" data-testid="mixer-master-channel">
+            <div class="track-name">MASTER</div>
+            <div class="meter" data-testid="mixer-master-meter" aria-valuenow="70"></div>
+            <div class="volume-fader">
+                <input type="range" min="0" max="1" step="0.01" value="0.8" 
+                       data-testid="mixer-master-volume" orient="vertical">
+            </div>
+            <div class="volume-display" data-testid="mixer-master-volume-display">80</div>
+            <div class="controls">
+                <button class="control-button mute-button" data-testid="mixer-master-mute">M</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity for visual tests
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle mute buttons
+            document.querySelectorAll('.mute-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Handle solo buttons
+            document.querySelectorAll('.solo-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Handle arm buttons
+            document.querySelectorAll('.arm-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Handle volume faders
+            document.querySelectorAll('[data-testid^="mixer-volume-"]').forEach(fader => {
+                fader.addEventListener('input', function() {
+                    const value = Math.round(parseFloat(this.value) * 100);
+                    const trackId = this.dataset.testid.replace('mixer-volume-', '');
+                    const display = document.querySelector(`[data-testid="mixer-volume-display-${trackId}"]`);
+                    if (display) {
+                        display.textContent = value.toString();
+                    }
+                });
+            });
+            
+            // Handle pan knobs
+            document.querySelectorAll('[data-testid^="mixer-pan-"]').forEach(knob => {
+                knob.addEventListener('input', function() {
+                    const value = parseFloat(this.value);
+                    const trackId = this.dataset.testid.replace('mixer-pan-', '');
+                    const display = document.querySelector(`[data-testid="mixer-pan-display-${trackId}"]`);
+                    if (display) {
+                        if (value === 0) {
+                            display.textContent = 'C';
+                        } else if (value > 0) {
+                            display.textContent = `R${Math.round(value * 100)}`;
+                        } else {
+                            display.textContent = `L${Math.round(Math.abs(value) * 100)}`;
+                        }
+                    }
+                });
+            });
+            
+            // Simulate meter animations
+            function updateMeters() {
+                document.querySelectorAll('.meter').forEach(meter => {
+                    const currentLevel = parseFloat(meter.getAttribute('aria-valuenow') || '0');
+                    const newLevel = Math.max(0, currentLevel + (Math.random() - 0.5) * 20);
+                    const clampedLevel = Math.min(100, Math.max(0, newLevel));
+                    
+                    meter.setAttribute('aria-valuenow', clampedLevel.toString());
+                    meter.style.setProperty('--meter-level', `${clampedLevel}%`);
+                });
+            }
+            
+            // Update meters every 100ms
+            setInterval(updateMeters, 100);
+            
+            // Handle effect bypass
+            document.addEventListener('click', function(e) {
+                if (e.target.dataset.testid && e.target.dataset.testid.includes('effect-bypass-')) {
+                    e.target.closest('.effect-item').classList.toggle('bypassed');
+                }
+            });
+            
+            // Handle add effect buttons
+            document.querySelectorAll('[data-testid^="mixer-add-effect-"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const effectsSection = this.parentElement;
+                    const newEffect = document.createElement('div');
+                    newEffect.className = 'effect-item';
+                    newEffect.textContent = 'New Effect';
+                    effectsSection.insertBefore(newEffect, this);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,12 +1,14 @@
-import React, { memo, useContext, useEffect, useMemo, useState } from "react";
+import React, { memo, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { Check, FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
 import { WorkstationContext } from "../../../contexts/WorkstationContext";
+import { MixerContext } from "../../../contexts/MixerContext";
 import {
   AutomationLaneEnvelope,
   AutomationMode,
   ContextMenuType,
   Track,
+  AutomatableParameter,
 } from "../../../types/core";
 import { FXComponent, TrackVolumeSlider } from "./index";
 import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableListItem } from "../../../components/widgets";
@@ -59,6 +61,8 @@ const MixerTrack = memo(
       timelineSettings,
     } = useContext(WorkstationContext)!;
 
+    const mixerContext = useContext(MixerContext);
+
     const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
     const [name, setName] = useState(track.name);
     const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
@@ -71,6 +75,37 @@ const MixerTrack = memo(
     }, [track, getTrackCurrentValue]);
 
     useEffect(() => setName(track.name), [track.name]);
+
+    // Keyboard shortcuts handler
+    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+      if (!mixerContext) return;
+      
+      const key = e.key.toLowerCase();
+      switch (key) {
+        case 'm':
+          e.preventDefault();
+          mixerContext.setTrackMute(track.id, !track.mute);
+          break;
+        case 's':
+          e.preventDefault();
+          mixerContext.setTrackSolo(track.id, !track.solo);
+          break;
+        case 'r':
+          e.preventDefault();
+          mixerContext.setTrackArmed(track.id, !track.armed);
+          break;
+        default:
+          break;
+      }
+    }, [mixerContext, track.id, track.mute, track.solo, track.armed]);
+
+    // Handle volume control+click reset
+    const handleVolumeClick = useCallback((e: React.MouseEvent) => {
+      if (e.ctrlKey && mixerContext) {
+        e.preventDefault();
+        mixerContext.setTrackVolume(track.id, 0.8); // Default volume
+      }
+    }, [mixerContext, track.id]);
 
     function changeTrackColor(e: React.FormEvent<HTMLFormElement>) {
       e.preventDefault();
@@ -85,6 +120,14 @@ const MixerTrack = memo(
         });
       }
     }
+
+    // Ensure track volume and pan are properly formatted as AutomatableParameter
+    const ensureAutomatableParameter = (value: number | AutomatableParameter): AutomatableParameter => {
+      if (typeof value === 'number') {
+        return { value, isAutomated: false };
+      }
+      return value || { value: 0, isAutomated: false };
+    };
 
     const isMaster = masterTrack ? track.id === masterTrack.id : false;
     const selected = selectedTrackId === track.id;
@@ -173,9 +216,11 @@ const MixerTrack = memo(
           "col-auto mixer-track pr-2 pl-2 border-right border-dark-1" +
           (selected ? " overlay-1" : "")
         }
-        data-testid={isMaster ? "mixer-master-channel" : `mixer-channel-track-${order || track.id}`}
+        data-testid={isMaster ? "mixer-master-channel" : `mixer-channel-${track.id}`}
         onContextMenu={handleContextMenu}
         onMouseDown={() => setSelectedTrackId(track.id)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         style={{
           minWidth: 85,
           maxWidth: 85,
@@ -230,21 +275,23 @@ const MixerTrack = memo(
               <div style={{ display: "flex" }}>
                 <div style={{ marginRight: 1 }}>
                   <Meter
-                    color={getVolumeGradient(track.volume || 0)}
-                    percent={volumeToNormalized(track.volume || 0) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
                     style={{ ...style.volumeMeter, marginRight: 2 }}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
                   <Meter
-                    color={getVolumeGradient(track.volume || 0)}
-                    percent={volumeToNormalized(track.volume || 0) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
                     style={style.volumeMeter}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
                 </div>
                 <TrackVolumeSlider
                   track={track}
-                  data-testid={isMaster ? "mixer-master-volume" : `mixer-volume-track-${track.id}`}
+                  onClick={handleVolumeClick}
+                  aria-label={`${track.name} volume`}
+                  data-testid={isMaster ? "mixer-master-volume" : `mixer-volume-${track.id}`}
                 />
               </div>
               <div 
@@ -252,7 +299,7 @@ const MixerTrack = memo(
                 data-testid={isMaster ? "mixer-master-volume-display" : `mixer-volume-display-track-${track.id}`}
                 style={{ fontSize: 10, color: "var(--border6)" }}
               >
-                {Math.round((track.volume || 0) * 100)}%
+                {Math.round(ensureAutomatableParameter(track.volume).value * 100)}%
               </div>
             </div>
             <div className="col-8 pl-0 pr-1">
@@ -281,20 +328,21 @@ const MixerTrack = memo(
                     <Knob
                       disabled={pan.isAutomated}
                       onDoubleClick={() =>
-                        setTrack({ ...track, pan: 0 })
+                        setTrack({ ...track, pan: { value: 0, isAutomated: false } })
                       }
-                      onChange={(value) =>
-                        setTrack({ ...track, pan: value })
+                      onChange={(value: number) =>
+                        setTrack({ ...track, pan: { value, isAutomated: false } })
                       }
                       style={style.panKnob}
                       title={`Pan: ${formatPanning(pan.value ?? 0)}${
                         pan.isAutomated ? " (automated)" : ""
                       }`}
                       value={pan.value ?? 0}
-                      valueDisplay={(value) =>
+                      valueDisplay={(value: number) =>
                         formatPanning(value, true)
                       }
-                      data-testid="knob"
+                      aria-label={`${track.name} pan`}
+                      data-testid={`mixer-pan-${track.id}`}
                     />
                   </div>
                   <div className="col-4 p-0 ml-0 mr-0">
@@ -303,11 +351,16 @@ const MixerTrack = memo(
                         className={
                           mutedByMaster ? "pe-none" : "pe-auto hover-4"
                         }
-                        onClick={() =>
-                          setTrack({ ...track, mute: !track.mute })
-                        }
+                        onClick={() => {
+                          if (mixerContext) {
+                            mixerContext.setTrackMute(track.id, !track.mute);
+                          } else {
+                            setTrack({ ...track, mute: !track.mute });
+                          }
+                        }}
                         style={style.muteButton}
-                        data-testid={isMaster ? "mixer-master-mute" : `mixer-mute-track-${track.id}`}
+                        aria-label={`${track.mute ? 'Unmute' : 'Mute'} ${track.name}`}
+                        data-testid={isMaster ? "mixer-master-mute" : `mixer-mute-${track.id}`}
                       >
                         <span style={{ opacity: mutedByMaster ? 0.5 : 1 }}>
                           M
@@ -318,22 +371,31 @@ const MixerTrack = memo(
                       <div>
                         <IconButton
                           className="hover-4"
-                          onClick={() =>
-                            setTrack({ ...track, solo: !track.solo })
-                          }
+                          onClick={() => {
+                            if (mixerContext) {
+                              mixerContext.setTrackSolo(track.id, !track.solo);
+                            } else {
+                              setTrack({ ...track, solo: !track.solo });
+                            }
+                          }}
                           style={{
                             color: track.solo ? "var(--fg2)" : "var(--border6)",
                           }}
                           title={"Toggle Solo" + (selected ? " [S]" : "")}
-                          data-testid={`mixer-solo-track-${track.id}`}
+                          aria-label={`${track.solo ? 'Unsolo' : 'Solo'} ${track.name}`}
+                          data-testid={`mixer-solo-${track.id}`}
                         >
                           S
                         </IconButton>
                         <IconButton
                           className="hover-4"
-                          onClick={() =>
-                            setTrack({ ...track, armed: !track.armed })
-                          }
+                          onClick={() => {
+                            if (mixerContext) {
+                              mixerContext.setTrackArmed(track.id, !track.armed);
+                            } else {
+                              setTrack({ ...track, armed: !track.armed });
+                            }
+                          }}
                           style={{
                             color: track.armed
                               ? "#ff004c"
@@ -343,7 +405,8 @@ const MixerTrack = memo(
                             (track.armed ? "Disarm" : "Arm") +
                             (selected ? " [Shift+A]" : "")
                           }
-                          data-testid={`mixer-arm-track-${track.id}`}
+                          aria-label={`${track.armed ? 'Disarm' : 'Arm'} ${track.name}`}
+                          data-testid={`mixer-arm-${track.id}`}
                         >
                           <FiberManualRecord style={style.armIcon} />
                         </IconButton>
@@ -417,6 +480,33 @@ function Mixer() {
     return () => setAllowMenuAndShortcuts(true);
   }, [setAllowMenuAndShortcuts]);
 
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const currentElement = document.activeElement as HTMLElement;
+      const currentTestId = currentElement?.getAttribute('data-testid');
+      
+      if (currentTestId?.startsWith('mixer-channel-')) {
+        const currentTrackId = currentTestId.replace('mixer-channel-', '');
+        const currentIndex = tracks.findIndex(track => track.id === currentTrackId);
+        
+        if (currentIndex !== -1) {
+          let nextIndex;
+          if (e.key === 'ArrowRight') {
+            nextIndex = currentIndex + 1 < tracks.length ? currentIndex + 1 : 0;
+          } else {
+            nextIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : tracks.length - 1;
+          }
+          
+          const nextTrackId = tracks[nextIndex].id;
+          const nextElement = document.querySelector(`[data-testid="mixer-channel-${nextTrackId}"]`) as HTMLElement;
+          nextElement?.focus();
+        }
+      }
+    }
+  }, [tracks]);
+
   function onSortEnd(data: SortData) {
     if (data.edgeIndex !== undefined && data.edgeIndex > -1 && data.sourceIndex !== data.destIndex) {
       const destIndex =
@@ -429,7 +519,7 @@ function Mixer() {
   }
 
   return (
-    <SortableList onSortEnd={onSortEnd} data-testid="sortable-list">
+    <SortableList onSortEnd={onSortEnd} data-testid="sortable-list" onKeyDown={handleKeyDown}>
       <div className="row no-gutters">
         {tracks.map((track, idx) => (
           <SortableListItem key={track.id} index={idx} data-testid={`sortable-item-${idx}`} className="sortable-item">

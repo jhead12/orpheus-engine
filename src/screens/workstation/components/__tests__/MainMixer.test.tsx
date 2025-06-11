@@ -4,224 +4,36 @@ import userEvent from '@testing-library/user-event';
 import Mixer from '../Mixer';
 import { WorkstationContext } from '../../../../contexts/WorkstationContext';
 import { MixerContext } from '../../../../contexts/MixerContext';
-import { Track, TrackType, AutomationMode } from '../../../../types/core';
+import {
+  setupGlobalMocks,
+  createMockTracks,
+  createMockMixerContext,
+  createMockWorkstationContext,
+  createMockWidgets,
+  createMockComponents,
+  createMockUtils,
+  createManyTracks
+} from '../../../../test/utils/mixer-test-utils';
+
+// Setup global mocks
+setupGlobalMocks();
 
 // Mock components and dependencies
-vi.mock('../../../components/widgets', () => ({
-  Dialog: ({ children, open, title }: any) => 
-    open ? <div data-testid="dialog">{title}{children}</div> : null,
-  HueInput: ({ value, onChange }: any) => 
-    <input data-testid="hue-input" value={value} onChange={(e) => onChange(Number(e.target.value))} />,
-  SelectSpinBox: ({ value, onChange, options }: any) => 
-    <select data-testid="select-spinbox" value={value} onChange={(e) => onChange(e.target.value)}>
-      {options?.map((opt: any) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-    </select>,
-  Knob: ({ value, onChange, title, ...props }: any) => 
-    <input data-testid="knob" type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} title={title} {...props} />,
-  Meter: ({ percent, ...props }: any) => 
-    <div data-testid="meter" aria-valuenow={percent} {...props} />,
-  SortableList: ({ children, onSortEnd, onStart, onEnd }: any) => {
-    const handleSort = () => {
-      if (onSortEnd) onSortEnd();
-      if (onEnd) onEnd();
-    };
-    return <div data-testid="sortable-list" onMouseDown={onStart} onMouseUp={handleSort}>{children}</div>;
-  },
-  SortableListItem: ({ children, index }: any) => 
-    <div data-testid={`sortable-item-${index}`}>{children}</div>,
-}));
-
-vi.mock('./index', () => ({
-  FXComponent: ({ track }: any) => 
-    <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>,
-  TrackVolumeSlider: ({ track, ...props }: any) => 
-    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume?.value || track.volume || 0} {...props} />,
-}));
-
+vi.mock('../../../components/widgets', () => createMockWidgets());
+vi.mock('./index', () => createMockComponents());
 vi.mock('../../../components/icons/TrackIcon', () => ({
   default: ({ type, color }: any) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
 }));
-
 vi.mock('../editor-utils', () => ({
   openContextMenu: vi.fn(),
   SortData: {},
 }));
+vi.mock('../../../services/utils/utils', () => createMockUtils());
 
-vi.mock('../../../services/utils/utils', () => ({
-  formatPanning: (value: number, _short?: boolean) => {
-    if (value === 0) return 'C';
-    return value > 0 ? `R${Math.abs(value * 100)}` : `L${Math.abs(value * 100)}`;
-  },
-  getVolumeGradient: vi.fn(() => '#00ff00'),
-  hslToHex: (_h: number, _s: number, _l: number) => '#ff0000',
-  volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
-}));
-
-const mockTracks: Track[] = [
-  {
-    id: 'track-1',
-    name: 'Vocals',
-    type: TrackType.Audio,
-    color: '#ff6b6b',
-    mute: false,
-    solo: false,
-    armed: false,
-    volume: { value: 0.8, isAutomated: false },
-    pan: { value: 0.1, isAutomated: false },
-    automation: false,
-    automationMode: AutomationMode.Read,
-    clips: [],
-    effects: [
-      {
-        id: 'reverb-1',
-        name: 'Hall Reverb',
-        type: 'native',
-        enabled: true,
-        parameters: { wetness: 0.3, roomSize: 0.7 },
-      },
-    ],
-    automationLanes: [],
-    fx: {
-      preset: null,
-      effects: [
-        {
-          id: 'reverb-1',
-          name: 'Hall Reverb',
-          type: 'native',
-          enabled: true,
-          parameters: { wetness: 0.3, roomSize: 0.7 },
-        },
-      ],
-      selectedEffectIndex: 0,
-    },
-  },
-  {
-    id: 'track-2',
-    name: 'Guitar',
-    type: TrackType.Audio,
-    color: '#4ecdc4',
-    mute: true,
-    solo: false,
-    armed: true,
-    volume: { value: 0.6, isAutomated: false },
-    pan: { value: -0.2, isAutomated: false },
-    automation: false,
-    automationMode: AutomationMode.Write,
-    clips: [],
-    effects: [],
-    automationLanes: [],
-    fx: {
-      preset: null,
-      effects: [],
-      selectedEffectIndex: 0,
-    },
-  },
-];
-
-const mockMixerContext = {
-  tracks: mockTracks,
-  masterVolume: 0.8,
-  masterPan: 0,
-  masterMute: false,
-  mixerHeight: 300,
-  setMasterVolume: vi.fn(),
-  setMasterPan: vi.fn(),
-  setMasterMute: vi.fn(),
-  setMixerHeight: vi.fn(),
-  setTrackVolume: vi.fn(),
-  setTrackPan: vi.fn(),
-  setTrackMute: vi.fn(),
-  setTrackSolo: vi.fn(),
-  setTrackArmed: vi.fn(),
-  addEffect: vi.fn(),
-  removeEffect: vi.fn(),
-  updateEffect: vi.fn(),
-  reorderEffects: vi.fn(),
-  meters: {
-    master: { left: 0.5, right: 0.6, peak: 0.8 },
-    'track-1': { left: 0.3, right: 0.4, peak: 0.5 },
-    'track-2': { left: 0.0, right: 0.0, peak: 0.0 },
-  },
-  isVisible: true,
-  setIsVisible: vi.fn(),
-  soloedTracks: [],
-  muteAllTracks: vi.fn(),
-  unmuteAllTracks: vi.fn(),
-  resetAllLevels: vi.fn(),
-};
-
-const mockMasterTrack: Track = {
-  id: 'master',
-  name: 'Master',
-  type: TrackType.Audio,
-  color: '#444444',
-  mute: false,
-  solo: false,
-  armed: false,
-  volume: { value: 0.8, isAutomated: false },
-  pan: { value: 0, isAutomated: false },
-  automation: false,
-  automationMode: AutomationMode.Read,
-  clips: [],
-  effects: [],
-  automationLanes: [],
-  fx: {
-    preset: null,
-    effects: [],
-    selectedEffectIndex: 0,
-  },
-};
-
-const mockWorkstationContext = {
-  tracks: mockTracks,
-  masterTrack: mockMasterTrack,
-  updateTrack: vi.fn(),
-  removeTrack: vi.fn(),
-  duplicateTrack: vi.fn(),
-  selection: { tracks: [], clips: [], region: null },
-  setSelection: vi.fn(),
-  fxChainPresets: [
-    {
-      id: 'preset-1',
-      name: 'Hall Reverb Preset',
-      effects: [
-        {
-          id: 'reverb-preset-1',
-          name: 'Hall Reverb',
-          type: 'native',
-          enabled: true,
-          parameters: { wetness: 0.4, roomSize: 0.8 },
-        },
-      ],
-    },
-    {
-      id: 'preset-2',
-      name: 'Compression Preset',
-      effects: [
-        {
-          id: 'compressor-preset-1',
-          name: 'Compressor',
-          type: 'native',
-          enabled: true,
-          parameters: { threshold: -12, ratio: 4 },
-        },
-      ],
-    },
-  ],
-  setFXChainPresets: vi.fn(),
-  setTrack: vi.fn(),
-  setTracks: vi.fn(),
-  setSelectedTrackId: vi.fn(),
-  setAllowMenuAndShortcuts: vi.fn(),
-  getTrackCurrentValue: vi.fn((_track: Track, lane?: any) => {
-    // If lane is provided and is an automation lane, return automation value
-    if (lane) {
-      return { value: 0.8, isAutomated: true };
-    }
-    // If no lane provided, return the track's current value (non-automated)
-    return { value: 0.8, isAutomated: false };
-  }),
-};
+// Use shared mock data
+const mockTracks = createMockTracks();
+const mockMixerContext = createMockMixerContext();
+const mockWorkstationContext = createMockWorkstationContext();
 
 const renderMixer = (props = {}) => {
   return render(
@@ -273,10 +85,10 @@ describe('Main Mixer Component', () => {
     it('should show mute/solo/arm states', () => {
       renderMixer();
       
-      const muteButton1 = screen.getByTestId('mixer-mute-track-track-1');
-      const muteButton2 = screen.getByTestId('mixer-mute-track-track-2');
-      const soloButton1 = screen.getByTestId('mixer-solo-track-track-1');
-      const armButton2 = screen.getByTestId('mixer-arm-track-track-2');
+      const muteButton1 = screen.getByTestId('mixer-mute-track-1');
+      const muteButton2 = screen.getByTestId('mixer-mute-track-2');
+      const soloButton1 = screen.getByTestId('mixer-solo-track-1');
+      const armButton2 = screen.getByTestId('mixer-arm-track-2');
       
       expect(muteButton1.style.color).not.toBe('#ff004c');
       expect(muteButton2.style.color).toBe('#ff004c'); // track-2 is muted
@@ -665,27 +477,7 @@ describe('Main Mixer Component', () => {
 
   describe('Performance', () => {
     it('should handle many tracks efficiently', () => {
-      const manyTracks = Array.from({ length: 64 }, (_, i) => ({
-        id: `track-${i}`,
-        name: `Track ${i}`,
-        type: TrackType.Audio,
-        color: '#ff6b6b',
-        mute: false,
-        solo: false,
-        armed: false,
-        volume: { value: 0.8, isAutomated: false },
-        pan: { value: 0, isAutomated: false },
-        automation: false,
-        automationMode: AutomationMode.Read,
-        clips: [],
-        effects: [],
-        automationLanes: [],
-        fx: {
-          preset: null,
-          effects: [],
-          selectedEffectIndex: 0,
-        },
-      }));
+      const manyTracks = createManyTracks(64);
 
       const contextWithManyTracks = {
         ...mockMixerContext,
@@ -708,27 +500,7 @@ describe('Main Mixer Component', () => {
     });
 
     it('should virtualize channels for large track counts', () => {
-      const manyTracks = Array.from({ length: 200 }, (_, i) => ({
-        id: `track-${i}`,
-        name: `Track ${i}`,
-        type: TrackType.Audio,
-        color: '#ff6b6b',
-        mute: false,
-        solo: false,
-        armed: false,
-        volume: { value: 0.8, isAutomated: false },
-        pan: { value: 0, isAutomated: false },
-        automation: false,
-        automationMode: AutomationMode.Read,
-        clips: [],
-        effects: [],
-        automationLanes: [],
-        fx: {
-          preset: null,
-          effects: [],
-          selectedEffectIndex: 0,
-        },
-      }));
+      const manyTracks = createManyTracks(200);
 
       const contextWithManyTracks = {
         ...mockMixerContext,

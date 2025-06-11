@@ -22,6 +22,21 @@ export default defineConfig({
     headless: process.env.CI ? true : false,
   },
 
+  // Global test configuration for visual tests
+  expect: {
+    // Configure visual comparison threshold
+    threshold: 0.2,
+    // Configure screenshot comparison mode
+    mode: 'default',
+  },
+
+  // Web server for visual test pages
+  webServer: {
+    command: 'npx http-server tests/visual -p 3001',
+    port: 3001,
+    reuseExistingServer: !process.env.CI,
+  },
+
   projects: [
     {
       name: 'chromium',

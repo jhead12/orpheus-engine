@@ -16,10 +16,12 @@ const useWorkstation = () => useContext(WorkstationContext)!;
 interface TrackVolumeSliderProps {
   className?: string;
   'data-testid'?: string;
+  'aria-label'?: string;
   labelProps?: Partial<TooltipProps>;
   orientation?: "horizontal" | "vertical";
   style?: CSSProperties;
   track: Track;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const markVolumes = [
@@ -42,6 +44,8 @@ export default function TrackVolumeSlider({
   style,
   track,
   'data-testid': dataTestId,
+  'aria-label': ariaLabel,
+  onClick,
   ...rest
 }: TrackVolumeSliderProps) {
   const { getTrackCurrentValue, setTrack } = useWorkstation();
@@ -87,6 +91,8 @@ export default function TrackVolumeSlider({
       <Slider
         {...rest}
         data-testid={dataTestId}
+        aria-label={ariaLabel}
+        onClick={onClick}
         disabled={isAutomated}
         onChange={(_, value) =>
           setVolume(normalizedToVolume((value as number) / 1000))

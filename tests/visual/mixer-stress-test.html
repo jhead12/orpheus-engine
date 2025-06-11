@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixer Stress Test - Many Tracks</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        .mixer-container {
+            padding: 20px;
+            display: flex;
+            gap: 5px;
+            height: 100vh;
+            overflow-x: auto;
+        }
+        
+        .mixer-channel {
+            width: 60px;
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 2px solid #666;
+            flex-shrink: 0;
+        }
+        
+        .track-name {
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .volume-fader {
+            height: 120px;
+            width: 15px;
+            margin: 0 auto;
+            background: #444;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .volume-fader input[type="range"] {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 15px;
+            height: 120px;
+            outline: none;
+            background: transparent;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .control-button {
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        
+        .mute-button {
+            background: #666;
+            color: white;
+        }
+        
+        .mute-button.active {
+            background: #ff004c;
+        }
+        
+        .meter {
+            width: 8px;
+            height: 80px;
+            background: #333;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 2px;
+        }
+        
+        .meter::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--meter-level, 30%);
+            background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+            border-radius: 2px;
+            transition: height 0.05s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="mixer-container" data-testid="main-mixer">
+        <!-- Generate 100 tracks -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.mixer-container');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+            
+            // Generate 100 tracks
+            for (let i = 1; i <= 100; i++) {
+                const channel = document.createElement('div');
+                channel.className = 'mixer-channel';
+                channel.setAttribute('data-testid', `mixer-channel-track-${i}`);
+                channel.style.borderTopColor = colors[i % colors.length];
+                
+                const trackName = document.createElement('div');
+                trackName.className = 'track-name';
+                trackName.textContent = `Track ${i}`;
+                
+                const meter = document.createElement('div');
+                meter.className = 'meter';
+                meter.setAttribute('data-testid', `mixer-meter-track-${i}`);
+                meter.setAttribute('aria-valuenow', Math.random() * 100);
+                meter.style.setProperty('--meter-level', `${Math.random() * 100}%`);
+                
+                const volumeFader = document.createElement('div');
+                volumeFader.className = 'volume-fader';
+                const volumeInput = document.createElement('input');
+                volumeInput.type = 'range';
+                volumeInput.min = '0';
+                volumeInput.max = '1';
+                volumeInput.step = '0.01';
+                volumeInput.value = Math.random().toFixed(2);
+                volumeInput.setAttribute('data-testid', `mixer-volume-track-${i}`);
+                volumeInput.setAttribute('orient', 'vertical');
+                volumeFader.appendChild(volumeInput);
+                
+                const controls = document.createElement('div');
+                controls.className = 'controls';
+                
+                const muteButton = document.createElement('button');
+                muteButton.className = 'control-button mute-button';
+                muteButton.setAttribute('data-testid', `mixer-mute-track-${i}`);
+                muteButton.textContent = 'M';
+                if (Math.random() > 0.8) muteButton.classList.add('active');
+                
+                controls.appendChild(muteButton);
+                
+                channel.appendChild(trackName);
+                channel.appendChild(meter);
+                channel.appendChild(volumeFader);
+                channel.appendChild(controls);
+                
+                container.appendChild(channel);
+            }
+            
+            // Add interactivity
+            document.querySelectorAll('.mute-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Animate meters
+            function updateMeters() {
+                document.querySelectorAll('.meter').forEach(meter => {
+                    const currentLevel = parseFloat(meter.getAttribute('aria-valuenow') || '0');
+                    const newLevel = Math.max(0, currentLevel + (Math.random() - 0.5) * 10);
+                    const clampedLevel = Math.min(100, Math.max(0, newLevel));
+                    
+                    meter.setAttribute('aria-valuenow', clampedLevel.toString());
+                    meter.style.setProperty('--meter-level', `${clampedLevel}%`);
+                });
+            }
+            
+            setInterval(updateMeters, 50);
+        });
+    </script>
+</body>
+</html>
