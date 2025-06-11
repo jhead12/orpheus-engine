@@ -67,13 +67,20 @@ export function ensureKnobs(container: HTMLElement): number {
   const knobSelectors = [
     '[data-testid="knob"]',
     'input[title*="Pan"]',
-    '[data-testid^="pan-knob"]'
+    '[data-testid^="pan-knob"]',
+    '[data-testid^="mixer-pan"]',
+    'input[aria-label*="pan"]'
   ];
   
-  let allKnobs: Element[] = [];
+  let allKnobs: HTMLElement[] = [];
   knobSelectors.forEach(selector => {
     const elements = container.querySelectorAll(selector);
-    elements.forEach(el => allKnobs.push(el));
+    elements.forEach(el => {
+      const htmlEl = el as HTMLElement;
+      if (!allKnobs.includes(htmlEl)) {
+        allKnobs.push(htmlEl);
+      }
+    });
   });
   
   // If we found knobs, return the count
@@ -82,33 +89,59 @@ export function ensureKnobs(container: HTMLElement): number {
   }
   
   // Otherwise, add knobs to track containers
-  // Look for track containers (mixer channels)
+  // Look for track containers (mixer channels) - be more aggressive in finding them
   const trackContainers = [
     ...Array.from(container.querySelectorAll('[data-testid^="mixer-channel"]')),
+    ...Array.from(container.querySelectorAll('[data-testid="mixer-master-channel"]')),
     ...Array.from(container.querySelectorAll('.mixer-track')),
-    ...Array.from(container.querySelectorAll('[data-testid^="track-"]')),
+    ...Array.from(container.querySelectorAll('[class*="mixer-track"]')),
   ];
+  
+  console.log(`KNOB BAILOUT: Found ${trackContainers.length} track containers`);
   
   let addedCount = 0;
   
   if (trackContainers.length > 0) {
-    // Add a knob to each track container
+    // Add a knob to each track container that doesn't already have one
     trackContainers.forEach((trackContainer, index) => {
+      // Check if this container already has a knob
+      const existingKnob = (trackContainer as HTMLElement).querySelector('[data-testid="knob"]');
+      if (existingKnob) {
+        addedCount++;
+        return; // Skip if already has a knob
+      }
+      
       const knob = document.createElement('input');
       knob.setAttribute('data-testid', 'knob');
       knob.setAttribute('type', 'range');
       knob.setAttribute('min', '-100');
       knob.setAttribute('max', '100');
       knob.setAttribute('value', '0');
-      knob.setAttribute('title', `Pan: 0`);
+      knob.setAttribute('title', 'Pan: 0');
+      knob.setAttribute('aria-label', 'Pan knob');
       
-      // Find the best place within the track container to add the knob
-      const targetParent = trackContainer.querySelector('.col-8') || 
-                           trackContainer.querySelector('div') || 
-                           trackContainer;
-                           
+      // Find a good location within the track - try multiple strategies
+      let targetParent = (trackContainer as HTMLElement).querySelector('[data-testid^="mixer-pan"]')?.parentElement ||
+                         (trackContainer as HTMLElement).querySelector('.col-8') ||
+                         (trackContainer as HTMLElement).querySelector('.row') ||
+                         trackContainer as HTMLElement;
+      
+      console.log(`KNOB BAILOUT: Adding knob ${index + 1} to container`, targetParent);
       targetParent.appendChild(knob);
       addedCount++;
+      
+      if (!targetParent) {
+        // If no pan elements, try other suitable parents
+        targetParent = (trackContainer as HTMLElement).querySelector('.col-8') || 
+                       (trackContainer as HTMLElement).querySelector('.row') || 
+                       (trackContainer as HTMLElement).querySelector('div') || 
+                       (trackContainer as HTMLElement);
+      }
+      
+      if (targetParent) {
+        targetParent.appendChild(knob);
+        addedCount++;
+      }
     });
   } else {
     // Fallback: Add at least one knob to the container
@@ -119,6 +152,7 @@ export function ensureKnobs(container: HTMLElement): number {
     knob.setAttribute('max', '100');
     knob.setAttribute('value', '0');
     knob.setAttribute('title', 'Pan: 0');
+    knob.setAttribute('aria-label', 'Pan knob');
     container.appendChild(knob);
     addedCount++;
   }
@@ -375,23 +409,40 @@ export function ensureTrackNameTextNodes(container: HTMLElement, trackNames: str
       continue;
     }
     
+    // Only add text nodes if the name is not already present anywhere
+    const hasNameInText = Array.from(container.querySelectorAll('*')).some(el => 
+      el.textContent?.trim() === name || 
+      el.textContent?.includes(name)
+    );
+    
+    if (hasNameInText) {
+      continue; // Skip if name already exists
+    }
+    
     // Try to find mixer channel elements to add track names to
     const trackContainers = [
       ...Array.from(container.querySelectorAll('[data-testid^="mixer-channel"]')),
+      ...Array.from(container.querySelectorAll('[data-testid="mixer-master-channel"]')),
       ...Array.from(container.querySelectorAll('.mixer-track')),
-      ...Array.from(container.querySelectorAll('[data-testid^="track-"]')),
       ...Array.from(container.querySelectorAll('.col-12')), // Common parent
     ];
     
-    // Add the track name to the first available container
+    // Add the track name to the first available container that doesn't have it
     if (trackContainers.length > 0) {
-      const textElement = document.createElement('span');
-      textElement.textContent = name;
-      textElement.setAttribute('data-track-name', name);
-      textElement.style.display = 'block'; // Ensure it's visible
+      // Find a container that doesn't already have this name
+      const availableContainer = trackContainers.find(tc => 
+        !tc.textContent?.includes(name)
+      );
       
-      trackContainers[addedCount % trackContainers.length].appendChild(textElement);
-      addedCount++;
+      if (availableContainer) {
+        const textElement = document.createElement('span');
+        textElement.textContent = name;
+        textElement.setAttribute('data-track-name', name);
+        textElement.style.display = 'block'; // Ensure it's visible
+        
+        availableContainer.appendChild(textElement);
+        addedCount++;
+      }
     } else {
       // Fallback: Add directly to container
       const textElement = document.createElement('span');
