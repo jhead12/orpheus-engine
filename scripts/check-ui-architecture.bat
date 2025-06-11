@@ -22,8 +22,14 @@ if not exist "workstation\frontend\OEW-main\src\screens\workstation\components\M
 )
 
 if not exist "workstation\frontend\OEW-main\src\contexts\WorkstationContext.tsx" (
-    echo ⚠️  WARNING: WorkstationContext.tsx missing
-    set "components_missing=1"
+    if not exist "workstation\frontend\src\contexts\WorkstationContext.tsx" (
+        echo ⚠️  WARNING: WorkstationContext.tsx missing from expected locations
+        set "components_missing=1"
+    ) else (
+        echo ✅ WorkstationContext.tsx found in main frontend directory
+    )
+) else (
+    echo ✅ WorkstationContext.tsx found in OEW-main
 )
 
 if not exist "workstation\frontend\OEW-main\src\services" (

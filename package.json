@@ -41,6 +41,8 @@
     "setup:electron:win": "scripts\\setup-electron.bat",
     "check:ui": "chmod +x scripts/check-ui-architecture.sh && ./scripts/check-ui-architecture.sh",
     "check:ui:win": "scripts\\check-ui-architecture.bat",
+    "check:ports": "scripts\\diagnose-ports.bat",
+    "fix:ports": "powershell -ExecutionPolicy Bypass -File scripts/fix-windows-ports.ps1",
     "install:all": "node scripts/install-all.js",
     "install:ffmpeg": "node scripts/install-ffmpeg.js",
     "install:vite": "node scripts/install-vite-deps.js",
