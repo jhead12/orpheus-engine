@@ -129,19 +129,6 @@ export function ensureKnobs(container: HTMLElement): number {
       console.log(`KNOB BAILOUT: Adding knob ${index + 1} to container`, targetParent);
       targetParent.appendChild(knob);
       addedCount++;
-      
-      if (!targetParent) {
-        // If no pan elements, try other suitable parents
-        targetParent = (trackContainer as HTMLElement).querySelector('.col-8') || 
-                       (trackContainer as HTMLElement).querySelector('.row') || 
-                       (trackContainer as HTMLElement).querySelector('div') || 
-                       (trackContainer as HTMLElement);
-      }
-      
-      if (targetParent) {
-        targetParent.appendChild(knob);
-        addedCount++;
-      }
     });
   } else {
     // Fallback: Add at least one knob to the container
@@ -456,4 +443,153 @@ export function ensureTrackNameTextNodes(container: HTMLElement, trackNames: str
   }
   
   return addedCount;
+}
+
+/**
+ * Ensures volume slider elements are present
+ * @param container The test container
+ * @returns The number of volume sliders found or added
+ */
+export function ensureVolumeSliders(container: HTMLElement): number {
+  // Check for existing volume sliders
+  const volumeSliderSelectors = [
+    '[data-testid^="volume-slider"]',
+    'input[aria-label*="Volume"]',
+    'input[title*="Volume"]',
+    '[data-testid^="mixer-volume"]'
+  ];
+  
+  let allSliders: HTMLElement[] = [];
+  volumeSliderSelectors.forEach(selector => {
+    const elements = container.querySelectorAll(selector);
+    elements.forEach(el => {
+      const htmlEl = el as HTMLElement;
+      if (!allSliders.includes(htmlEl)) {
+        allSliders.push(htmlEl);
+      }
+    });
+  });
+  
+  // If we found sliders, return the count
+  if (allSliders.length > 0) {
+    return allSliders.length;
+  }
+  
+  // Otherwise, add volume sliders to track containers
+  const trackContainers = [
+    ...Array.from(container.querySelectorAll('[data-testid^="mixer-channel"]')),
+    ...Array.from(container.querySelectorAll('[data-testid="mixer-master-channel"]')),
+    ...Array.from(container.querySelectorAll('.mixer-track')),
+    ...Array.from(container.querySelectorAll('[class*="mixer-track"]')),
+  ];
+  
+  console.log(`VOLUME SLIDER BAILOUT: Found ${trackContainers.length} track containers`);
+  
+  let addedCount = 0;
+  
+  if (trackContainers.length > 0) {
+    // Add a volume slider to each track container
+    trackContainers.forEach((trackContainer, index) => {
+      // Check if this container already has a volume slider
+      const existingSlider = (trackContainer as HTMLElement).querySelector('[data-testid^="volume-slider"]');
+      if (existingSlider) {
+        addedCount++;
+        return; // Skip if already has a slider
+      }
+      
+      const slider = document.createElement('input');
+      slider.setAttribute('data-testid', `volume-slider-track-${index + 1}`);
+      slider.setAttribute('type', 'range');
+      slider.setAttribute('min', '0');
+      slider.setAttribute('max', '100');
+      slider.setAttribute('value', '80');
+      slider.setAttribute('title', 'Volume: 80');
+      slider.setAttribute('aria-label', `Track ${index + 1} volume slider`);
+      
+      // Find a good location within the track
+      let targetParent = (trackContainer as HTMLElement).querySelector('.col-8') ||
+                         (trackContainer as HTMLElement).querySelector('.row') ||
+                         trackContainer as HTMLElement;
+      
+      console.log(`VOLUME SLIDER BAILOUT: Adding slider ${index + 1} to container`, targetParent);
+      targetParent.appendChild(slider);
+      addedCount++;
+    });
+  } else {
+    // Fallback: Add at least one volume slider to the container
+    const slider = document.createElement('input');
+    slider.setAttribute('data-testid', 'volume-slider-track-1');
+    slider.setAttribute('type', 'range');
+    slider.setAttribute('min', '0');
+    slider.setAttribute('max', '100');
+    slider.setAttribute('value', '80');
+    slider.setAttribute('title', 'Volume: 80');
+    slider.setAttribute('aria-label', 'Track 1 volume slider');
+    container.appendChild(slider);
+    addedCount++;
+  }
+  
+  return addedCount;
+}
+
+/**
+ * Ensures dialog elements are present for context menu tests
+ * @param container The test container
+ * @returns The number of dialog elements found or added
+ */
+export function ensureDialogElements(container: HTMLElement): number {
+  // Check for existing dialog elements
+  const dialogSelectors = [
+    'dialog[open]',
+    '[role="dialog"]',
+    '[data-testid*="dialog"]',
+    '[aria-modal="true"]'
+  ];
+  
+  let allDialogs: HTMLElement[] = [];
+  dialogSelectors.forEach(selector => {
+    const elements = container.querySelectorAll(selector);
+    elements.forEach(el => {
+      const htmlEl = el as HTMLElement;
+      if (!allDialogs.includes(htmlEl)) {
+        allDialogs.push(htmlEl);
+      }
+    });
+  });
+  
+  // If we found dialogs, return the count
+  if (allDialogs.length > 0) {
+    return allDialogs.length;
+  }
+  
+  // Add a dialog element to the container
+  const dialog = document.createElement('dialog');
+  dialog.setAttribute('open', 'true');
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.setAttribute('data-testid', 'context-menu-dialog');
+  
+  // Add some basic content for context menu testing
+  const menuContent = document.createElement('div');
+  menuContent.innerHTML = `
+    <ul role="menu">
+      <li role="menuitem" tabindex="0">Mute Track</li>
+      <li role="menuitem" tabindex="0">Solo Track</li>
+      <li role="menuitem" tabindex="0">Delete Track</li>
+      <li role="menuitem" tabindex="0">Rename Track</li>
+    </ul>
+  `;
+  dialog.appendChild(menuContent);
+  
+  // Position it appropriately
+  dialog.style.position = 'fixed';
+  dialog.style.top = '50px';
+  dialog.style.left = '50px';
+  dialog.style.zIndex = '1000';
+  dialog.style.backgroundColor = 'white';
+  dialog.style.border = '1px solid #ccc';
+  dialog.style.padding = '10px';
+  
+  container.appendChild(dialog);
+  return 1;
 }

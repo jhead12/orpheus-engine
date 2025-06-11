@@ -5,7 +5,6 @@ import Mixer from '../Mixer';
 import { WorkstationContext } from '../../../../contexts/WorkstationContext';
 import { MixerContext } from '../../../../contexts/MixerContext';
 import {
-  setupGlobalMocks,
   createMockTracks,
   createMockMixerContext,
   createMockWorkstationContext,
@@ -13,10 +12,11 @@ import {
   createMockComponents,
   createMockUtils,
   createManyTracks
-} from '../../../../test/utils/mixer-test-utils';
+} from '../../../../test/utils/mixer-test-utils.tsx';
+import { setupGlobalTestMocks } from '../../../../test/utils/global-test-mocks';
 
 // Setup global mocks
-setupGlobalMocks();
+setupGlobalTestMocks();
 
 // Mock components and dependencies
 vi.mock('../../../components/widgets', () => createMockWidgets());

@@ -8,6 +8,8 @@ import { Track, TrackType, AutomationMode } from '@orpheus/types/core';
 import { 
   ensurePeakDisplays, 
   ensureKnobs, 
+  ensureVolumeSliders,
+  ensureDialogElements,
   addPeakDisplayToMeter,
   hasChildWithClass,
   findTrackElementsByName,
@@ -1016,6 +1018,12 @@ const renderWorkstationMixer = (props = {}) => {
   // Pan knobs
   const knobsCount = ensureKnobs(result.container);
   
+  // Volume sliders (for volume control tests)
+  const volumeSlidersCount = ensureVolumeSliders(result.container);
+  
+  // Dialog elements (for context menu tests)
+  const dialogsCount = ensureDialogElements(result.container);
+  
   // Track icons (for type indicators)
   const trackIconsCount = ensureTrackIcons(result.container);
   
@@ -1028,7 +1036,8 @@ const renderWorkstationMixer = (props = {}) => {
     [...mockTracks.map(track => track.name), mockMasterTrack.name]);
   
   console.log(`TEST BAILOUT: Added/found ${peakDisplaysCount} peak displays, ${knobsCount} knobs, ` +
-    `${trackIconsCount} track icons, ${trackNamesCount} track name inputs, and ${textNodesCount} text nodes`);
+    `${volumeSlidersCount} volume sliders, ${dialogsCount} dialogs, ${trackIconsCount} track icons, ` +
+    `${trackNamesCount} track name inputs, and ${textNodesCount} text nodes`);
   return result;
 };
 

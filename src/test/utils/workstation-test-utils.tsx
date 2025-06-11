@@ -91,12 +91,23 @@ export const createMockWorkstationContext = () => ({
     tempo: 120,
   },
   setTransportState: vi.fn(),
+  // CRITICAL: Add missing getTrackCurrentValue function for Mixer component
+  getTrackCurrentValue: vi.fn((track: any, lane?: any) => {
+    if (lane) {
+      // For automation lanes, return the lane's value
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
+    }
+    // For track properties (volume/pan), return track values
+    return { value: track.pan?.value || track.pan || 0, isAutomated: false };
+  }),
 });
 
 export const createMockMixerContext = () => ({
   tracks: createWorkstationTracks(),
   masterVolume: 0.8,
   masterMute: false,
+  masterPan: 0,
+  mixerHeight: 400,
   meters: {
     'track-1': { left: 0.5, right: 0.6, peak: 0.8 },
     'track-2': { left: 0.3, right: 0.4, peak: 0.6 },
@@ -109,6 +120,8 @@ export const createMockMixerContext = () => ({
   setTrackArmed: vi.fn(),
   setMasterVolume: vi.fn(),
   setMasterMute: vi.fn(),
+  setMasterPan: vi.fn(),
+  setMixerHeight: vi.fn(),
   addEffect: vi.fn(),
   removeEffect: vi.fn(),
   updateEffect: vi.fn(),
