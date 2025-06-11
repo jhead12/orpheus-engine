@@ -37,6 +37,20 @@ export const createMockTrack = (overrides: Partial<Track> = {}): Track => ({
       parameters: { wetness: 0.3, roomSize: 0.7 },
     },
   ],
+  // Add fx property with selectedEffectIndex and effects
+  fx: {
+    selectedEffectIndex: 0,
+    effects: [
+      {
+        id: 'reverb-1',
+        name: 'Hall Reverb',
+        type: 'native',
+        enabled: true,
+        parameters: { wetness: 0.3, roomSize: 0.7 },
+      }
+    ],
+    preset: null,
+  },
   automationLanes: [],
   automationMode: AutomationMode.Read,
   ...overrides,
@@ -57,6 +71,19 @@ export const createWorkstationTracks = (count: number = 2): Track[] => [
         parameters: { wetness: 0.3, roomSize: 0.7 },
       },
     ],
+    fx: {
+      selectedEffectIndex: 0,
+      effects: [
+        {
+          id: 'reverb-1',
+          name: 'Hall Reverb',
+          type: 'native',
+          enabled: true,
+          parameters: { wetness: 0.3, roomSize: 0.7 },
+        }
+      ],
+      preset: null,
+    },
   }),
   createMockTrack({
     id: 'track-2',
@@ -67,6 +94,20 @@ export const createWorkstationTracks = (count: number = 2): Track[] => [
     volume: { value: 0.6, isAutomated: false } as AutomatableParameter,
     pan: { value: -0.2, isAutomated: false } as AutomatableParameter,
     automationMode: AutomationMode.Write,
+    // Add default fx structure for this track too
+    fx: {
+      selectedEffectIndex: 0,
+      effects: [
+        {
+          id: 'eq-1',
+          name: 'EQ',
+          type: 'native',
+          enabled: true,
+          parameters: { bass: 0.5, mid: 0.4, treble: 0.6 },
+        }
+      ],
+      preset: null,
+    },
   }),
 ].slice(0, count);
 
@@ -79,6 +120,7 @@ export const createMockWorkstationContext = () => ({
   removeTrack: vi.fn(),
   updateTrack: vi.fn(),
   setTrack: vi.fn(),
+  setTracks: vi.fn(),
   duplicateTrack: vi.fn(),
   selection: { tracks: [], clips: [], region: null },
   setSelection: vi.fn(),
@@ -91,7 +133,38 @@ export const createMockWorkstationContext = () => ({
     tempo: 120,
   },
   setTransportState: vi.fn(),
-  // CRITICAL: Add missing getTrackCurrentValue function for Mixer component
+  // Add required properties for FXComponent
+  fxChainPresets: [
+    {
+      id: 'preset-1',
+      name: 'Hall Reverb Preset',
+      effects: [
+        {
+          id: 'reverb-preset-1',
+          name: 'Hall Reverb',
+          type: 'native',
+          enabled: true,
+          parameters: { wetness: 0.3, roomSize: 0.7 },
+        }
+      ]
+    }
+  ],
+  setFXChainPresets: vi.fn(),
+  masterTrack: {
+    id: 'master',
+    name: 'Master',
+    type: 'audio',
+    color: '#ffffff',
+    volume: { value: 1.0, isAutomated: false },
+    pan: { value: 0, isAutomated: false },
+    mute: false,
+    fx: {
+      selectedEffectIndex: 0,
+      effects: [],
+      preset: null
+    }
+  },
+  // For automation lanes, volume/pan handling
   getTrackCurrentValue: vi.fn((track: any, lane?: any) => {
     if (lane) {
       // For automation lanes, return the lane's value
@@ -100,6 +173,8 @@ export const createMockWorkstationContext = () => ({
     // For track properties (volume/pan), return track values
     return { value: track.pan?.value || track.pan || 0, isAutomated: false };
   }),
+  // UI controls - required by Mixer component
+  setAllowMenuAndShortcuts: vi.fn(),
 });
 
 export const createMockMixerContext = () => ({
@@ -131,10 +206,14 @@ export const createMockMixerContext = () => ({
   muteAllTracks: vi.fn(),
   unmuteAllTracks: vi.fn(),
   resetAllLevels: vi.fn(),
-  getTrackCurrentValue: vi.fn((_track: Track, lane?: any) => {
-    if (lane?.parameter === 'volume') return 0.8;
-    if (lane?.parameter === 'pan') return 0;
-    return 0;
+  getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+    if (lane) {
+      // For automation lanes, return the lane's value
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
+    }
+    // For track properties without automation, return track values
+    // Default to track.pan if no specific handling needed
+    return track.pan || { value: 0, isAutomated: false };
   }),
 });
 
@@ -168,8 +247,21 @@ export const createMockSortableComponents = () => ({
 });
 
 export const createMockFXComponents = () => ({
-  FXComponent: ({ track }: any) => 
-    <div data-testid={`fx-component-${track.id}`}>FX Component for {track.name}</div>,
+  FXComponent: ({ track }: any) => {
+    // Ensure track and fx exist to prevent "Cannot read properties of undefined" errors
+    if (!track || !track.fx) {
+      return <div data-testid={`fx-component-${track?.id || 'unknown'}`}>FX Component (No FX data)</div>;
+    }
+    // Access fx properties safely with default values
+    const effectIndex = track.fx.selectedEffectIndex || 0;
+    const effect = track.fx.effects?.[effectIndex] || { name: 'No Effect' };
+    
+    return (
+      <div data-testid={`fx-component-${track.id}`}>
+        FX Component for {track.name} - Effect: {effect.name}
+      </div>
+    );
+  },
   TrackVolumeSlider: ({ track, ...props }: any) => 
     <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume?.value || track.volume || 0} {...props} />,
 });
@@ -192,6 +284,20 @@ export const createManyTracks = (count: number): Track[] =>
     id: `track-${i + 1}`,
     name: `Track ${i + 1}`,
     color: `hsl(${(i * 360) / count}, 70%, 60%)`,
+    // Each track needs consistent fx properties
+    fx: {
+      selectedEffectIndex: 0,
+      effects: [
+        {
+          id: `effect-${i + 1}`,
+          name: `Effect ${i + 1}`,
+          type: 'native',
+          enabled: true,
+          parameters: { param1: 0.5, param2: 0.5 },
+        }
+      ],
+      preset: null,
+    },
   }));
 
 // Test assertion helpers

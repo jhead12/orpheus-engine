@@ -70,10 +70,12 @@ export const formatVolume = (volume: number): string => {
   return `${volume.toFixed(1)} dB`;
 };
 
-export const formatPanning = (panning: number): string => {
+export const formatPanning = (panning: number, shortFormat?: boolean): string => {
   if (panning === 0) return "C";
-  if (panning < 0) return `L${Math.abs(panning).toFixed(0)}`;
-  return `R${panning.toFixed(0)}`;
+  const percentage = Math.abs(panning * 100);
+  const formattedPercentage = shortFormat ? percentage.toFixed(0) : percentage.toFixed(1);
+  if (panning < 0) return `L${formattedPercentage}`;
+  return `R${formattedPercentage}`;
 };
 
 export const getVolumeGradient = (volume: number): string => {
