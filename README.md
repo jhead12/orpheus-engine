@@ -43,7 +43,7 @@ Orpheus Engine is a comprehensive Digital Audio Workstation (DAW) ecosystem buil
 ### 1. Clone and Setup
 ```bash
 # Clone the repository
-git clone https://github.com/sirgawain0x/orpheus-engine.git
+git clone https://github.com/jhead12/orpheus-engine.git
 cd orpheus-engine
 
 # Install all dependencies and setup the project
