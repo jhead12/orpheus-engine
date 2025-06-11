@@ -4,6 +4,7 @@ import MenuBuilder from './menu';
 import { setupAudioAnalysisHandlers } from './audioAnalysis';
 import ContextMenuBuilder from './contextMenu';
 import buildHandlers from './handlers';
+import environment from './environment';
 
 app.commandLine.appendSwitch('disable-gpu');
 app.commandLine.appendSwitch('disable-software-rasterizer');
@@ -32,7 +33,9 @@ function createWindow () {
     console.log('Loading packaged app from file');
     mainWindow.loadFile(path.join(__dirname, '../src/index.html'));
   } else {
-    const viteUrl = "http://localhost:5174";
+    // Use server-agnostic configuration for Vite URL from environment
+    const viteUrl = environment.urls.viteBaseUrl();
+    
     console.log(`🎵 Loading Orpheus Engine DAW from: ${viteUrl}`);
     
     // Add error handling for loading the URL

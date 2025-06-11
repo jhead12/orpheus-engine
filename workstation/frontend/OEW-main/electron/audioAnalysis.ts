@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import environment from './environment';
 
 const execPromise = promisify(exec);
 
@@ -56,8 +57,14 @@ export function setupAudioAnalysisHandlers() {
       };
       
       try {
+        // Skip Python analysis if disabled in environment config
+        if (!environment.config.PYTHON_BRIDGE_ENABLED) {
+          console.log('Python bridge disabled in environment config, using fallback analysis');
+          return analysisObj;
+        }
+        
         // Try to run Python analysis script if it exists
-        const analysisScriptPath = path.join(__dirname, 'python', 'analyze_audio.py');
+        const analysisScriptPath = path.join(environment.config.PYTHON_BRIDGE_PATH, 'analyze_audio.py');
         
         if (fs.existsSync(analysisScriptPath)) {
           const { stdout: analysis } = await execPromise(

@@ -335,6 +335,8 @@ const customExportPlugin: ExportPlugin = {
 Based on the main Orpheus Engine repository, here are key features and improvements to implement:
 
 ### High Priority
+- [ ] **Integrated Test Dashboard**: Create a unified test dashboard that brings together all testing tools (see [TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md))
+- [ ] **AI Workflow Integration**: Implement AI-powered development and testing workflows (see [AI_WORKFLOW_INTEGRATION.md](docs/AI_WORKFLOW_INTEGRATION.md))
 - [ ] **MLFlow & HP AI Studio Integration**: Set up MLFlow experiment tracking with Jupyter Books running in HP AI Studio Framework for advanced audio ML workflows (see [MLFLOW_SETUP.md](MLFLOW_SETUP.md))
 - [ ] **Audio Backend Integration**: Connect to Python RAG backend (port 5001) for AI-powered audio analysis
 - [ ] **Real Audio Processing**: Implement actual audio file loading, playback, and processing
@@ -343,11 +345,19 @@ Based on the main Orpheus Engine repository, here are key features and improveme
 - [ ] **Plugin Architecture**: Implement plugin system for extending DAW capabilities
 
 ### Medium Priority  
-- [ ] **Server-Agnostic Configuration**: Add environment-based configuration system
+- [x] **Server-Agnostic Configuration**: Add environment-based configuration system
+- [ ] **Comprehensive Test Suite**: Develop end-to-end tests covering critical user flows
 - [ ] **Performance Optimization**: Improve performance with large numbers of tracks
 - [ ] **Automation Lanes**: Implement automation curve editing and playback
 - [ ] **Effects Processing**: Add built-in effects and plugin support
 - [ ] **Advanced Timeline**: Implement snap-to-grid, loop regions, and markers
+
+### Testing & Quality Assurance
+- [ ] **Test Coverage**: Achieve >80% code coverage across the codebase
+- [ ] **Performance Testing**: Establish benchmarks for critical operations
+- [ ] **Visual Regression Tests**: Implement comprehensive visual testing
+- [ ] **Accessibility Testing**: Ensure DAW is accessible to all users
+- [ ] **Cross-Browser Testing**: Validate functionality across major browsers
 
 ### Low Priority
 - [ ] **Blockchain Integration**: Add IPFS and Story Protocol support for decentralized features
