@@ -39,6 +39,8 @@
     "fix:permissions:unix": "node scripts/fix-permissions.js",
     "setup:electron": "chmod +x scripts/setup-electron-symlinks.sh && ./scripts/setup-electron-symlinks.sh",
     "setup:electron:win": "scripts\\setup-electron.bat",
+    "check:ui": "chmod +x scripts/check-ui-architecture.sh && ./scripts/check-ui-architecture.sh",
+    "check:ui:win": "scripts\\check-ui-architecture.bat",
     "install:all": "node scripts/install-all.js",
     "install:ffmpeg": "node scripts/install-ffmpeg.js",
     "install:vite": "node scripts/install-vite-deps.js",
