@@ -54,8 +54,19 @@ export default defineConfig({
       html: "./test-results/html/index.html",
     },
     reporters: ["default", "html"],
-    deps: {
-      inline: ["jest-image-snapshot"],
+    server: {
+      deps: {
+        optimizer: {
+          web: {
+            include: ["jest-image-snapshot"],
+          },
+        },
+      },
+    },
+    ui: {
+      port: 3333,
+      host: '127.0.0.1',
+      open: false, // Let's not auto-open to avoid permission issues
     },
     exclude: ["**/node_modules/**", "**/__snapshots__/**"],
     testTimeout: 10000, // Increased timeout for visual tests
