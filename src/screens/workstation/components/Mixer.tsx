@@ -429,7 +429,7 @@ const MixerTrack = memo(
               className="text-center py-2"
               style={style.masterText}
             >
-              Master
+              MASTER
             </div>
           ) : (
             <div className="col-12 m-0 p-0" style={style.trackTextContainer}>

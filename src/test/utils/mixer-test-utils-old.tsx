@@ -283,7 +283,7 @@ export const createMockWidgets = () => ({
     <div data-testid={`sortable-item-${index}`}>{children}</div>,
 });
 
-export const createMockComponents = () => ({
+export const createMockComponentsOld = () => ({
   FXComponent: ({ track }: any) => 
     <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>,
   TrackVolumeSlider: ({ track, ...props }: any) => 

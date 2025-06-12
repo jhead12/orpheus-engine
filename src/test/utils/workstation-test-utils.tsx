@@ -75,7 +75,7 @@ export const createWorkstationTracks = (count: number = 2): Track[] => [
       selectedEffectIndex: 0,
       effects: [
         {
-          id: 'reverb-1',
+          id: 'reverb-track-1',
           name: 'Hall Reverb',
           type: 'native',
           enabled: true,
@@ -94,16 +94,22 @@ export const createWorkstationTracks = (count: number = 2): Track[] => [
     volume: { value: 0.6, isAutomated: false } as AutomatableParameter,
     pan: { value: -0.2, isAutomated: false } as AutomatableParameter,
     automationMode: AutomationMode.Write,
-    // Add default fx structure for this track too
     fx: {
       selectedEffectIndex: 0,
       effects: [
         {
-          id: 'eq-1',
-          name: 'EQ',
+          id: 'reverb-track-2',
+          name: 'Hall Reverb',
           type: 'native',
           enabled: true,
-          parameters: { bass: 0.5, mid: 0.4, treble: 0.6 },
+          parameters: { wetness: 0.3, roomSize: 0.7 },
+        },
+        {
+          id: 'compressor-track-2',
+          name: 'Compressor',
+          type: 'native',
+          enabled: true,
+          parameters: { threshold: 0.8, ratio: 4, attack: 0.01, release: 0.1 },
         }
       ],
       preset: null,
@@ -227,8 +233,17 @@ export const createMockWidgets = () => ({
     <select data-testid="select-spinbox" value={value} onChange={(e) => onChange(e.target.value)} title={title}>
       {options?.map((opt: any) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
     </select>,
-  Knob: ({ value, onChange, title, ...props }: any) => 
-    <input data-testid="knob" type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} title={title} {...props} />,
+  Knob: ({ value, onChange, title, 'data-testid': testId, ...props }: any) => 
+    <input 
+      data-testid={testId || "knob"} 
+      type="range" 
+      min="-100" 
+      max="100" 
+      value={value || 0} 
+      onChange={(e) => onChange ? onChange(Number(e.target.value)) : undefined} 
+      title={title} 
+      {...props} 
+    />,
   Meter: ({ percent, ...props }: any) =>
     <div data-testid="meter" aria-valuenow={percent} {...props} />,
 });
@@ -242,8 +257,49 @@ export const createMockSortableComponents = () => ({
     };
     return <div data-testid="sortable-list" onMouseDown={onStart} onMouseUp={handleSort}>{children}</div>;
   },
-  SortableListItem: ({ children, index }: any) => 
+  SortableListItem: ({ children, index }: any) =>
     <div data-testid={`sortable-item-${index}`}>{children}</div>,
+});
+
+export const createMockComponents = () => ({
+  ...createMockSortableComponents(),
+  EffectDropdown: ({ trackId, onAdd }: any) => (
+    <div data-testid={`mixer-add-effect-track-${trackId}`}>
+      <button onClick={() => onAdd && onAdd('compressor')}>Add Effect</button>
+      <div style={{ display: 'none' }}>
+        <div onClick={() => onAdd && onAdd('compressor')}>Compressor</div>
+        <div onClick={() => onAdd && onAdd('reverb')}>Reverb</div>
+      </div>
+    </div>
+  ),
+  EffectButton: ({ effect, trackId, onBypass, onClick }: any) => (
+    <div>
+      <div data-testid={`effect-${effect.name.toLowerCase()}-${trackId}`} onClick={onClick}>
+        {effect.name}
+      </div>
+      <button 
+        data-testid={`effect-bypass-${effect.name.toLowerCase()}-${trackId}`}
+        onClick={() => onBypass && onBypass(!effect.enabled)}
+      >
+        {effect.enabled ? 'Bypass' : 'Enable'}
+      </button>
+    </div>
+  ),
+  EffectEditor: ({ effect, trackId }: any) => (
+    <div data-testid={`effect-editor-${effect.name.toLowerCase()}-${trackId}`}>
+      <h3>{effect.name} Editor</h3>
+      <div>Effect parameters here</div>
+    </div>
+  ),
+  AnnouncementRegion: () => (
+    <div data-testid="mixer-announcement" aria-live="polite" style={{ position: 'absolute', left: '-9999px' }} />
+  ),
+  PeakIndicator: ({ trackId, peak }: any) => (
+    <div data-testid={`mixer-peak-track-${trackId}`} aria-label={`Peak: ${peak}`} data-peak={peak} />
+  ),
+  ClippingIndicator: ({ trackId, isClipping }: any) => (
+    <div data-testid={`mixer-clipping-track-${trackId}`} className={isClipping ? 'clipping' : ''} />
+  ),
 });
 
 export const createMockFXComponents = () => ({
@@ -262,8 +318,56 @@ export const createMockFXComponents = () => ({
       </div>
     );
   },
-  TrackVolumeSlider: ({ track, ...props }: any) => 
-    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume?.value || track.volume || 0} {...props} />,
+  TrackVolumeSlider: ({ track, 'data-testid': dataTestId, ...props }: any) => {
+    const testId = dataTestId || `volume-slider-${track.id}`;
+    return (
+      <input 
+        data-testid={testId}
+        type="range" 
+        min="0" 
+        max="1000" 
+        step="1"
+        value={Math.round((track.volume?.value || track.volume || 0) * 1000)}
+        onChange={(e) => {
+          // Simulate the actual component's behavior
+          const value = parseInt(e.target.value) / 1000;
+          if (props.onChange) {
+            props.onChange(null, value);
+          }
+        }}
+        {...props} 
+      />
+    );
+  },
+  // Add pan knob mock
+  Knob: ({ value, onChange, 'data-testid': dataTestId, ...props }: any) => (
+    <input 
+      data-testid={dataTestId}
+      type="range" 
+      min="-100" 
+      max="100" 
+      step="1"
+      value={value || 0}
+      onChange={(e) => {
+        const newValue = parseFloat(e.target.value) / 100;
+        if (onChange) {
+          onChange(newValue);
+        }
+      }}
+      {...props} 
+    />
+  ),
+  // Add Meter mock with peak indicators
+  Meter: ({ 'data-testid': dataTestId }: any) => (
+    <div data-testid={dataTestId} style={{ width: '100%', height: '100%' }}>
+      {/* Main meter */}
+      <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <div style={{ width: '100%', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <div style={{ width: '100%', height: '100%', flexShrink: 0 }} />
+        </div>
+      </div>
+    </div>
+  ),
 });
 
 // Utility function mocks
@@ -350,6 +454,10 @@ export const createBasicRenderingTests = (renderFunction: () => void) => ({
     expect(channel2).toHaveStyle({ borderTop: '2px solid #4ecdc4' });
   },
 });
+
+// Alias exports for compatibility with existing tests
+export { createWorkstationTracks as createMockTracks };
+export { createMockWorkstationUtils as createMockUtils };
 
 // Common test cleanup
 export const cleanupWorkstationTest = () => {

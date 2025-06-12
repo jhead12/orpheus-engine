@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Mixer } from '@orpheus/screens/workstation/components/Mixer';
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
-import { Track, TrackType, AutomationMode } from '@orpheus/types/core';
+import { Track, TrackType, AutomationMode, AutomatableParameter } from '@orpheus/types/core';
 // Import utility functions for test resilience
 import { 
   ensurePeakDisplays, 
@@ -15,8 +15,14 @@ import {
   findTrackElementsByName,
   ensureTrackIcons,
   ensureTrackNameInputs,
-  ensureTrackNameTextNodes
-} from '@orpheus/test/utils/mixer-test-bailout-utils';
+  ensureTrackNameTextNodes,
+  createMockTrack,
+  createWorkstationTracks,
+  setupWorkstationTestEnvironment,
+} from '@orpheus/test/utils/workstation-test-utils';
+
+// Set up test environment
+setupWorkstationTestEnvironment();
 
 // Export infinity character for peak displays
 export const INF_SYMBOL = '-∞';
@@ -29,18 +35,235 @@ vi.mock('@orpheus/types/core', async (importOriginal) => {
     ContextMenuType: {
       AddAutomationLane: "add-automation-lane",
       Automation: "automation",
-      Clip: "clip",
+      Clip: "clip", 
       FXChainPreset: "fx-chain-preset",
       Lane: "lane",
       Mixer: "mixer",
       Node: "node",
       Region: "region",
       Text: "text",
-      Timeline: "timeline", 
+      Timeline: "timeline",
       Track: "track"
     }
   };
 });
+
+// Create reusable mock for AutomatableParameter
+const createAutomatableParam = (initialValue = 0): AutomatableParameter => ({
+  value: initialValue,
+  isAutomated: false,
+  // Add any other required properties
+});
+
+// Create mock tracks with proper parameter types
+const mockTracks: Track[] = [
+  {
+    id: 'track-1',
+    name: 'Vocals',
+    type: TrackType.Audio,
+    color: '#ff6b6b',
+    mute: false,
+    solo: false,
+    armed: false,
+    volume: createAutomatableParam(0.8),
+    pan: createAutomatableParam(0.1),
+    automation: false,
+    automationMode: AutomationMode.Read,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  },
+  {
+    id: 'track-2',
+    name: 'Guitar',
+    type: TrackType.Audio, 
+    color: '#4ecdc4',
+    mute: true,
+    solo: false,
+    armed: true,
+    volume: createAutomatableParam(0.6),
+    pan: createAutomatableParam(-0.2),
+    automation: false,
+    automationMode: AutomationMode.Write,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  }
+];
+
+const mockMasterTrack: Track = {
+  id: 'master',
+  name: 'Master',
+  type: TrackType.Audio,
+  color: '#444444',
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: { value: 0.8, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
+  automation: false,
+  automationMode: AutomationMode.Read,
+  clips: [],
+  effects: [],
+  automationLanes: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
+};
+
+const mockWorkstationContext = {
+  tracks: mockTracks,
+  masterTrack: mockMasterTrack,
+  deleteTrack: vi.fn(),
+  duplicateTrack: vi.fn(),
+  setTrack: vi.fn(),
+  setTracks: vi.fn(),
+  selectedTrackId: 'track-1',
+  setSelectedTrackId: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn(),
+  playheadPos: 0,
+  timelineSettings: {
+    zoom: 1,
+    scrollLeft: 0,
+  },
+  getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+    if (lane) {
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
+    }
+    return { value: track.pan?.value || 0, isAutomated: false };
+  }),
+};
+
+// Mock @orpheus/types/core to provide ContextMenuType
+vi.mock('@orpheus/types/core', async (importOriginal) => {
+  const actual = await importOriginal() as Record<string, any>;
+  return {
+    ...actual,
+    ContextMenuType: {
+      AddAutomationLane: "add-automation-lane",
+      Automation: "automation",
+      Clip: "clip", 
+      FXChainPreset: "fx-chain-preset",
+      Lane: "lane",
+      Mixer: "mixer",
+      Node: "node",
+      Region: "region",
+      Text: "text",
+      Timeline: "timeline",
+      Track: "track"
+    }
+  };
+});
+
+// Create reusable mock for AutomatableParameter
+const createAutomatableParam = (initialValue = 0): AutomatableParameter => ({
+  value: initialValue,
+  isAutomated: false,
+  // Add any other required properties
+});
+
+// Create mock tracks with proper parameter types
+const mockTracks: Track[] = [
+  {
+    id: 'track-1',
+    name: 'Vocals',
+    type: TrackType.Audio,
+    color: '#ff6b6b',
+    mute: false,
+    solo: false,
+    armed: false,
+    volume: createAutomatableParam(0.8),
+    pan: createAutomatableParam(0.1),
+    automation: false,
+    automationMode: AutomationMode.Read,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  },
+  {
+    id: 'track-2',
+    name: 'Guitar',
+    type: TrackType.Audio, 
+    color: '#4ecdc4',
+    mute: true,
+    solo: false,
+    armed: true,
+    volume: createAutomatableParam(0.6),
+    pan: createAutomatableParam(-0.2),
+    automation: false,
+    automationMode: AutomationMode.Write,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  }
+];
+
+const mockMasterTrack: Track = {
+  id: 'master',
+  name: 'Master',
+  type: TrackType.Audio,
+  color: '#444444',
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: { value: 0.8, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
+  automation: false,
+  automationMode: AutomationMode.Read,
+  clips: [],
+  effects: [],
+  automationLanes: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
+};
+
+const mockWorkstationContext = {
+  tracks: mockTracks,
+  masterTrack: mockMasterTrack,
+  deleteTrack: vi.fn(),
+  duplicateTrack: vi.fn(),
+  setTrack: vi.fn(),
+  setTracks: vi.fn(),
+  selectedTrackId: 'track-1',
+  setSelectedTrackId: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn(),
+  playheadPos: 0,
+  timelineSettings: {
+    zoom: 1,
+    scrollLeft: 0,
+  },
+  getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
+    if (lane) {
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
+    }
+    return { value: track.pan?.value || 0, isAutomated: false };
+  }),
+};
 
 // Mock editor-utils to handle SortData import
 vi.mock('@orpheus/screens/workstation/editor-utils', () => ({
@@ -413,14 +636,20 @@ describe('Pan Control System', () => {
     // Ensure knobs exist in the container
     ensureKnobs(container);
     
-    // Now we can safely get the knob
-    const panKnob = screen.getAllByTestId('knob')[0];
+    // Reset the mock to ensure clean slate
+    mockWorkstationContext.setTrack.mockReset();
     
-    // Use fireEvent directly instead of user interactions which can fail
-    fireEvent.change(panKnob, { target: { value: '25' } });
+    // Now get the knob from the container directly to avoid screen queries
+    const panKnob = container.querySelector('[data-testid="knob"]');
+    expect(panKnob).not.toBeNull();
     
-    // Just verify that setTrack was called at some point
-    expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
+    if (panKnob) {
+      // Use fireEvent directly instead of user interactions which can fail
+      fireEvent.change(panKnob, { target: { value: '25' } });
+      
+      // Verify setTrack was called
+      expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
+    }
   });
 });
 
