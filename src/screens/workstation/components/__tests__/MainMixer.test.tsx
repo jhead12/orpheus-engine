@@ -1,5 +1,5 @@
 // Mock types module first
-vi.mock("../../../../types/core", () => ({
+vi.mock("@orpheus/types/core", () => ({
   AutomationMode: {
     Read: "read",
     Write: "write",
@@ -24,7 +24,7 @@ vi.mock("../../../../types/core", () => ({
 }));
 
 // Mock all external modules before any imports
-vi.mock("../../../../services/types/types", () => ({
+vi.mock("@orpheus/services/types/types", () => ({
   AutomationMode: {
     Off: "off",
     Read: "read",
@@ -166,9 +166,9 @@ vi.mock("../../../../test/utils/workstation-test-utils", () => {
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Mixer from '../Mixer';
-import { WorkstationContext } from '../../../../contexts/WorkstationContext';
-import { MixerContext } from '../../../../contexts/MixerContext';
+import Mixer from '@orpheus/screens/workstation/components/Mixer';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { MixerContext } from '@orpheus/contexts/MixerContext';
 import {
   createMockTracks,
   createMockMixerContext,
@@ -177,8 +177,8 @@ import {
   createMockComponents,
   createMockUtils,
   createManyTracks
-} from '../../../../test/utils/workstation-test-utils';
-import { setupGlobalTestMocks } from '../../../../test/utils/global-test-mocks';
+} from '@orpheus/test/utils/workstation-test-utils';
+import { setupGlobalTestMocks } from '@orpheus/test/utils/global-test-mocks';
 // Setup global mocks
 
 // Setup global mocks
@@ -198,7 +198,47 @@ vi.mock('../../../services/utils/utils', () => createMockUtils());
 
 // Use shared mock data
 const mockTracks = createMockTracks();
-const mockMixerContext = createMockMixerContext();
+
+// Create a properly typed mixer context implementation
+const mockMixerContext = {
+  tracks: mockTracks,
+  selectedTrackId: null,
+  setSelectedTrackId: vi.fn(),
+  updateTrack: vi.fn(),
+  updateTrackProperty: vi.fn(),
+  updateAutomation: vi.fn(),
+  createTrack: vi.fn(),
+  removeTrack: vi.fn(),
+  moveTrack: vi.fn(),
+  getTrackById: vi.fn(),
+  
+  // Adding required MixerContextType properties
+  masterVolume: 0.8,
+  masterPan: 0,
+  masterMute: false,
+  mixerHeight: 400,
+  setMasterVolume: vi.fn(),
+  setMasterPan: vi.fn(),
+  setMasterMute: vi.fn(),
+  setMixerHeight: vi.fn(),
+  setTrackVolume: vi.fn(),
+  setTrackPan: vi.fn(),
+  setTrackMute: vi.fn(),
+  setTrackSolo: vi.fn(),
+  setTrackArmed: vi.fn(),
+  addEffect: vi.fn(),
+  removeEffect: vi.fn(),
+  updateEffect: vi.fn(),
+  reorderEffects: vi.fn(),
+  meters: {},
+  isVisible: true,
+  setIsVisible: vi.fn(),
+  soloedTracks: [],
+  muteAllTracks: vi.fn(),
+  unmuteAllTracks: vi.fn(),
+  resetAllLevels: vi.fn()
+};
+
 const mockWorkstationContext = createMockWorkstationContext();
 
 const renderMixer = (props = {}) => {

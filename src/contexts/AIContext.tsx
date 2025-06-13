@@ -5,7 +5,7 @@ import {
   PythonAnalysisResult,
 } from "../services/pythonBridge";
 
-interface AIFeatureAnalysis extends PythonAnalysisResult {}
+type AIFeatureAnalysis = PythonAnalysisResult;
 
 interface ArrangementSuggestion {
   type: "arrangement";

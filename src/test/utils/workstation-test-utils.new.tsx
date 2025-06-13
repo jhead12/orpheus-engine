@@ -1,11 +1,22 @@
-import { vi } from 'vitest';
-import type { Track, AutomatableParameter, AutomationLane } from '../../types/core';
-import { TrackType, AutomationMode, AutomationLaneEnvelope, TimelinePosition } from '../../types/core';
+import { vi, expect } from 'vitest';
+import { screen } from '@testing-library/react';
+import type { Track, AutomatableParameter } from '../../types/core';
+import { TrackType, AutomationMode } from '../../types/core';
 import { setupGlobalTestMocks } from './global-test-mocks';
 import React, { ReactNode } from 'react';
 
-// Legacy type for test compatibility - no longer used
-// Using core types from '../../types/core' now
+// Custom type for automation nodes
+interface AutomationNode {
+  value: number;
+  time: number;
+}
+
+// Custom type for automation lanes
+interface AutomationLane {
+  nodes: AutomationNode[];
+  parameter: string;
+  [key: string]: unknown;
+}
 
 // Common interfaces for mock components
 interface DialogProps {
@@ -63,29 +74,31 @@ export const setupWorkstationTestEnvironment = () => {
 };
 
 // Common test track setup
-import { createAutomatableParam } from '../utils/mixer-test-helpers';
-
 export const createMockTrack = (overrides: Partial<Track> = {}): Track => ({
   id: 'track-1',
   name: 'Test Track',
   type: TrackType.Audio,
-  // Create proper AutomatableParameter objects with all required properties
-  volume: createAutomatableParam(1),
-  pan: createAutomatableParam(0),
+  gain: 0.5,
+  volume: 1,
+  pan: 0,
   solo: false,
   mute: false,
-  armed: false, // changed from 'record' to match Track interface
+  record: false,
   color: '#ff0000',
   fx: {
-    preset: null,
     selectedEffectIndex: 0,
     effects: []
   },
-  // Use boolean for automation flag instead of object
-  automation: true,
-  automationMode: AutomationMode.Read,
-  automationLanes: [],
-  clips: [],
+  meters: {
+    left: 0,
+    right: 0,
+    peak: 0,
+    clipping: false,
+  },
+  automation: {
+    mode: AutomationMode.Read,
+    parameters: {},
+  },
   ...overrides
 });
 
@@ -333,33 +346,14 @@ export const createManyTracks = (count: number): Track[] =>
   }));
 
 // Create an automation lane for testing
-// Create an automation lane for testing
-export const createMockAutomationLane = (parameterName: string): AutomationLane => ({
-  id: `lane-${parameterName}`,
-  envelope: parameterName as AutomationLaneEnvelope,
-  enabled: true,
-  expanded: true,
-  label: parameterName,
-  minValue: 0,
-  maxValue: 1,
+export const createMockAutomationLane = (parameter: AutomatableParameter): AutomationLane => ({
   nodes: [
-    { 
-      id: `node-1-${parameterName}`, 
-      pos: new TimelinePosition(0, 0, 0), 
-      value: 0.5 
-    },
-    { 
-      id: `node-2-${parameterName}`, 
-      pos: new TimelinePosition(0, 1, 0), 
-      value: 0.75 
-    },
-    { 
-      id: `node-3-${parameterName}`, 
-      pos: new TimelinePosition(0, 2, 0), 
-      value: 0.25 
-    },
+    { time: 0, value: 0.5 },
+    { time: 10, value: 0.75 },
+    { time: 20, value: 0.25 },
   ],
-  show: true,
+  parameter,
+  [parameter]: true,
 });
 
 // Helper to render and return mocked workstation elements

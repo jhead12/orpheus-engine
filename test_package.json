@@ -1,0 +1,67 @@
+// filepath: test_package.json.ts
+
+import { describe, it, expect } from 'vitest';
+import * as fs from 'fs';
+import * as path from 'path';
+
+describe('package.json configuration', () => {
+  const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './package.json'), 'utf8'));
+
+  // Test basic fields
+  describe('Basic fields', () => {
+    it('should have valid name', () => {
+      expect(packageJson.name).toBe('oew');
+    });
+
+    it('should have valid version', () => {
+      expect(packageJson.version).toMatch(/^\d+\.\d+\.\d+$/);
+    });
+
+    it('should have module type', () => {
+      expect(packageJson.type).toBe('module');
+    });
+
+    it('should be marked as private', () => {
+      expect(packageJson.private).toBe(true);
+    });
+  });
+
+  // Test engine requirements
+  describe('Engine requirements', () => {
+    it('should specify Node.js version', () => {
+      expect(packageJson.engines.node).toBe('>=20.19.0');
+    });
+
+    it('should specify pnpm version', () => {
+      expect(packageJson.engines.pnpm).toBe('>=10.6.4');
+    });
+  });
+
+  // Test script definitions
+  describe('Scripts', () => {
+    const requiredScripts = [
+      'dev',
+      'build',
+      'test',
+      'start',
+      'lint'
+    ];
+
+    requiredScripts.forEach(script => {
+      it(`should have ${script} script defined`, () => {
+        expect(packageJson.scripts[script]).toBeDefined();
+      });
+    });
+
+    it('should have correct build command', () => {
+      expect(packageJson.scripts.build).toContain('tsc -b');
+      expect(packageJson.scripts.build).toContain('vite build');
+    });
+
+    it('should have correct test commands', () => {
+      expect(packageJson.scripts.test).toBe('vitest run');
+      expect(packageJson.scripts['test:watch']).toBe('vitest');
+    });
+  });
+
+  // Test dependencies

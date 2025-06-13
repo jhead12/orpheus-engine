@@ -197,13 +197,12 @@ export default function AutomationNodeComponent(props: IProps) {
     e.stopPropagation();
     const target = e.currentTarget as HTMLElement;
 
-    openContextMenu(ContextMenuType.Node, {}, (params: Record<string, any>) => {
-      const action = params.action as number;
+    openContextMenu(ContextMenuType.Node, {}, (params: ContextMenuAction) => {
       // Actions available in the automation node context menu:
       // 0: Delete the current automation node
       // 1: Open value editor popover for precise value input
       // Future actions can be added here with new case statements
-      switch (action) {
+      switch (params.action) {
         case 0:
           deleteNode(node);
           break;

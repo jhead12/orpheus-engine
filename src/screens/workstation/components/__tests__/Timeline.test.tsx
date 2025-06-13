@@ -34,12 +34,12 @@ vi.mock("@orpheus/types/core", () => {
     TrackType: { Midi: "Midi", Audio: "Audio" },
     Track: vi.fn(),
     AutomationMode: {
-      OFF: "off",
-      READ: "read",
-      WRITE: "write",
-      TOUCH: "touch",
-      LATCH: "latch",
-      TRIM: "trim"
+      Off: "off",
+      Read: "read",
+      Write: "write",
+      Touch: "touch",
+      Latch: "latch",
+      Trim: "trim"
     }
   };
 });
@@ -127,15 +127,15 @@ const createDefaultTrack = (id: string): Track => ({
   name: id,
   type: TrackType.Midi,
   color: "#FF0000",
-  volume: 0,
-  pan: 0,
+  volume: { value: 0, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
   mute: false,
   solo: false,
   armed: false,
   clips: [],
   effects: [],
   automation: false,
-  automationMode: AutomationMode.READ,
+  automationMode: AutomationMode.Read,
   automationLanes: [],
   fx: {
     preset: null,

@@ -54,7 +54,10 @@ export default function useClickAway<T extends HTMLElement>(
   return ref;
 }
 
-// Type guard for touch events
+// Type guard for touch events - currently unused but kept for future use
+// This function is retained for future use when adding mobile support
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
   return "touches" in event;
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */

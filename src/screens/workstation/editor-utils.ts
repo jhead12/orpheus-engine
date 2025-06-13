@@ -53,13 +53,13 @@ export function debounce<Args extends unknown[], R>(
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
   const debouncedFunction = function(this: unknown, ...args: Args) {
-    const context = this;
+    // Use arrow function to preserve 'this' context instead of using an alias
     if (timeout !== null) {
       clearTimeout(timeout);
     }
     timeout = setTimeout(() => {
       timeout = null;
-      func.apply(context, args);
+      func.apply(this, args);
     }, wait);
   };
 

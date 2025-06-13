@@ -4,7 +4,7 @@ import { TrackType } from "./types";
 import { TRACK_FILE_UPLOAD } from "./channels";
  
 export default function buildHandlers(window: BrowserWindow) {
-  ipcMain.handle(TRACK_FILE_UPLOAD, (_: any, type: TrackType) => handleTrackInsertFiles(window, type));
+  ipcMain.handle(TRACK_FILE_UPLOAD, (_event: Electron.IpcMainInvokeEvent, type: TrackType) => handleTrackInsertFiles(window, type));
 }
 
 function handleTrackInsertFiles(window: BrowserWindow, trackType: TrackType) {
@@ -36,7 +36,7 @@ function handleTrackInsertFiles(window: BrowserWindow, trackType: TrackType) {
   });
 
   if (filePaths) {
-    const files = filePaths.map((p: any) => {
+    const files = filePaths.map((p: string) => {
       const filename = p.replace(/^.*[\\\/]/, '');
       const idx = filename.lastIndexOf(".");
       const name = filename.substring(0, idx);

@@ -1,5 +1,5 @@
 import React, { memo, useContext, useEffect, useMemo, useState, useCallback } from "react";
-import { Check, FiberManualRecord } from "@mui/icons-material";
+import { FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
 import { WorkstationContext } from "../../../contexts/WorkstationContext";
 import { MixerContext } from "../../../contexts/MixerContext";
@@ -23,7 +23,12 @@ import { SortData } from "../editor-utils";
 import TrackIcon from "../../../components/icons/TrackIcon";
 
 // Simple hueFromHex function replacement
-const hueFromHex = (hex: string): number => {
+const hueFromHex = (hex: string | undefined): number => {
+  // Ensure hex is a valid string
+  if (!hex || typeof hex !== 'string') {
+    return 0; // Return default hue (0) if no valid hex provided
+  }
+
   // Convert hex to RGB
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -50,28 +55,24 @@ const hueFromHex = (hex: string): number => {
 const MixerTrack = memo(
   ({ order, track }: { order?: number; track: Track }) => {
     const {
-      deleteTrack,
-      duplicateTrack,
       getTrackCurrentValue,
       masterTrack,
-      playheadPos,
       selectedTrackId,
       setSelectedTrackId,
-      setTrack,
-      timelineSettings,
+      setTrack
     } = useContext(WorkstationContext)!;
 
     const mixerContext = useContext(MixerContext);
 
     const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
     const [name, setName] = useState(track.name);
-    const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
-
-    const pan = useMemo(() => {
+    const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);      const pan = useMemo(() => {
       const lane = track.automationLanes?.find(
         (lane) => lane.envelope === AutomationLaneEnvelope.Pan
       );
-      return getTrackCurrentValue(track, lane);
+      const panValue = getTrackCurrentValue(track, lane);
+      // Ensure we always have a valid object with value and isAutomated
+      return panValue || { value: 0, isAutomated: false };
     }, [track, getTrackCurrentValue]);
 
     useEffect(() => setName(track.name), [track.name]);
@@ -122,11 +123,14 @@ const MixerTrack = memo(
     }
 
     // Ensure track volume and pan are properly formatted as AutomatableParameter
-    const ensureAutomatableParameter = (value: number | AutomatableParameter): AutomatableParameter => {
+    const ensureAutomatableParameter = (value: number | AutomatableParameter | undefined | null): AutomatableParameter => {
       if (typeof value === 'number') {
         return { value, isAutomated: false };
       }
-      return value || { value: 0, isAutomated: false };
+      if (value && typeof value === 'object' && 'value' in value) {
+        return value;
+      }
+      return { value: 0, isAutomated: false };
     };
 
     const isMaster = masterTrack ? track.id === masterTrack.id : false;
@@ -316,7 +320,7 @@ const MixerTrack = memo(
                         style={{ fontSize: 12, color: "var(--border6)" }}
                         data-testid={`mixer-pan-display-track-${track.id}`}
                       >
-                        {formatPanning(pan.value ?? 0, true)}
+                        {formatPanning(ensureAutomatableParameter(pan)?.value ?? 0, true)}
                       </span>
                     </div>
                   </div>
@@ -326,7 +330,7 @@ const MixerTrack = memo(
                 <div className="row m-0">
                   <div className="col-8 m-0 p-0">
                     <Knob
-                      disabled={pan.isAutomated}
+                      disabled={pan?.isAutomated ?? false}
                       onDoubleClick={() =>
                         setTrack({ ...track, pan: { value: 0, isAutomated: false } })
                       }
@@ -334,10 +338,10 @@ const MixerTrack = memo(
                         setTrack({ ...track, pan: { value, isAutomated: false } })
                       }
                       style={style.panKnob}
-                      title={`Pan: ${formatPanning(pan.value ?? 0)}${
-                        pan.isAutomated ? " (automated)" : ""
+                      title={`Pan: ${formatPanning(pan?.value ?? 0)}${
+                        pan?.isAutomated ? " (automated)" : ""
                       }`}
-                      value={pan.value ?? 0}
+                      value={pan?.value ?? 0}
                       valueDisplay={(value: number) =>
                         formatPanning(value, true)
                       }
@@ -470,6 +474,7 @@ const MixerTrack = memo(
     );
   }
 );
+MixerTrack.displayName = 'MixerTrack';
 
 function Mixer() {
   const { masterTrack, setAllowMenuAndShortcuts, setTracks, tracks } =
