@@ -160,3 +160,39 @@ Ensure the application works consistently across:
 3. Set up the test data infrastructure
 4. Create the first AI integration points
 5. Establish performance benchmarking
+
+### 3. Unified Test Runner
+
+The project uses a unified test runner that can execute tests from both the root project and OEW-main submodule. To ensure reliable test execution:
+
+- Run tests using `pnpm run test:ui:unified` from the root directory
+- Tests can also be run directly from OEW-main using `pnpm test:ui`
+
+#### Critical Dependencies
+
+To avoid false negatives and ensure consistent test behavior:
+
+- React and ReactDOM versions must match between root and OEW-main projects
+- Testing libraries (@testing-library/react, @testing-library/dom, etc.) should be aligned
+- Vitest configuration and setup files are shared between root and submodule
+
+#### Dependency Management Best Practices
+
+1. When updating React or testing-related dependencies:
+   - Update both root and OEW-main package.json files
+   - Use exact versions (e.g., "18.2.0" instead of "^18.2.0")
+   - Run `pnpm install` in both locations after updates
+
+2. Key dependencies to keep in sync:
+   - react
+   - react-dom
+   - @testing-library/react
+   - @testing-library/dom
+   - @testing-library/user-event
+   - @vitejs/plugin-react
+   - vitest
+
+3. Verify test environment:
+   - React hooks should use a single React instance
+   - Test setup files should load in the correct order
+   - Module resolution should be consistent between root and submodule
