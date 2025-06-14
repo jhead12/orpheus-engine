@@ -5,8 +5,16 @@ import * as path from "path";
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    force: true
+  },
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: [
+      // Force React to resolve from root node_modules
+      { find: 'react', replacement: path.resolve(__dirname, 'node_modules/react') },
+      { find: 'react-dom', replacement: path.resolve(__dirname, 'node_modules/react-dom') },
       // Main repository paths
       { find: "@", replacement: path.resolve(__dirname, "./workstation/frontend/src") },
       { find: "@orpheus/utils", replacement: path.resolve(__dirname, "./workstation/frontend/src/services/utils") },
@@ -46,8 +54,8 @@ export default defineConfig({
     ],
     globals: true,
     setupFiles: [
-      "workstation/frontend/OEW-main/src/setupTests.ts",
-      "workstation/frontend/OEW-main/src/test/setup.ts"
+      "./test-preload.js",
+      "./workstation/frontend/OEW-main/src/setupTests.ts" 
     ],
     coverage: {
       reporter: ["text", "json", "html"],
@@ -57,18 +65,8 @@ export default defineConfig({
       html: "./test-results/html/index.html",
     },
     reporters: ["default", "html"],
-    server: {
-      deps: {
-        optimizer: {
-          web: {
-            include: ["jest-image-snapshot"],
-          },
-        },
-      },
-    },
-    ui: {
-      host: '127.0.0.1',
-      open: false, // Let's not auto-open to avoid permission issues
+    deps: {
+      inline: ["jest-image-snapshot"],
     },
     exclude: ["**/node_modules/**", "**/__snapshots__/**"],
     testTimeout: 10000, // Increased timeout for visual tests

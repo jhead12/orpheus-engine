@@ -3,10 +3,26 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import * as path from "path";
 
+// Ensure consistent module resolution
+const oewMainPath = path.resolve(__dirname, './workstation/frontend/OEW-main');
+const reactPath = require.resolve('react', { paths: [oewMainPath] });
+const reactDomPath = require.resolve('react-dom', { paths: [oewMainPath] });
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      // Force all React plugins to use our exact React instance
+      jsxRuntime: 'classic',
+      fastRefresh: false
+    })
+  ],
   resolve: {
+    dedupe: ['react', 'react-dom', '@testing-library/react'],
     alias: [
+      // Core React dependencies - ensure single instance
+      { find: 'react', replacement: path.dirname(reactPath) },
+      { find: 'react-dom', replacement: path.dirname(reactDomPath) },
+      
       // Main repository paths
       { find: "@", replacement: path.resolve(__dirname, "./workstation/frontend/src") },
       { find: "@orpheus/utils", replacement: path.resolve(__dirname, "./workstation/frontend/src/services/utils") },
@@ -46,6 +62,7 @@ export default defineConfig({
     ],
     globals: true,
     setupFiles: [
+      "./test-preload.js",
       "workstation/frontend/OEW-main/src/setupTests.ts",
       "workstation/frontend/OEW-main/src/test/setup.ts"
     ],
@@ -57,18 +74,18 @@ export default defineConfig({
       html: "./test-results/html/index.html",
     },
     reporters: ["default", "html"],
-    server: {
-      deps: {
-        optimizer: {
-          web: {
-            include: ["jest-image-snapshot"],
-          },
-        },
-      },
-    },
-    ui: {
-      host: '127.0.0.1',
-      open: false, // Let's not auto-open to avoid permission issues
+    deps: {
+      // Ensure consistent React versions
+      inline: [
+        "jest-image-snapshot",
+        "@testing-library/react",
+        "@testing-library/user-event"
+      ],
+      // Ensure modules come from OEW-main's node_modules first
+      moduleDirectories: [
+        "node_modules",
+        path.join("workstation", "frontend", "OEW-main", "node_modules")
+      ],
     },
     exclude: ["**/node_modules/**", "**/__snapshots__/**"],
     testTimeout: 10000, // Increased timeout for visual tests

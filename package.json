@@ -1,25 +1,15 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "oew",
+  "name": "orpheus-engine",
   "version": "1.1.0-beta.1",
   "type": "module",
-  "authors": [
-    {
-      "name": "Creative Organization DAO",
-      "email": "creatives@creativeplatform.xyz",
-      "url": "https://github.com/creativeplatform"
-    },
-    {
-      "name": "JEH Ventures, LLC",
-      "email": "support@jeldonmusic.com",
-      "url": "https://www.matrixblend.com"
-    }
+  "author": "Creative Organization DAO <creatives@creativeplatform.xyz> (https://github.com/creativeplatform)",
+  "contributors": [
+    "Creative Organization DAO <creatives@creativeplatform.xyz> (https://github.com/creativeplatform)",
+    "JEH Ventures, LLC <support@jeldonmusic.com> (https://www.matrixblend.com)"
   ],
   "description": "Digital Audio Workstation (DAW) made in React",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jhead12/orpheus-engine.git"
-  },
+  "repository": "git+https://github.com/jhead12/orpheus-engine.git",
   "private": true,
   "main": "build/electron/main.js",
   "engines": {
@@ -27,6 +17,12 @@
     "pnpm": ">=10.6.4"
   },
   "scripts": {
+    "test:ui": "vitest --ui",
+    "test:ui:windows": "powershell -ExecutionPolicy Bypass -File scripts/run-vitest-ui-windows.ps1",
+    "test:ui:safe": "vitest --ui --host 127.0.0.1 --open false",
+    "test:ui:full": "concurrently \"pnpm run test:ui\" \"pnpm run test:visual:ui\" \"pnpm run test:python:ui\"",
+    "test:ui:unified": "node scripts/run-unified-tests-fixed.js",
+    "test:ui:unified:debug": "node scripts/debug-unified-tests.js",
     "cleanup": "chmod +x scripts/cleanup-duplicates.sh && ./scripts/cleanup-duplicates.sh",
     "cleanup:archives": "rm -rf archives/app-tsx-* archives/editor-consolidation-* archives/workstation-consolidation-* archives/oew-main-backup-*",
     "cleanup:temp": "rm -f *.patch *.backup* && rm -rf temp_check/ backup_changes/",
@@ -43,11 +39,11 @@
     "check:ui:win": "scripts\\check-ui-architecture.bat",
     "check:ports": "scripts\\diagnose-ports.bat",
     "fix:ports": "powershell -ExecutionPolicy Bypass -File scripts/fix-windows-ports.ps1",
-  "install:all": "node scripts/install-all-wrapper.js",
-  "install:ffmpeg": "node scripts/install-ffmpeg.js",
-  "install:vite": "node scripts/install-vite-deps.js",
-  "install:monitor": "node scripts/install-monitor-backend.js", 
-  "postinstall": "node scripts/postinstall.js",
+    "install:all": "node scripts/install-all-wrapper.js",
+    "install:ffmpeg": "node scripts/install-ffmpeg.js",
+    "install:vite": "node scripts/install-vite-deps.js",
+    "install:monitor": "node scripts/install-monitor-backend.js",
+    "postinstall": "node scripts/postinstall.js",
     "setup": "pnpm run fix:permissions && pnpm install && pnpm run install:all && pnpm run setup:electron",
     "demo": "node scripts/setup-demo.js",
     "demo:notebook": "cd demo && jupyter notebook OrpheusWebDemo.ipynb",
@@ -64,10 +60,6 @@
     "start": "node electron-launch.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:ui:windows": "powershell -ExecutionPolicy Bypass -File scripts/run-vitest-ui-windows.ps1",
-    "test:ui:safe": "vitest --ui --host 127.0.0.1 --open false",
-    "test:ui:full": "concurrently \"pnpm run test:ui\" \"pnpm run test:visual:ui\" \"pnpm run test:python:ui\"",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:integration:ui": "vitest --ui --config vitest.integration.config.ts --open",
     "test:visual:ui": "vitest --ui --config vitest.visual.config.ts --open",
@@ -106,52 +98,36 @@
     "test:judge:ui": "vitest run --config vitest.config.ts --environment jsdom workstation/frontend/src/components/__tests__/JudgeEvaluationPanel.test.tsx",
     "test:judge:services": "vitest run --config vitest.config.ts --environment jsdom workstation/frontend/src/services/__tests__/judgeEvaluationService.test.ts",
     "test:judge:notebook": "python -m pytest test_judge_evaluation_notebook.py --html=test-results/notebook-test-report.html --self-contained-html -v",
-    "test:judge:all": "pnpm run test:judge:ui && pnpm run test:judge:services && pnpm run test:judge:notebook"
+    "test:judge:all": "pnpm run test:judge:ui && pnpm run test:judge:services && pnpm run test:judge:notebook",
+    "test:compare-environments": "node scripts/compare-test-environments.js",
+    "test:compare-single": "node scripts/compare-single-test.js"
   },
   "dependencies": {
-    "@apollo/server": "^4.12.2",
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
-    "@graphql-tools/schema": "^10.0.2",
-    "@mui/icons-material": "^5.15.11",
-    "@mui/material": "^5.15.11",
-    "bootstrap": "^5.3.3",
-    "buffer": "^6.0.3",
-    "dataloader": "^2.2.2",
-    "graphql": "^16.8.1",
-    "graphql-scalars": "^1.22.4",
-    "graphql-tools": "^9.0.0",
-    "jspdf": "^2.5.1",
-    "lodash": "^4.17.21",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
-    "react-resize-detector": "^9.1.1",
-    "react-router-dom": "^6.22.2",
-    "styled-components": "^6.1.8",
-    "uuid": "^9.0.1"
+    "react-dom": "^18.2.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@testing-library/dom": "^9.3.4",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^14.2.1",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/jest": "^29.5.12",
+    "@testing-library/dom": "^9.3.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^29.5.5",
     "@types/jest-image-snapshot": "^6.4.0",
     "@types/jsdom": "^21.1.6",
-    "@types/lodash": "^4.14.202",
-    "@types/node": "^20.11.24",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.8.2",
+    "@types/react": "^18.2.24",
+    "@types/react-dom": "^18.2.8",
     "@types/styled-components": "^5.1.34",
     "@types/testing-library__jest-dom": "^5.14.5",
-    "@types/uuid": "^9.0.8",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@types/uuid": "^10.0.0",
+    "@types/webpack": "^5.28.5",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
     "@vitejs/plugin-react": "^4.5.1",
     "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.6.1",
@@ -165,8 +141,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "execa": "^9.6.0",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
-    "glob": "^10.3.10",
     "globals": "^14.0.0",
     "html2canvas": "^1.4.1",
     "jest-image-snapshot": "^6.1.0",
@@ -174,7 +150,6 @@
     "node-html-to-image": "^4.0.0",
     "nodemon": "^3.0.1",
     "playwright": "^1.41.0",
-    "rimraf": "^5.0.5",
     "ssim.js": "^3.5.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
@@ -186,8 +161,7 @@
     "wait-on": "^7.0.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "@types/webpack": "^5.28.5"
+    "webpack-dev-server": "^4.15.1"
   },
   "build": {
     "productName": "Orpheus Engine",
@@ -206,7 +180,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "Creative Organization DAO",
+      "owner": "Matrixblend Media",
       "repo": "orpheus-engine"
     }
   }
