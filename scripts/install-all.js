@@ -58,7 +58,11 @@ function runCommand(command, cwd = process.cwd(), description = '') {
     execSync(command, { 
       cwd, 
       stdio: 'inherit',
-      env: { ...process.env }
+      env: { 
+        ...process.env,
+        // Prevent npm postinstall recursion
+        SKIP_POSTINSTALL: '1'
+      }
     });
     log(`✅ ${displayCmd} completed successfully`, colors.green);
     return true;
@@ -183,13 +187,35 @@ function installPythonDependencies() {
   return success;
 }
 
+// Detect if we're running in a recursive postinstall
+function isRunningFromPostinstall() {
+  return process.env.npm_lifecycle_event === 'postinstall';
+}
+
+// Create a lock file to prevent recursive installations
+function createLockFile() {
+  const lockFile = path.join(projectRoot, '.install_lock');
+  fs.writeFileSync(lockFile, Date.now().toString());
+  return lockFile;
+}
+
+function removeLockFile(lockFile) {
+  if (fs.existsSync(lockFile)) {
+    fs.unlinkSync(lockFile);
+  }
+}
+
 // Main installation function
 async function installAll() {
-  logHeader('Orpheus Engine Installation');
+  // Prevent recursive calls
+  const lockFile = createLockFile();
   
-  // Step 1: Fix permissions
-  log('Step 1: Fixing permissions...', colors.cyan);
-  await fixPermissions();
+  try {
+    logHeader('Orpheus Engine Installation');
+    
+    // Step 1: Fix permissions
+    log('Step 1: Fixing permissions...', colors.cyan);
+    await fixPermissions();
 
   // Step 2: Determine package manager
   let packageManager = 'npm';
@@ -242,7 +268,10 @@ async function installAll() {
     if (!workstationSuccess) log('  - Workstation dependencies failed', colors.red);
     if (!pythonSuccess) log('  - Python dependencies failed', colors.red);
   }
-
+  
+  // Clean up lock file
+  removeLockFile(lockFile);
+  
   return allSuccess;
 }
 
@@ -287,6 +316,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     })
     .catch(err => {
       log(`❌ Installation failed: ${err.message}`, colors.red);
+      // Make sure to clean up the lock file even on error
+      const lockFile = path.join(projectRoot, '.install_lock');
+      removeLockFile(lockFile);
       process.exit(1);
     });
 }
