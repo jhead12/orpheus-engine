@@ -128,7 +128,10 @@ const MixerTrack = memo(
         return { value, isAutomated: false };
       }
       if (value && typeof value === 'object' && 'value' in value) {
-        return value;
+        return { 
+          value: value.value, 
+          isAutomated: value.isAutomated ?? false 
+        };
       }
       return { value: 0, isAutomated: false };
     };
@@ -279,14 +282,14 @@ const MixerTrack = memo(
               <div style={{ display: "flex" }}>
                 <div style={{ marginRight: 1 }}>
                   <Meter
-                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
-                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume)?.value ?? 0)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume)?.value ?? 0) * 100}
                     style={{ ...style.volumeMeter, marginRight: 2 }}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
                   <Meter
-                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
-                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume)?.value ?? 0)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume)?.value ?? 0) * 100}
                     style={style.volumeMeter}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
@@ -303,7 +306,7 @@ const MixerTrack = memo(
                 data-testid={isMaster ? "mixer-master-volume-display" : `mixer-volume-display-track-${track.id}`}
                 style={{ fontSize: 10, color: "var(--border6)" }}
               >
-                {Math.round(ensureAutomatableParameter(track.volume).value * 100)}%
+                {Math.round((ensureAutomatableParameter(track.volume)?.value ?? 0) * 100)}%
               </div>
             </div>
             <div className="col-8 pl-0 pr-1">

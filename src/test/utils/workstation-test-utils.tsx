@@ -63,7 +63,7 @@ export const setupWorkstationTestEnvironment = () => {
 };
 
 // Common test track setup
-import { createAutomatableParam } from '../utils/mixer-test-helpers';
+import { createAutomatableParam } from '@orpheus/test/utils/mixer-test-helpers';
 
 export const createMockTrack = (overrides: Partial<Track> = {}): Track => ({
   id: 'track-1',

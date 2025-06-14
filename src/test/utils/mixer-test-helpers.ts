@@ -1,16 +1,12 @@
-import { AutomatableParameter } from '../../types/core';
+import { AutomatableParameter } from '@orpheus/types/core';
 import { expect, vi } from 'vitest';
 
 /**
  * Creates an AutomatableParameter with the given initial value
- * includes setValue, getValue and automate methods for component compatibility
  */
 export const createAutomatableParam = (initialValue = 0): AutomatableParameter => ({
   value: initialValue,
-  isAutomated: false,
-  getValue: () => initialValue,
-  setValue: vi.fn(),
-  automate: vi.fn()
+  isAutomated: false
 });
 
 /**
