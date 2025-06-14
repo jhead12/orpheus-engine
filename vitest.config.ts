@@ -45,7 +45,7 @@ export default defineConfig({
       "workstation/frontend/OEW-main/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
     ],
     globals: true,
-    setupFiles: ["workstation/frontend/OEW-main/src/setupTests.ts"],
+    setupFiles: ["workstation/frontend/src/test/setup.ts"],
     coverage: {
       reporter: ["text", "json", "html"],
       reportsDirectory: "./test-results/coverage",
@@ -64,7 +64,6 @@ export default defineConfig({
       },
     },
     ui: {
-      port: 3333,
       host: '127.0.0.1',
       open: false, // Let's not auto-open to avoid permission issues
     },
