@@ -1,4 +1,6 @@
-import { renderHook, act } from "@testing-library/react";
+import { act } from "@testing-library/react";
+import { renderHook } from "../../test/test-utils";
+import { vi } from "vitest";
 import useDrag from "../useDrag";
 
 describe("useDrag", () => {
