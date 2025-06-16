@@ -243,7 +243,8 @@ const MixerTrack = memo(
               borderRight: "1px solid var(--border1)",
               position: "relative",
             }}
-          >              <FXComponent
+          >
+            <FXComponent
               classes={{
                 next: { button: "focus-1" },
                 presetButtons: "removed",

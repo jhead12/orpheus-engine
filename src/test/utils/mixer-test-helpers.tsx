@@ -143,3 +143,58 @@ export function ensureTrackNameTextNodes(container, expectedNames = []) {
   
   return foundNodes;
 }
+
+/**
+ * Finds pan knobs in the mixer by searching for knob elements with Pan data or titles
+ * @param {HTMLElement} container - The container element to search within
+ * @param {string} [trackId] - Optional track ID to filter knobs for a specific track
+ * @returns {Array<HTMLElement>} - Array of found knob elements
+ */
+export function findPanKnobs(container, trackId) {
+  const knobs = [];
+  
+  // Find by test ID if track ID is provided
+  if (trackId) {
+    const specificKnobs = container.querySelectorAll(
+      `[data-testid*="mixer-pan-${trackId}"], [data-testid*="pan-knob-${trackId}"]`
+    );
+    specificKnobs.forEach(knob => knobs.push(knob));
+  }
+  
+  // Find by title
+  const panTitleKnobs = container.querySelectorAll('[title*="Pan:"]');
+  panTitleKnobs.forEach(knob => {
+    // If trackId is provided, only include knobs for this track
+    if (trackId) {
+      if (knob.closest(`[data-testid*="${trackId}"]`)) {
+        knobs.push(knob);
+      }
+    } else {
+      knobs.push(knob);
+    }
+  });
+  
+  // Find by generic data-testid
+  if (knobs.length === 0) {
+    const allKnobs = container.querySelectorAll('[data-testid="knob"]');
+    allKnobs.forEach(knob => {
+      // Only include if it has a pan-related parent or attribute
+      const hasTitle = knob.getAttribute('title')?.toLowerCase().includes('pan');
+      const hasPanParent = knob.closest('[data-testid*="pan"]');
+      const isPanKnob = hasTitle || hasPanParent;
+      
+      if (isPanKnob) {
+        // If trackId is provided, only include knobs for this track
+        if (trackId) {
+          if (knob.closest(`[data-testid*="${trackId}"]`)) {
+            knobs.push(knob);
+          }
+        } else {
+          knobs.push(knob);
+        }
+      }
+    });
+  }
+  
+  return knobs;
+}
