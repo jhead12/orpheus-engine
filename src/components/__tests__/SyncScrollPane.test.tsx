@@ -13,11 +13,14 @@ const mockContext = {
 };
 
 // Create a wrapper component that provides mocked context
+// Commenting out because it's not currently used
+/*
 const TestProvider = ({ children }: { children: React.ReactNode }) => (
   <ScrollSyncContext.Provider value={mockContext}>
     {children}
   </ScrollSyncContext.Provider>
 );
+*/
 
 describe("SyncScrollPane", () => {
   beforeEach(() => {

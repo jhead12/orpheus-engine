@@ -50,7 +50,8 @@ describe("SyncScroll", () => {
 
   it("synchronizes scroll between panes", () => {
     // Create a mock implementation that directly updates the other pane when one pane scrolls
-    const mockSyncScrollBehavior = vi.fn();
+    // Commented out because it's not currently used
+    // const mockSyncScrollBehavior = vi.fn();
 
     const { container } = render(<TestPanes />);
 

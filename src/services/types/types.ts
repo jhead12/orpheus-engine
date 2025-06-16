@@ -1,46 +1,35 @@
-import { TimelinePosition } from "../../types/core";
-import { AudioAnalysisType as CoreAudioAnalysisType } from "../../types/audio";
+import { 
+  TimelinePosition, 
+  TrackType as CoreTrackType,
+  AutomationMode as CoreAutomationMode,
+  AutomationLaneEnvelope as CoreAutomationLaneEnvelope,
+  Track as CoreTrack,
+  AutomationLane as CoreAutomationLane,
+  AutomationNode as CoreAutomationNode,
+  Clip as CoreClip,
+  Effect as CoreEffect,
+  FXChainPreset as CoreFXChainPreset
+} from "../../types/core";
+import { AudioAnalysisType } from "../../types/audio";
 
-// Re-export TimelinePosition from the core types
-export { TimelinePosition } from "../../types/core";
-// Export unified AudioAnalysisType to ensure consistency across the app
-export { AudioAnalysisType } from "../../types/audio";
+// Re-export from core types
+export { 
+  TimelinePosition,
+  AudioAnalysisType
+};
 
-export enum AutomationLaneEnvelope {
-  Volume = "volume",
-  Pan = "pan",
-  Send = "send",
-  Filter = "filter",
-  Tempo = "tempo",
-  Effect = "effect",
-}
+// Use core enums 
+export { CoreTrackType as TrackType };
+export { CoreAutomationMode as AutomationMode };
+export { CoreAutomationLaneEnvelope as AutomationLaneEnvelope };
 
-export enum AutomationMode {
-  Off = "off",
-  Read = "read",
-  Write = "write",
-  Touch = "touch",
-  Latch = "latch",
-}
-
-export interface AutomationNode {
-  id: string;
-  pos: TimelinePosition;
-  value: number;
-  curve?: number; // For bezier curves
-}
-
-export interface AutomationLane {
-  id: string;
-  label: string;
-  envelope: AutomationLaneEnvelope;
-  enabled: boolean;
-  minValue: number;
-  maxValue: number;
-  nodes: AutomationNode[];
-  show: boolean;
-  expanded: boolean;
-}
+// Use core types
+export type Track = CoreTrack;
+export type AutomationNode = CoreAutomationNode;
+export type AutomationLane = CoreAutomationLane;
+export type Clip = CoreClip;
+export type Effect = CoreEffect;
+export type FXChainPreset = CoreFXChainPreset;
 
 export interface BaseClipComponentProps {
   clip: Clip;
@@ -60,44 +49,6 @@ export enum ContextMenuType {
   FXChainPreset = "fxChainPreset",
   AddAutomationLane = "addAutomationLane",
   Automation = "automation",
-}
-
-export enum TrackType {
-  Audio = "audio",
-  Midi = "midi",
-  Sequencer = "sequencer",
-}
-
-export interface Track {
-  id: string;
-  name: string;
-  type: TrackType;
-  color: string;
-  mute: boolean;
-  solo: boolean;
-  armed: boolean;
-  volume: number;
-  pan: number;
-  automation: boolean;
-  automationMode: AutomationMode;
-  automationLanes: AutomationLane[];
-  clips: Clip[];
-  effects?: Effect[];
-  fx: {
-    preset: FXChainPreset | null;
-    selectedEffectIndex: number;
-    effects: Effect[];
-  };
-  inputs?: {
-    id: string;
-    name: string;
-    active: boolean;
-  }[];
-  outputs?: {
-    id: string;
-    name: string;
-    active: boolean;
-  }[];
 }
 
 export interface Clip {

@@ -36,14 +36,14 @@ const mockAudioContext = {
     start: vi.fn(),
     stop: vi.fn(),
   })),
-  decodeAudioData: vi.fn().mockImplementation(async (_arrayBuffer: ArrayBuffer) => {
+  decodeAudioData: vi.fn().mockImplementation(async (/* arrayBuffer: ArrayBuffer */) => {
     // Return a proper AudioBuffer-like object with working getChannelData
     const mockAudioBuffer = {
       duration: 1.0,
       sampleRate: 44100,
       numberOfChannels: 2,
       length: 44100,
-      getChannelData(_channel: number): Float32Array {
+      getChannelData(/* channel: number */): Float32Array {
         // Return proper length audio data for testing
         const data = new Float32Array(44100);
         for (let i = 0; i < 44100; i++) {
@@ -135,7 +135,7 @@ describe('AudioService', () => {
       sampleRate: 44100,
       numberOfChannels: 2,
       length: 44100,
-      getChannelData(_channel: number): Float32Array {
+      getChannelData(/* channel: number */): Float32Array {
         const data = new Float32Array(44100);
         for (let i = 0; i < 44100; i++) {
           data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
@@ -301,7 +301,7 @@ describe('AudioService', () => {
         sampleRate: 44100,
         numberOfChannels: 2,
         length: 441000,
-        getChannelData(_channel: number): Float32Array {
+        getChannelData(/* channel: number */): Float32Array {
           const data = new Float32Array(441000);
           for (let i = 0; i < 441000; i++) {
             data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;

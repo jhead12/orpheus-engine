@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 // Add the missing getScrollParent function
 function getScrollParent(element: HTMLElement, direction: "vertical" | "horizontal" = "vertical"): HTMLElement | null {
   const overflowProperty = direction === "horizontal" ? "overflowX" : "overflowY";
   
   const isScrollable = (style: CSSStyleDeclaration) => {
-    const overflow = style[overflowProperty as any];
+    const overflow = style[overflowProperty as keyof CSSStyleDeclaration];
     return overflow === 'auto' || overflow === 'scroll';
   };
 
@@ -73,79 +73,85 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
   })
 
   const coords = useRef({ x: 0, y: 0 });
-  const hInterval = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const hInterval = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const vInterval = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const vInterval = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    return () => clearIntervals();
-  }, [active, eventType])
-
-  useEffect(() => {
-    if (active) {
-      let horizontal = ref.current ? getScrollParent(ref.current, "horizontal") : null;
-      let vertical = ref.current ? getScrollParent(ref.current, "vertical") : null;
-
-      setWindows({ horizontal, vertical });
+  // Move clearIntervals to useCallback to avoid recreation on every render
+  const clearIntervals = useCallback(() => {
+    if (hInterval.current) {
+      clearInterval(hInterval.current);
+      hInterval.current = null;
     }
-  }, [active])
-  
-  useEffect(() => {
-    function handleDragOver(e: DragEvent) {
-      if (coords.current.x !== e.x || coords.current.y !== e.y) {
-        checkCoords(e.x, e.y);
-        coords.current = { x: e.x, y: e.y };
+    if (vInterval.current) {
+      clearInterval(vInterval.current);
+      vInterval.current = null;
+    }
+  }, []);
+
+  // Move scroll to useCallback to avoid recreation on every render
+  const scroll = useCallback((el: Element, by: number, vertical: boolean) => {
+    const callback = () => {
+      const scrollMargin = vertical ? el.scrollTop : el.scrollLeft;
+      const scrollLength = vertical ? el.scrollHeight : el.scrollWidth;
+      const clientLength = vertical ? el.clientHeight : el.clientWidth;
+      
+      // Don't scroll further if we've hit the boundary
+      if ((by < 0 && scrollMargin <= 0) || (by > 0 && scrollMargin + clientLength >= scrollLength)) {
+        return;
       }
+      
+      if (vertical) {
+        el.scrollTop += by;
+      } else {
+        el.scrollLeft += by;
+      }
+      
+      // Call the onScroll callback if provided
+      if (onScroll) {
+        onScroll(by, vertical);
+      }
+    };
+    
+    callback();
+    
+    const intervalRef = setInterval(callback, 100);
+    if (vertical) {
+      vInterval.current = intervalRef;
+    } else {
+      hInterval.current = intervalRef;
     }
+  }, [onScroll]);
 
-    function handleMouseMove(e: MouseEvent) {
-      checkCoords(e.x, e.y);
-    }  
-
-    if (active) {
-      if (eventType === "drag")
-        document.addEventListener("dragover", handleDragOver);
-      else
-        document.addEventListener("mousemove", handleMouseMove);
-    }
-
-    return () => {
-      document.removeEventListener("dragover", handleDragOver);
-      document.removeEventListener("mousemove", handleMouseMove);
-    }
-  }, [
-    active, eventType, withinBounds, windows.horizontal, windows.vertical,
-    thresholds?.top, thresholds?.right, thresholds?.bottom, thresholds?.left
-  ])
-
-  function checkCoords(x: number, y: number) {
+  // Move checkCoords to useCallback with appropriate dependencies
+  const checkCoords = useCallback((x: number, y: number) => {
     clearIntervals();
 
     if (windows.horizontal) {
       const rect = windows.horizontal.getBoundingClientRect();
       
-      if (!withinBounds || rect.left <= x && x <= rect.right) {
+      if (!withinBounds || (rect.left <= x && x <= rect.right)) {
         const leftDiff = x - rect.left;
         const rightDiff = rect.right - x;
-        const leftThresholds = Array.isArray(thresholds) ? thresholds?.[3] || { fast: 3, medium: 9, slow: 20 } : { fast: 3, medium: 9, slow: 20 };
-        const rightThresholds = Array.isArray(thresholds) ? thresholds?.[1] || { fast: 3, medium: 9, slow: 20 } : { fast: 3, medium: 9, slow: 20 };
+        const leftThresholds = thresholds?.left || { slow: 20, medium: 9, fast: 3 };
+        const rightThresholds = thresholds?.right || { slow: 20, medium: 9, fast: 3 };
 
-        if (leftDiff <= (typeof leftThresholds === 'number' ? leftThresholds : leftThresholds.slow) && windows.horizontal.scrollLeft > 0) {
+        if (leftDiff <= leftThresholds.slow && windows.horizontal.scrollLeft > 0) {
           let by = 5;
-          if (leftDiff < (typeof leftThresholds === 'number' ? leftThresholds : leftThresholds.fast)) {
+          if (leftDiff < leftThresholds.fast) {
             by = 30;
-          } else if (leftDiff < (typeof leftThresholds === 'number' ? leftThresholds : leftThresholds.medium)) {
+          } else if (leftDiff < leftThresholds.medium) {
             by = 15;
           }
           scroll(windows.horizontal, -by, false);
         } else if (
-          rightDiff <= (typeof rightThresholds === 'number' ? rightThresholds : rightThresholds.slow) &&
+          rightDiff <= rightThresholds.slow &&
           windows.horizontal.scrollLeft < windows.horizontal.scrollWidth - windows.horizontal.clientWidth
         ) {
           let by = 5;
-          if (rightDiff < (typeof rightThresholds === 'number' ? rightThresholds : rightThresholds.fast)) {
+          if (rightDiff < rightThresholds.fast) {
             by = 30;
-          } else if (rightDiff < (typeof rightThresholds === 'number' ? rightThresholds : rightThresholds.medium)) {
+          } else if (rightDiff < rightThresholds.medium) {
             by = 15;
           }
           scroll(windows.horizontal, by, false);
@@ -155,67 +161,81 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
 
     if (windows.vertical) {
       const rect = windows.vertical.getBoundingClientRect();
-
-      if (!withinBounds || rect.top <= y && y <= rect.bottom) {
+      
+      if (!withinBounds || (rect.top <= y && y <= rect.bottom)) {
         const topDiff = y - rect.top;
         const bottomDiff = rect.bottom - y;
-        const topThresholds = thresholds?.top || { fast: 3, medium: 9, slow: 20 };
-        const bottomThresholds = thresholds?.bottom || { fast: 3, medium: 9, slow: 20 };
+        const topThresholds = thresholds?.top || { slow: 20, medium: 9, fast: 3 };
+        const bottomThresholds = thresholds?.bottom || { slow: 20, medium: 9, fast: 3 };
         
-        if (topDiff <= (typeof topThresholds === 'number' ? topThresholds : topThresholds.slow) && windows.vertical.scrollTop > 0) {
+        if (topDiff <= topThresholds.slow && windows.vertical.scrollTop > 0) {
           let by = 5;
-          if (topDiff < (typeof topThresholds === 'number' ? topThresholds : topThresholds.fast)) {
+          if (topDiff < topThresholds.fast) {
             by = 30;
-          } else if (topDiff < (typeof topThresholds === 'number' ? topThresholds : topThresholds.medium)) {
+          } else if (topDiff < topThresholds.medium) {
             by = 15;
           }
           scroll(windows.vertical, -by, true);
         } else if (
-          bottomDiff <= (typeof bottomThresholds === 'number' ? bottomThresholds : bottomThresholds.slow) &&
+          bottomDiff <= bottomThresholds.slow &&
           windows.vertical.scrollTop < windows.vertical.scrollHeight - windows.vertical.clientHeight
         ) {
           let by = 5;
-          if (bottomDiff < (typeof bottomThresholds === 'number' ? bottomThresholds : bottomThresholds.fast)) {
+          if (bottomDiff < bottomThresholds.fast) {
             by = 30;
-          } else if (bottomDiff < (typeof bottomThresholds === 'number' ? bottomThresholds : bottomThresholds.medium)) {
+          } else if (bottomDiff < bottomThresholds.medium) {
             by = 15;
           }
           scroll(windows.vertical, by, true);
         }
       }
     }
-  }
+  }, [windows, withinBounds, thresholds, scroll, clearIntervals]);
 
-  function clearIntervals() {
-    clearInterval(hInterval.current);
-    clearInterval(vInterval.current);
-  }
-
-  function scroll(el: Element, by: number, vertical: boolean) {
-    const callback = () => {
-      const scrollMargin = vertical ? el.scrollTop : el.scrollLeft;
-      const scrollLength = vertical ? el.scrollHeight : el.scrollWidth;
-      const clientLength = vertical ? el.clientHeight : el.clientWidth;
-
-      if (scrollMargin + by <= 0 || scrollMargin + by >= scrollLength - clientLength)
-        clearInterval(vertical ? vInterval.current : hInterval.current);
-      by = Math.max(-scrollMargin, Math.min(by, scrollLength - clientLength - scrollMargin));
-      el.scrollBy(vertical ? 0 : by, vertical ? -by : 0);
-      if (onScroll) {
-        onScroll(by, vertical);
-      }
+  // Create event handlers with useCallback
+  const handleDragOver = useCallback((e: DragEvent) => {
+    if (coords.current.x !== e.x || coords.current.y !== e.y) {
+      checkCoords(e.x, e.y);
+      coords.current = { x: e.x, y: e.y };
     }
-  
-  
-    if (vertical)
-      vInterval.current = setInterval(callback, 25);
-    else 
-      hInterval.current = setInterval(callback, 25);
+  }, [checkCoords]);
 
-    callback();
-  }
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    checkCoords(e.x, e.y);
+  }, [checkCoords]);
 
-  return <div ref={ref} style={{ display: "none" }} />;
+  // Clean up intervals when component unmounts or dependencies change
+  useEffect(() => {
+    return () => clearIntervals();
+  }, [clearIntervals]);
+
+  // Set up scrollable parent windows
+  useEffect(() => {
+    if (active) {
+      let horizontal = ref.current ? getScrollParent(ref.current, "horizontal") : null;
+      let vertical = ref.current ? getScrollParent(ref.current, "vertical") : null;
+      
+      setWindows({ horizontal, vertical });
+    }
+  }, [active]);
+  
+  // Set up event listeners
+  useEffect(() => {
+    if (!active || !eventType) return;
+    
+    if (eventType === "drag") {
+      document.addEventListener("dragover", handleDragOver);
+    } else if (eventType === "mouse") {
+      document.addEventListener("mousemove", handleMouseMove);
+    }
+
+    return () => {
+      document.removeEventListener("dragover", handleDragOver);
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [active, eventType, handleDragOver, handleMouseMove]);
+
+  return <div ref={ref} style={{ width: '100%', height: '100%' }}></div>;
 }
 
 export default WindowAutoScroll;

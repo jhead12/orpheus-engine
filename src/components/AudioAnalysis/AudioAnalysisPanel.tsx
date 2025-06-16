@@ -50,7 +50,7 @@ const AudioAnalysisPanel: React.FC = () => {
         setAnalysisResult(null);
         setError(null);
       }
-    } catch (err) {
+    } catch {
       setError('Failed to open file dialog');
     }
   };

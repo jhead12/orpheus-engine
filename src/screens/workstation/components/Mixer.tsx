@@ -1,24 +1,24 @@
 import React, { memo, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "../../../contexts/WorkstationContext";
-import { MixerContext } from "../../../contexts/MixerContext";
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { MixerContext } from '@orpheus/contexts/MixerContext';
 import {
   AutomationLaneEnvelope,
   AutomationMode,
   ContextMenuType,
   Track,
   AutomatableParameter,
-} from "../../../types/core";
+} from '@orpheus/types/core';
 import { FXComponent, TrackVolumeSlider } from "./index";
-import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableListItem } from "../../../components/widgets";
+import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableListItem } from '@orpheus/widgets';
 import { openContextMenu } from "../editor-utils";
 import { 
   formatPanning, 
   getVolumeGradient, 
   hslToHex, 
   volumeToNormalized 
-} from "../../../services/utils/utils";
+} from '@orpheus/utils/utils';
 import { SortData } from "../editor-utils";
 import TrackIcon from "../../../components/icons/TrackIcon";
 

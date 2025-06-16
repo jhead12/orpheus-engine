@@ -18,25 +18,63 @@ import {
 
 export interface WorkstationContextType {
   addNode: (track: Track, lane: AutomationLane, node: AutomationNode) => void;
+  addTrack: (type: TrackType) => void;
   adjustNumMeasures: (pos?: TimelinePosition) => void;
+  allowMenuAndShortcuts?: boolean;
+  consolidateClip?: (clip: Clip) => void;
   createAudioClip: (file: File | Blob, position?: TimelinePosition) => Promise<Clip | null>;
   createClipFromTrackRegion: () => void;
-  insertClips: (clips: Clip[], track: Track) => void;
+  deleteClip?: (clip: Clip) => void;
+  deleteNode?: (track: Track, lane: AutomationLane, node: AutomationNode) => void;
+  deleteTrack?: (track: Track) => void;
+  duplicateClip?: (clip: Clip) => void;
+  duplicateTrack?: (trackId: string) => void;
+  getTrackCurrentValue?: (track: Track) => number;
+  insertClips: (clips: Clip[], trackId: string, position?: TimelinePosition) => void;
+  isLooping?: boolean;
   isPlaying: boolean;
+  isRecording?: boolean;
   masterTrack: Track;
   maxPos: TimelinePosition;
   numMeasures: number;
+  pasteClip?: (trackId: string, position: TimelinePosition) => void;
   pasteNode: (pos: TimelinePosition, lane: AutomationLane) => void;
   playheadPos: TimelinePosition;
+  scrollToItem?: string | null;
+  selectedClipId?: string | null;
+  selectedNodeId?: string | null;
   selectedTrackId: string | null;
+  setAllowMenuAndShortcuts?: (allow: boolean) => void;
+  setIsLooping?: (isLooping: boolean) => void;
+  setIsPlaying?: (isPlaying: boolean) => void;
+  setIsRecording?: (isRecording: boolean) => void;
   setLane: (track: Track, lane: AutomationLane) => void;
+  setMetronome?: (value: boolean) => void;
   setPlayheadPos: (pos: TimelinePosition) => void;
+  setScrollToItem?: (id: string | null) => void;
+  setSelectedClipId?: (id: string | null) => void;
+  setSelectedNodeId?: (id: string | null) => void;
   setSelectedTrackId: (id: string | null) => void;
+  setShowTimeRuler?: (show: boolean) => void;
+  setSnapGridSizeOption?: (option: string) => void;
+  setSongRegion?: (region: any | null) => void;
+  setStretchAudio?: (stretch: boolean) => void;
+  setTimeSignature?: (timeSignature: { beats: number; noteValue: number }) => void;
   setTrack: (track: Track) => void;
+  setTrackRegion?: (region: any | null, trackId?: string) => void;
   setTracks: (tracks: Track[]) => void;
+  setVerticalScale?: (scale: number) => void;
   showMaster: boolean;
+  showTimeRuler?: boolean;
+  skipToEnd?: () => void;
+  skipToStart?: () => void;
   snapGridSize: TimelinePosition;
+  snapGridSizeOption?: string;
+  songRegion?: any | null;
+  splitClip?: (clip: Clip, position: TimelinePosition) => void;
+  stretchAudio?: boolean;
   timelineSettings: TimelineSettings;
+  toggleMuteClip?: (clipId: string) => void;
   trackRegion: any | null;
   tracks: Track[];
   updateTimelineSettings: (updater: (prev: TimelineSettings) => TimelineSettings) => void;
@@ -127,7 +165,7 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     }
   }, [setTrack]);
 
-  const pasteNode = useCallback((pos: TimelinePosition, lane: AutomationLane) => {
+  const pasteNode = useCallback((/* pos: TimelinePosition, lane: AutomationLane */) => {
     // Implementation for pasting automation nodes
     // This will be implemented when clipboard functionality is needed
   }, []);
@@ -154,14 +192,14 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
         setMaxPos(new TimelinePosition(pos.measure + 1, 0, 0));
       }
     },
-    createAudioClip: async (_file: File | Blob, _position?: TimelinePosition) => {
+    createAudioClip: async (/* file: File | Blob, position?: TimelinePosition */) => {
       // Implementation for creating audio clips
       return null;
     },
     createClipFromTrackRegion: () => {
       // Implementation for creating clips from track region
     },
-    insertClips: (_clips: Clip[], _track: Track) => {
+    insertClips: (/* clips: Clip[], track: Track */) => {
       // Implementation for inserting clips
     },
     isPlaying,

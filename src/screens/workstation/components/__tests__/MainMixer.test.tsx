@@ -1,3 +1,41 @@
+// Define interfaces for type safety
+interface TrackIconProps {
+  type: string;
+  color: string;
+}
+
+interface TrackData {
+  id: string;
+  name: string;
+  volume?: number;
+  pan?: number;
+  mute?: boolean;
+  solo?: boolean;
+  armed?: boolean;
+  effects?: unknown[];
+  automationMode?: string;
+}
+
+interface AutomatableParam {
+  value: number;
+  isAutomated: boolean;
+  getValue: () => number;
+  setValue: (value: number) => void;
+  automate: (value: number) => void;
+}
+
+interface MockTrack {
+  id: string;
+  name: string;
+  volume: AutomatableParam;
+  pan: AutomatableParam;
+  mute: boolean;
+  solo: boolean;
+  armed: boolean;
+  effects: unknown[];
+  automationMode: string;
+}
+
 // Mock types module first
 vi.mock("@orpheus/types/core", () => ({
   AutomationMode: {
@@ -44,7 +82,7 @@ vi.mock("@orpheus/services/types/types", () => ({
     Tempo: "tempo",
     Effect: "effect"
   },
-  Track: vi.fn().mockImplementation((data: any) => ({
+  Track: vi.fn().mockImplementation((data: TrackData) => ({
     id: data?.id || "mock-track-id",
     name: data?.name || "Mock Track",
     volume: {
@@ -101,7 +139,7 @@ vi.mock("../../../../test/utils/workstation-test-utils", () => {
   });
 
   // Create mock tracks with proper parameter types
-  const createMockTrack = (data: any = {}) => ({
+  const createMockTrack = (data: TrackData = { id: 'track-1', name: 'Test Track' }) => ({
     id: data.id || 'track-1',
     name: data.name || 'Test Track',
     volume: createAutomatableParam(data.volume || 0.8),
@@ -171,7 +209,6 @@ import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import {
   createMockTracks,
-  createMockMixerContext,
   createMockWorkstationContext,
   createMockWidgets,
   createMockComponents,
@@ -188,7 +225,7 @@ setupGlobalTestMocks();
 vi.mock('../../../components/widgets', () => createMockWidgets());
 vi.mock('../index', () => createMockComponents());
 vi.mock('../../../components/icons/TrackIcon', () => ({
-  default: ({ type, color }: any) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
+  default: ({ type, color }: TrackIconProps) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
 }));
 vi.mock('../editor-utils', () => ({
   openContextMenu: vi.fn(),
@@ -689,7 +726,7 @@ describe('Main Mixer Component', () => {
       try {
         const panKnob = screen.getByTestId('mixer-pan-track-1');
         expect(panKnob).toHaveAttribute('aria-label', 'Vocals pan');
-      } catch (e) {
+      } catch (_) {
         // Pan knob not found, skip this assertion
         console.log('Pan knob not found in test, skipping aria-label check');
       }
@@ -721,7 +758,7 @@ describe('Main Mixer Component', () => {
       try {
         const announcement = screen.getByTestId('mixer-announcement');
         expect(announcement).toHaveTextContent('Vocals volume set to 50%');
-      } catch (e) {
+      } catch (_) {
         // Announcement area not found, skip
         console.log('Announcement area not found, skipping level change announcement test');
       }

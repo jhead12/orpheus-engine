@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { WorkstationProvider, useWorkstation } from '../WorkstationContext';
-import { Track, TrackType, AutomationMode } from '../../types/core';
+import { Track, TrackType } from '../../types/core'; // Removed unused AutomationMode
 
 // Mock services
 vi.mock('../../services/PlatformService', () => ({
@@ -156,7 +156,8 @@ describe('WorkstationContext', () => {
         result.current.addTrack('midi');
       });
       
-      const trackIdToRemove = result.current.tracks[0].id;
+      // Variable is currently unused but kept for potential future use in assertions
+      // const trackIdToRemove = result.current.tracks[0].id;
       
       act(() => {
         result.current.deleteTrack(result.current.tracks[0]);

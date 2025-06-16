@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react"; // Removed unused useState import
 import Editor from "./Editor";
 import { Header, Mixer } from "./components";
 import { PaneResize } from "../../components";

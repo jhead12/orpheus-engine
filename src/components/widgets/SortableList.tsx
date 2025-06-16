@@ -47,7 +47,7 @@ export const SortableList: React.FC<SortableListProps> = ({
   children,
   autoScroll,
   cancel,
-  direction = "vertical",
+  /* direction = "vertical", */ // Not currently used in the implementation
   onSortUpdate,
   onStart,
   onEnd,

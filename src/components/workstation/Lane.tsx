@@ -33,7 +33,7 @@ import {
 } from "../../screens/workstation/components";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
-import WorkstationContext from "../../contexts/WorkstationContext";
+import { WorkstationContext } from "../../contexts/WorkstationContext";
 import { AnalysisContext } from "../../contexts/AnalysisContext";
 import { ContextMenuType } from "../../types/context-menu";
 import {
@@ -46,11 +46,11 @@ import { Track } from "../../services/types/types";
 import {
   AudioAnalysisType,
   AudioAnalysisResults,
-  SnapGridSizeOption,
-  WorkstationAudioInputFile,
+  // SnapGridSizeOption,         // Removed unused import
+  // WorkstationAudioInputFile,  // Removed unused import
 } from "../../types/audio";
-import { getGridSizeFromOption } from "../../services/utils/timeline-utils";
-import { BASE_BEAT_WIDTH } from "../../constants/timeline";
+// import { getGridSizeFromOption } from "../../services/utils/timeline-utils"; // Not used after removing position calculation
+// import { BASE_BEAT_WIDTH } from "../../constants/timeline";  // Removed unused import
 import {
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
@@ -108,7 +108,7 @@ export function AudioAnalysisProvider({
     AudioAnalysisType.Spectral
   );
   const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [analysisResults, setAnalysisResults] = useState<AudioAnalysisResults | null>(null);
 
   const runAudioAnalysis = async (
     audioBuffer: AudioBuffer,
@@ -137,7 +137,7 @@ export function AudioAnalysisProvider({
 
   // Mock implementation of analysis functions
   const performSpectralAnalysis = async (
-    _audioBuffer: AudioBuffer
+    /* audioBuffer: AudioBuffer */ // Parameter commented out as it's unused
   ): Promise<AudioAnalysisResults> => {
     // Implementation would connect to Python backend for FFT analysis
     return {
@@ -168,7 +168,7 @@ export function AudioAnalysisProvider({
   };
 
   const extractAudioFeatures = async (
-    _audioBuffer: AudioBuffer
+    /* audioBuffer: AudioBuffer */ // Parameter commented out as it's unused
   ): Promise<AudioAnalysisResults> => {
     // Implementation would extract MFCCs, onset detection, etc.
     return {
@@ -282,7 +282,7 @@ export default function Editor() {
       window.removeEventListener("keyup", handleKeyUp);
       setAllowMenuAndShortcuts(true);
     };
-  }, []);
+  }, [setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     function handleDragEnter(e: DragEvent) {
@@ -337,7 +337,7 @@ export default function Editor() {
       document.body.removeEventListener("dragleave", handleDragLeave);
       document.body.removeEventListener("dragover", handleDragOver);
     };
-  }, [dragData.target]);
+  }, [dragData.target, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (resetDragState) {
@@ -348,7 +348,7 @@ export default function Editor() {
       setAllowMenuAndShortcuts(true);
       setResetDragState(false);
     }
-  }, [resetDragState]);
+  }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (zoomAnchorPos.current) {
@@ -406,7 +406,7 @@ export default function Editor() {
         setScrollToItem(null);
       });
     }
-  }, [scrollToItem]);
+  }, [scrollToItem, setScrollToItem]);
 
   function centerOnPlayhead() {
     scrollToAndAlign(
@@ -526,14 +526,11 @@ export default function Editor() {
       const clips: Clip[] = [];
 
       const timelineEditorWindow = timelineEditorWindowRef.current!;
-      const rect = timelineEditorWindow.getBoundingClientRect();
-      const margin =
-        timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
-      const gridSize =
-        typeof snapGridSize === "number"
-          ? snapGridSize
-          : getGridSizeFromOption(snapGridSize);
-      let pos = TimelinePosition.fromMargin(margin).snap(gridSize);
+      // const rect = timelineEditorWindow.getBoundingClientRect(); // Not needed after removing position calculation
+      
+      // These calculations were used for position, but now we've removed the position calculation
+      // const margin = timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
+      // const gridSize = typeof snapGridSize === "number" ? snapGridSize : getGridSizeFromOption(snapGridSize);
 
       for (let i = 0; i < files.length; i++) {
         if (isValidAudioTrackFileFormat(files[i].type)) {
@@ -560,9 +557,10 @@ export default function Editor() {
               if (result && typeof result === "object" && "end" in result) {
                 clips.push(result as Clip);
                 if (dragData.target.track && result.end) {
-                  pos = TimelinePosition.fromMargin(result.end.toMargin()).snap(
-                    gridSize
-                  );
+                  // Position calculation (currently unused)
+                  // const pos = TimelinePosition.fromMargin(result.end.toMargin()).snap(
+                  //   gridSize
+                  // );
                 }
               }
             } catch (error) {
@@ -607,7 +605,7 @@ export default function Editor() {
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params: any) => {
+    openContextMenu(ContextMenuType.Region, {}, (params: ContextMenuParams) => {
       switch (params.action) {
         case 1:
           setSongRegion(null);
@@ -704,7 +702,7 @@ export default function Editor() {
             zoomAnchorWindowAlignment.current =
               (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
-            updateTimelineSettings((prev: any) => {
+            updateTimelineSettings((prev: TimelineSettings) => {
               const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
@@ -985,7 +983,7 @@ export default function Editor() {
                     thresholds: timelineEditorWindowScrollThresholds,
                   }}
                   cancel=".stop-reorder"
-                  onSortUpdate={(data: any) =>
+                  onSortUpdate={(data: SortData) =>
                     setTrackReorderData({
                       ...trackReorderData,
                       edgeIndex: data.edgeIndex,

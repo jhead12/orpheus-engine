@@ -151,12 +151,12 @@ class MockAudioBuffer {
   duration = 1.0;
   numberOfChannels = 2;
 
-  getChannelData(_channel: number): Float32Array {
+  getChannelData(/* channel: number */): Float32Array {
     return new Float32Array(this.length);
   }
 
-  copyFromChannel(_destination: Float32Array, _channelNumber: number, _bufferOffset?: number): void {}
-  copyToChannel(_source: Float32Array, _channelNumber: number, _bufferOffset?: number): void {}
+  copyFromChannel(/* destination: Float32Array, channelNumber: number, bufferOffset?: number */): void {}
+  copyToChannel(/* source: Float32Array, channelNumber: number, bufferOffset?: number */): void {}
 }
 
 class MockAudioContext {
@@ -166,11 +166,11 @@ class MockAudioContext {
   destination = {};
   listener = {};
 
-  createBuffer(_numberOfChannels: number, _length: number, _sampleRate: number): MockAudioBuffer {
+  createBuffer(/* numberOfChannels: number, length: number, sampleRate: number */): MockAudioBuffer {
     return new MockAudioBuffer();
   }
 
-  decodeAudioData(_audioData: ArrayBuffer): Promise<MockAudioBuffer> {
+  decodeAudioData(/* audioData: ArrayBuffer */): Promise<MockAudioBuffer> {
     return Promise.resolve(new MockAudioBuffer());
   }
 

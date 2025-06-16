@@ -143,7 +143,7 @@ export function AudioAnalysisProvider({
   ): Promise<AudioAnalysisResults> => {
     // Use the audioBuffer to generate spectral data
     // Using sample rate for realistic frequency calculations
-    const _sampleRate = audioBuffer.sampleRate; // Used to mark variable as intentionally used
+    // const sampleRate = audioBuffer.sampleRate; // Uncomment when needed for calculations
 
     // Generate mock spectral data as Float32Array[]
     const spectralData: Float32Array[] = [];
@@ -1215,7 +1215,7 @@ export default function Editor() {
 
             <div className="p-2">
               {analysisTabValue === 3 ? (
-                <JudgeEvaluationPanel />
+                <div>Judge Evaluation Panel (Not implemented)</div>
               ) : (
                 <AudioAnalysisPanel
                   type={analysis.analysisType}

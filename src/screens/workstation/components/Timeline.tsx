@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts/WorkstationContext';
-import { TimelinePosition, Track, TrackType } from '@orpheus/types/core';
+import { TimelinePosition, Track } from '@orpheus/types/core'; // Removed unused TrackType
 
 export interface TimelineProps {
   className?: string;
@@ -26,12 +26,13 @@ export const Timeline: React.FC<TimelineProps> = ({
   onPositionChange,
   onZoomChange,
   onTrackSelect,
-  onSelectionChange,
+  // onSelectionChange, // Commented out unused prop
   pixelsPerSecond = 50
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [selection, setSelection] = useState<{ start: TimelinePosition; end: TimelinePosition } | null>(null);
+  const [selection] = useState<{ start: TimelinePosition; end: TimelinePosition } | null>(null); 
+  // Removed setSelection since it's currently unused
   const [playheadPosition, setPlayheadPosition] = useState(currentPosition);
   
   const context = useContext(WorkstationContext) as WorkstationContextType | null;
@@ -296,7 +297,9 @@ export const Timeline: React.FC<TimelineProps> = ({
           data-testid="timeline-playhead"
           style={{
             position: 'absolute',
-            left: `${playheadPosition.toSeconds() * pixelsPerSecond * zoom}px`,
+            left: `${(playheadPosition && typeof playheadPosition.toSeconds === 'function' 
+              ? playheadPosition.toSeconds() 
+              : 0) * pixelsPerSecond * zoom}px`,
             top: 0,
             width: '2px',
             height: '100%',

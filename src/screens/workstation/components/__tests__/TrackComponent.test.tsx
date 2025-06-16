@@ -22,6 +22,112 @@ const AutomationLaneEnvelope = {
   Effect: "effect" as const,
 };
 
+// Define interfaces for the mock types
+interface MockTimelinePosition {
+  bar: number;
+  beat: number;
+  tick: number;
+  ticks: number;
+  toMargin: () => number;
+  fromMargin: () => { ticks: number };
+  snap: () => { ticks: number };
+  toTicks: () => number;
+  toSeconds: () => number;
+  copy: () => MockTimelinePosition;
+  equals: () => boolean;
+  add: () => MockTimelinePosition;
+  compareTo: () => number;
+}
+
+interface MockTrack {
+  id: string;
+  name: string;
+  type: string;
+  mute: boolean;
+  solo: boolean;
+  armed: boolean;
+  volume: number;
+  pan: number;
+  automation: boolean;
+  automationMode: string;
+  automationLanes: Array<{
+    id: string;
+    label: string;
+    envelope: string;
+    enabled: boolean;
+    minValue: number;
+    maxValue: number;
+    nodes: Array<unknown>;
+    show: boolean;
+    expanded: boolean;
+  }>;
+  clips: Array<unknown>;
+  color: string;
+  height: number;
+  collapsed: boolean;
+  selected: boolean;
+  effects: Array<unknown>;
+  fx: {
+    preset: null | unknown;
+    effects: Array<unknown>;
+    selectedEffectIndex: number;
+  };
+  inputs: Array<unknown>;
+  outputs: Array<unknown>;
+}
+
+interface MockWorkstationContext {
+  tracks: Array<MockTrack>;
+  masterTrack: MockTrack;
+  playheadPos: MockTimelinePosition;
+  maxPos: MockTimelinePosition;
+  numMeasures: number;
+  snapGridSize: MockTimelinePosition;
+  songRegion: null | unknown;
+  verticalScale: number;
+  timelineSettings: {
+    beatWidth: number;
+    timeSignature: { beats: number; noteValue: number };
+    horizontalScale: number;
+    tempo: number;
+  };
+  isPlaying: boolean;
+  scrollToItem: null | unknown;
+  allowMenuAndShortcuts: boolean;
+  setTracks: () => void;
+  setPlayheadPos: () => void;
+  setSongRegion: () => void;
+  setVerticalScale: () => void;
+  setScrollToItem: () => void;
+  setAllowMenuAndShortcuts: () => void;
+  addTrack: () => void;
+  adjustNumMeasures: () => void;
+  createAudioClip: () => void;
+  insertClips: () => void;
+  updateTimelineSettings: () => void;
+  setTrack: () => void;
+  duplicateTrack: () => void;
+  deleteTrack: () => void;
+  clearAutomation: () => void;
+  getTrackCurrentValue: () => { value: number; isAutomated: boolean };
+  addNode: () => void;
+  setLane: () => void;
+  setSelectedNodeId: () => void;
+  selectedTrackId: null | string;
+  setSelectedTrackId: () => void;
+  trackRegion: null | unknown;
+  setTrackRegion: () => void;
+  selectedClipId: null | string;
+  setSelectedClipId: () => void;
+  deleteClip: () => void;
+  duplicateClip: () => void;
+  splitClip: () => void;
+  consolidateClip: () => void;
+  toggleMuteClip: () => void;
+  pasteClip: () => void;
+  createClipFromTrackRegion: () => void;
+}
+
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
@@ -53,7 +159,7 @@ vi.mock("@orpheus/utils/utils", () => ({
 
 // Mock TimelinePosition with parseFromString method
 vi.mock("@orpheus/types/core", () => {
-  const mockTimelinePosition: any = {
+  const mockTimelinePosition: MockTimelinePosition = {
     ticks: 0,
     bar: 0,
     beat: 0,
@@ -166,7 +272,7 @@ describe("TrackComponent", () => {
   let container: HTMLDivElement;
 
   // Factory function to create mock TimelinePosition instances for tests
-  function createMockTimelinePosition(bar = 0, beat = 0, tick = 0): any {
+  function createMockTimelinePosition(bar = 0, beat = 0, tick = 0): MockTimelinePosition {
     return {
       bar,
       beat,
@@ -223,7 +329,7 @@ describe("TrackComponent", () => {
     styleTags.forEach(tag => tag.remove());
   });
 
-  const baseTrack: any = {
+  const baseTrack: MockTrack = {
     id: "test-track",
     name: "Test Track",
     type: TrackType.Audio,
@@ -251,7 +357,7 @@ describe("TrackComponent", () => {
   };
 
   // Mock context with all required properties
-  const mockWorkstationContext: any = {
+  const mockWorkstationContext: MockWorkstationContext = {
     tracks: [],
     masterTrack: baseTrack,
     playheadPos: createMockTimelinePosition(),
@@ -303,9 +409,9 @@ describe("TrackComponent", () => {
     createClipFromTrackRegion: vi.fn(),
   };
 
-  const renderWithContext = (component: React.ReactElement, container?: HTMLElement): any => {
+  const renderWithContext = (component: React.ReactElement, container?: HTMLElement) => {
     return render(
-      <WorkstationContext.Provider value={mockWorkstationContext as any}>
+      <WorkstationContext.Provider value={mockWorkstationContext}>
         {component}
       </WorkstationContext.Provider>,
       { container }

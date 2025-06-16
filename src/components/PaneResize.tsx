@@ -358,6 +358,8 @@ export default function PaneResize(props: IProps) {
       }}
     >
       {panes.map((pane, index) => {
+        // Destructuring pattern - some variables are only used in TS typing
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { auto, children, fixed, handle, key, min, max, size, ...rest } = pane;
         const style = direction === "vertical" ?
           { width: "100%", ...rest.style, height: size } :
