@@ -75,10 +75,10 @@ const getBaseTrack = (type = "audio"): Track => ({
   automationLanes: [],
   clips: [],
   color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-  pan: 0,
+  pan: { value: 0, isAutomated: false },
   solo: false,
   type: type === "midi" ? TrackType.Midi : TrackType.Audio,
-  volume: 0,
+  volume: { value: 75, isAutomated: false },
   fx: {
     preset: null,
     effects: [],
@@ -111,7 +111,7 @@ export function AudioAnalysisProvider({
   const [analysisResults, setAnalysisResults] = useState<AudioAnalysisResults | null>(null);
 
   const runAudioAnalysis = async (
-    audioBuffer: AudioBuffer,
+    _audioBuffer: AudioBuffer,
     type: AudioAnalysisType
   ) => {
     let results = null;
@@ -119,15 +119,15 @@ export function AudioAnalysisProvider({
     switch (type) {
       case AudioAnalysisType.Spectral:
         // Perform spectral analysis
-        results = await performSpectralAnalysis(audioBuffer);
+        results = await performSpectralAnalysis();
         break;
       case AudioAnalysisType.Waveform:
         // Perform waveform analysis
-        results = await performWaveformAnalysis(audioBuffer);
+        results = await performWaveformAnalysis();
         break;
       case AudioAnalysisType.Features:
         // Extract audio features
-        results = await extractAudioFeatures(audioBuffer);
+        results = await extractAudioFeatures();
         break;
     }
 
@@ -160,9 +160,11 @@ export function AudioAnalysisProvider({
   ): Promise<AudioAnalysisResults> => {
     // Implementation would analyze amplitude characteristics
     return {
-      waveform: Array.from(
-        { length: _audioBuffer.length },
-        () => Math.random() * 2 - 1
+      waveform: new Float32Array(
+        Array.from(
+          { length: _audioBuffer.length },
+          () => Math.random() * 2 - 1
+        )
       ),
     };
   };

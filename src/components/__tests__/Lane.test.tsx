@@ -282,9 +282,12 @@ describe('Lane Component', () => {
     verticalScale: 1,
     showMaster: true,
     timelineSettings: {
-      beatWidth: 80,
+      tempo: 120,
       timeSignature: { beats: 4, noteValue: 4 },
+      snap: true,
+      snapUnit: "sixteenth" as const,
       horizontalScale: 1,
+      beatWidth: 80,
     },
     isPlaying: false,
     scrollToItem: null,
@@ -369,6 +372,10 @@ describe('Lane Component', () => {
     toggleMuteClip: vi.fn(),
     setSelectedClipId: vi.fn(),
     pasteClip: vi.fn(),
+    // Missing properties from WorkstationContextType
+    addNode: vi.fn(),
+    pasteNode: vi.fn(),
+    setLane: vi.fn(),
   };
 
   const defaultProps = {

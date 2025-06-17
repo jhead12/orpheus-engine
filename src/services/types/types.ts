@@ -51,38 +51,7 @@ export enum ContextMenuType {
   Automation = "automation",
 }
 
-export interface Clip {
-  id: string;
-  name: string;
-  type: TrackType;
-  start: TimelinePosition;
-  end: TimelinePosition;
-  loopEnd: TimelinePosition;
-  startLimit?: TimelinePosition;
-  endLimit?: TimelinePosition;
-  muted: boolean;
-  audio?: {
-    audioBuffer: AudioBuffer;
-    buffer: AudioBuffer;
-    waveform: number[];
-    start: TimelinePosition;
-    end: TimelinePosition;
-  };
-}
 
-export interface Effect {
-  id: string;
-  name: string;
-  enabled: boolean;
-  type: "native" | "juce" | "python";
-  parameters: Record<string, any>;
-}
-
-export interface FXChainPreset {
-  id: string;
-  name: string;
-  effects: Effect[];
-}
 
 // Audio search exports (placeholder)
 export interface SearchResult {

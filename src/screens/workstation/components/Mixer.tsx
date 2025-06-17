@@ -16,9 +16,9 @@ import { openContextMenu } from "../editor-utils";
 import { 
   formatPanning, 
   getVolumeGradient, 
-  hslToHex, 
   volumeToNormalized 
 } from '@orpheus/utils/utils';
+import { hslToHex } from '@orpheus/utils/general';
 import { SortData } from "../editor-utils";
 import TrackIcon from "../../../components/icons/TrackIcon";
 
@@ -70,9 +70,14 @@ const MixerTrack = memo(
       const lane = track.automationLanes?.find(
         (lane) => lane.envelope === AutomationLaneEnvelope.Pan
       );
-      const panValue = getTrackCurrentValue(track, lane);
-      // Ensure we always have a valid object with value and isAutomated
-      return panValue || { value: 0, isAutomated: false };
+      
+      if (lane && getTrackCurrentValue) {
+        // If there's automation, use the current value from the track
+        return getTrackCurrentValue(track);
+      }
+      
+      // Otherwise return the base pan value
+      return track.pan || { value: 0, isAutomated: false };
     }, [track, getTrackCurrentValue]);
 
     useEffect(() => setName(track.name), [track.name]);
@@ -156,11 +161,6 @@ const MixerTrack = memo(
         effect: {
           actionsContainer: { border: "none", padding: 0, marginLeft: 2 },
           container: { paddingTop: 1 },
-        },
-        select: {
-          optionsList: {
-            maxHeight: 100,
-          },
         },
       },
       automationModeSpinBox: {

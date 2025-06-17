@@ -13,7 +13,8 @@ const mockWorkstationContext = {
   getTrackCurrentValue: vi.fn().mockReturnValue({ value: 0, isAutomated: false }),
   setTrack: vi.fn(),
   automationMode: 'Off',
-  setAutomationMode: vi.fn()
+  setAutomationMode: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn()
 };
 
 const mockMixerContext = {
@@ -39,6 +40,9 @@ vi.mock('@orpheus/widgets', () => ({
   SortableList: ({ children, ...rest }) => <div data-testid="sortable-list" {...rest}>{children}</div>,
   SortableListItem: ({ children, index, ...rest }) => (
     <div data-testid={`sortable-item-${index}`} {...rest}>{children}</div>
+  ),
+  HueInput: ({ value, onChange, ...rest }) => (
+    <input data-testid="hue-input" value={value || 0} onChange={(e) => onChange && onChange(parseFloat(e.target.value))} {...rest} />
   )
 }));
 

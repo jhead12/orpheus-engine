@@ -29,7 +29,7 @@ export interface WorkstationContextType {
   deleteTrack?: (track: Track) => void;
   duplicateClip?: (clip: Clip) => void;
   duplicateTrack?: (trackId: string) => void;
-  getTrackCurrentValue?: (track: Track) => number;
+  getTrackCurrentValue?: (track: Track) => { value: number; isAutomated: boolean };
   insertClips: (clips: Clip[], trackId: string, position?: TimelinePosition) => void;
   isLooping?: boolean;
   isPlaying: boolean;
@@ -40,7 +40,7 @@ export interface WorkstationContextType {
   pasteClip?: (trackId: string, position: TimelinePosition) => void;
   pasteNode: (pos: TimelinePosition, lane: AutomationLane) => void;
   playheadPos: TimelinePosition;
-  scrollToItem?: string | null;
+  scrollToItem?: { type: string; params?: Record<string, any> } | null;
   selectedClipId?: string | null;
   selectedNodeId?: string | null;
   selectedTrackId: string | null;
@@ -51,7 +51,7 @@ export interface WorkstationContextType {
   setLane: (track: Track, lane: AutomationLane) => void;
   setMetronome?: (value: boolean) => void;
   setPlayheadPos: (pos: TimelinePosition) => void;
-  setScrollToItem?: (id: string | null) => void;
+  setScrollToItem?: (item: { type: string; params?: Record<string, any> } | null) => void;
   setSelectedClipId?: (id: string | null) => void;
   setSelectedNodeId?: (id: string | null) => void;
   setSelectedTrackId: (id: string | null) => void;
@@ -142,8 +142,54 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
   });
   const [snapGridSize] = useState<TimelinePosition>(new TimelinePosition(0, 1, 0));
   const [trackRegion] = useState<any | null>(null);
+  const [allowMenuAndShortcuts, setAllowMenuAndShortcuts] = useState<boolean>(true);
 
   // Callbacks
+  const addTrack = useCallback((type: TrackType) => {
+    const newTrack: Track = {
+      id: `track-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: `Track ${tracks.length + 1}`,
+      type,
+      color: type === TrackType.Audio ? "#4a90e2" : "#7ed321",
+      volume: { value: 0.8, isAutomated: false },
+      pan: { value: 0, isAutomated: false },
+      mute: false,
+      solo: false,
+      armed: false,
+      clips: [],
+      effects: [],
+      automationLanes: [],
+      automation: false,
+      automationMode: AutomationMode.Read,
+      fx: {
+        preset: null,
+        selectedEffectIndex: 0,
+        effects: [],
+      },
+    };
+    setTracks(prev => [...prev, newTrack]);
+  }, [tracks]);
+
+  const duplicateTrack = useCallback((trackId: string) => {
+    const originalTrack = tracks.find(t => t.id === trackId);
+    if (originalTrack) {
+      const duplicatedTrack: Track = {
+        ...originalTrack,
+        id: `track-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: `${originalTrack.name} Copy`,
+        clips: originalTrack.clips.map(clip => ({ ...clip, id: `clip-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` })),
+      };
+      setTracks(prev => [...prev, duplicatedTrack]);
+    }
+  }, [tracks]);
+
+  const deleteTrack = useCallback((track: Track) => {
+    setTracks(prev => prev.filter(t => t.id !== track.id));
+    if (selectedTrackId === track.id) {
+      setSelectedTrackId(null);
+    }
+  }, [selectedTrackId]);
+
   const setTrack = useCallback((track: Track) => {
     const newTracks = [...tracks];
     const index = newTracks.findIndex(t => t.id === track.id);
@@ -183,14 +229,26 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     setTimelineSettings(updater);
   }, []);
 
+  const getTrackCurrentValue = useCallback((track: Track) => {
+    // Get the current value for a track parameter at the current playhead position
+    // This would typically look at automation lanes and return the interpolated value
+    // For now, return the base volume value as a placeholder
+    return {
+      value: track.volume.value,
+      isAutomated: track.volume.isAutomated
+    };
+  }, []);
+
   // Context value
   const value: WorkstationContextType = {
     addNode,
-    adjustNumMeasures: (pos?: TimelinePosition) => {
-      if (pos) {
-        setNumMeasures(pos.measure + 1);
-        setMaxPos(new TimelinePosition(pos.measure + 1, 0, 0));
-      }
+    addTrack,
+    adjustNumMeasures: (/* pos?: TimelinePosition */) => {
+      // Implementation for adjusting number of measures
+    },
+    allowMenuAndShortcuts,
+    consolidateClip: (/* clip: Clip */) => {
+      // Implementation for consolidating clips
     },
     createAudioClip: async (/* file: File | Blob, position?: TimelinePosition */) => {
       // Implementation for creating audio clips
@@ -199,6 +257,9 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     createClipFromTrackRegion: () => {
       // Implementation for creating clips from track region
     },
+    deleteTrack,
+    duplicateTrack,
+    getTrackCurrentValue,
     insertClips: (/* clips: Clip[], track: Track */) => {
       // Implementation for inserting clips
     },
@@ -209,6 +270,7 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     pasteNode,
     playheadPos,
     selectedTrackId,
+    setAllowMenuAndShortcuts,
     setLane,
     setPlayheadPos,
     setSelectedTrackId,

@@ -37,16 +37,29 @@ export const getAudioSettings = () => {
 export type AudioSettings = typeof audioSettings;
 
 // Add missing function for audio devices
-export const getAudioDevices = async (): Promise<MediaDeviceInfo[]> => {
+export const getAudioDevices = async (): Promise<{
+  inputs: Array<{ label: string; value: string }>;
+  outputs: Array<{ label: string; value: string }>;
+}> => {
   // Request permission and get audio devices
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
     const devices = await navigator.mediaDevices.enumerateDevices();
-    return devices.filter(
+    const audioDevices = devices.filter(
       (device) => device.kind === "audioinput" || device.kind === "audiooutput"
     );
+    
+    const inputs = audioDevices
+      .filter(device => device.kind === "audioinput")
+      .map(device => ({ label: device.label || `Input ${device.deviceId}`, value: device.deviceId }));
+    
+    const outputs = audioDevices
+      .filter(device => device.kind === "audiooutput")
+      .map(device => ({ label: device.label || `Output ${device.deviceId}`, value: device.deviceId }));
+    
+    return { inputs, outputs };
   } catch (error) {
     console.error("Failed to get audio devices:", error);
-    return [];
+    return { inputs: [], outputs: [] };
   }
 };

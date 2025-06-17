@@ -5,12 +5,12 @@ import { useCallback, useEffect, useRef } from 'react';
  * @param callback Function to call when a click outside occurs
  * @returns Ref to attach to the target element
  */
-export function useClickAway<T extends HTMLElement>(callback: () => void) {
+export function useClickAway<T extends HTMLElement>(callback: (e: MouseEvent) => void) {
   const ref = useRef<T>(null);
 
   const handleClick = useCallback((e: MouseEvent) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
-      callback();
+      callback(e);
     }
   }, [callback]);
 

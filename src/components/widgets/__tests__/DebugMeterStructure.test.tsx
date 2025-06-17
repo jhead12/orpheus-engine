@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import '@testing-library/jest-dom';
@@ -33,7 +32,8 @@ describe('Debug Meter Structure', () => {
       const elements = container.querySelectorAll(selector);
       console.log(`\n${selector}: ${elements.length} matches`);
       elements.forEach((el, i) => {
-        console.log(`  [${i}] width: ${el.style.width || 'none'}, background: ${el.style.background || 'none'}`);
+        const htmlEl = el as HTMLElement;
+        console.log(`  [${i}] width: ${htmlEl.style.width || 'none'}, background: ${htmlEl.style.background || 'none'}`);
       });
     });
     

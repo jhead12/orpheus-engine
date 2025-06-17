@@ -139,7 +139,7 @@ export function AudioAnalysisProvider({
 
   // Mock implementation of analysis functions
   const performSpectralAnalysis = async (
-    audioBuffer: AudioBuffer
+    _audioBuffer: AudioBuffer
   ): Promise<AudioAnalysisResults> => {
     // Use the audioBuffer to generate spectral data
     // Using sample rate for realistic frequency calculations
@@ -298,7 +298,7 @@ export default function Editor() {
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
     };
   }, [setAllowMenuAndShortcuts]);
 
@@ -319,7 +319,7 @@ export default function Editor() {
           target: null,
         });
         setScrollToBottom(scrollTop >= scrollHeight - clientHeight);
-        setAllowMenuAndShortcuts(false);
+        setAllowMenuAndShortcuts?.(false);
       }
 
       dragEnter.current = true;
@@ -363,7 +363,7 @@ export default function Editor() {
 
       setDragData({ items: [], target: null });
       adjustNumMeasures();
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
       setResetDragState(false);
     }
   }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
