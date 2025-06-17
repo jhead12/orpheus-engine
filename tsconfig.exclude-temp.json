@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    // Visual agent system - standalone tool
+    "src/test/visual-agent/**/*",
+    // Legacy/duplicate files
+    "src/test/setup.new.ts",
+    "src/test/helpers-new.ts", 
+    "src/test/utils/index-old.ts",
+    "src/test/utils/mixer-test-utils-new.tsx",
+    "src/test/utils/workstation-test-utils.new.tsx",
+    // Standalone debug/verification files
+    "src/test/basic-dom-test.js",
+    "src/test/debug-mixer-tests.js",
+    "src/test/minimal-mixer-test.jsx",
+    "src/test/simple-verification.js",
+    "src/test/verify-*.js",
+    "src/test/validate-*.js",
+    // Screenshot functionality with node dependencies
+    "src/test/screenshot.ts",
+    // Electron files if not needed for core functionality
+    "electron/**/*"
+  ]
+}

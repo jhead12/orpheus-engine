@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 
 // Simple mock context
 const mockContext = {
@@ -16,12 +15,12 @@ const mockContext = {
 };
 
 // Simple mock TestComponent
-const TestComponent = ({ context }) => (
+const TestComponent = ({ context }: { context: any }) => (
   <div data-testid="mixer-test">
     <div data-testid="master-channel" className="mixer-track">
       {context.masterTrack.name} - {context.masterTrack.volume}
     </div>
-    {context.tracks.map(track => (
+    {context.tracks.map((track: any) => (
       <div 
         key={track.id}
         data-testid={`mixer-channel-${track.id}`} 
@@ -41,21 +40,21 @@ const TestComponent = ({ context }) => (
 
 // Import helper functions from mixer-test-helpers
 // Simplified versions directly included here for testing
-const findTrackElementsByName = (container, name) => {
-  const elements = [];
+const findTrackElementsByName = (container: any, name: string): any[] => {
+  const elements: any[] = [];
   const inputs = container.querySelectorAll(`input[value="${name}"]`);
-  inputs.forEach(el => elements.push(el));
+  inputs.forEach((el: any) => elements.push(el));
   return elements;
 };
 
-const ensureKnobs = (container) => {
+const ensureKnobs = (container: any): number => {
   const knobs = container.querySelectorAll('[data-testid*="mixer-pan"], [title*="Pan:"]');
   return knobs.length;
 };
 
 describe('Mixer Mock Test', () => {
   it('should render tracks', () => {
-    const { container } = render(<TestComponent context={mockContext} />);
+    render(<TestComponent context={mockContext} />);
     expect(screen.getByTestId('mixer-test')).toBeInTheDocument();
     expect(screen.getByTestId('master-channel')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-channel-track-1')).toBeInTheDocument();

@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "electron/**/*",
+    "src/main/**/*",
+    "src/test/setup.new.ts",
+    "src/test/helpers-new.ts",
+    "src/test/utils/index-old.ts",
+    "src/test/utils/mixer-test-utils-new.tsx",
+    "src/test/utils/workstation-test-utils.new.tsx",
+    "src/test/standalone-mixer-components.test.tsx",
+    "src/test/mixer-element-validation.test.tsx",
+    "src/test/basic-dom-test.js",
+    "src/test/debug-mixer-tests.js",
+    "src/test/minimal-mixer-test.jsx",
+    "src/test/simple-verification.js",
+    "src/test/verify-*.js",
+    "node_modules/**/*",
+    "dist/**/*"
+  ]
+}

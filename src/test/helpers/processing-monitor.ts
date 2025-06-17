@@ -271,7 +271,7 @@ class ProcessingMonitor {
       // Check audio context state
       if (this.audioContext.state === 'running') {
         // Check if there's significant audio processing happening
-        const currentTime = this.audioContext.currentTime;
+        const _currentTime = this.audioContext.currentTime;
         const baseLatency = this.audioContext.baseLatency || 0;
         const outputLatency = (this.audioContext as any).outputLatency || 0;
         
@@ -279,6 +279,8 @@ class ProcessingMonitor {
         return (baseLatency + outputLatency) < this.options.audioBufferThreshold!;
       }
       
+      // AudioContext states: 'running', 'suspended', 'closed'
+      // If not running, then audio processing is stable
       return this.audioContext.state !== 'running';
     } catch (error) {
       return true; // Assume stable if we can't check

@@ -1,4 +1,3 @@
-import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { vi, beforeAll, afterAll, beforeEach } from "vitest";
 import { SyncScroll } from "../SyncScroll";

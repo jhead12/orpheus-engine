@@ -1,4 +1,3 @@
-import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { SortableList, SortableListItem } from "../SortableList";
@@ -334,7 +333,7 @@ describe("SortableList handleMouseUp", () => {
 
   it("should calculate correct destination index based on mouse position", () => {
     // Mock getBoundingClientRect to return specific positions
-    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function() {
+    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function(this: Element) {
       const dataIndex = this.getAttribute('data-index');
       const indexNum = parseInt(dataIndex || '0');
       return {
@@ -379,7 +378,7 @@ describe("SortableList handleMouseUp", () => {
   });
 
   it("should handle edge case where mouse up occurs on item midpoint", () => {
-    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function() {
+    Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function(this: Element) {
       const dataIndex = this.getAttribute('data-index');
       const indexNum = parseInt(dataIndex || '0');
       return {
