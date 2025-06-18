@@ -22,7 +22,7 @@ import { clamp } from "@orpheus/utils/general";
 import { Tooltip } from "@orpheus/widgets";
 import DNR, { DNRData } from "../../../components/DNR";
 import { openContextMenu } from '@orpheus/services/electron/utils';
-import useClickAway from "../../../services/hooks/useClickAway";
+import useClickAway from "@orpheus/services/hooks/useClickAway";
 
 interface IProps {
   color: string;

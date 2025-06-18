@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Track, Effect } from '../types/core';
+import { Track, Effect } from '@orpheus/types/core';
 
 interface MeterData {
   left: number;

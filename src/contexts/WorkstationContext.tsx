@@ -125,8 +125,8 @@ export const WorkstationProvider: React.FC<WorkstationProviderProps> = ({
     new TimelinePosition(0, 0, 0)
   );
   const [isPlaying] = useState<boolean>(false);
-  const [numMeasures, setNumMeasures] = useState<number>(32);
-  const [maxPos, setMaxPos] = useState<TimelinePosition>(
+  const [numMeasures] = useState<number>(32); // setNumMeasures removed as unused
+  const [maxPos] = useState<TimelinePosition>( // setMaxPos removed as unused
     new TimelinePosition(32, 0, 0)
   );
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);

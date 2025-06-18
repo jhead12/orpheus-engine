@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { audioService } from '../../services/AudioService';
-import { pluginSystem } from '../../plugins';
-import type { AudioFile } from '../../services/AudioService';
+import { audioService } from '@orpheus/services/AudioService';
+import { pluginSystem } from '@orpheus/plugins';
+import type { AudioFile } from '@orpheus/services/AudioService';
 
 export const AudioPluginDemo: React.FC = () => {
   const [loadedFiles, setLoadedFiles] = useState<AudioFile[]>([]);
@@ -68,7 +68,7 @@ export const AudioPluginDemo: React.FC = () => {
             p => p.manifest.id === 'orpheus.audio.analysis'
           );
           
-          if (analysisPlugin) {
+          if (analysisPlugin?.plugin.processAudio) {
             await analysisPlugin.plugin.processAudio(analysisData);
           }
         }

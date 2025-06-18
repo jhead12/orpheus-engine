@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { WorkstationProvider, useWorkstation } from '../WorkstationContext';
-import { Track, TrackType } from '../../types/core'; // Removed unused AutomationMode
+import { Track, TrackType } from '@orpheus/types/core'; // Removed unused AutomationMode
 
 // Mock services
 vi.mock('../../services/PlatformService', () => ({
@@ -68,12 +68,12 @@ describe('WorkstationContext', () => {
   });
 
   describe('Track Management', () => {
-    it('should add new audio track', () => {
-      const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
-      act(() => {
-        result.current.addTrack('audio');
-      });
+  it('should add new audio track', () => {
+    const { result } = renderHook(() => useWorkstation(), { wrapper });
+    
+    act(() => {
+      result.current.addTrack(TrackType.Audio);
+    });
       
       expect(result.current.tracks).toHaveLength(1);
       expect(result.current.tracks[0].type).toBe(TrackType.Audio);
@@ -84,7 +84,7 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('midi');
+        result.current.addTrack(TrackType.Midi);
       });
       
       expect(result.current.tracks).toHaveLength(1);

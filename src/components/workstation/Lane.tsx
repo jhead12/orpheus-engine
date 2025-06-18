@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Buffer } from "buffer";
+// import { Buffer } from "buffer"; // Removed as unused
 import {
   IconButton,
   SpeedDial,
@@ -34,14 +34,15 @@ import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
 import { WorkstationContext } from "../../contexts/WorkstationContext";
 import { AnalysisContext } from "../../contexts/AnalysisContext";
-import { ContextMenuType } from "../../types/context-menu";
+import { ContextMenuType, ContextMenuParams } from "@orpheus/types/context-menu";
+import { TimelineSettings } from "@orpheus/types/core";
 import {
   TimelinePosition,
   TrackType,
   AutomationMode,
   Clip,
 } from "../../types/core";
-import { Track } from "../../services/types/types";
+import { Track } from "@orpheus/services/types/types";
 import {
   AudioAnalysisType,
   AudioAnalysisResults,
@@ -118,15 +119,15 @@ export function AudioAnalysisProvider({
     switch (type) {
       case AudioAnalysisType.Spectral:
         // Perform spectral analysis
-        results = await performSpectralAnalysis();
+        results = await performSpectralAnalysis(_audioBuffer);
         break;
       case AudioAnalysisType.Waveform:
         // Perform waveform analysis
-        results = await performWaveformAnalysis();
+        results = await performWaveformAnalysis(_audioBuffer);
         break;
       case AudioAnalysisType.Features:
         // Extract audio features
-        results = await extractAudioFeatures();
+        results = await extractAudioFeatures(_audioBuffer);
         break;
     }
 
@@ -136,7 +137,7 @@ export function AudioAnalysisProvider({
 
   // Mock implementation of analysis functions
   const performSpectralAnalysis = async (
-    /* audioBuffer: AudioBuffer */ // Parameter commented out as it's unused
+    _audioBuffer: AudioBuffer
   ): Promise<AudioAnalysisResults> => {
     // Implementation would connect to Python backend for FFT analysis
     return {
@@ -169,7 +170,7 @@ export function AudioAnalysisProvider({
   };
 
   const extractAudioFeatures = async (
-    /* audioBuffer: AudioBuffer */ // Parameter commented out as it's unused
+    _audioBuffer: AudioBuffer
   ): Promise<AudioAnalysisResults> => {
     // Implementation would extract MFCCs, onset detection, etc.
     return {
@@ -529,6 +530,11 @@ export default function Editor() {
       const timelineEditorWindow = timelineEditorWindowRef.current!;
       // const rect = timelineEditorWindow.getBoundingClientRect(); // Not needed after removing position calculation
       
+      // Calculate drop position from mouse coordinates
+      const rect = timelineEditorWindow.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const position = TimelinePosition.fromMargin(x);
+      
       // These calculations were used for position, but now we've removed the position calculation
       // const margin = timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
       // const gridSize = typeof snapGridSize === "number" ? snapGridSize : getGridSizeFromOption(snapGridSize);
@@ -539,11 +545,11 @@ export default function Editor() {
             !dragData.target.track ||
             dragData.target.track.type === TrackType.Audio
           ) {
-            const name = files[i].name.split(".")[0];
+            // const _name = files[i].name.split(".")[0]; // Keep for future use
 
             try {
-              const arrayBuffer = await files[i].arrayBuffer();
-              const buffer = Buffer.from(arrayBuffer);
+              // const arrayBuffer = await files[i].arrayBuffer(); // Unused
+              // const _buffer = Buffer.from(arrayBuffer); // Keep for future use
 
               const result = await createAudioClip(files[i], position);
 
@@ -571,7 +577,7 @@ export default function Editor() {
       }
 
       if (dragData.target.track && clips.length > 0) {
-        insertClips(clips, track.id, position);
+        insertClips(clips, dragData.target.track.id, position);
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
@@ -585,7 +591,7 @@ export default function Editor() {
           timelineEditorWindow.scrollTop >=
           timelineEditorWindow.scrollHeight - timelineEditorWindow.clientHeight
         )
-          setScrollToItem({
+          setScrollToItem?.({
             type: "track",
             params: { trackId: newTracks[newTracks.length - 1].id },
           });
@@ -601,7 +607,7 @@ export default function Editor() {
     openContextMenu(ContextMenuType.Region, {}, (params: ContextMenuParams) => {
       switch (params.action) {
         case 1:
-          setSongRegion(null);
+          setSongRegion?.(null);
           break;
       }
     });
@@ -620,7 +626,7 @@ export default function Editor() {
 
       setTracks(newTracks);
       if (newTracks[data.destIndex]) {
-        setScrollToItem({
+        setScrollToItem?.({
           type: "track",
           params: { trackId: newTracks[data.destIndex].id },
         });
@@ -671,9 +677,10 @@ export default function Editor() {
     }
   }
 
-  const zoomByWheel = debounce((e: React.WheelEvent) => {
+  const zoomByWheel = debounce((e: unknown) => {
+    const wheelEvent = e as React.WheelEvent;
     const pinch =
-      e.ctrlKey &&
+      wheelEvent.ctrlKey &&
       !macOSCtrlPressed.current &&
       !cmdCtrlPressedBeforeWheel.current;
 
@@ -681,22 +688,22 @@ export default function Editor() {
 
     if (dragData.items.length === 0) {
       if (cmdCtrlPressedBeforeWheel.current || pinch) {
-        if (e.shiftKey || pinch || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) {
+        if (wheelEvent.shiftKey || pinch || Math.abs(wheelEvent.deltaX) >= Math.abs(wheelEvent.deltaY)) {
           let delta =
-            Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+            Math.abs(wheelEvent.deltaY) > Math.abs(wheelEvent.deltaX) ? wheelEvent.deltaY : wheelEvent.deltaX;
 
           if (Math.abs(delta) > 2) {
             const timelineEditorWindow = timelineEditorWindowRef.current!;
             const rect = timelineEditorWindow.getBoundingClientRect();
             const margin =
-              e.clientX - rect.left + timelineEditorWindow.scrollLeft;
+              wheelEvent.clientX - rect.left + timelineEditorWindow.scrollLeft;
 
             zoomAnchorPos.current = TimelinePosition.fromMargin(margin);
             zoomAnchorWindowAlignment.current =
-              (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
+              (wheelEvent.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
             updateTimelineSettings((prev: TimelineSettings) => {
-              const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
+              const sign = Math.sign(delta) * (wheelEvent.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
               return {
@@ -706,13 +713,13 @@ export default function Editor() {
             });
           }
         } else {
-          if (Math.abs(e.deltaY) > 5) {
+          if (Math.abs(wheelEvent.deltaY) > 5) {
             const newScale = clamp(
-              verticalScale + (e.deltaY < 0 ? 0.25 : -0.25),
+              verticalScale + (wheelEvent.deltaY < 0 ? 0.25 : -0.25),
               0.75,
               5
             );
-            setVerticalScale(newScale);
+            setVerticalScale?.(newScale);
           }
         }
       }
@@ -731,7 +738,7 @@ export default function Editor() {
 
   const { timeSignature } = timelineSettings;
   const beatWidth =
-    timelineSettings.beatWidth *
+    (timelineSettings?.beatWidth ?? 0) *
     (timelineSettings.horizontalScale ?? 1) *
     (4 / (timelineSettings.timeSignature?.noteValue ?? 4));
   const measureWidth = beatWidth * timeSignature.beats;
@@ -915,7 +922,7 @@ export default function Editor() {
                       }}
                     />
                   }
-                  slotProps={{ transition: { style: style.speedDial } }}
+                  // slotProps={{ transition: { style: style.speedDial } }}
                   sx={{
                     flex: 1,
                     "&:hover .MuiSpeedDial-actions": {
@@ -979,7 +986,7 @@ export default function Editor() {
                   onSortUpdate={(data: SortData) =>
                     setTrackReorderData({
                       ...trackReorderData,
-                      edgeIndex: data.edgeIndex,
+                      edgeIndex: data.edgeIndex ?? 0,
                     })
                   }
                   onStart={handleSortStart}
@@ -1049,8 +1056,7 @@ export default function Editor() {
                     }}
                   >
                     <RegionComponent
-                      onContextMenu={handleSongRegionContextMenu}
-                      onSetRegion={(region) => setSongRegion(region)}
+                      onContextMenu={handleSongRegionContextMenu}                       onSetRegion={(region) => setSongRegion?.(region)}
                       region={songRegion}
                       style={{
                         zIndex: 13,

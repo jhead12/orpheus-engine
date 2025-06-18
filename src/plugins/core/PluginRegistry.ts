@@ -5,8 +5,8 @@
 
 import { IPlugin, PluginManifest, PluginContext } from './IPlugin';
 import { PlatformDetector } from './PlatformDetector';
-import { pythonBackend } from '../../services/PythonBackendService';
-import { audioService } from '../../services/AudioService';
+import { pythonBackend } from '@orpheus/services/PythonBackendService';
+import { audioService } from '@orpheus/services/AudioService';
 
 export interface RegisteredPlugin {
   plugin: IPlugin;

@@ -8,8 +8,10 @@ import Workstation from "./screens/workstation/Workstation";
 import Preferences from "./components/Preferences";
 import SettingsProvider from "./components/settings/SettingsManager";
 import { DocsPage, DocsNavigation } from "./components/docs";
-import { pluginSystem } from "./plugins";
 import "./styles/App.css";
+
+// Import plugin system
+import { pluginSystem } from "./plugins";
 
 function App(): React.ReactElement {
   useEffect(() => {

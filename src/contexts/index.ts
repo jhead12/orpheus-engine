@@ -37,11 +37,11 @@ export interface SearchResult {
 export const useAudioSearch = () => {
   // Placeholder implementation
   return {
-    search: (query: string) => Promise.resolve([]),
+    search: (_query: string) => Promise.resolve([]),
     results: [] as SearchResult[],
     loading: false,
     isSearching: false,
     error: null as string | null,
-    selectResult: (result: SearchResult) => {},
+    selectResult: (_result: SearchResult) => {},
   };
 };

@@ -42,8 +42,8 @@ import {
   TrackType,
   AutomationMode,
 } from "../../types/core";
-import { TimelinePosition } from "../../types/core";
-import { AudioAnalysisType } from "../../services/types/types";
+import { TimelinePosition } from "@orpheus/types/core";
+import { AudioAnalysisType } from "@orpheus/services/types/types";
 import {
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,

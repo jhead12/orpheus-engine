@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { v4 as uuidv4 } from 'uuid';
-import { Track, TrackType, AutomationMode } from '../../types/core';
+import { Track, TrackType, AutomationMode } from '@orpheus/types/core';
 
 interface TrackInput {
   name: string;
@@ -48,8 +48,8 @@ export class TrackAPI {
       mute: false,
       solo: false,
       armed: false,
-      volume: 0,
-      pan: 0,
+      volume: { value: 0, isAutomated: false },
+      pan: { value: 0, isAutomated: false },
       automation: false,
       automationMode: AutomationMode.Off,
       automationLanes: [],
@@ -74,7 +74,14 @@ export class TrackAPI {
 
     const updatedTrack: Track = {
       ...existingTrack,
-      ...input
+      ...input,
+      // Ensure volume and pan are proper AutomatableParameter objects
+      ...(input.volume !== undefined && typeof input.volume === 'number' 
+        ? { volume: { value: input.volume, isAutomated: false } } 
+        : {}),
+      ...(input.pan !== undefined && typeof input.pan === 'number' 
+        ? { pan: { value: input.pan, isAutomated: false } } 
+        : {})
     };
 
     this.tracks.set(id, updatedTrack);

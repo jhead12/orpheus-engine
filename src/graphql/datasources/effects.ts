@@ -1,6 +1,6 @@
 import DataLoader from "dataloader";
 import { v4 as uuidv4 } from "uuid";
-import { Effect, BaseEffect } from "../../types/core";
+import { Effect } from "@orpheus/types/core"; // Removed unused BaseEffect
 
 interface EffectInput {
   name: string;

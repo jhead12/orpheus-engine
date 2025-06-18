@@ -10,3 +10,10 @@ export enum ContextMenuType {
   Timeline = "timeline",
   Track = "track",
 }
+
+export interface ContextMenuParams {
+  action: string;
+  x?: number;
+  y?: number;
+  data?: any;
+}
