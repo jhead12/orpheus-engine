@@ -1,0 +1,565 @@
+/* Plugin System Styles for Orpheus Engine */
+
+.plugin-manager {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.plugin-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.plugin-manager-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.plugin-manager-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.plugin-manager-controls button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.plugin-manager-controls button:hover {
+  background: var(--primary-hover);
+}
+
+.plugin-list {
+  margin-bottom: 1rem;
+}
+
+.plugin-list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.plugin-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  align-items: center;
+}
+
+.plugin-item:last-child {
+  border-bottom: none;
+}
+
+.plugin-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.plugin-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.plugin-version {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.plugin-status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.plugin-status-loaded {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.plugin-status-active {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.plugin-status-inactive {
+  background: var(--secondary-bg);
+  color: var(--secondary-text);
+}
+
+.plugin-status-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.plugin-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.plugin-actions button {
+  background: var(--secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.plugin-actions button:hover {
+  background: var(--secondary-hover);
+  border-color: var(--primary);
+}
+
+.plugin-details {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.plugin-details h3 {
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
+.plugin-details h4 {
+  color: var(--text-primary);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.plugin-details p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.plugin-details ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.plugin-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Audio Analysis Plugin Styles */
+.audio-analysis-plugin {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.plugin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.plugin-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.plugin-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.plugin-controls button {
+  background: var(--secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.plugin-controls button:hover {
+  background: var(--secondary-hover);
+  border-color: var(--primary);
+}
+
+.analysis-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.analysis-display > div {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.analysis-display h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+#frequency-canvas {
+  width: 100%;
+  height: 100px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-primary);
+}
+
+#tempo-display,
+#key-display {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 500;
+  color: var(--text-primary);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CSS Variables for theming - Update these to match your DAW theme */
+:root {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #3a3a3a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #444444;
+  --primary: #007acc;
+  --primary-hover: #005a9e;
+  --secondary: #444444;
+  --secondary-hover: #555555;
+  --success-bg: #4caf5020;
+  --success-text: #4caf50;
+  --warning-bg: #ff980020;
+  --warning-text: #ff9800;
+  --error-bg: #f4433620;
+  --error-text: #f44336;
+  --secondary-bg: #61616120;
+  --secondary-text: #616161;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --border-color: #30363d;
+  }
+}
+
+/* Audio Plugin Demo Styles */
+.audio-plugin-demo {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.demo-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.status-indicators {
+  display: flex;
+  gap: 1rem;
+}
+
+.status-indicator {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.status-indicator.connected {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-text);
+}
+
+.status-indicator.disconnected {
+  background: var(--error-bg);
+  color: var(--error-text);
+  border-color: var(--error-text);
+}
+
+.status-indicator.unknown {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-color: var(--warning-text);
+}
+
+.demo-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.section-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.load-button, .stop-button, .play-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.load-button {
+  background: var(--primary);
+  color: white;
+}
+
+.load-button:hover {
+  background: var(--primary-hover);
+}
+
+.stop-button {
+  background: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-text);
+}
+
+.stop-button:hover {
+  background: var(--error-text);
+  color: white;
+}
+
+.play-button {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-text);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.play-button:hover {
+  background: var(--success-text);
+  color: white;
+}
+
+.audio-files-list, .plugins-list {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem 1rem;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.audio-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.5rem;
+}
+
+.audio-file-item:last-child {
+  margin-bottom: 0;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.file-details {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.file-actions {
+  margin-left: 1rem;
+}
+
+.plugin-item {
+  background: var(--bg-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.plugin-item:last-child {
+  margin-bottom: 0;
+}
+
+.plugin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.plugin-info {
+  flex: 1;
+}
+
+.plugin-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.plugin-category {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.plugin-status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.plugin-ui-container {
+  padding: 1rem;
+}
+
+.demo-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.demo-footer p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .demo-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .status-indicators {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}

@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 import { Buffer } from "buffer";
-import { v4 } from "uuid";
 import {
   IconButton,
   SpeedDial,
@@ -282,7 +281,7 @@ export default function Editor() {
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
     };
   }, [setAllowMenuAndShortcuts]);
 
@@ -303,7 +302,7 @@ export default function Editor() {
           target: null,
         });
         setScrollToBottom(scrollTop >= scrollHeight - clientHeight);
-        setAllowMenuAndShortcuts(false);
+        setAllowMenuAndShortcuts?.(false);
       }
 
       dragEnter.current = true;
@@ -346,8 +345,8 @@ export default function Editor() {
       dragEnter.current = false;
 
       setDragData({ items: [], target: null });
-      adjustNumMeasures(0); // Reset to minimum measures
-      setAllowMenuAndShortcuts(true);
+      adjustNumMeasures(); // Reset to minimum measures
+      setAllowMenuAndShortcuts?.(true);
       setResetDragState(false);
     }
   }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
@@ -405,7 +404,7 @@ export default function Editor() {
             break;
         }
 
-        setScrollToItem(null);
+        setScrollToItem?.(null);
       });
     }
   }, [scrollToItem, setScrollToItem]);
@@ -470,7 +469,7 @@ export default function Editor() {
   }
 
   const handleDropzoneDragEnter = debounce(
-    (e: React.DragEvent, track: Track | null) => {
+    ((e: React.DragEvent, track: Track | null) => {
       e.preventDefault();
 
       if (dragData.items.length > 0 && dragEnter.current) {
@@ -497,7 +496,7 @@ export default function Editor() {
           setDragData({ ...dragData, target: { track, incompatible } });
         }
       }
-    },
+    }) as any,
     25
   );
 
@@ -546,15 +545,7 @@ export default function Editor() {
               const arrayBuffer = await files[i].arrayBuffer();
               const buffer = Buffer.from(arrayBuffer);
 
-              const result = await createAudioClip({
-                id: v4(),
-                name,
-                path: files[i].name,
-                type: files[i].type,
-                size: files[i].size,
-                lastModified: files[i].lastModified,
-                buffer,
-              });
+              const result = await createAudioClip(files[i], position);
 
               if (result && typeof result === "object" && "end" in result) {
                 clips.push(result as Clip);
@@ -580,7 +571,7 @@ export default function Editor() {
       }
 
       if (dragData.target.track && clips.length > 0) {
-        insertClips(clips);
+        insertClips(clips, track.id, position);
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
@@ -601,7 +592,7 @@ export default function Editor() {
       }
     }
 
-    setAllowMenuAndShortcuts(true);
+    setAllowMenuAndShortcuts?.(true);
     dragEnter.current = false;
     setDragData({ items: [], target: null });
   }
@@ -637,7 +628,7 @@ export default function Editor() {
     }
 
     setTrackReorderData({ sourceIndex: -1, edgeIndex: -1 });
-    setAllowMenuAndShortcuts(true);
+    setAllowMenuAndShortcuts?.(true);
   }
 
   function handleSortStart(_: React.MouseEvent, data: SortData) {
@@ -645,7 +636,7 @@ export default function Editor() {
       sourceIndex: data.sourceIndex,
       edgeIndex: data.edgeIndex || -1,
     });
-    setAllowMenuAndShortcuts(false);
+    setAllowMenuAndShortcuts?.(false);
   }
 
   function handleWheel(e: React.WheelEvent) {

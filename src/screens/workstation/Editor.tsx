@@ -30,6 +30,7 @@ import {
   ZoomControls,
   AudioAnalysisPanel,
 } from "./components";
+import { AudioPluginDemo } from "../../components/demos/AudioPluginDemo";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
 import { AnalysisContext, useWorkstation } from "../../contexts";
@@ -1203,6 +1204,7 @@ export default function Editor() {
                 <Tab label="Spectral Analysis" />
                 <Tab label="Waveform Analysis" />
                 <Tab label="Feature Extraction" />
+                <Tab label="Plugin Demo" />
                 <Tab label="Judge Evaluation" />
               </Tabs>
               <IconButton
@@ -1215,6 +1217,8 @@ export default function Editor() {
 
             <div className="p-2">
               {analysisTabValue === 3 ? (
+                <AudioPluginDemo />
+              ) : analysisTabValue === 4 ? (
                 <div>Judge Evaluation Panel (Not implemented)</div>
               ) : (
                 <AudioAnalysisPanel
