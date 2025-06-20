@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AudioService } from '../audio/AudioService';
 import { PlatformService } from '../PlatformService';
-import { PlatformDetector } from '../../plugins/core/PlatformDetector';
 
 // Mock PlatformService
 vi.mock('../PlatformService', () => ({
@@ -316,7 +315,8 @@ describe('AudioService', () => {
         peaks: { positive: [0.8], negative: [-0.7] }
       };
 
-      // Mock the analyzeAudioBrowser method directly
+      // Mock the analyzeAudioBrowser method directly to avoid the internal implementation
+      // This bypasses the need to properly mock AudioBuffer.getChannelData
       (audioService as any).analyzeAudioBrowser = vi.fn().mockResolvedValue(mockAnalysisResult);
 
       // Perform the test
@@ -332,11 +332,12 @@ describe('AudioService', () => {
 
     it('should handle Web Audio API errors', async () => {
       // Mock the analyzeAudioBrowser method to throw an error
+      // This directly mocks the error we expect to be thrown
       (audioService as any).analyzeAudioBrowser = vi.fn().mockImplementation(() => {
         throw new Error('Decode failed');
       });
       
-      // Test that the error is propagated
+      // We're mocking analyzeAudioBrowser directly, so we expect to see the same error
       await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('Decode failed');
       expect((audioService as any).analyzeAudioBrowser).toHaveBeenCalledWith(mockFile);
     });

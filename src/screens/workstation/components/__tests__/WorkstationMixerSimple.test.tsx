@@ -13,11 +13,11 @@ import {
 vi.mock('@orpheus/widgets', () => ({
   Dialog: ({ children, ...rest }: { children: React.ReactNode; [key: string]: any }) => <div {...rest}>{children}</div>,
   SelectSpinBox: ({ title, value, onChange, ...rest }: { title?: string; value?: any; onChange?: (value: any) => void; [key: string]: any }) => (
-    <select title={title} value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
+    <select title={title} value={value} onChange={(e) => onChange && onChange(e.target.value)} {...rest} />
   ),
   Knob: ({ value, onChange, ...rest }: { value?: number; onChange?: (value: number) => void; [key: string]: any }) => (
     <div data-testid="knob" {...rest}>
-      <input type="range" value={value || 0} onChange={(e) => onChange(parseFloat(e.target.value))} />
+      <input type="range" value={value || 0} onChange={(e) => onChange && onChange(parseFloat(e.target.value))} />
     </div>
   ),
   Meter: ({ value, ...rest }: { value?: number; [key: string]: any }) => <div data-testid="meter" {...rest}>{value}</div>,
