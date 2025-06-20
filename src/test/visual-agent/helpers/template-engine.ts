@@ -2,89 +2,39 @@
  * Template engine for visual tests
  */
 
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
+import Handlebars from "handlebars";
 import { VisualTestConfig } from "../types";
 
-// Simple template engine to replace variables in templates
-function renderTemplate(template: string, data: Record<string, any>): string {
-  let result = template;
+interface TemplateData extends VisualTestConfig {
+  ComponentName: string;
+  ComponentPath: string;
+  testNamePattern: string;
+}
 
-  // Replace {{name}} variables
-  result = result.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
-    const trimmedKey = key.trim();
-
-    if (trimmedKey.startsWith("if ")) {
-      // Handle conditional blocks - simple implementation
-      const condition = trimmedKey.substring(3);
-      return data[condition] ? "" : "{{endif}}";
-    } else if (trimmedKey === "endif") {
-      return "";
-    } else if (trimmedKey === "stringify props") {
-      return JSON.stringify(data.props || {}, null, 2);
-    } else if (trimmedKey.includes(".")) {
-      // Handle nested properties
-      const parts = trimmedKey.split(".");
-      let value = data;
-      for (const part of parts) {
-        if (value === undefined) break;
-        value = value[part];
-      }
-      return value !== undefined ? value : match;
-    }
-
-    return data[trimmedKey] !== undefined ? data[trimmedKey] : match;
-  });
-
-  // Handle each blocks (simplified implementation)
-  result = result.replace(
-    /\{\{#each ([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
-    (match, collection, template) => {
-      const collectionName = collection.trim();
-      const items = data[collectionName];
-
-      if (!Array.isArray(items)) {
-        return "";
-      }
-
-      return items
-        .map((item) => {
-          // Create a context for this iteration
-          const context = { ...data, ...item };
-          return renderTemplate(template, context);
-        })
-        .join("");
-    }
-  );
-
-  return result;
+// Render template using Handlebars
+export function renderTemplate(templateName: string, data: TemplateData): string {
+  const templatePath = path.join(__dirname, 'templates', `${templateName}.hbs`);
+  const templateContent = fs.readFileSync(templatePath, 'utf-8');
+  const template = Handlebars.compile(templateContent);
+  return template(data);
 }
 
 export async function generateTestFromTemplate(
   config: VisualTestConfig,
   outputDir: string
 ): Promise<string> {
-  // Read the template
-  const templatePath = path.join(
-    process.cwd(),
-    "src",
-    "test",
-    "visual-agent",
-    "templates",
-    "visual-test.template.ts"
-  );
-  const template = await fs.readFile(templatePath, "utf-8");
-
   // Create test data
-  const testData = {
+  const testData: TemplateData = {
     ...config,
     ComponentName: config.componentName,
-    ComponentPath: config.componentPath || config.componentName,
+    ComponentPath: config.importPath,
     testNamePattern: config.captureGif ? "@visual-gif" : "@visual",
   };
 
   // Render the template
-  const renderedTest = renderTemplate(template, testData);
+  const renderedTest = renderTemplate("visual-test", testData);
 
   // Determine output path
   const outputPath = path.join(
@@ -93,8 +43,8 @@ export async function generateTestFromTemplate(
   );
 
   // Write the test file
-  await fs.mkdir(path.dirname(outputPath), { recursive: true });
-  await fs.writeFile(outputPath, renderedTest, "utf-8");
+  await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });
+  await fs.promises.writeFile(outputPath, renderedTest, "utf-8");
 
   return outputPath;
 }
@@ -105,7 +55,7 @@ export async function hasExistingTest(
 ): Promise<boolean> {
   const outputPath = path.join(outputDir, `${componentName}.visual.test.tsx`);
   try {
-    await fs.access(outputPath);
+    await fs.promises.access(outputPath);
     return true;
   } catch {
     return false;

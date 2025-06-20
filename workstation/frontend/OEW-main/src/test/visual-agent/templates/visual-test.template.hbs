@@ -23,20 +23,18 @@ describe('{{ComponentName}} Visual Tests', () => {
 
     {{#each interactions}}
     // {{type}} interaction
-    fireEvent.{{type}}(screen.getByTestId('{{target}}'){{#if value}}, {{value}}{{/if}});
+    fireEvent.{{type}}(screen.getByTestId('{{target}}'){{#if value}}, {{stringify value}}{{/if}});
     await new Promise(resolve => setTimeout(resolve, 100)); // Wait for updates
     {{/each}}
 
-    ${
-      captureGif
-        ? `// Record a GIF of any animations or state changes
-    await recordGif(container, '${componentName.toLowerCase()}-${stateName}', ${
-            animationDuration || 2000
-          });`
-        : `// Wait for any animations to complete
+    {{#if ../captureGif}}
+    // Record a GIF of any animations or state changes
+    await recordGif(container, '{{lowercase ../componentName}}-{{name}}', {{default ../animationDuration 2000}});
+    {{else}}
+    // Wait for any animations to complete
     await new Promise(resolve => setTimeout(resolve, 500));
-    await expectScreenshot(container, '${componentName.toLowerCase()}-${stateName}.png');`
-    }
+    await expectScreenshot(container, '{{lowercase ../componentName}}-{{name}}.png');
+    {{/if}}
 
     document.body.removeChild(container);
   });

@@ -45,7 +45,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
+    "test:e2e": "cross-env VITE_PORT=3000 VITE_HOST=127.0.0.1 playwright test",
+    "test:e2e:debug": "cross-env VITE_PORT=3000 VITE_HOST=127.0.0.1 NODE_ENV=development playwright test --config playwright.config.debug.ts",
+    "test:e2e:ui": "cross-env VITE_PORT=3000 VITE_HOST=127.0.0.1 playwright test --ui",
+    "test:e2e:codegen": "pnpm dev:vite & wait-on http://127.0.0.1:3000 && playwright codegen http://127.0.0.1:3000",
     "pretest": "mkdir -p __snapshots__/screenshots __snapshots__/diffs __snapshots__/gifs",
     "test:screenshots": "pnpm pretest && vitest run --config vitest.config.ts \".*\\.test\\.tsx?$\" --testNamePattern=\"@visual\" || true && node scripts/list-screenshots.js",
     "list:screenshots": "node scripts/list-screenshots.js",
@@ -108,7 +111,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.53.0",
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
@@ -146,7 +149,6 @@
     "jsdom": "^22.1.0",
     "node-html-to-image": "^4.0.0",
     "nodemon": "^3.0.1",
-    "playwright": "^1.41.0",
     "ssim.js": "^3.5.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

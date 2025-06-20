@@ -24,10 +24,13 @@ export * from './audio-test-utils';
 export * from './timeline-test-utils';
 
 // Visual test utilities
+export * from './visual/screenshot';
+export * from './visual/gif-recorder';
+export * from './visual/visual-test-generator';
+export * from './visual/test-container';
+
+// Visual test helpers
 export { 
-  runVisualTest,
-  runAudioVisualTest,
-  runSimpleVisualTest,
   setupVisualTestContainer,
   cleanupVisualTestContainer,
   expectVisualSnapshot,

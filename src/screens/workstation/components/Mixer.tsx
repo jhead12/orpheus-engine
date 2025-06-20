@@ -15,10 +15,11 @@ import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableLis
 import { openContextMenu } from "../editor-utils";
 import { 
   formatPanning, 
-  getVolumeGradient, 
-  hslToHex, 
+  getVolumeGradient,
   volumeToNormalized 
 } from "../../../services/utils/utils";
+import { hslToHex } from "../../../services/utils/general";
+import { hslToHex } from "../../../services/utils/general";
 import { SortData } from "../editor-utils";
 import TrackIcon from "../../../components/icons/TrackIcon";
 

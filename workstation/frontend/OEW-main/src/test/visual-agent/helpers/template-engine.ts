@@ -6,8 +6,14 @@ import fs from "fs/promises";
 import path from "path";
 import { VisualTestConfig } from "../types";
 
+interface TemplateData extends VisualTestConfig {
+  ComponentName: string;
+  ComponentPath: string;
+  testNamePattern: string;
+}
+
 // Simple template engine to replace variables in templates
-function renderTemplate(template: string, data: Record<string, any>): string {
+function renderTemplate(template: string, data: TemplateData): string {
   let result = template;
 
   // Replace {{name}} variables
@@ -17,7 +23,7 @@ function renderTemplate(template: string, data: Record<string, any>): string {
     if (trimmedKey.startsWith("if ")) {
       // Handle conditional blocks - simple implementation
       const condition = trimmedKey.substring(3);
-      return data[condition] ? "" : "{{endif}}";
+      return data[condition as keyof TemplateData] ? "" : "{{endif}}";
     } else if (trimmedKey === "endif") {
       return "";
     } else if (trimmedKey === "stringify props") {
@@ -25,22 +31,24 @@ function renderTemplate(template: string, data: Record<string, any>): string {
     } else if (trimmedKey.includes(".")) {
       // Handle nested properties
       const parts = trimmedKey.split(".");
-      let value = data;
+      let value: unknown = data;
       for (const part of parts) {
         if (value === undefined) break;
-        value = value[part];
+        value = (value as Record<string, unknown>)[part];
       }
-      return value !== undefined ? value : match;
+      return value !== undefined ? String(value) : match;
     }
 
-    return data[trimmedKey] !== undefined ? data[trimmedKey] : match;
+    return data[trimmedKey as keyof TemplateData] !== undefined 
+      ? String(data[trimmedKey as keyof TemplateData]) 
+      : match;
   });
 
   // Handle each blocks (simplified implementation)
   result = result.replace(
     /\{\{#each ([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
-    (match, collection, template) => {
-      const collectionName = collection.trim();
+    (_fullMatch, collection, blockTemplate) => {
+      const collectionName = collection.trim() as keyof TemplateData;
       const items = data[collectionName];
 
       if (!Array.isArray(items)) {
@@ -51,7 +59,7 @@ function renderTemplate(template: string, data: Record<string, any>): string {
         .map((item) => {
           // Create a context for this iteration
           const context = { ...data, ...item };
-          return renderTemplate(template, context);
+          return renderTemplate(blockTemplate, context);
         })
         .join("");
     }
@@ -71,15 +79,15 @@ export async function generateTestFromTemplate(
     "test",
     "visual-agent",
     "templates",
-    "visual-test.template.ts"
+    "visual-test.template.hbs"
   );
   const template = await fs.readFile(templatePath, "utf-8");
 
   // Create test data
-  const testData = {
+  const testData: TemplateData = {
     ...config,
     ComponentName: config.componentName,
-    ComponentPath: config.componentPath || config.componentName,
+    ComponentPath: config.importPath,
     testNamePattern: config.captureGif ? "@visual-gif" : "@visual",
   };
 

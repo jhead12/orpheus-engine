@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "types": [
+      "jest-image-snapshot",
+      "@playwright/test",
+      "node"
+    ],
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
@@ -34,7 +39,8 @@
   },
   "include": ["src", "electron"],
   "exclude": [
-    "src/test/visual-agent/templates/**/*.template.ts"
+    "src/test/visual-agent/templates/**/*.template.ts",
+    "src/test/visual-agent/templates/*.hbs"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

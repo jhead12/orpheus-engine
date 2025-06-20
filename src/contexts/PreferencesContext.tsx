@@ -52,7 +52,7 @@ interface PreferencesContextType {
 }
 
 // Create context
-const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
+export const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
 
 // Storage key
 const PREFERENCES_STORAGE_KEY = 'orpheus-engine-preferences';

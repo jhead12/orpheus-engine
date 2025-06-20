@@ -18,7 +18,9 @@ export {
   type MixerContextType,
 } from "./MixerContext";
 export {
+  PreferencesContext,
   usePreferences,
+  PreferencesProvider,
 } from "./PreferencesContext";
 export { ClipboardItemType } from "../types/clipboard";
 export { useWorkstation } from "./useWorkstation";
