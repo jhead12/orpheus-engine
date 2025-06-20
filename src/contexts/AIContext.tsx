@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { Clip } from "../types/core";
+import { Clip } from "@orpheus/types/core";
 import {
   invokePythonAnalysis,
   PythonAnalysisResult,

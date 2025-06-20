@@ -350,7 +350,7 @@ export default function SelectSpinBox<
               className: "hover-3 " + classes?.option,
               key: idx,
               onClick: () => selectOption(option),
-              onKeyDown: (e) => {
+              onKeyDown: (e: React.KeyboardEvent) => {
                 if (e.key === "Enter") selectOption(option);
               },
               style: style.option(option),

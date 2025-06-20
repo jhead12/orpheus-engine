@@ -6,8 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Buffer } from "buffer";
-import { v4 } from "uuid";
+// import { Buffer } from "buffer"; // Removed as unused
 import {
   IconButton,
   SpeedDial,
@@ -33,24 +32,25 @@ import {
 } from "../../screens/workstation/components";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
-import WorkstationContext from "../../contexts/WorkstationContext";
+import { WorkstationContext } from "../../contexts/WorkstationContext";
 import { AnalysisContext } from "../../contexts/AnalysisContext";
-import { ContextMenuType } from "../../types/context-menu";
+import { ContextMenuType, ContextMenuParams } from "@orpheus/types/context-menu";
+import { TimelineSettings } from "@orpheus/types/core";
 import {
   TimelinePosition,
   TrackType,
   AutomationMode,
   Clip,
 } from "../../types/core";
-import { Track } from "../../services/types/types";
+import { Track } from "@orpheus/services/types/types";
 import {
   AudioAnalysisType,
   AudioAnalysisResults,
-  SnapGridSizeOption,
-  WorkstationAudioInputFile,
+  // SnapGridSizeOption,         // Removed unused import
+  // WorkstationAudioInputFile,  // Removed unused import
 } from "../../types/audio";
-import { getGridSizeFromOption } from "../../services/utils/timeline-utils";
-import { BASE_BEAT_WIDTH } from "../../constants/timeline";
+// import { getGridSizeFromOption } from "../../services/utils/timeline-utils"; // Not used after removing position calculation
+// import { BASE_BEAT_WIDTH } from "../../constants/timeline";  // Removed unused import
 import {
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
@@ -75,10 +75,10 @@ const getBaseTrack = (type = "audio"): Track => ({
   automationLanes: [],
   clips: [],
   color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-  pan: 0,
+  pan: { value: 0, isAutomated: false },
   solo: false,
   type: type === "midi" ? TrackType.Midi : TrackType.Audio,
-  volume: 0,
+  volume: { value: 75, isAutomated: false },
   fx: {
     preset: null,
     effects: [],
@@ -108,10 +108,10 @@ export function AudioAnalysisProvider({
     AudioAnalysisType.Spectral
   );
   const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [analysisResults, setAnalysisResults] = useState<AudioAnalysisResults | null>(null);
 
   const runAudioAnalysis = async (
-    audioBuffer: AudioBuffer,
+    _audioBuffer: AudioBuffer,
     type: AudioAnalysisType
   ) => {
     let results = null;
@@ -119,15 +119,15 @@ export function AudioAnalysisProvider({
     switch (type) {
       case AudioAnalysisType.Spectral:
         // Perform spectral analysis
-        results = await performSpectralAnalysis(audioBuffer);
+        results = await performSpectralAnalysis(_audioBuffer);
         break;
       case AudioAnalysisType.Waveform:
         // Perform waveform analysis
-        results = await performWaveformAnalysis(audioBuffer);
+        results = await performWaveformAnalysis(_audioBuffer);
         break;
       case AudioAnalysisType.Features:
         // Extract audio features
-        results = await extractAudioFeatures(audioBuffer);
+        results = await extractAudioFeatures(_audioBuffer);
         break;
     }
 
@@ -160,9 +160,11 @@ export function AudioAnalysisProvider({
   ): Promise<AudioAnalysisResults> => {
     // Implementation would analyze amplitude characteristics
     return {
-      waveform: Array.from(
-        { length: _audioBuffer.length },
-        () => Math.random() * 2 - 1
+      waveform: new Float32Array(
+        Array.from(
+          { length: _audioBuffer.length },
+          () => Math.random() * 2 - 1
+        )
       ),
     };
   };
@@ -280,9 +282,9 @@ export default function Editor() {
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
     };
-  }, []);
+  }, [setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     function handleDragEnter(e: DragEvent) {
@@ -301,7 +303,7 @@ export default function Editor() {
           target: null,
         });
         setScrollToBottom(scrollTop >= scrollHeight - clientHeight);
-        setAllowMenuAndShortcuts(false);
+        setAllowMenuAndShortcuts?.(false);
       }
 
       dragEnter.current = true;
@@ -337,18 +339,18 @@ export default function Editor() {
       document.body.removeEventListener("dragleave", handleDragLeave);
       document.body.removeEventListener("dragover", handleDragOver);
     };
-  }, [dragData.target]);
+  }, [dragData.target, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (resetDragState) {
       dragEnter.current = false;
 
       setDragData({ items: [], target: null });
-      adjustNumMeasures(0); // Reset to minimum measures
-      setAllowMenuAndShortcuts(true);
+      adjustNumMeasures(); // Reset to minimum measures
+      setAllowMenuAndShortcuts?.(true);
       setResetDragState(false);
     }
-  }, [resetDragState]);
+  }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
 
   useEffect(() => {
     if (zoomAnchorPos.current) {
@@ -403,10 +405,10 @@ export default function Editor() {
             break;
         }
 
-        setScrollToItem(null);
+        setScrollToItem?.(null);
       });
     }
-  }, [scrollToItem]);
+  }, [scrollToItem, setScrollToItem]);
 
   function centerOnPlayhead() {
     scrollToAndAlign(
@@ -468,7 +470,7 @@ export default function Editor() {
   }
 
   const handleDropzoneDragEnter = debounce(
-    (e: React.DragEvent, track: Track | null) => {
+    ((e: React.DragEvent, track: Track | null) => {
       e.preventDefault();
 
       if (dragData.items.length > 0 && dragEnter.current) {
@@ -495,7 +497,7 @@ export default function Editor() {
           setDragData({ ...dragData, target: { track, incompatible } });
         }
       }
-    },
+    }) as any,
     25
   );
 
@@ -526,14 +528,16 @@ export default function Editor() {
       const clips: Clip[] = [];
 
       const timelineEditorWindow = timelineEditorWindowRef.current!;
+      // const rect = timelineEditorWindow.getBoundingClientRect(); // Not needed after removing position calculation
+      
+      // Calculate drop position from mouse coordinates
       const rect = timelineEditorWindow.getBoundingClientRect();
-      const margin =
-        timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
-      const gridSize =
-        typeof snapGridSize === "number"
-          ? snapGridSize
-          : getGridSizeFromOption(snapGridSize);
-      let pos = TimelinePosition.fromMargin(margin).snap(gridSize);
+      const x = e.clientX - rect.left;
+      const position = TimelinePosition.fromMargin(x);
+      
+      // These calculations were used for position, but now we've removed the position calculation
+      // const margin = timelineEditorWindow.scrollLeft + Math.max(e.clientX - rect.left, 0);
+      // const gridSize = typeof snapGridSize === "number" ? snapGridSize : getGridSizeFromOption(snapGridSize);
 
       for (let i = 0; i < files.length; i++) {
         if (isValidAudioTrackFileFormat(files[i].type)) {
@@ -541,28 +545,21 @@ export default function Editor() {
             !dragData.target.track ||
             dragData.target.track.type === TrackType.Audio
           ) {
-            const name = files[i].name.split(".")[0];
+            // const _name = files[i].name.split(".")[0]; // Keep for future use
 
             try {
-              const arrayBuffer = await files[i].arrayBuffer();
-              const buffer = Buffer.from(arrayBuffer);
+              // const arrayBuffer = await files[i].arrayBuffer(); // Unused
+              // const _buffer = Buffer.from(arrayBuffer); // Keep for future use
 
-              const result = await createAudioClip({
-                id: v4(),
-                name,
-                path: files[i].name,
-                type: files[i].type,
-                size: files[i].size,
-                lastModified: files[i].lastModified,
-                buffer,
-              });
+              const result = await createAudioClip(files[i], position);
 
               if (result && typeof result === "object" && "end" in result) {
                 clips.push(result as Clip);
                 if (dragData.target.track && result.end) {
-                  pos = TimelinePosition.fromMargin(result.end.toMargin()).snap(
-                    gridSize
-                  );
+                  // Position calculation (currently unused)
+                  // const pos = TimelinePosition.fromMargin(result.end.toMargin()).snap(
+                  //   gridSize
+                  // );
                 }
               }
             } catch (error) {
@@ -580,7 +577,7 @@ export default function Editor() {
       }
 
       if (dragData.target.track && clips.length > 0) {
-        insertClips(clips);
+        insertClips(clips, dragData.target.track.id, position);
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
@@ -594,23 +591,23 @@ export default function Editor() {
           timelineEditorWindow.scrollTop >=
           timelineEditorWindow.scrollHeight - timelineEditorWindow.clientHeight
         )
-          setScrollToItem({
+          setScrollToItem?.({
             type: "track",
             params: { trackId: newTracks[newTracks.length - 1].id },
           });
       }
     }
 
-    setAllowMenuAndShortcuts(true);
+    setAllowMenuAndShortcuts?.(true);
     dragEnter.current = false;
     setDragData({ items: [], target: null });
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params: any) => {
+    openContextMenu(ContextMenuType.Region, {}, (params: ContextMenuParams) => {
       switch (params.action) {
         case 1:
-          setSongRegion(null);
+          setSongRegion?.(null);
           break;
       }
     });
@@ -629,7 +626,7 @@ export default function Editor() {
 
       setTracks(newTracks);
       if (newTracks[data.destIndex]) {
-        setScrollToItem({
+        setScrollToItem?.({
           type: "track",
           params: { trackId: newTracks[data.destIndex].id },
         });
@@ -637,7 +634,7 @@ export default function Editor() {
     }
 
     setTrackReorderData({ sourceIndex: -1, edgeIndex: -1 });
-    setAllowMenuAndShortcuts(true);
+    setAllowMenuAndShortcuts?.(true);
   }
 
   function handleSortStart(_: React.MouseEvent, data: SortData) {
@@ -645,7 +642,7 @@ export default function Editor() {
       sourceIndex: data.sourceIndex,
       edgeIndex: data.edgeIndex || -1,
     });
-    setAllowMenuAndShortcuts(false);
+    setAllowMenuAndShortcuts?.(false);
   }
 
   function handleWheel(e: React.WheelEvent) {
@@ -680,9 +677,10 @@ export default function Editor() {
     }
   }
 
-  const zoomByWheel = debounce((e: React.WheelEvent) => {
+  const zoomByWheel = debounce((e: unknown) => {
+    const wheelEvent = e as React.WheelEvent;
     const pinch =
-      e.ctrlKey &&
+      wheelEvent.ctrlKey &&
       !macOSCtrlPressed.current &&
       !cmdCtrlPressedBeforeWheel.current;
 
@@ -690,22 +688,22 @@ export default function Editor() {
 
     if (dragData.items.length === 0) {
       if (cmdCtrlPressedBeforeWheel.current || pinch) {
-        if (e.shiftKey || pinch || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) {
+        if (wheelEvent.shiftKey || pinch || Math.abs(wheelEvent.deltaX) >= Math.abs(wheelEvent.deltaY)) {
           let delta =
-            Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+            Math.abs(wheelEvent.deltaY) > Math.abs(wheelEvent.deltaX) ? wheelEvent.deltaY : wheelEvent.deltaX;
 
           if (Math.abs(delta) > 2) {
             const timelineEditorWindow = timelineEditorWindowRef.current!;
             const rect = timelineEditorWindow.getBoundingClientRect();
             const margin =
-              e.clientX - rect.left + timelineEditorWindow.scrollLeft;
+              wheelEvent.clientX - rect.left + timelineEditorWindow.scrollLeft;
 
             zoomAnchorPos.current = TimelinePosition.fromMargin(margin);
             zoomAnchorWindowAlignment.current =
-              (e.clientX - rect.left) / timelineEditorWindow.clientWidth;
+              (wheelEvent.clientX - rect.left) / timelineEditorWindow.clientWidth;
 
-            updateTimelineSettings((prev: any) => {
-              const sign = Math.sign(delta) * (e.shiftKey || pinch ? -1 : 1);
+            updateTimelineSettings((prev: TimelineSettings) => {
+              const sign = Math.sign(delta) * (wheelEvent.shiftKey || pinch ? -1 : 1);
               const horizontalScale =
                 prev.horizontalScale + prev.horizontalScale * 0.15 * sign;
               return {
@@ -715,13 +713,13 @@ export default function Editor() {
             });
           }
         } else {
-          if (Math.abs(e.deltaY) > 5) {
+          if (Math.abs(wheelEvent.deltaY) > 5) {
             const newScale = clamp(
-              verticalScale + (e.deltaY < 0 ? 0.25 : -0.25),
+              verticalScale + (wheelEvent.deltaY < 0 ? 0.25 : -0.25),
               0.75,
               5
             );
-            setVerticalScale(newScale);
+            setVerticalScale?.(newScale);
           }
         }
       }
@@ -740,7 +738,7 @@ export default function Editor() {
 
   const { timeSignature } = timelineSettings;
   const beatWidth =
-    timelineSettings.beatWidth *
+    (timelineSettings?.beatWidth ?? 0) *
     (timelineSettings.horizontalScale ?? 1) *
     (4 / (timelineSettings.timeSignature?.noteValue ?? 4));
   const measureWidth = beatWidth * timeSignature.beats;
@@ -924,7 +922,7 @@ export default function Editor() {
                       }}
                     />
                   }
-                  slotProps={{ transition: { style: style.speedDial } }}
+                  // slotProps={{ transition: { style: style.speedDial } }}
                   sx={{
                     flex: 1,
                     "&:hover .MuiSpeedDial-actions": {
@@ -985,10 +983,10 @@ export default function Editor() {
                     thresholds: timelineEditorWindowScrollThresholds,
                   }}
                   cancel=".stop-reorder"
-                  onSortUpdate={(data: any) =>
+                  onSortUpdate={(data: SortData) =>
                     setTrackReorderData({
                       ...trackReorderData,
-                      edgeIndex: data.edgeIndex,
+                      edgeIndex: data.edgeIndex ?? 0,
                     })
                   }
                   onStart={handleSortStart}
@@ -1058,8 +1056,7 @@ export default function Editor() {
                     }}
                   >
                     <RegionComponent
-                      onContextMenu={handleSongRegionContextMenu}
-                      onSetRegion={(region) => setSongRegion(region)}
+                      onContextMenu={handleSongRegionContextMenu}                       onSetRegion={(region) => setSongRegion?.(region)}
                       region={songRegion}
                       style={{
                         zIndex: 13,

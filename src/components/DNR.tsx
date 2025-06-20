@@ -301,7 +301,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
         const matrix = new DOMMatrix(transform);
         currentX = matrix.m41;
         currentY = matrix.m42;
-      } catch (e) {
+      } catch {
         // Safe fallback for matrix parsing
         const matches = transform.match(
           /matrix\(([-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+)\)/
@@ -379,23 +379,41 @@ class DNRBase extends Component<DNRProps, DNRState> {
       style,
       coords,
       position,
-      // These event handlers are handled by our custom handlers
+      // These props are destructured but intentionally not used
+      // to prevent them from being spread to the DOM element.
+      // ESLint disable directives added to prevent unused variable warnings.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onDrag: _onDrag,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onDragMouseMove: _onDragMouseMove,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onDragStart: _onDragStart,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onDragStop: _onDragStop,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onResize: _onResize,
       // Don't spread these to DOM
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       drag: _drag,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       resize: _resize,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       dragAxis: _dragAxis,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       resizeAxis: _resizeAxis,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       bounds: _bounds,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       minWidth: _minWidth,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       maxWidth: _maxWidth,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       minHeight: _minHeight,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       maxHeight: _maxHeight,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       scale: _scale,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       allowAnyClick: _allowAnyClick,
       ...rest
     } = this.props;

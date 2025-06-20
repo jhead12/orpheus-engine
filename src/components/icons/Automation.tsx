@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { SVGProps } from 'react';
 
 export default function Automation({ size, ...rest }: SVGProps<SVGSVGElement> & { size: number }) {

@@ -1,25 +1,24 @@
 import React, { memo, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { FiberManualRecord } from "@mui/icons-material";
 import { DialogContent, IconButton } from "@mui/material";
-import { WorkstationContext } from "../../../contexts/WorkstationContext";
-import { MixerContext } from "../../../contexts/MixerContext";
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { MixerContext } from '@orpheus/contexts/MixerContext';
 import {
   AutomationLaneEnvelope,
   AutomationMode,
   ContextMenuType,
   Track,
   AutomatableParameter,
-} from "../../../types/core";
+} from '@orpheus/types/core';
 import { FXComponent, TrackVolumeSlider } from "./index";
-import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableListItem } from "../../../components/widgets";
+import { Dialog, HueInput, SelectSpinBox, Knob, Meter, SortableList, SortableListItem } from '@orpheus/widgets';
 import { openContextMenu } from "../editor-utils";
 import { 
   formatPanning, 
-  getVolumeGradient,
+  getVolumeGradient, 
   volumeToNormalized 
-} from "../../../services/utils/utils";
-import { hslToHex } from "../../../services/utils/general";
-import { hslToHex } from "../../../services/utils/general";
+} from '@orpheus/utils/utils';
+import { hslToHex } from '@orpheus/utils/general';
 import { SortData } from "../editor-utils";
 import TrackIcon from "../../../components/icons/TrackIcon";
 
@@ -71,9 +70,14 @@ const MixerTrack = memo(
       const lane = track.automationLanes?.find(
         (lane) => lane.envelope === AutomationLaneEnvelope.Pan
       );
-      const panValue = getTrackCurrentValue(track, lane);
-      // Ensure we always have a valid object with value and isAutomated
-      return panValue || { value: 0, isAutomated: false };
+      
+      if (lane && getTrackCurrentValue) {
+        // If there's automation, use the current value from the track
+        return getTrackCurrentValue(track);
+      }
+      
+      // Otherwise return the base pan value
+      return track.pan || { value: 0, isAutomated: false };
     }, [track, getTrackCurrentValue]);
 
     useEffect(() => setName(track.name), [track.name]);
@@ -129,7 +133,10 @@ const MixerTrack = memo(
         return { value, isAutomated: false };
       }
       if (value && typeof value === 'object' && 'value' in value) {
-        return value;
+        return { 
+          value: value.value, 
+          isAutomated: value.isAutomated ?? false 
+        };
       }
       return { value: 0, isAutomated: false };
     };
@@ -154,11 +161,6 @@ const MixerTrack = memo(
         effect: {
           actionsContainer: { border: "none", padding: 0, marginLeft: 2 },
           container: { paddingTop: 1 },
-        },
-        select: {
-          optionsList: {
-            maxHeight: 100,
-          },
         },
       },
       automationModeSpinBox: {
@@ -241,7 +243,8 @@ const MixerTrack = memo(
               borderRight: "1px solid var(--border1)",
               position: "relative",
             }}
-          >              <FXComponent
+          >
+            <FXComponent
               classes={{
                 next: { button: "focus-1" },
                 presetButtons: "removed",
@@ -280,14 +283,14 @@ const MixerTrack = memo(
               <div style={{ display: "flex" }}>
                 <div style={{ marginRight: 1 }}>
                   <Meter
-                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
-                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume)?.value ?? 0)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume)?.value ?? 0) * 100}
                     style={{ ...style.volumeMeter, marginRight: 2 }}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
                   <Meter
-                    color={getVolumeGradient(ensureAutomatableParameter(track.volume).value)}
-                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume).value) * 100}
+                    color={getVolumeGradient(ensureAutomatableParameter(track.volume)?.value ?? 0)}
+                    percent={volumeToNormalized(ensureAutomatableParameter(track.volume)?.value ?? 0) * 100}
                     style={style.volumeMeter}
                     data-testid={`mixer-meter-track-${track.id}`}
                   />
@@ -304,7 +307,7 @@ const MixerTrack = memo(
                 data-testid={isMaster ? "mixer-master-volume-display" : `mixer-volume-display-track-${track.id}`}
                 style={{ fontSize: 10, color: "var(--border6)" }}
               >
-                {Math.round(ensureAutomatableParameter(track.volume).value * 100)}%
+                {Math.round((ensureAutomatableParameter(track.volume)?.value ?? 0) * 100)}%
               </div>
             </div>
             <div className="col-8 pl-0 pr-1">

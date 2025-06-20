@@ -10,7 +10,33 @@ import SettingsProvider from "./components/settings/SettingsManager";
 import { DocsPage, DocsNavigation } from "./components/docs";
 import "./styles/App.css";
 
+// Import plugin system
+import { pluginSystem } from "./plugins";
+
 function App(): React.ReactElement {
+  useEffect(() => {
+    // Initialize plugin system
+    const initializePlugins = async () => {
+      try {
+        await pluginSystem.initialize();
+        console.log('Plugin system initialized successfully');
+        
+        // Activate audio analysis plugin by default
+        await pluginSystem.activatePlugin('orpheus.audio.analysis');
+        console.log('Audio analysis plugin activated');
+      } catch (error) {
+        console.error('Failed to initialize plugins:', error);
+      }
+    };
+
+    initializePlugins();
+
+    // Cleanup on unmount
+    return () => {
+      pluginSystem.shutdown().catch(console.error);
+    };
+  }, []);
+
   useEffect(() => {
     // Workaround to the dumb electron bug where blurring inputs with selected text does not make
     // the Electron > Services submenu go back to showing only the 'Development' section

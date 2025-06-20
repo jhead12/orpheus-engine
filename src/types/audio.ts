@@ -6,7 +6,11 @@ export enum AudioAnalysisType {
 }
 
 export interface AudioAnalysisResults {
-  waveform?: number[];
+  spectral?: Float32Array[];
+  waveform?: Float32Array;
+  features?: {
+    [key: string]: number | number[];
+  };
   spectrum?: {
     frequencies: number[];
     magnitudes: number[];

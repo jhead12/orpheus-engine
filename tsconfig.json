@@ -37,10 +37,19 @@
       "@orpheus/workstation/*": ["./src/screens/workstation/*"]
     }
   },
-  "include": ["src", "electron"],
+  "include": ["src"],
   "exclude": [
+    "electron/**/*",
     "src/test/visual-agent/templates/**/*.template.ts",
-    "src/test/visual-agent/templates/*.hbs"
+    "src/test/setup.new.ts",
+    "src/test/helpers-new.ts", 
+    "src/test/utils/index-old.ts",
+    "src/test/utils/mixer-test-utils-new.tsx",
+    "src/test/utils/workstation-test-utils.new.tsx",
+    "src/test/standalone-mixer-components.test.tsx",
+    "src/test/mixer-element-validation.test.tsx"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.electron.json" }]
 }

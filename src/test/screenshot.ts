@@ -1,6 +1,6 @@
 import { expect } from "vitest";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
-import { createScreenshot } from "node-html-to-image";
+import nodeHtmlToImage from "node-html-to-image";
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -17,7 +17,7 @@ export async function takeScreenshot(
   const { name = "screenshot", width = 1024, height = 768 } = options;
 
   const html = element.outerHTML;
-  const image = await createScreenshot({
+  const image = await nodeHtmlToImage({
     html,
     type: "png",
     puppeteerArgs: {

@@ -1,5 +1,6 @@
 @import "colors.css";
 @import "themes.css";
+@import "plugins.css";
 
 @font-face {
   font-family: "Abel";

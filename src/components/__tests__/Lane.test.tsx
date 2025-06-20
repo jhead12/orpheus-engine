@@ -151,12 +151,12 @@ class MockAudioBuffer {
   duration = 1.0;
   numberOfChannels = 2;
 
-  getChannelData(_channel: number): Float32Array {
+  getChannelData(/* channel: number */): Float32Array {
     return new Float32Array(this.length);
   }
 
-  copyFromChannel(_destination: Float32Array, _channelNumber: number, _bufferOffset?: number): void {}
-  copyToChannel(_source: Float32Array, _channelNumber: number, _bufferOffset?: number): void {}
+  copyFromChannel(/* destination: Float32Array, channelNumber: number, bufferOffset?: number */): void {}
+  copyToChannel(/* source: Float32Array, channelNumber: number, bufferOffset?: number */): void {}
 }
 
 class MockAudioContext {
@@ -166,11 +166,11 @@ class MockAudioContext {
   destination = {};
   listener = {};
 
-  createBuffer(_numberOfChannels: number, _length: number, _sampleRate: number): MockAudioBuffer {
+  createBuffer(/* numberOfChannels: number, length: number, sampleRate: number */): MockAudioBuffer {
     return new MockAudioBuffer();
   }
 
-  decodeAudioData(_audioData: ArrayBuffer): Promise<MockAudioBuffer> {
+  decodeAudioData(/* audioData: ArrayBuffer */): Promise<MockAudioBuffer> {
     return Promise.resolve(new MockAudioBuffer());
   }
 
@@ -282,9 +282,12 @@ describe('Lane Component', () => {
     verticalScale: 1,
     showMaster: true,
     timelineSettings: {
-      beatWidth: 80,
+      tempo: 120,
       timeSignature: { beats: 4, noteValue: 4 },
+      snap: true,
+      snapUnit: "sixteenth" as const,
       horizontalScale: 1,
+      beatWidth: 80,
     },
     isPlaying: false,
     scrollToItem: null,
@@ -369,6 +372,10 @@ describe('Lane Component', () => {
     toggleMuteClip: vi.fn(),
     setSelectedClipId: vi.fn(),
     pasteClip: vi.fn(),
+    // Missing properties from WorkstationContextType
+    addNode: vi.fn(),
+    pasteNode: vi.fn(),
+    setLane: vi.fn(),
   };
 
   const defaultProps = {

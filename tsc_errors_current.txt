@@ -1,0 +1,569 @@
+src/components/demos/AudioPluginDemo.tsx(72,19): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/components/workstation/Lane.tsx(125,25): error TS2554: Expected 1 arguments, but got 0.
+src/components/workstation/Lane.tsx(542,19): error TS6133: 'name' is declared but its value is never read.
+src/components/workstation/Lane.tsx(546,21): error TS6133: 'buffer' is declared but its value is never read.
+src/components/workstation/Lane.tsx(548,62): error TS2304: Cannot find name 'position'.
+src/components/workstation/Lane.tsx(574,28): error TS2304: Cannot find name 'track'.
+src/components/workstation/Lane.tsx(574,38): error TS2304: Cannot find name 'position'.
+src/components/workstation/Lane.tsx(588,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/components/workstation/Lane.tsx(601,58): error TS2304: Cannot find name 'ContextMenuParams'.
+src/components/workstation/Lane.tsx(604,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/components/workstation/Lane.tsx(623,9): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/components/workstation/Lane.tsx(674,32): error TS2345: Argument of type '(e: React.WheelEvent) => void' is not assignable to parameter of type '(...args: unknown[]) => unknown'.
+  Types of parameters 'e' and 'args' are incompatible.
+    Type 'unknown' is not assignable to type 'WheelEvent<Element>'.
+src/components/workstation/Lane.tsx(698,43): error TS2304: Cannot find name 'TimelineSettings'.
+src/components/workstation/Lane.tsx(715,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/components/workstation/Lane.tsx(734,5): error TS18048: 'timelineSettings.beatWidth' is possibly 'undefined'.
+src/components/workstation/Lane.tsx(918,19): error TS2322: Type '{ children: Element[]; ariaLabel: string; direction: "right"; icon: Element; slotProps: { transition: { style: { readonly boxShadow: "none"; readonly backgroundColor: "var(--color1)"; readonly width: 24; readonly height: 24; readonly minHeight: 0; }; }; }; sx: { ...; }; }' is not assignable to type 'IntrinsicAttributes & SpeedDialProps'.
+  Property 'slotProps' does not exist on type 'IntrinsicAttributes & SpeedDialProps'.
+src/components/workstation/Lane.tsx(982,23): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/components/workstation/Lane.tsx(1053,48): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/WorkstationContext.tsx(128,23): error TS6133: 'setNumMeasures' is declared but its value is never read.
+src/contexts/WorkstationContext.tsx(129,18): error TS6133: 'setMaxPos' is declared but its value is never read.
+src/contexts/__tests__/WorkstationContext.test.tsx(75,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(87,33): error TS2345: Argument of type '"midi"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(99,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(100,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(101,33): error TS2345: Argument of type '"midi"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(114,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(137,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(143,9): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(155,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(156,33): error TS2345: Argument of type '"midi"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(163,9): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(185,39): error TS2345: Argument of type '{ bar: number; beat: number; tick: number; }' is not assignable to parameter of type 'TimelinePosition'.
+  Type '{ bar: number; beat: number; tick: number; }' is missing the following properties from type 'TimelinePosition': sixteenth, fraction, measure, add, and 13 more.
+src/contexts/__tests__/WorkstationContext.test.tsx(200,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(201,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(210,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(228,33): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/contexts/__tests__/WorkstationContext.test.tsx(232,28): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/contexts/__tests__/WorkstationContext.test.tsx(232,28): error TS18048: 'result.current.getTrackCurrentValue' is possibly 'undefined'.
+src/contexts/index.ts(40,14): error TS6133: 'query' is declared but its value is never read.
+src/contexts/index.ts(45,20): error TS6133: 'result' is declared but its value is never read.
+src/graphql/datasources/audioAnalysis.ts(28,7): error TS2740: Type 'number[]' is missing the following properties from type 'Float32Array': BYTES_PER_ELEMENT, buffer, byteLength, byteOffset, and 3 more.
+src/graphql/datasources/automationLanes.ts(96,7): error TS2740: Type '{ bar: number; beat: number; tick: number; }' is missing the following properties from type 'TimelinePosition': sixteenth, fraction, measure, add, and 13 more.
+src/graphql/datasources/effects.ts(3,18): error TS6133: 'BaseEffect' is declared but its value is never read.
+src/graphql/datasources/tracks.ts(51,7): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/datasources/tracks.ts(52,7): error TS2322: Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/datasources/tracks.ts(75,11): error TS2322: Type '{ mute: boolean; solo: boolean; armed: boolean; volume: number | AutomatableParameter; pan: number | AutomatableParameter; automation: boolean; ... 10 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number | AutomatableParameter' is not assignable to type 'AutomatableParameter'.
+      Type 'number' is not assignable to type 'AutomatableParameter'.
+src/graphql/resolvers.ts(7,3): error TS2322: Type '(value: AudioBuffer) => { numberOfChannels: number; length: number; sampleRate: number; duration: number; channels: number[][]; }' is not assignable to type 'GraphQLScalarSerializer<{ numberOfChannels: number; length: number; sampleRate: number; duration: number; channels: number[][]; }>'.
+  Types of parameters 'value' and 'outputValue' are incompatible.
+    Type 'unknown' is not assignable to type 'AudioBuffer'.
+src/graphql/resolvers.ts(46,16): error TS2304: Cannot find name 'TimelinePosition'.
+src/hooks/useTracksManager.ts(48,15): error TS2339: Property 'tracks' does not exist on type '{} | { tracks: never[]; }'.
+src/index.ts(1,35): error TS2307: Cannot find module '../graphql/server' or its corresponding type declarations.
+src/main.browser.tsx(103,13): error TS2339: Property 'ORPHEUS_BROWSER_ENV' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(104,10): error TS2339: Property 'ORPHEUS_BROWSER_ENV' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(108,34): error TS2339: Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
+src/main.browser.tsx(110,38): error TS2339: Property 'audioWorklet' does not exist on type 'never'.
+src/main/index.ts(1,21): error TS6305: Output file '/workspaces/orpheus-engine/electron/index.d.ts' has not been built from source file '/workspaces/orpheus-engine/electron/index.ts'.
+src/main/index.ts(8,9): error TS2304: Cannot find name 'BrowserWindow'.
+src/main/window.ts(1,36): error TS6305: Output file '/workspaces/orpheus-engine/electron/index.d.ts' has not been built from source file '/workspaces/orpheus-engine/electron/index.ts'.
+src/main/window.ts(24,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/plugins/__tests__/PluginSystem.test.ts(6,32): error TS2307: Cannot find module '../plugins/core/PluginRegistry' or its corresponding type declarations.
+src/plugins/__tests__/PluginSystem.test.ts(7,34): error TS2307: Cannot find module '../plugins/core/PlatformDetector' or its corresponding type declarations.
+src/plugins/__tests__/PluginSystem.test.ts(8,37): error TS2307: Cannot find module '../plugins/examples/AudioAnalysisPlugin' or its corresponding type declarations.
+src/plugins/__tests__/PluginSystem.test.ts(9,30): error TS2307: Cannot find module '../plugins' or its corresponding type declarations.
+src/plugins/__tests__/PluginSystem.test.ts(209,9): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/plugins/examples/AudioAnalysisPlugin.ts(214,32): error TS6133: 'audioData' is declared but its value is never read.
+src/screens/workstation/Editor.tsx(425,9): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(565,15): error TS2554: Expected 1-2 arguments, but got 3.
+src/screens/workstation/Editor.tsx(593,19): error TS2345: Argument of type '(Track | { name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; ... 5 more ...; automationMode: AutomationMode; })[]' is not assignable to parameter of type 'Track[]'.
+  Type 'Track | { name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; ... 5 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+    Type '{ name: string; clips: Clip[]; id: string; automationLanes: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; volume: number; ... 4 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+      Types of property 'volume' are incompatible.
+        Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/Editor.tsx(599,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(606,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(615,7): error TS2345: Argument of type '(params: {    action: number;}) => void' is not assignable to parameter of type '(params: ContextMenuParams) => void'.
+  Types of parameters 'params' and 'params' are incompatible.
+    Type 'ContextMenuParams' is not assignable to type '{ action: number; }'.
+      Types of property 'action' are incompatible.
+        Type 'string' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(618,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(658,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(665,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(671,7): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/screens/workstation/Editor.tsx(673,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(744,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(744,30): error TS2345: Argument of type '(prev: number) => number' is not assignable to parameter of type 'number'.
+src/screens/workstation/Editor.tsx(764,5): error TS2304: Cannot find name 'BASE_BEAT_WIDTH'.
+src/screens/workstation/Editor.tsx(946,19): error TS2322: Type '{ children: Element[]; ariaLabel: string; direction: "right"; icon: Element; slotProps: { transition: { style: { readonly boxShadow: "none"; readonly backgroundColor: "var(--color1)"; readonly width: 24; readonly height: 24; readonly minHeight: 0; }; }; }; sx: { ...; }; }' is not assignable to type 'IntrinsicAttributes & SpeedDialProps'.
+  Property 'slotProps' does not exist on type 'IntrinsicAttributes & SpeedDialProps'.
+src/screens/workstation/Editor.tsx(1040,23): error TS2322: Type '{ name: string; id: string; automationLanes: never[]; clips: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; volume: number; ... 4 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+  Types of property 'volume' are incompatible.
+    Type 'number' is not assignable to type 'AutomatableParameter'.
+src/screens/workstation/Editor.tsx(1081,48): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Editor.tsx(1132,25): error TS2322: Type '{ name: string; id: string; automationLanes: never[]; clips: never[]; color: string; effects: never[]; expanded: boolean; pan: number; solo: boolean; muted: boolean; type: TrackType; volume: number; ... 4 more ...; automationMode: AutomationMode; }' is not assignable to type 'Track'.
+src/screens/workstation/Workstation.tsx(53,41): error TS2554: Expected 0 arguments, but got 1.
+src/screens/workstation/Workstation.tsx(54,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/Workstation.tsx(71,29): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AudioAnalysisPanel.tsx(95,37): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'AudioBuffer' is not assignable to parameter of type 'ArrayBufferLike'.
+src/screens/workstation/components/AudioClipComponent.tsx(9,10): error TS2614: Module '"../../../components/DNR"' has no exported member 'ResizeDNRData'. Did you mean to use 'import ResizeDNRData from "../../../components/DNR"' instead?
+src/screens/workstation/components/AudioClipComponent.tsx(63,42): error TS2322: Type 'AudioBuffer' is not assignable to type 'BlobPart'.
+src/screens/workstation/components/AudioClipComponent.tsx(63,79): error TS2339: Property 'type' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/AudioClipComponent.tsx(99,36): error TS2339: Property 'sourceDuration' does not exist on type '{ audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }'.
+src/screens/workstation/components/AudioClipComponent.tsx(153,19): error TS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type 'AudioBuffer'.
+  No index signature with a parameter of type 'number' was found on type 'AudioBuffer'.
+src/screens/workstation/components/AudioClipComponent.tsx(155,83): error TS2339: Property 'decodeAudioData' does not exist on type 'AudioContext | MockAudioContext'.
+  Property 'decodeAudioData' does not exist on type 'MockAudioContext'.
+src/screens/workstation/components/AudioClipComponent.tsx(185,36): error TS2322: Type 'Promise<AudioBuffer>' is not assignable to type 'AudioBuffer'.
+src/screens/workstation/components/AudioClipComponent.tsx(185,65): error TS2740: Type 'Promise<Buffer>' is missing the following properties from type 'AudioBuffer': duration, length, numberOfChannels, sampleRate, and 3 more.
+src/screens/workstation/components/AudioClipComponent.tsx(185,93): error TS2345: Argument of type 'Promise<AudioBuffer>' is not assignable to parameter of type 'AudioBuffer'.
+  Type 'Promise<AudioBuffer>' is missing the following properties from type 'AudioBuffer': duration, length, numberOfChannels, sampleRate, and 3 more.
+src/screens/workstation/components/AutomationLaneComponent.tsx(178,27): error TS2352: Conversion of type 'ContextMenuParams' to type 'ContextMenuAction' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'action' is missing in type 'ContextMenuParams' but required in type 'ContextMenuAction'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(34,7): error TS6133: 'value' is declared but its value is never read.
+src/screens/workstation/components/AutomationLaneTrack.tsx(140,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(156,30): error TS2339: Property 'position' does not exist on type 'AutomationNode'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(167,31): error TS2551: Property 'value' does not exist on type 'number'. Did you mean 'valueOf'?
+src/screens/workstation/components/AutomationLaneTrack.tsx(172,30): error TS2551: Property 'value' does not exist on type 'number'. Did you mean 'valueOf'?
+src/screens/workstation/components/AutomationLaneTrack.tsx(177,38): error TS2339: Property 'position' does not exist on type 'AutomationNode'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(178,36): error TS2339: Property 'position' does not exist on type 'AutomationNode'.
+src/screens/workstation/components/AutomationLaneTrack.tsx(180,31): error TS2551: Property 'value' does not exist on type 'number'. Did you mean 'valueOf'?
+src/screens/workstation/components/AutomationLaneTrack.tsx(180,56): error TS2551: Property 'value' does not exist on type 'number'. Did you mean 'valueOf'?
+src/screens/workstation/components/AutomationLaneTrack.tsx(180,81): error TS2551: Property 'value' does not exist on type 'number'. Did you mean 'valueOf'?
+src/screens/workstation/components/AutomationNodeComponent.tsx(64,46): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(initialValue: number): MutableRefObject<number>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'number'.
+  Overload 2 of 3, '(initialValue: number | null): RefObject<number>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'number | null'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(65,41): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(initialValue: number): MutableRefObject<number>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'number'.
+  Overload 2 of 3, '(initialValue: number | null): RefObject<number>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'number | null'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(68,37): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(74,18): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(126,9): error TS2304: Cannot find name 'waitForScrollWheelStop'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(137,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(147,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(159,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(170,15): error TS2304: Cannot find name 'scrollToAndAlign'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(178,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(200,56): error TS2304: Cannot find name 'ContextMenuAction'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(207,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(207,11): error TS2554: Expected 3 arguments, but got 1.
+src/screens/workstation/components/AutomationNodeComponent.tsx(215,60): error TS2304: Cannot find name 'action'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(232,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(245,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(253,16): error TS2304: Cannot find name 'formatVolume'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(263,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(269,35): error TS2304: Cannot find name 'timelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/AutomationNodeComponent.tsx(276,28): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(102,49): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(116,18): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(127,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(295,9): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(312,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(318,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(321,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(324,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(327,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(330,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(330,28): error TS2345: Argument of type 'Clip' is not assignable to parameter of type 'string'.
+src/screens/workstation/components/ClipComponent.tsx(354,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(376,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(390,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(391,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(392,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(406,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(434,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(451,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(457,47): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/ClipComponent.tsx(570,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ClipComponent.tsx(571,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/FXComponent.tsx(54,11): error TS2339: Property 'fxChainPresets' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/FXComponent.tsx(54,40): error TS2339: Property 'setFXChainPresets' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/FXComponent.tsx(67,38): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(152,53): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(161,43): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/FXComponent.tsx(189,49): error TS2322: Type 'string' is not assignable to type 'FXChainPreset'.
+src/screens/workstation/components/FXComponent.tsx(257,13): error TS2322: Type '{ id: string; name: string; enabled: boolean; type: "native" | "juce" | "python"; source: string; parameters: {}; }' is not assignable to type 'Effect'.
+  Object literal may only specify known properties, and 'source' does not exist in type 'Effect'.
+src/screens/workstation/components/FXComponent.tsx(391,41): error TS7006: Parameter 'preset' implicitly has an 'any' type.
+src/screens/workstation/components/Header.tsx(172,70): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(177,68): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(193,74): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(199,74): error TS2554: Expected 3 arguments, but got 4.
+src/screens/workstation/components/Header.tsx(215,51): error TS2345: Argument of type '{ tempo: number; timeSignature: { beats: number; noteValue: number; }; snap: boolean; snapUnit: "beat" | "bar" | "sixteenth"; horizontalScale: number; beatWidth?: number | undefined; }' is not assignable to parameter of type '(prev: TimelineSettings) => TimelineSettings'.
+  Object literal may only specify known properties, and 'tempo' does not exist in type '(prev: TimelineSettings) => TimelineSettings'.
+src/screens/workstation/components/Header.tsx(222,11): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(242,17): error TS2339: Property 'hours' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,24): error TS2339: Property 'minutes' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,33): error TS2339: Property 'seconds' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(242,42): error TS2339: Property 'milliseconds' does not exist on type 'Number'.
+src/screens/workstation/components/Header.tsx(246,11): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Header.tsx(256,11): error TS2339: Property 'normalize' does not exist on type 'TimelinePosition'.
+src/screens/workstation/components/Header.tsx(261,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(267,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 15 more.
+src/screens/workstation/components/Header.tsx(273,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(281,44): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number | TimelinePosition'.
+  Type '{ measures: number; beats: number; fraction: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 15 more.
+src/screens/workstation/components/Header.tsx(287,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(295,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(296,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(304,12): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(304,46): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/Header.tsx(552,15): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(572,15): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(614,30): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(665,30): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(684,30): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(696,30): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(749,20): error TS2304: Cannot find name 'getVolumeGradient'.
+src/screens/workstation/components/Header.tsx(753,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Header.tsx(757,20): error TS2304: Cannot find name 'getVolumeGradient'.
+src/screens/workstation/components/Header.tsx(761,41): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Header.tsx(822,52): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Header.tsx(846,13): error TS2322: Type 'string | undefined' is not assignable to type 'SnapGridSizeOption'.
+  Type 'undefined' is not assignable to type 'SnapGridSizeOption'.
+src/screens/workstation/components/Lane.tsx(50,11): error TS2339: Property 'clipboardData' does not exist on type 'ClipboardContextType'.
+src/screens/workstation/components/Lane.tsx(95,60): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(117,55): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Lane.tsx(181,13): error TS18048: 'window.electronAPI' is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(181,32): error TS2339: Property 'ipcRenderer' does not exist on type '{ openFile: () => Promise<string>; saveFile: (content: string) => Promise<void>; }'.
+src/screens/workstation/components/Lane.tsx(190,58): error TS2345: Argument of type 'WorkstationAudioInputFile' is not assignable to parameter of type 'File | Blob'.
+  Type 'WorkstationAudioInputFile' is missing the following properties from type 'File': webkitRelativePath, arrayBuffer, slice, stream, text
+src/screens/workstation/components/Lane.tsx(198,43): error TS2345: Argument of type 'Track' is not assignable to parameter of type 'string'.
+src/screens/workstation/components/Lane.tsx(206,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(206,23): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'string'.
+src/screens/workstation/components/Lane.tsx(212,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(212,23): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'string'.
+src/screens/workstation/components/Lane.tsx(231,13): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Lane.tsx(315,25): error TS7053: Element implicitly has an 'any' type because expression of type '0' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '0' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/Lane.tsx(316,26): error TS7053: Element implicitly has an 'any' type because expression of type '1' can't be used to index type 'TimelineEditorWindowScrollThresholds'.
+  Property '1' does not exist on type 'TimelineEditorWindowScrollThresholds'.
+src/screens/workstation/components/Lane.tsx(323,17): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Metronome.tsx(44,22): error TS2339: Property 'metronome' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/Metronome.tsx(121,24): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Mixer.tsx(257,15): error TS2322: Type '{ readonly add: { readonly button: { readonly marginTop: 1; readonly marginRight: -1; }; }; readonly preset: { readonly height: 17; }; readonly top: { readonly backgroundColor: "#0000"; }; readonly effect: { ...; }; }' is not assignable to type 'FXElements<CSSProperties>'.
+  Types of property 'preset' are incompatible.
+    Type '{ readonly height: 17; }' has no properties in common with type '{ container?: CSSProperties | undefined; text?: CSSProperties | undefined; optionsList?: CSSProperties | undefined; }'.
+src/screens/workstation/components/Mixer.tsx(275,15): error TS2322: Type '{ readonly icon: { readonly color: "var(--border6)"; readonly fontSize: 12; }; readonly next: { readonly icon: { readonly fontSize: 20; }; }; readonly prev: { readonly icon: { readonly fontSize: 20; }; }; readonly spinButton: { ...; }; readonly text: { ...; }; readonly top: { ...; }; }' is not assignable to type 'SelectSpinBoxElements<CSSProperties>'.
+  Types of property 'next' are incompatible.
+    Type '{ readonly icon: { readonly fontSize: 20; }; }' has no properties in common with type 'Properties<string | number, string & {}>'.
+src/screens/workstation/components/Mixer.tsx(338,23): error TS2322: Type '{ disabled: boolean; onDoubleClick: () => void; onChange: (value: number) => void; style: { readonly knob: { readonly backgroundColor: "#0000"; }; readonly indicator: { readonly backgroundColor: "var(--border6)"; }; readonly meter: { ...; }; }; ... 4 more ...; "data-testid": string; }' is not assignable to type 'IntrinsicAttributes & IntrinsicClassAttributes<Knob> & Pick<Readonly<KnobProps>, "value" | ... 11 more ... | "tooltipProps"> & InexactPartial<...> & InexactPartial<...>'.
+  Property 'onDoubleClick' does not exist on type 'IntrinsicAttributes & IntrinsicClassAttributes<Knob> & Pick<Readonly<KnobProps>, "value" | ... 11 more ... | "tooltipProps"> & InexactPartial<...> & InexactPartial<...>'.
+src/screens/workstation/components/Mixer.tsx(429,33): error TS2345: Argument of type 'AutomatableParameter' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/Mixer.tsx(488,5): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Mixer.tsx(489,18): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/Mixer.tsx(531,19): error TS2322: Type '{ children: Element; onSortEnd: (data: SortData) => void; "data-testid": string; onKeyDown: (e: KeyboardEvent<Element>) => void; }' is not assignable to type 'IntrinsicAttributes & SortableListProps'.
+  Property 'onSortEnd' does not exist on type 'IntrinsicAttributes & SortableListProps'.
+src/screens/workstation/components/Timeline.tsx(77,68): error TS6133: 'h' is declared but its value is never read.
+src/screens/workstation/components/Timeline.tsx(124,26): error TS2339: Property 'startTime' does not exist on type 'Clip'.
+src/screens/workstation/components/Timeline.tsx(125,30): error TS2339: Property 'duration' does not exist on type 'Clip'.
+src/screens/workstation/components/Timeline.tsx(437,46): error TS2345: Argument of type '"audio"' is not assignable to parameter of type 'TrackType'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(2,10): error TS2305: Module '"@orpheus/contexts"' has no exported member 'PreferencesContext'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(33,11): error TS2339: Property 'darkMode' does not exist on type '{}'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(35,5): error TS2339: Property 'autoGridSize' does not exist on type 'WorkstationContextType'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(117,37): error TS2345: Argument of type 'TimelinePosition' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/TimelineRulerGrid.tsx(200,13): error TS2345: Argument of type '{ measures: number; beats: number; fraction: number; }' is not assignable to parameter of type 'number'.
+src/screens/workstation/components/TrackComponent.tsx(6,3): error TS6133: 'AutomationMode' is declared but its value is never read.
+src/screens/workstation/components/TrackComponent.tsx(7,3): error TS6133: 'TrackType' is declared but its value is never read.
+src/screens/workstation/components/TrackComponent.tsx(10,3): error TS6133: 'Effect' is declared but its value is never read.
+src/screens/workstation/components/TrackComponent.tsx(20,11): error TS2430: Interface 'ExtendedWorkstationContextType' incorrectly extends interface 'WorkstationContextType'.
+  Types of property 'duplicateTrack' are incompatible.
+    Type '(track: Track) => void' is not assignable to type '(trackId: string) => void'.
+      Types of parameters 'track' and 'trackId' are incompatible.
+        Type 'string' is not assignable to type 'Track'.
+src/screens/workstation/components/TrackComponent.tsx(181,27): error TS2304: Cannot find name 'CoreTrack'.
+src/screens/workstation/components/TrackVolumeSlider.tsx(60,12): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/TrackVolumeSlider.tsx(60,40): error TS2554: Expected 1 arguments, but got 2.
+src/screens/workstation/components/ZoomControls.tsx(19,57): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(initialValue: Timeout): MutableRefObject<Timeout>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'Timeout'.
+  Overload 2 of 3, '(initialValue: Timeout | null): RefObject<Timeout>', gave the following error.
+    Argument of type 'undefined' is not assignable to parameter of type 'Timeout | null'.
+src/screens/workstation/components/ZoomControls.tsx(49,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ZoomControls.tsx(51,53): error TS2345: Argument of type '{ horizontalScale: number; tempo: number; timeSignature: { beats: number; noteValue: number; }; snap: boolean; snapUnit: "beat" | "bar" | "sixteenth"; beatWidth?: number | undefined; }' is not assignable to parameter of type '(prev: TimelineSettings) => TimelineSettings'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: TimelineSettings) => TimelineSettings'.
+src/screens/workstation/components/ZoomControls.tsx(62,7): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/ZoomControls.tsx(65,53): error TS2345: Argument of type '{ horizontalScale: number; tempo: number; timeSignature: { beats: number; noteValue: number; }; snap: boolean; snapUnit: "beat" | "bar" | "sixteenth"; beatWidth?: number | undefined; }' is not assignable to parameter of type '(prev: TimelineSettings) => TimelineSettings'.
+  Object literal may only specify known properties, and 'horizontalScale' does not exist in type '(prev: TimelineSettings) => TimelineSettings'.
+src/screens/workstation/components/__tests__/AudioAnalysisPanel.test.tsx(87,9): error TS2739: Type '{ id: string; audio: { audioBuffer: AudioBuffer; buffer: AudioBuffer; waveform: number[]; start: TimelinePosition; end: TimelinePosition; }; name: string; }' is missing the following properties from type 'Clip': type, start, end, loopEnd, muted
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(2,10): error TS2300: Duplicate identifier 'vi'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(55,18): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(61,18): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(81,11): error TS6196: 'TrackData' is declared but never used.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(101,11): error TS6196: 'MockTrack' is declared but never used.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(114,32): error TS2300: Duplicate identifier 'vi'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(121,3): error TS2724: '"@orpheus/test/utils/workstation-test-utils"' has no exported member named 'createMockTracks'. Did you mean 'createMockTrack'?
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(122,3): error TS2724: '"@orpheus/test/utils/workstation-test-utils"' has no exported member named 'createMockWorkstationContext'. Did you mean 'createMockWorkstationUtils'?
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(123,3): error TS2305: Module '"@orpheus/test/utils/workstation-test-utils"' has no exported member 'createMockWidgets'.
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(124,3): error TS2724: '"@orpheus/test/utils/workstation-test-utils"' has no exported member named 'createMockComponents'. Did you mean 'createMockFXComponents'?
+src/screens/workstation/components/__tests__/MainMixer.test.tsx(125,3): error TS2305: Module '"@orpheus/test/utils/workstation-test-utils"' has no exported member 'createMockUtils'.
+src/screens/workstation/components/__tests__/SimpleMixerCheck.test.tsx(1,32): error TS6133: 'vi' is declared but its value is never read.
+src/screens/workstation/components/__tests__/SimpleMixerCheck.test.tsx(2,1): error TS6133: 'React' is declared but its value is never read.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(30,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(31,21): error TS7031: Binding element 'title' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(31,28): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(31,35): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(34,12): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(34,19): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(39,13): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(40,20): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(41,24): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(41,34): error TS7031: Binding element 'index' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(44,16): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(44,23): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(51,15): error TS7031: Binding element 'type' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(56,25): error TS7031: Binding element 'track' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(65,36): error TS2740: Type '{ tracks: never[]; masterTrack: { id: string; name: string; type: string; volume: number; }; selectedTrackId: null; setSelectedTrackId: Mock<any, any>; getTrackCurrentValue: Mock<any, any>; setTrack: Mock<...>; automationMode: string; setAutomationMode: Mock<...>; setAllowMenuAndShortcuts: Mock<...>; }' is missing the following properties from type 'WorkstationContextType': addNode, addTrack, adjustNumMeasures, createAudioClip, and 16 more.
+src/screens/workstation/components/__tests__/SimpleMixerTest.test.tsx(66,32): error TS2740: Type '{ setTrackVolume: Mock<any, any>; setTrackPan: Mock<any, any>; setTrackMute: Mock<any, any>; setTrackSolo: Mock<any, any>; setTrackArmed: Mock<any, any>; }' is missing the following properties from type 'MixerContextType': tracks, masterVolume, masterPan, masterMute, and 16 more.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(22,20): error TS2339: Property 'fromTicks' does not exist on type 'Mock<any, any>'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(23,20): error TS2339: Property 'fromSeconds' does not exist on type 'Mock<any, any>'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(24,20): error TS2339: Property 'defaultSettings' does not exist on type 'Mock<any, any>'.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(197,36): error TS2740: Type '{ tracks: Track[]; masterTrack: Track; isPlaying: boolean; playheadPos: TimelinePosition; maxPos: TimelinePosition; adjustNumMeasures: Mock<...>; ... 24 more ...; updateTimelineSettings: Mock<...>; }' is missing the following properties from type 'WorkstationContextType': addNode, createClipFromTrackRegion, pasteNode, selectedTrackId, and 5 more.
+src/screens/workstation/components/__tests__/Timeline.test.tsx(210,36): error TS2322: Type '{ tracks: Track[]; masterTrack: Track; isPlaying: boolean; playheadPos: TimelinePosition; maxPos: TimelinePosition; adjustNumMeasures: Mock<...>; ... 24 more ...; updateTimelineSettings: Mock<...>; }' is not assignable to type 'WorkstationContextType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(414,36): error TS2739: Type 'MockWorkstationContext' is missing the following properties from type 'WorkstationContextType': pasteNode, showMaster
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(423,41): error TS2322: Type 'MockTrack' is not assignable to type 'Track'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(428,69): error TS2322: Type 'MockTrack' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(434,39): error TS2322: Type '{ volume: number; id: string; name: string; type: string; mute: boolean; solo: boolean; armed: boolean; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(441,80): error TS2322: Type '{ mute: boolean; id: string; name: string; type: string; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(452,80): error TS2322: Type '{ solo: boolean; id: string; name: string; type: string; mute: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(463,80): error TS2322: Type '{ armed: boolean; id: string; name: string; type: string; mute: boolean; solo: boolean; volume: number; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(474,69): error TS2322: Type 'MockTrack' is not assignable to type 'Track'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(506,41): error TS2322: Type '{ automation: boolean; automationLanes: { id: string; label: string; envelope: "volume"; enabled: boolean; minValue: number; maxValue: number; nodes: never[]; show: boolean; expanded: boolean; }[]; id: string; ... 16 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(538,41): error TS2322: Type '{ effects: { id: string; name: string; type: string; enabled: boolean; parameters: { mix: number; }; }[]; fx: { preset: null; effects: { id: string; name: string; type: string; enabled: boolean; parameters: { mix: number; }; }[]; selectedEffectIndex: number; }; ... 17 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(554,41): error TS2322: Type 'MockTrack' is not assignable to type 'Track'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(565,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(566,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(566,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(578,41): error TS2322: Type '{ mute: boolean; id: string; name: string; type: string; solo: boolean; armed: boolean; volume: number; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(587,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(588,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(588,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(600,41): error TS2322: Type '{ armed: boolean; id: string; name: string; type: string; mute: boolean; solo: boolean; volume: number; pan: number; automation: boolean; automationMode: string; automationLanes: { id: string; label: string; ... 6 more ...; expanded: boolean; }[]; ... 8 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(609,13): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(610,11): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(610,54): error TS2304: Cannot find name 'screenshotContainer'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(652,40): error TS2322: Type 'MockWorkstationContext' is not assignable to type 'WorkstationContextType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(653,29): error TS2322: Type '{ type: "audio"; name: string; volume: number; armed: boolean; clips: { id: string; name: string; start: MockTimelinePosition; end: MockTimelinePosition; position: MockTimelinePosition; audioFile: { ...; }; }[]; ... 14 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type '"audio"' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(700,40): error TS2322: Type 'MockWorkstationContext' is not assignable to type 'WorkstationContextType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(701,29): error TS2322: Type '{ type: "midi"; name: string; volume: number; solo: boolean; clips: { id: string; name: string; start: MockTimelinePosition; end: MockTimelinePosition; position: MockTimelinePosition; notes: never[]; }[]; ... 14 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type '"midi"' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(749,40): error TS2322: Type 'MockWorkstationContext' is not assignable to type 'WorkstationContextType'.
+src/screens/workstation/components/__tests__/TrackComponent.test.tsx(750,29): error TS2322: Type '{ name: string; automation: boolean; automationMode: "write"; automationLanes: { id: string; envelope: "volume"; enabled: boolean; points: { position: MockTimelinePosition; value: number; }[]; }[]; ... 15 more ...; outputs: unknown[]; }' is not assignable to type 'Track'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'TrackType'.
+src/screens/workstation/components/__tests__/WorkstationMixer.fixed.test.tsx(92,31): error TS2551: Property 'value' does not exist on type 'number | { value: number; }'. Did you mean 'valueOf'?
+  Property 'value' does not exist on type 'number'.
+src/screens/workstation/components/__tests__/WorkstationMixer.fixed.test.tsx(102,31): error TS2551: Property 'value' does not exist on type 'number | { value: number; }'. Did you mean 'valueOf'?
+  Property 'value' does not exist on type 'number'.
+src/screens/workstation/components/__tests__/WorkstationMixer.fixed.test.tsx(181,34): error TS2322: Type 'ReactNode' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/screens/workstation/components/__tests__/WorkstationMixer.fixed.test.tsx(418,30): error TS2322: Type '{ tracks: { id: string; name: string; type: TrackType; volume: { value: number; }; pan: { value: number; }; mute: boolean; solo: boolean; armed: boolean; automationMode: AutomationMode; ... 4 more ...; fx: { ...; }; }[]; ... 32 more ...; getTrackById: Mock<...>; }' is not assignable to type 'MixerContextType'.
+  Types of property 'tracks' are incompatible.
+    Type '{ id: string; name: string; type: TrackType; volume: { value: number; }; pan: { value: number; }; mute: boolean; solo: boolean; armed: boolean; automationMode: AutomationMode; ... 4 more ...; fx: { ...; }; }[]' is not assignable to type 'Track[]'.
+      Property 'automation' is missing in type '{ id: string; name: string; type: TrackType; volume: { value: number; }; pan: { value: number; }; mute: boolean; solo: boolean; armed: boolean; automationMode: AutomationMode; ... 4 more ...; fx: { ...; }; }' but required in type 'Track'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(8,5): error TS2698: Spread types may only be created from object types.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(27,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(28,16): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(28,26): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,21): error TS7031: Binding element 'title' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,28): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,35): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,42): error TS7031: Binding element 'options' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,66): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(29,74): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(31,31): error TS7006: Parameter 'opt' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,12): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,19): error TS7031: Binding element 'onChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,29): error TS7031: Binding element 'onDoubleClick' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,44): error TS7031: Binding element 'disabled' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,54): error TS7031: Binding element 'title' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(36,76): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(61,13): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(61,20): error TS7031: Binding element 'peak' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(61,41): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(67,20): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(67,45): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(70,24): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(70,49): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(70,57): error TS7031: Binding element 'index' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(77,15): error TS7031: Binding element 'type' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(77,21): error TS7031: Binding element 'color' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(90,25): error TS7031: Binding element 'track' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(90,32): error TS7031: Binding element 'onVolumeChange' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(90,63): error TS7031: Binding element 'testId' implicitly has an 'any' type.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(128,3): error TS6133: 'Track' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(129,3): error TS6133: 'TrackType' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(131,3): error TS6133: 'AutomatableParameter' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(151,3): error TS6133: 'findTrackElementsByName' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(296,52): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(304,44): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(312,53): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(320,46): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(328,50): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(336,50): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(344,49): error TS18046: 'error' is of type 'unknown'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(491,15): error TS2339: Property 'value' does not exist on type 'Element'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(492,15): error TS2339: Property 'title' does not exist on type 'Element'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(493,15): error TS2339: Property 'placeholder' does not exist on type 'Element'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(519,41): error TS2339: Property 'value' does not exist on type 'Element'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(529,26): error TS2339: Property 'value' does not exist on type 'Element'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(538,39): error TS2339: Property 'mockReset' does not exist on type '(track: Track) => void'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(583,39): error TS2339: Property 'mockReset' does not exist on type '(track: Track) => void'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(615,58): error TS2339: Property 'mock' does not exist on type '(track: Track) => void'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(615,101): error TS2339: Property 'mock' does not exist on type '(track: Track) => void'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(744,39): error TS2339: Property 'mockReset' does not exist on type '(track: Track) => void'.
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(1126,9): error TS2739: Type '{ beatWidth: number; timeSignature: { beats: number; noteValue: number; }; horizontalScale: number; }' is missing the following properties from type 'TimelineSettings': tempo, snap, snapUnit
+src/screens/workstation/components/__tests__/WorkstationMixer.test.tsx(1203,9): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/screens/workstation/components/__tests__/WorkstationMixerSimple.test.tsx(9,3): error TS6133: 'mockTracks' is declared but its value is never read.
+src/screens/workstation/components/__tests__/WorkstationMixerSimple.test.tsx(16,58): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/screens/workstation/components/__tests__/WorkstationMixerSimple.test.tsx(20,63): error TS2722: Cannot invoke an object which is possibly 'undefined'.
+src/services/PythonBackendService.ts(81,11): error TS2393: Duplicate function implementation.
+src/services/PythonBackendService.ts(293,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ body?: BodyInit | null | undefined; cache?: RequestCache | undefined; credentials?: RequestCredentials | undefined; headers?: HeadersInit | undefined; ... 9 more ...; timeout: number; }' is not assignable to parameter of type 'RequestInit'.
+      Object literal may only specify known properties, and 'timeout' does not exist in type 'RequestInit'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ body?: BodyInit | null | undefined; cache?: RequestCache | undefined; credentials?: RequestCredentials | undefined; headers?: HeadersInit | undefined; ... 9 more ...; timeout: number; }' is not assignable to parameter of type 'RequestInit'.
+      Object literal may only specify known properties, and 'timeout' does not exist in type 'RequestInit'.
+src/services/PythonBackendService.ts(322,10): error TS2393: Duplicate function implementation.
+src/services/audio/BrowserAudioProvider.tsx(63,24): error TS2367: This comparison appears to be unintentional because the types '"suspended"' and '"running"' have no overlap.
+src/services/browser/BrowserServices.ts(230,21): error TS2339: Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'.
+src/services/hooks/useClickAway.ts(60,10): error TS6133: 'isTouchEvent' is declared but its value is never read.
+src/services/pythonBridge.ts(1,29): error TS6305: Output file '/workspaces/orpheus-engine/electron/index.d.ts' has not been built from source file '/workspaces/orpheus-engine/electron/index.ts'.
+src/services/settings.ts(116,3): error TS2739: Type 'Context<Context<SettingsContextType>>' is missing the following properties from type 'SettingsContextType': settings, updateSettings, resetSettings
+src/services/utils/__tests__/audio.test.ts(39,28): error TS6133: 'channel' is declared but its value is never read.
+src/services/utils/__tests__/audio.test.ts(81,5): error TS2345: Argument of type '(numChannels: number, length: number, sampleRate: number) => { numberOfChannels: number; length: number; sampleRate: number; duration: number; getChannelData: Mock<[channel: any], Float32Array>; copyFromChannel: Mock<...>; copyToChannel: Mock<...>; }' is not assignable to parameter of type '(channels: number, length: number, sampleRate: number) => { length: number; numberOfChannels: number; sampleRate: number; duration: number; getChannelData: () => Float32Array; copyToChannel: () => void; copyFromChannel: () => void; }'.
+  Call signature return types '{ numberOfChannels: number; length: number; sampleRate: number; duration: number; getChannelData: Mock<[channel: any], Float32Array>; copyFromChannel: Mock<any, any>; copyToChannel: Mock<...>; }' and '{ length: number; numberOfChannels: number; sampleRate: number; duration: number; getChannelData: () => Float32Array; copyToChannel: () => void; copyFromChannel: () => void; }' are incompatible.
+    The types of 'getChannelData' are incompatible between these types.
+      Type 'Mock<[channel: any], Float32Array>' is not assignable to type '() => Float32Array'.
+        Target signature provides too few arguments. Expected 1 or more, but got 0.
+src/services/utils/__tests__/audio.test.ts(107,11): error TS6133: 'inputChannel' is declared but its value is never read.
+src/services/utils/clipUtils.ts(1,40): error TS2307: Cannot find module '../types/core' or its corresponding type declarations.
+src/setupTests.ts(47,7): error TS6196: 'MockAudioContext' is declared but never used.
+src/setupTests.ts(186,1): error TS2739: Type 'Mock<[module: any], { ipcRenderer: { invoke: Mock<any, any>; send: Mock<any, any>; on: Mock<any, any>; removeListener: Mock<any, any>; }; } | { ipcRenderer?: undefined; }>' is missing the following properties from type 'Require': cache, extensions, main, resolve
+src/test/helpers/processing-monitor.ts(274,15): error TS6133: '_currentTime' is declared but its value is never read.
+src/test/helpers/processing-monitor.ts(284,14): error TS2367: This comparison appears to be unintentional because the types '"closed" | "suspended"' and '"running"' have no overlap.
+src/test/mocks/audioMock.ts(26,18): error TS6133: 'channel' is declared but its value is never read.
+src/test/mocks/audioMock.ts(117,28): error TS6133: 'arrayBuffer' is declared but its value is never read.
+src/test/mocks/domMock.ts(57,30): error TS6133: 'channel' is declared but its value is never read.
+src/test/mocks/domMock.ts(109,28): error TS6133: 'audioData' is declared but its value is never read.
+src/test/setup.ts(3,1): error TS6133: 'Mock' is declared but its value is never read.
+src/test/setup.ts(15,11): error TS6196: 'MockEventTarget' is declared but never used.
+src/test/setup.ts(346,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'AudioContext' must be of type '{ new (contextOptions?: AudioContextOptions | undefined): AudioContext; prototype: AudioContext; }', but here has type 'AudioContextConstructor'.
+src/test/test-utils.tsx(2,24): error TS6133: 'ReactNode' is declared but its value is never read.
+src/test/utils/audio-test-utils.ts(65,26): error TS6133: 'channel' is declared but its value is never read.
+src/test/utils/audio-test-utils.ts(108,25): error TS6133: 'index' is declared but its value is never read.
+src/test/utils/audio-test-utils.ts(183,3): error TS2741: Property 'isTypeSupported' is missing in type 'Mock<any, any>' but required in type '{ new (stream: MediaStream, options?: MediaRecorderOptions | undefined): MediaRecorder; prototype: MediaRecorder; isTypeSupported(type: string): boolean; }'.
+src/test/utils/global-test-mocks.ts(23,3): error TS2416: Property 'createGain' in type 'MockAudioContext' is not assignable to the same property in base type 'AudioContext'.
+  Type 'Mock<[], { gain: { value: number; }; connect: Mock<any, any>; disconnect: Mock<any, any>; }>' is not assignable to type '() => GainNode'.
+    Type '{ gain: { value: number; }; connect: Mock<any, any>; disconnect: Mock<any, any>; }' is missing the following properties from type 'GainNode': channelCount, channelCountMode, channelInterpretation, context, and 5 more.
+src/test/utils/global-test-mocks.ts(29,3): error TS2416: Property 'createAnalyser' in type 'MockAudioContext' is not assignable to the same property in base type 'AudioContext'.
+  Type 'Mock<[], { fftSize: number; frequencyBinCount: number; getByteFrequencyData: Mock<any, any>; getByteTimeDomainData: Mock<any, any>; connect: Mock<any, any>; disconnect: Mock<...>; }>' is not assignable to type '() => AnalyserNode'.
+    Type '{ fftSize: number; frequencyBinCount: number; getByteFrequencyData: Mock<any, any>; getByteTimeDomainData: Mock<any, any>; connect: Mock<any, any>; disconnect: Mock<any, any>; }' is missing the following properties from type 'AnalyserNode': maxDecibels, minDecibels, smoothingTimeConstant, getFloatFrequencyData, and 10 more.
+src/test/utils/global-test-mocks.ts(38,3): error TS2416: Property 'createOscillator' in type 'MockAudioContext' is not assignable to the same property in base type 'AudioContext'.
+  Type 'Mock<[], { frequency: { value: number; }; type: string; connect: Mock<any, any>; disconnect: Mock<any, any>; start: Mock<any, any>; stop: Mock<any, any>; }>' is not assignable to type '() => OscillatorNode'.
+    Type '{ frequency: { value: number; }; type: string; connect: Mock<any, any>; disconnect: Mock<any, any>; start: Mock<any, any>; stop: Mock<any, any>; }' is missing the following properties from type 'OscillatorNode': detune, setPeriodicWave, addEventListener, removeEventListener, and 8 more.
+src/test/utils/global-test-mocks.ts(47,3): error TS2416: Property 'createBufferSource' in type 'MockAudioContext' is not assignable to the same property in base type 'AudioContext'.
+  Type 'Mock<[], { buffer: null; loop: boolean; connect: Mock<any, any>; disconnect: Mock<any, any>; start: Mock<any, any>; stop: Mock<any, any>; }>' is not assignable to type '() => AudioBufferSourceNode'.
+    Type '{ buffer: null; loop: boolean; connect: Mock<any, any>; disconnect: Mock<any, any>; start: Mock<any, any>; stop: Mock<any, any>; }' is missing the following properties from type 'AudioBufferSourceNode': detune, loopEnd, loopStart, playbackRate, and 10 more.
+src/test/utils/global-test-mocks.ts(158,7): error TS2739: Type '{ width: number; height: number; top: number; left: number; bottom: number; right: number; }' is missing the following properties from type 'DOMRectReadOnly': x, y, toJSON
+src/test/utils/global-test-mocks.ts(245,3): error TS2739: Type 'Mock<any, any>' is missing the following properties from type '{ new (): FileReader; prototype: FileReader; readonly EMPTY: 0; readonly LOADING: 1; readonly DONE: 2; }': EMPTY, LOADING, DONE
+src/test/utils/index.ts(18,8): error TS2306: File '/workspaces/orpheus-engine/src/test/utils/mixer-test-utils.ts' is not a module.
+src/test/utils/index.ts(24,1): error TS2308: Module './workstation-test-utils' has already exported a member named 'createMockTimelineContext'. Consider explicitly re-exporting to resolve the ambiguity.
+src/test/utils/index.ts(86,54): error TS2339: Property 'mixer' does not exist on type '{}'.
+src/test/utils/index.ts(87,66): error TS2339: Property 'workstation' does not exist on type '{}'.
+src/test/utils/mixer-test-helpers.ts(2,18): error TS6133: 'vi' is declared but its value is never read.
+src/test/utils/mixerMockHelpers.tsx(93,3): error TS2322: Type '{ tracks: Track[]; masterTrack: Track; selectedTrackId: string; selectedClipId: null; allowMenuAndShortcuts: true; isPlaying: false; position: TimelinePosition; ... 58 more ...; getTrackCurrentValue: Mock<...>; }' is not assignable to type 'WorkstationContextType'.
+  Object literal may only specify known properties, and 'position' does not exist in type 'WorkstationContextType'.
+src/test/utils/mixerMockHelpers.tsx(93,13): error TS2352: Conversion of type '{ bars: number; beats: number; sixteenths: number; ticks: number; totalBeats: number; }' to type 'TimelinePosition' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ bars: number; beats: number; sixteenths: number; ticks: number; totalBeats: number; }' is missing the following properties from type 'TimelinePosition': bar, beat, tick, sixteenth, and 16 more.
+src/test/utils/mixerMockHelpers.tsx(125,104): error TS2339: Property 'target' does not exist on type 'never'.
+src/test/utils/mixerMockHelpers.tsx(126,49): error TS2339: Property 'target' does not exist on type 'never'.
+src/test/utils/mixerMockHelpers.tsx(198,37): error TS2345: Argument of type '{ mute: any; id?: string | undefined; name?: string | undefined; type?: TrackType | undefined; color?: string | undefined; solo?: boolean | undefined; armed?: boolean | undefined; ... 9 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to parameter of type 'Track'.
+  Types of property 'id' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/test/utils/mixerMockHelpers.tsx(206,37): error TS2345: Argument of type '{ solo: any; id?: string | undefined; name?: string | undefined; type?: TrackType | undefined; color?: string | undefined; mute?: boolean | undefined; armed?: boolean | undefined; ... 9 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to parameter of type 'Track'.
+  Types of property 'id' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/test/utils/mixerMockHelpers.tsx(214,37): error TS2345: Argument of type '{ armed: any; id?: string | undefined; name?: string | undefined; type?: TrackType | undefined; color?: string | undefined; mute?: boolean | undefined; solo?: boolean | undefined; ... 9 more ...; outputs?: { ...; }[] | undefined; }' is not assignable to parameter of type 'Track'.
+  Types of property 'id' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/test/utils/timeline-test-utils.tsx(96,15): error TS2322: Type '{ id: string; name: string; type: "audio"; start: { beats: number; bars: number; ticks: number; samples: number; milliseconds: number; }; end: { beats: number; bars: number; ticks: number; samples: number; milliseconds: number; }; ... 4 more ...; audio: { ...; }; }' is not assignable to type 'Clip'.
+  Types of property 'type' are incompatible.
+    Type '"audio"' is not assignable to type 'TrackType'.
+src/test/utils/workstation-test-utils.tsx(2,22): error TS6196: 'AutomatableParameter' is declared but never used.
+src/test/visual-agent/configs/AudioAnalysisPanelConfig.ts(64,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/AudioAnalysisPanelConfig.ts(75,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/ClipComponentConfig.ts(76,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/ClipComponentConfig.ts(99,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/KnobConfig.ts(64,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/KnobConfig.ts(99,7): error TS2322: Type '{ name: string; captureGif: true; interactions: ({ type: "mousedown"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { type: "mousemove"; target: string; value: { clientX: number; clientY: number; }; delay: number; } | { ...; })[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MeterConfig.ts(74,7): error TS2322: Type '{ name: string; captureGif: true; props: { percent: number; }; interactions: { type: "input"; target: string; value: number; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MeterConfig.ts(107,7): error TS2322: Type '{ name: string; captureGif: true; props: { percent: number; showPeaks: true; color: string; }; interactions: { type: "input"; target: string; value: number; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MixerConfig.ts(57,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "drag"; target: string; value: { startY: number; endY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/MixerConfig.ts(75,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/SidePanelConfig.ts(63,11): error TS2322: Type '"mouseenter"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(68,11): error TS2322: Type '"mouseleave"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(73,11): error TS2322: Type '"mouseenter"' is not assignable to type '"drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"'.
+src/test/visual-agent/configs/SidePanelConfig.ts(81,7): error TS2322: Type '{ name: string; captureGif: true; props: { collapsed: false; }; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/SidePanelConfig.ts(105,7): error TS2322: Type '{ name: string; captureGif: true; props: { collapsed: false; }; interactions: { type: "hover"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TimelineConfig.ts(58,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; value: { clientX: number; clientY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TrackComponentConfig.ts(136,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "click"; target: string; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/configs/TrackComponentConfig.ts(157,7): error TS2322: Type '{ name: string; captureGif: true; interactions: { type: "drag"; target: string; value: { startY: number; endY: number; }; delay: number; }[]; }' is not assignable to type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+  Object literal may only specify known properties, and 'captureGif' does not exist in type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/gif-recorder.ts(150,7): error TS2322: Type '"gif"' is not assignable to type 'ImageType | undefined'.
+src/test/visual-agent/gif-recorder.ts(155,7): error TS2578: Unused '@ts-expect-error' directive.
+src/test/visual-agent/helpers/gif-recorder.ts(64,7): error TS2322: Type '"gif"' is not assignable to type 'ImageType | undefined'.
+src/test/visual-agent/helpers/gif.ts(2,3): error TS6133: 'container' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(1,1): error TS6133: 'render' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(3,10): error TS2305: Module '"./gif-recorder"' has no exported member 'recordGif'.
+src/test/visual-agent/helpers/render.ts(5,1): error TS6133: 'React' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(35,11): error TS6133: 'componentProps' is declared but its value is never read.
+src/test/visual-agent/helpers/render.ts(69,15): error TS2339: Property 'captureGif' does not exist on type '{ name: string; props?: Record<string, any> | undefined; interactions?: { type: "drag" | "mousemove" | "click" | "input" | "mousedown" | "mouseup" | "hover"; target: string; value?: any; delay?: number | undefined; }[] | undefined; }'.
+src/test/visual-agent/helpers/template-engine.ts(42,6): error TS6133: 'match' is declared but its value is never read.
+src/test/visual-agent/helpers/template-engine.ts(82,27): error TS2339: Property 'componentPath' does not exist on type 'VisualTestConfig'.

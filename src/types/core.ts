@@ -93,6 +93,9 @@ export class TimelinePosition {
     horizontalScale: 1,
   };
 
+  // Alias for compatibility
+  static timelineSettings: TimelineSettings = TimelinePosition.defaultSettings;
+
   constructor(
     public bar: number = 0,
     public beat: number = 0,
@@ -138,6 +141,40 @@ export class TimelinePosition {
       // Assuming 4 beats per bar
       resultBar += Math.floor(resultBeat / 4);
       resultBeat %= 4;
+    }
+
+    return new TimelinePosition(resultBar, resultBeat, resultTick);
+  }
+
+  /**
+   * Subtract time from this position
+   */
+  subtract(bars: number, beats: number, ticks: number, normalize: boolean = true): TimelinePosition {
+    let resultBar = this.bar - bars;
+    let resultBeat = this.beat - beats;
+    let resultTick = this.tick - ticks;
+
+    if (normalize) {
+      // Handle underflow for ticks
+      while (resultTick < 0) {
+        resultTick += 480;
+        resultBeat--;
+      }
+
+      // Handle underflow for beats
+      while (resultBeat < 0) {
+        resultBeat += 4;
+        resultBar--;
+      }
+
+      // Ensure we don't go negative
+      resultBar = Math.max(0, resultBar);
+      if (resultBar === 0) {
+        resultBeat = Math.max(0, resultBeat);
+        if (resultBeat === 0) {
+          resultTick = Math.max(0, resultTick);
+        }
+      }
     }
 
     return new TimelinePosition(resultBar, resultBeat, resultTick);
@@ -265,6 +302,39 @@ export class TimelinePosition {
     return Math.abs(this.toMargin() - other.toMargin());
   }
 
+  /**
+   * Convert position to a human-readable time string
+   */
+  toTimeString(format: "time" | "bars" = "time"): string {
+    if (format === "time") {
+      const seconds = this.toSeconds();
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = (seconds % 60).toFixed(2);
+      return `${minutes}:${remainingSeconds.padStart(5, '0')}`;
+    } else {
+      return `${this.bar + 1}.${this.beat + 1}.${Math.floor(this.tick / 120)}`;
+    }
+  }
+
+  /**
+   * Calculate difference between two positions in ticks
+   */
+  diff(other: TimelinePosition): number {
+    return this.toTicks() - other.toTicks();
+  }
+
+  /**
+   * Convert position to a string representation
+   */
+  toString(precision?: number): string {
+    if (precision !== undefined) {
+      // Format with specified precision for the fractional part
+      const fraction = Math.floor(this.tick / 120); // Convert to sixteenths
+      return `${this.bar + 1}.${this.beat + 1}.${fraction.toFixed(precision)}`;
+    }
+    return `${this.bar + 1}.${this.beat + 1}.${Math.floor(this.tick / 120)}`;
+  }
+
   // Static methods
   static fromTicks(ticks: number): TimelinePosition {
     const bars = Math.floor(ticks / (4 * 480));
@@ -380,14 +450,28 @@ export class TimelinePosition {
     return position.toDisplayString();
   }
 
-  static durationToSpan(duration: number): number {
-    // Convert duration (in beats) to span (in ticks)
-    return duration * 480;
-  }
-
   static fractionToSpan(fraction: number): number {
     // Convert fraction (in milliseconds) to span (in ticks)
     return (fraction * 480) / 1000;
+  }
+
+  /**
+   * Convert duration in seconds to span (bars, beats, fraction)
+   */
+  static durationToSpan(durationInSeconds: number): { measures: number; beats: number; fraction: number } {
+    const tempo = TimelinePosition.timelineSettings.tempo;
+    const ticksPerSecond = (tempo * 480) / 60;
+    const totalTicks = Math.round(durationInSeconds * ticksPerSecond);
+    
+    const measures = Math.floor(totalTicks / (4 * 480));
+    let remainingTicks = totalTicks % (4 * 480);
+    
+    const beats = Math.floor(remainingTicks / 480);
+    remainingTicks = remainingTicks % 480;
+    
+    const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
+    
+    return { measures, beats, fraction };
   }
 }
 

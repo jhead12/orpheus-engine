@@ -16,16 +16,14 @@ export default function Dialog(props: IProps) {
       onClose={props.onClose} 
       onMouseDown={e => e.stopPropagation()}
       open={props.open} 
-      slotProps={{
-        paper: {
-          style: {
-            backgroundColor: "var(--bg6)", 
-            border: "1px solid var(--border1)", 
-            borderRadius: 0, 
-            maxWidth: "none", 
-            boxShadow: "none",
-            ...props.style
-          }
+      PaperProps={{
+        style: {
+          backgroundColor: "var(--bg6)", 
+          border: "1px solid var(--border1)", 
+          borderRadius: 0, 
+          maxWidth: "none", 
+          boxShadow: "none",
+          ...props.style
         }
       }}
       transitionDuration={0} 

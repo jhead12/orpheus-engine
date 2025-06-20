@@ -30,6 +30,7 @@ import {
   ZoomControls,
   AudioAnalysisPanel,
 } from "./components";
+import { AudioPluginDemo } from "../../components/demos/AudioPluginDemo";
 import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
 import { SortableList, SortableListItem } from "../../components/widgets";
 import { AnalysisContext, useWorkstation } from "../../contexts";
@@ -41,8 +42,8 @@ import {
   TrackType,
   AutomationMode,
 } from "../../types/core";
-import { TimelinePosition } from "../../types/core";
-import { AudioAnalysisType } from "../../services/types/types";
+import { TimelinePosition } from "@orpheus/types/core";
+import { AudioAnalysisType } from "@orpheus/services/types/types";
 import {
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
@@ -139,11 +140,11 @@ export function AudioAnalysisProvider({
 
   // Mock implementation of analysis functions
   const performSpectralAnalysis = async (
-    audioBuffer: AudioBuffer
+    _audioBuffer: AudioBuffer
   ): Promise<AudioAnalysisResults> => {
     // Use the audioBuffer to generate spectral data
     // Using sample rate for realistic frequency calculations
-    const _sampleRate = audioBuffer.sampleRate; // Used to mark variable as intentionally used
+    // const sampleRate = audioBuffer.sampleRate; // Uncomment when needed for calculations
 
     // Generate mock spectral data as Float32Array[]
     const spectralData: Float32Array[] = [];
@@ -298,7 +299,7 @@ export default function Editor() {
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
     };
   }, [setAllowMenuAndShortcuts]);
 
@@ -319,7 +320,7 @@ export default function Editor() {
           target: null,
         });
         setScrollToBottom(scrollTop >= scrollHeight - clientHeight);
-        setAllowMenuAndShortcuts(false);
+        setAllowMenuAndShortcuts?.(false);
       }
 
       dragEnter.current = true;
@@ -363,7 +364,7 @@ export default function Editor() {
 
       setDragData({ items: [], target: null });
       adjustNumMeasures();
-      setAllowMenuAndShortcuts(true);
+      setAllowMenuAndShortcuts?.(true);
       setResetDragState(false);
     }
   }, [resetDragState, adjustNumMeasures, setAllowMenuAndShortcuts]);
@@ -1203,6 +1204,7 @@ export default function Editor() {
                 <Tab label="Spectral Analysis" />
                 <Tab label="Waveform Analysis" />
                 <Tab label="Feature Extraction" />
+                <Tab label="Plugin Demo" />
                 <Tab label="Judge Evaluation" />
               </Tabs>
               <IconButton
@@ -1215,7 +1217,9 @@ export default function Editor() {
 
             <div className="p-2">
               {analysisTabValue === 3 ? (
-                <JudgeEvaluationPanel />
+                <AudioPluginDemo />
+              ) : analysisTabValue === 4 ? (
+                <div>Judge Evaluation Panel (Not implemented)</div>
               ) : (
                 <AudioAnalysisPanel
                   type={analysis.analysisType}

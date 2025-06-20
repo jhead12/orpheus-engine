@@ -4,7 +4,7 @@ import { toMatchImageSnapshot } from "jest-image-snapshot";
 
 expect.extend({ toMatchImageSnapshot });
 
-export async function takeScreenshot(element: HTMLElement, name: string) {
+export async function takeScreenshot(element: HTMLElement, _name: string) {
   // Launch browser with specific viewport
   const browser = await chromium.launch();
   const context = await browser.newContext({

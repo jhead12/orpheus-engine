@@ -1,11 +1,10 @@
-
 import React, { useContext, useMemo, useState } from "react"
 import { IconButton, Popover } from "@mui/material"
 import { WorkstationContext } from '@orpheus/contexts';
 import { AutomationLane, Track, AutomationLaneEnvelope, TimelinePosition, ContextMenuType } from '@orpheus/types/core'
 import { Add, ExpandLess, ExpandMore, Remove } from "@mui/icons-material"
 import { clamp, inverseLerp, lerp } from '@orpheus/utils/general'
-import { volumeToNormalized } from '@orpheus/utils/utils'
+import { volumeToNormalized, BASE_HEIGHT } from '@orpheus/utils/utils'
 import { v4 } from "uuid"
 
 import { Meter } from '@orpheus/widgets'
@@ -47,8 +46,19 @@ export default function AutomationLaneTrack({ color, lane, track }: Props) {
   }
 
   const currentValue = useMemo(() => {
-    return getTrackCurrentValue(track, lane);
-  }, [lane, playheadPos, value, timelineSettings.timeSignature]);
+    if (getTrackCurrentValue) {
+      return getTrackCurrentValue(track);
+    }
+    // Fallback to track's base value if no automation
+    switch (lane.envelope) {
+      case AutomationLaneEnvelope.Volume:
+        return track.volume;
+      case AutomationLaneEnvelope.Pan:
+        return track.pan;
+      default:
+        return { value: 0, isAutomated: false };
+    }
+  }, [lane, playheadPos, track, getTrackCurrentValue]);
 
   const normalizedCurrentValue = useMemo(() => {
     if (currentValue.value !== null) {
@@ -106,10 +116,10 @@ export default function AutomationLaneTrack({ color, lane, track }: Props) {
         } else {
           switch (lane.envelope) {
             case AutomationLaneEnvelope.Volume:
-              value = track.volume;
+              value = track.volume.value;
               break;
             case AutomationLaneEnvelope.Pan:
-              value = track.pan;
+              value = track.pan.value;
               break;
             case AutomationLaneEnvelope.Tempo:
               value = timelineSettings.tempo;
@@ -130,6 +140,48 @@ export default function AutomationLaneTrack({ color, lane, track }: Props) {
       setSelectedNodeId(node.id);
     }
   }
+
+  // Helper function to get automation value at a specific position
+  const automatedValueAtPos = (position: TimelinePosition, automationLane: AutomationLane): number | null => {
+    if (!automationLane.nodes || automationLane.nodes.length === 0) {
+      return null;
+    }
+
+    // Find the closest automation nodes before and after the position
+    const positionTicks = position.toTicks();
+    let beforeNode = null;
+    let afterNode = null;
+
+    for (const node of automationLane.nodes) {
+      const nodeTicks = node.position.toTicks();
+      if (nodeTicks <= positionTicks) {
+        beforeNode = node;
+      } else if (nodeTicks > positionTicks && !afterNode) {
+        afterNode = node;
+        break;
+      }
+    }
+
+    // If we only have a before node, use its value
+    if (beforeNode && !afterNode) {
+      return beforeNode.value.value;
+    }
+
+    // If we only have an after node, use its value
+    if (afterNode && !beforeNode) {
+      return afterNode.value.value;
+    }
+
+    // If we have both, interpolate
+    if (beforeNode && afterNode) {
+      const beforeTicks = beforeNode.position.toTicks();
+      const afterTicks = afterNode.position.toTicks();
+      const ratio = (positionTicks - beforeTicks) / (afterTicks - beforeTicks);
+      return beforeNode.value.value + (afterNode.value.value - beforeNode.value.value) * ratio;
+    }
+
+    return null;
+  };
 
   return (
     <div onContextMenu={handleContextMenu} style={{ width: "100%" }}>

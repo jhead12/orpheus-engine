@@ -1,6 +1,6 @@
 import React, { CSSProperties, JSX, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { getScrollParent } from "../../services/utils/general";
+import { getScrollParentWithDirection } from "../../services/utils/general";
 
 type TooltipContainer = string | HTMLElement;
 
@@ -86,8 +86,8 @@ export default function Tooltip(props: TooltipProps) {
     let vScrollParent: HTMLElement | null = null;
 
     if (anchor && (open || showOnHover && hovering)) {
-      hScrollParent = getScrollParent(anchor, "horizontal");
-      vScrollParent = getScrollParent(anchor, "vertical");
+      hScrollParent = getScrollParentWithDirection(anchor, "horizontal");
+      vScrollParent = getScrollParentWithDirection(anchor, "vertical");
       hScrollParent?.addEventListener("scroll", handleScrollParentScroll);
       vScrollParent?.addEventListener("scroll", handleScrollParentScroll);
     }

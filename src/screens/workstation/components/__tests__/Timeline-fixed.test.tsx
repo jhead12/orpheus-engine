@@ -25,19 +25,42 @@ import {
 
 // Mock TimelinePosition to fix toSeconds() error
 vi.mock("@orpheus/types/core", () => {
+  const mockPosition = {
+    bar: 0,
+    beat: 0,
+    tick: 0,
+    toSeconds: vi.fn().mockReturnValue(0), // Fix the main error
+    toTicks: vi.fn().mockReturnValue(0),
+    toMargin: vi.fn().mockReturnValue(0),
+    compareTo: vi.fn().mockReturnValue(0),
+    equals: vi.fn().mockReturnValue(true),
+    copy: vi.fn(),
+    add: vi.fn(),
+    snap: vi.fn(),
+    translate: vi.fn(), 
+    diffInMargin: vi.fn().mockReturnValue(0)
+  };
+  
+  // Set up self-referential returns without causing recursion
+  mockPosition.copy.mockReturnValue(mockPosition);
+  mockPosition.add.mockReturnValue(mockPosition);
+  mockPosition.snap.mockReturnValue(mockPosition);
+  mockPosition.translate.mockReturnValue(mockPosition);
+  
   class MockTimelinePosition {
     constructor(public bar = 0, public beat = 0, public tick = 0) {}
     
-    toSeconds = vi.fn().mockReturnValue(0) // Fix the main error
-    toTicks = vi.fn().mockReturnValue(0)
-    toMargin = vi.fn().mockReturnValue(0)
-    compareTo = vi.fn().mockReturnValue(0)
-    equals = vi.fn().mockReturnValue(true)
-    copy = vi.fn().mockReturnValue(new MockTimelinePosition())
-    add = vi.fn().mockReturnValue(new MockTimelinePosition())
-    snap = vi.fn().mockReturnValue(new MockTimelinePosition())
-    translate = vi.fn().mockReturnValue(new MockTimelinePosition())
-    diffInMargin = vi.fn().mockReturnValue(0)
+    // Return the pre-configured mock object instead of creating new instances
+    toSeconds = mockPosition.toSeconds
+    toTicks = mockPosition.toTicks
+    toMargin = mockPosition.toMargin
+    compareTo = mockPosition.compareTo
+    equals = mockPosition.equals
+    copy = mockPosition.copy
+    add = mockPosition.add
+    snap = mockPosition.snap
+    translate = mockPosition.translate
+    diffInMargin = mockPosition.diffInMargin
     
     // Static methods
     static fromTicks = vi.fn().mockReturnValue(new MockTimelinePosition())

@@ -130,28 +130,28 @@ export class ImageService {
   /**
    * Parse component name from filename
    */
-  private parseComponentName(filename: string): string {
-    const match = filename.match(/^(.+?)\.test\.tsx\.snap/);
-    return match ? match[1] : 'Unknown';
-  }
+  // private parseComponentName(filename: string): string {
+  //   const match = filename.match(/^(.+?)\.test\.tsx\.snap/);
+  //   return match ? match[1] : 'Unknown';
+  // }
 
   /**
    * Parse test name from filename
    */
-  private parseTestName(filename: string): string {
-    const match = filename.match(/snap-(.+)-\d+\.(png|gif)$/);
-    if (match) {
-      return match[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    }
-    return filename.replace(/\.(png|gif)$/, '');
-  }
+  // private parseTestName(filename: string): string {
+  //   const match = filename.match(/snap-(.+)-\d+\.(png|gif)$/);
+  //   if (match) {
+  //     return match[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  //   }
+  //   return filename.replace(/\.(png|gif)$/, '');
+  // }
 
   /**
    * Get file type from extension
    */
-  private getFileType(filename: string): 'gif' | 'png' {
-    return filename.endsWith('.gif') ? 'gif' : 'png';
-  }
+  // private getFileType(filename: string): 'gif' | 'png' {
+  //   return filename.endsWith('.gif') ? 'gif' : 'png';
+  // }
 }
 
 export const imageService = ImageService.getInstance();

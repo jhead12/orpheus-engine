@@ -39,8 +39,8 @@ const data : Track[] = [
     mute: false,
     solo: false,
     armed: false,
-    volume: 0, // Default volume (0dB)
-    pan: 0, // Center pan
+    volume: { value: 0, isAutomated: false }, // Default volume (0dB)
+    pan: { value: 0, isAutomated: false }, // Center pan
     automation: true,
     automationMode: AutomationMode.Read, // Using enum value instead of string literal
     automationLanes: [

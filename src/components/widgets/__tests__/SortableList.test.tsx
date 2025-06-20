@@ -1,4 +1,3 @@
-import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { SortableList, SortableListItem } from "../SortableList";
@@ -85,7 +84,7 @@ describe("SortableList Widget", () => {
   });
 
   it("handles drag movement and updates", () => {
-    const { container } = render(
+    render( // Removed unused container destructuring
       <SortableList
         autoScroll={mockAutoScroll}
         onSortUpdate={mockOnSortUpdate}

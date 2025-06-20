@@ -1,8 +1,11 @@
+// Mock all external modules first (hoisted to top)
+import { vi } from 'vitest';
+
 // Mock types module first
 vi.mock("@orpheus/types/core", () => ({
   AutomationMode: {
     Read: "read",
-    Write: "write",
+    Write: "write", 
     Touch: "touch",
     Latch: "latch",
     Trim: "trim",
@@ -44,123 +47,68 @@ vi.mock("@orpheus/services/types/types", () => ({
     Tempo: "tempo",
     Effect: "effect"
   },
-  Track: vi.fn().mockImplementation((data: any) => ({
-    id: data?.id || "mock-track-id",
-    name: data?.name || "Mock Track",
-    volume: {
-      getValue: () => data?.volume || 0,
-      setValue: vi.fn(),
-      automate: vi.fn()
-    },
-    pan: {
-      getValue: () => data?.pan || 0,
-      setValue: vi.fn(),
-      automate: vi.fn()
-    }
-  }))
+  Track: vi.fn()
 }));
+
 vi.mock("../../../../contexts/WorkstationContext", () => ({
   WorkstationContext: {
-    Provider: ({ children }: { children: React.ReactNode }) => children
+    Provider: ({ children }) => children
   }
 }));
 
 vi.mock("../../../../contexts/MixerContext", () => ({
   MixerContext: {
-    Provider: ({ children }: { children: React.ReactNode }) => children
+    Provider: ({ children }) => children
   }
 }));
 
-vi.mock("../../../../test/utils/workstation-test-utils", () => {
-  const mockPosition = {
-    bar: 0,
-    beat: 0,
-    tick: 0,
-    toSeconds: vi.fn().mockReturnValue(0),
-    toTicks: vi.fn().mockReturnValue(0),
-    toMargin: vi.fn().mockReturnValue(0),
-    copy: vi.fn(),
-    equals: vi.fn().mockReturnValue(true),
-    add: vi.fn(),
-    snap: vi.fn(),
-    toString: vi.fn().mockReturnValue("0:0:0")
-  };
+vi.mock("../../../../test/utils/workstation-test-utils", () => ({
+  createMockTracks: function() { return []; },
+  createMockMixerContext: function() { return {}; },
+  createMockWorkstationContext: function() { return {}; },
+  createMockWidgets: function() { return {}; },
+  createMockComponents: function() { return {}; },
+  createMockUtils: function() { return {}; },
+  createManyTracks: function() { return []; }
+}));
 
-  mockPosition.copy.mockReturnValue(mockPosition);
-  mockPosition.add.mockReturnValue(mockPosition);
-  mockPosition.snap.mockReturnValue(mockPosition);
+// Define interfaces for type safety
+interface TrackIconProps {
+  type: string;
+  color: string;
+}
 
-  // Create mock implementations for automation parameters
-  const createAutomatableParam = (initialValue = 0) => ({
-    value: initialValue,
-    isAutomated: false,
-    // Required by actual implementation
-    getValue: () => initialValue,
-    setValue: vi.fn(),
-    automate: vi.fn()
-  });
+interface TrackData {
+  id: string;
+  name: string;
+  volume?: number;
+  pan?: number;
+  mute?: boolean;
+  solo?: boolean;
+  armed?: boolean;
+  effects?: unknown[];
+  automationMode?: string;
+}
 
-  // Create mock tracks with proper parameter types
-  const createMockTrack = (data: any = {}) => ({
-    id: data.id || 'track-1',
-    name: data.name || 'Test Track',
-    volume: createAutomatableParam(data.volume || 0.8),
-    pan: createAutomatableParam(data.pan || 0),
-    mute: data.mute || false,
-    solo: data.solo || false,
-    armed: data.armed || false,
-    effects: data.effects || [],
-    automationMode: data.automationMode || 'off'
-  });
+interface AutomatableParam {
+  value: number;
+  isAutomated: boolean;
+  getValue: () => number;
+  setValue: (value: number) => void;
+  automate: (value: number) => void;
+}
 
-  return {
-    createMockTracks: () => [
-      createMockTrack({ 
-        id: 'track-1', 
-        name: 'Vocals', 
-        volume: 0.8, 
-        pan: 0.1 
-      }),
-      createMockTrack({ 
-        id: 'track-2', 
-        name: 'Guitar', 
-        volume: 0.6, 
-        pan: -0.2,
-        mute: true,
-        armed: true,
-      })
-    ],
-    createMockMixerContext: vi.fn().mockReturnValue({
-      tracks: [],
-      masterVolume: 0.8,
-      masterPan: 0,
-      masterMute: false,
-      mixerHeight: 300,
-      setMasterVolume: vi.fn(),
-      setMasterPan: vi.fn(),
-      setMasterMute: vi.fn(),
-      setMixerHeight: vi.fn(),
-      setTrackVolume: vi.fn(),
-      setTrackPan: vi.fn(),
-      setTrackMute: vi.fn(),
-      setTrackSolo: vi.fn(),
-      setTrackArmed: vi.fn(),
-      addEffect: vi.fn(),
-      removeEffect: vi.fn(),
-      updateEffect: vi.fn(),
-      reorderEffects: vi.fn(),
-      meters: {
-        'track-1': { left: 0.3, right: 0.4, peak: 0.5 },
-        'track-2': { left: 0.0, right: 0.0, peak: 0.0 },
-      }
-    }),
-    createMockWorkstationContext: vi.fn().mockReturnValue({}),
-    createMockWidgets: vi.fn().mockReturnValue({}),
-    createMockComponents: vi.fn().mockReturnValue({}),
-    createMockUtils: vi.fn().mockReturnValue({}),
-    createManyTracks: vi.fn().mockReturnValue([])
-  };
-});
+interface MockTrack {
+  id: string;
+  name: string;
+  volume: AutomatableParam;
+  pan: AutomatableParam;
+  mute: boolean;
+  solo: boolean;
+  armed: boolean;
+  effects: unknown[];
+  automationMode: string;
+}
 
 // ==== Now we can have our imports ====
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -171,7 +119,6 @@ import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import {
   createMockTracks,
-  createMockMixerContext,
   createMockWorkstationContext,
   createMockWidgets,
   createMockComponents,
@@ -188,7 +135,7 @@ setupGlobalTestMocks();
 vi.mock('../../../components/widgets', () => createMockWidgets());
 vi.mock('../index', () => createMockComponents());
 vi.mock('../../../components/icons/TrackIcon', () => ({
-  default: ({ type, color }: any) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
+  default: ({ type, color }: TrackIconProps) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
 }));
 vi.mock('../editor-utils', () => ({
   openContextMenu: vi.fn(),
@@ -689,7 +636,7 @@ describe('Main Mixer Component', () => {
       try {
         const panKnob = screen.getByTestId('mixer-pan-track-1');
         expect(panKnob).toHaveAttribute('aria-label', 'Vocals pan');
-      } catch (e) {
+      } catch (_) {
         // Pan knob not found, skip this assertion
         console.log('Pan knob not found in test, skipping aria-label check');
       }
@@ -721,7 +668,7 @@ describe('Main Mixer Component', () => {
       try {
         const announcement = screen.getByTestId('mixer-announcement');
         expect(announcement).toHaveTextContent('Vocals volume set to 50%');
-      } catch (e) {
+      } catch (_) {
         // Announcement area not found, skip
         console.log('Announcement area not found, skipping level change announcement test');
       }

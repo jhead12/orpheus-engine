@@ -249,6 +249,34 @@ export function getScrollParent(
 }
 
 /**
+ * Get scroll parent with direction support
+ */
+export function getScrollParentWithDirection(
+  element: HTMLElement,
+  direction: "vertical" | "horizontal" = "vertical"
+): HTMLElement | null {
+  const overflowProperty = direction === "horizontal" ? "overflowX" : "overflowY";
+
+  const isScrollable = (style: CSSStyleDeclaration) => {
+    const overflow = style[overflowProperty as keyof CSSStyleDeclaration];
+    return overflow === 'auto' || overflow === 'scroll';
+  };
+
+  let style = window.getComputedStyle(element);
+  let parent = element.parentElement;
+
+  while (parent) {
+    style = window.getComputedStyle(parent);
+    if (isScrollable(style)) {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+
+  return document.body;
+}
+
+/**
  * Formats a duration in seconds into a human-readable string (MM:SS format)
  * @param seconds The duration in seconds
  * @returns Formatted duration string

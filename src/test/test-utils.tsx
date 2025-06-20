@@ -1,15 +1,6 @@
 import { render as rtlRender, RenderOptions, renderHook as rtlRenderHook, RenderHookOptions, RenderHookResult } from '@testing-library/react';
 import { ReactElement, ReactNode } from 'react';
 import { ReactProvider } from './ReactProvider';
-import { reactHooks } from '../../../../../test-preload.js';
-
-// Ensure we're using the correct React hooks
-Object.entries(reactHooks).forEach(([key, value]) => {
-  if (typeof value === 'function') {
-    // @ts-expect-error - dynamically setting hooks at runtime
-    React[key] = value;
-  }
-});
 
 // Custom render function that wraps component in ReactProvider
 function renderWithProvider(

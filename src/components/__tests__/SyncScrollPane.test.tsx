@@ -13,11 +13,14 @@ const mockContext = {
 };
 
 // Create a wrapper component that provides mocked context
+// Commenting out because it's not currently used
+/*
 const TestProvider = ({ children }: { children: React.ReactNode }) => (
   <ScrollSyncContext.Provider value={mockContext}>
     {children}
   </ScrollSyncContext.Provider>
 );
+*/
 
 describe("SyncScrollPane", () => {
   beforeEach(() => {
@@ -49,25 +52,26 @@ describe("SyncScrollPane", () => {
 
   it("maintains scroll synchronization between panes", () => {
     const scrollFn2 = vi.fn();
-    
-    // Mock the scroll handler implementation
-    const mockScrollHandler = vi.fn((e: Event) => {
-      if (e.target === pane1) {
-        scrollFn2({
-          top: pane1.scrollTop,
-          left: pane1.scrollLeft,
-          behavior: undefined
-        });
-      }
-    });
 
-    // Update mock context to include scroll handler
+    // Update mock context to include scroll handler  
     const contextWithHandler = {
       ...mockContext,
       registerPane: (pane: HTMLElement) => {
-        mockRegisterPane(pane);
-        pane.onscroll = mockScrollHandler;
-      }
+        pane.addEventListener('scroll', (e: Event) => {
+          // Mock scroll synchronization
+          if (e.target) {
+            const target = e.target as HTMLElement;
+            if (target.getAttribute('data-testid') === 'sync-scroll-pane-pane1') {
+              scrollFn2({
+                top: target.scrollTop,
+                left: target.scrollLeft,
+                behavior: undefined
+              });
+            }
+          }
+        });
+      },
+      unregisterPane: vi.fn()
     };
 
     const { container } = render(

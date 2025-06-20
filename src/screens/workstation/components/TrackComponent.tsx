@@ -5,10 +5,11 @@ import {
   ContextMenuType,
   AutomationMode,
   TrackType,
-  Track as CoreTrack,
+  Track,
+  AutomationLane,
+  Effect
 } from '@orpheus/types/core';
-import type { AutomationLane, Effect } from '@orpheus/types/core';
-import { WorkstationContext } from "@orpheus/contexts";
+import { WorkstationContext, WorkstationContextType } from "@orpheus/contexts";
 import { DialogContent } from "@mui/material";
 // Using MUI Dialog instead of orpheus widgets
 import { Dialog } from "@mui/material";
@@ -16,33 +17,9 @@ import { hueFromHex, hslToHex } from "@orpheus/utils/general";
 import { openContextMenu } from '@orpheus/services/electron/utils';
 import AutomationLaneTrack from "./AutomationLaneTrack";
 
-interface Track {
-  id: string;
-  name: string;
-  type: TrackType;
-  color: string;
-  mute: boolean;
-  solo: boolean;
-  armed: boolean;
-  volume: number;
-  pan: number;
-  automation: boolean;
-  automationMode: AutomationMode;
-  automationLanes: AutomationLane[];
-  effects: Effect[];
-  clips: unknown[];
-  fx: {
-    effects: Effect[];
-    selectedEffectIndex: number;
-    preset: unknown | null;
-  };
-}
-
-interface ExtendedWorkstationContextType {
+interface ExtendedWorkstationContextType extends WorkstationContextType {
   deleteTrack: (track: Track) => void;
   duplicateTrack: (track: Track) => void;
-  setTrack: (track: Track) => void;
-  masterTrack: Track;
 }
 
 // Props interface for the component
@@ -63,7 +40,7 @@ function TrackComponent({ className, track, style, colorless, order }: IProps) {
 
   const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
   // Use color styling only if colorless is not set
-  const useColor = !colorless;
+  // const useColor = !colorless; // Commented out as it's currently unused
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
