@@ -5,8 +5,9 @@ import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import { 
   mockWorkstationContext,
-  mockMixerContext,
-  mockTracks 
+  mockMixerContext
+  // Removing unused import
+  // mockTracks 
 } from '@orpheus/test/utils/mixerMockHelpers';
 
 // Mock the widgets package

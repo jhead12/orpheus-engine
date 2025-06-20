@@ -1,0 +1,12 @@
+export declare const TRACK_FILE_UPLOAD = "track-file-upload";
+export declare const CONTEXT_MENU = "context-menu";
+export declare const AUDIO_ANALYSIS = "audio-analysis";
+export declare const LOAD_PRESET = "load-preset";
+export declare const SAVE_PRESET = "save-preset";
+export declare const CLOSE_CONTEXT_MENU = "close-context-menu";
+export declare const OPEN_CONTEXT_MENU = "open-context-menu";
+export declare const SELECT_CONTEXT_MENU_ITEM = "select-context-menu-item";
+export declare const ADD_TRACK = "add-track";
+export declare const OPEN_PREFERENCES = "open-preferences";
+export declare const TOGGLE_MASTER_TRACK = "toggle-master-track";
+export declare const TOGGLE_MIXER = "toggle-mixer";
