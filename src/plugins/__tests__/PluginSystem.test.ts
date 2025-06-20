@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { PluginRegistry } from '../plugins/core/PluginRegistry';
-import { PlatformDetector } from '../plugins/core/PlatformDetector';
-import { AudioAnalysisPlugin } from '../plugins/examples/AudioAnalysisPlugin';
-import { pluginSystem } from '../plugins';
+import { PluginRegistry } from '../core/PluginRegistry';
+import { PlatformDetector } from '../core/PlatformDetector';
+import { AudioAnalysisPlugin } from '../examples/AudioAnalysisPlugin';
+import { pluginSystem } from '..';
 
 describe('Plugin System', () => {
   let registry: PluginRegistry;

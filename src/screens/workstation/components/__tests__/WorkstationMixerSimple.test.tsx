@@ -24,6 +24,9 @@ vi.mock('@orpheus/widgets', () => ({
   SortableList: ({ children, ...rest }: { children: React.ReactNode; [key: string]: any }) => <div data-testid="sortable-list" {...rest}>{children}</div>,
   SortableListItem: ({ children, index, ...rest }: { children: React.ReactNode; index?: number; [key: string]: any }) => (
     <div data-testid={`sortable-item-${index}`} {...rest}>{children}</div>
+  ),
+  HueInput: ({ onChange, value, ...rest }: { onChange?: (value: number) => void; value?: number; [key: string]: any }) => (
+    <input data-testid="hue-input" value={value} onChange={e => onChange?.(Number(e.target.value))} {...rest} />
   )
 }));
 
