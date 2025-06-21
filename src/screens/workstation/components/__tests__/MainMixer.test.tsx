@@ -1,141 +1,276 @@
-// Mock all external modules first (hoisted to top)
-import { vi } from 'vitest';
+/**
+ * MainMixer Test
+ * Tests the MainMixer component
+ */
+
+// Initialize AudioContext mock first (must happen before any other imports)
+if (typeof window !== 'undefined') {
+  window.AudioContext = window.AudioContext || (() => ({
+    createGain: () => ({ connect: () => {}, gain: { value: 1 } }),
+    createAnalyser: () => ({ connect: () => {}, fftSize: 2048, getByteFrequencyData: () => {} }),
+    destination: {},
+    sampleRate: 44100,
+    state: 'running',
+    resume: () => Promise.resolve(),
+    suspend: () => Promise.resolve(),
+  }));
+  window.webkitAudioContext = window.AudioContext;
+}
+
+// Set up global AudioContext for Node.js environment  
+global.AudioContext = global.AudioContext || (() => ({
+  createGain: () => ({ connect: () => {}, gain: { value: 1 } }),
+  createAnalyser: () => ({ connect: () => {}, fftSize: 2048, getByteFrequencyData: () => {} }),
+  destination: {},
+  sampleRate: 44100,
+  state: 'running',
+  resume: () => Promise.resolve(),
+  suspend: () => Promise.resolve(),
+}));
+global.webkitAudioContext = global.AudioContext;
+
+// Define constants separately to avoid hoisting issues
+const TrackType = {
+  Audio: "audio",
+  Midi: "midi",
+  Sequencer: "sequencer",
+};
+
+const AutomationMode = {
+  Read: "read",
+  Write: "write", 
+  Touch: "touch",
+  Latch: "latch",
+  Trim: "trim",
+  Off: "off",
+};
+
+const AutomationLaneEnvelope = {
+  Volume: "volume",
+  Pan: "pan",
+  Send: "send",
+  Filter: "filter",
+  Tempo: "tempo",
+  Effect: "effect",
+};
 
 // Mock types module first
 vi.mock("@orpheus/types/core", () => ({
-  AutomationMode: {
-    Read: "read",
-    Write: "write", 
-    Touch: "touch",
-    Latch: "latch",
-    Trim: "trim",
-    Off: "off",
-  },
-  AutomationLaneEnvelope: {
-    Volume: "volume",
-    Pan: "pan",
-    Send: "send",
-    Filter: "filter",
-    Tempo: "tempo",
-    Effect: "effect",
-  },
-  TrackType: {
-    Audio: "audio",
-    Midi: "midi",
-    Sequencer: "sequencer",
-  },
-}));
-
-// Mock all external modules before any imports
-vi.mock("@orpheus/services/types/types", () => ({
-  AutomationMode: {
-    Off: "off",
-    Read: "read",
-    Write: "write",
-    Touch: "touch",
-    Latch: "latch"
-  },
-  ContextMenuType: {
-    TRACK: "TRACK",
-    AUTOMATION: "AUTOMATION"
-  },
-  AutomationLaneEnvelope: {
-    Volume: "volume",
-    Pan: "pan",
-    Send: "send",
-    Filter: "filter",
-    Tempo: "tempo",
-    Effect: "effect"
-  },
-  Track: vi.fn()
-}));
-
-vi.mock("../../../../contexts/WorkstationContext", () => ({
-  WorkstationContext: {
-    Provider: ({ children }) => children
+  AutomationMode,
+  AutomationLaneEnvelope,
+  TrackType,
+  TimelinePosition: class TimelinePosition {
+    bars: number;
+    beats: number;
+    sixteenths: number;
+    ticks: number;
+    totalBeats: number;
+  
+    constructor(bars = 1, beats = 1, sixteenths = 1, ticks = 0) {
+      this.bars = bars;
+      this.beats = beats;
+      this.sixteenths = sixteenths;
+      this.ticks = ticks;
+      this.totalBeats = this.calculateTotalBeats();
+    }
+  
+    calculateTotalBeats() {
+      return ((this.bars - 1) * 4) + (this.beats - 1) + (this.sixteenths - 1) / 4 + this.ticks / 960;
+    }
   }
 }));
 
-vi.mock("../../../../contexts/MixerContext", () => ({
-  MixerContext: {
-    Provider: ({ children }) => children
-  }
-}));
-
-vi.mock("../../../../test/utils/workstation-test-utils", () => ({
-  createMockTracks: function() { return []; },
-  createMockMixerContext: function() { return {}; },
-  createMockWorkstationContext: function() { return {}; },
-  createMockWidgets: function() { return {}; },
-  createMockComponents: function() { return {}; },
-  createMockUtils: function() { return {}; },
-  createManyTracks: function() { return []; }
-}));
-
-// Define interfaces for type safety
-interface TrackIconProps {
-  type: string;
-  color: string;
-}
-
-interface TrackData {
-  id: string;
-  name: string;
-  volume?: number;
-  pan?: number;
-  mute?: boolean;
-  solo?: boolean;
-  armed?: boolean;
-  effects?: unknown[];
-  automationMode?: string;
-}
-
-interface AutomatableParam {
-  value: number;
-  isAutomated: boolean;
-  getValue: () => number;
-  setValue: (value: number) => void;
-  automate: (value: number) => void;
-}
-
-interface MockTrack {
-  id: string;
-  name: string;
-  volume: AutomatableParam;
-  pan: AutomatableParam;
-  mute: boolean;
-  solo: boolean;
-  armed: boolean;
-  effects: unknown[];
-  automationMode: string;
-}
-
-// ==== Now we can have our imports ====
+// Now it's safe to import testing utilities
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Mixer from '@orpheus/screens/workstation/components/Mixer';
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
-import {
-  createMockTracks,
-  createMockWorkstationContext,
-  createMockWidgets,
-  createMockComponents,
-  createMockUtils,
-  createManyTracks
-} from '@orpheus/test/utils/workstation-test-utils';
 import { setupGlobalTestMocks } from '@orpheus/test/utils/global-test-mocks';
-// Setup global mocks
 
 // Setup global mocks
 setupGlobalTestMocks();
+
+// Helper to create automatable parameter
+const createAutomatableParam = (initialValue = 0) => ({
+  value: initialValue,
+  isAutomated: false,
+  getValue: () => initialValue,
+  setValue: vi.fn(),
+  automate: vi.fn()
+});
+
+// Create mock tracks
+const mockTracks = [
+  {
+    id: 'track-1',
+    name: 'Vocals',
+    type: TrackType.Audio,
+    color: '#ff6b6b',
+    mute: false,
+    solo: false,
+    armed: false,
+    volume: createAutomatableParam(0.8),
+    pan: createAutomatableParam(0.1),
+    automation: false,
+    automationMode: AutomationMode.Read,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  },
+  {
+    id: 'track-2',
+    name: 'Guitar',
+    type: TrackType.Audio, 
+    color: '#4ecdc4',
+    mute: true,
+    solo: false,
+    armed: true,
+    volume: createAutomatableParam(0.6),
+    pan: createAutomatableParam(-0.2),
+    automation: false,
+    automationMode: AutomationMode.Write,
+    automationLanes: [],
+    clips: [],
+    effects: [],
+    fx: {
+      preset: null,
+      effects: [],
+      selectedEffectIndex: 0,
+    }
+  }
+];
+
+const mockMasterTrack = {
+  id: 'master',
+  name: 'Master',
+  type: TrackType.Audio,
+  color: '#444444',
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: createAutomatableParam(0.8),
+  pan: createAutomatableParam(0),
+  automation: false,
+  automationMode: AutomationMode.Read,
+  automationLanes: [],
+  clips: [],
+  effects: [],
+  fx: {
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  }
+};
+
+// Mock widgets for testing
+const createMockWidgets = () => ({
+  Dialog: ({ children, ...rest }: any) => <div {...rest}>{children}</div>,
+  SelectSpinBox: ({ title, label, value, options, 'data-testid': testId, onChange, ...rest }: any) => (
+    <select data-testid={testId || "select-spinbox"} title={title} value={value} onChange={e => onChange && onChange(e.target.value)} {...rest}>
+      {options && options.map((opt: any) => (
+        <option key={opt.value} value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
+  ),
+  Knob: ({ value, onChange, onDoubleClick, disabled, title, 'data-testid': testId, ...rest }: any) => (
+    <div 
+      data-testid={testId || "knob"} 
+      title={title || `Pan: ${value || 0}`}
+      className={disabled ? "disabled" : ""}
+      onDoubleClick={onDoubleClick} 
+      {...rest}
+    >
+      <input 
+        type="range" 
+        min="-1" 
+        max="1" 
+        step="0.01" 
+        value={value || 0} 
+        disabled={disabled}
+        onChange={(e) => {
+          const newValue = parseFloat(e.target.value);
+          if (!isNaN(newValue) && onChange) {
+            onChange(newValue);
+          }
+        }}
+        data-testid={`${testId || "knob"}-input`}
+      />
+    </div>
+  ),
+  Meter: ({ value, peak, 'data-testid': testId, ...rest }: any) => (
+    <div data-testid={testId || "meter"} className="meter-component" {...rest}>
+      <div className="meter-value">{value || 0}</div>
+      <div className="peak-display">{peak || "-∞"}</div>
+    </div>
+  ),
+  SortableList: ({ children, 'data-testid': testId, ...rest }: any) => (
+    <div data-testid={testId || "sortable-list"} className="sortable-list" {...rest}>{children}</div>
+  ),
+  SortableListItem: ({ children, 'data-testid': testId, index, ...rest }: any) => (
+    <div data-testid={testId || `sortable-item-${index}`} data-index={index} className="sortable-item" {...rest}>{children}</div>
+  )
+});
+
+// Mock components for testing
+const createMockComponents = () => ({
+  TrackVolumeSlider: ({ track, onVolumeChange, 'data-testid': testId }: any) => (
+    <div 
+      className="track-volume-slider" 
+      data-testid={testId || `mixer-volume-${track?.id || 'unknown'}`}
+      aria-label={`${track?.name || 'Track'} volume`}
+    >
+      <input 
+        type="range" 
+        min="0" 
+        max="100" 
+        value={track?.volume?.value ? track.volume.value * 100 : 80} 
+        onChange={(e) => onVolumeChange && onVolumeChange(parseInt(e.target.value, 10) / 100)}
+        data-testid={`volume-slider-${track?.id || 'unknown'}`}
+      />
+      <div 
+        className="volume-display" 
+        data-testid={`mixer-volume-display-track-${track?.id || 'unknown'}`}
+      >
+        {Math.round(((track?.volume?.value || 0.8) * 100))}%
+      </div>
+    </div>
+  ),
+  FXComponent: vi.fn().mockImplementation(({ track, 'data-testid': testId }: any) => {
+    return (
+      <div data-testid={testId || `mixer-effects-track-${track?.id || 'unknown'}`}>
+        <div>Mock FX Component</div>
+        {track?.fx?.preset?.name && track.fx.preset.name}
+      </div>
+    );
+  })
+});
+
+// Mock utils for testing
+const createMockUtils = () => ({
+  getAudioLevel: vi.fn().mockReturnValue(0.5),
+  getTrackLabel: vi.fn((track) => track?.name || 'Unknown Track'),
+  getPanValue: vi.fn().mockReturnValue('C'),
+  formatPanValue: vi.fn().mockImplementation((value) => {
+    if (value === 0) return 'C';
+    const side = value < 0 ? 'L' : 'R';
+    const percent = Math.abs(Math.round(value * 100));
+    return `${side}${percent}`;
+  })
+});
 
 // Mock components and dependencies
 vi.mock('../../../components/widgets', () => createMockWidgets());
 vi.mock('../index', () => createMockComponents());
 vi.mock('../../../components/icons/TrackIcon', () => ({
-  default: ({ type, color }: TrackIconProps) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
+  default: ({ type, color }: { type: string, color: string }) => <div data-testid={`track-icon-${type}`} style={{ color }}>Icon</div>,
 }));
 vi.mock('../editor-utils', () => ({
   openContextMenu: vi.fn(),
@@ -143,8 +278,20 @@ vi.mock('../editor-utils', () => ({
 }));
 vi.mock('../../../services/utils/utils', () => createMockUtils());
 
-// Use shared mock data
-const mockTracks = createMockTracks();
+// Interface for mock workstation context
+interface WorkstationContextMock {
+  tracks: typeof mockTracks;
+  masterTrack: typeof mockMasterTrack;
+  selectedTrackId: string | null;
+  setAllowMenuAndShortcuts: typeof vi.fn;
+  selectTrack: typeof vi.fn;
+  getTrackCurrentValue: typeof vi.fn;
+  setTrack: typeof vi.fn;
+  updateTrack: typeof vi.fn;
+  setTracks: typeof vi.fn;
+  showMaster: boolean;
+  [key: string]: any;
+}
 
 // Create a properly typed mixer context implementation
 const mockMixerContext = {
@@ -177,7 +324,11 @@ const mockMixerContext = {
   removeEffect: vi.fn(),
   updateEffect: vi.fn(),
   reorderEffects: vi.fn(),
-  meters: {},
+  meters: {
+    'track-1': { left: 0.2, right: 0.3, peak: 0.5 },
+    'track-2': { left: 0.1, right: 0.2, peak: 0.3 },
+    'master': { left: 0.3, right: 0.4, peak: 0.6 }
+  },
   isVisible: true,
   setIsVisible: vi.fn(),
   soloedTracks: [],
@@ -186,7 +337,37 @@ const mockMixerContext = {
   resetAllLevels: vi.fn()
 };
 
-const mockWorkstationContext = createMockWorkstationContext();
+// Create mock workstation context
+const mockWorkstationContext: WorkstationContextMock = {
+  tracks: mockTracks,
+  masterTrack: mockMasterTrack,
+  selectedTrackId: 'track-1',
+  setAllowMenuAndShortcuts: vi.fn(),
+  selectTrack: vi.fn(),
+  updateTrack: vi.fn(),
+  setTrack: vi.fn((updatedTrack) => {
+    // Handle case where an event object is passed instead of a value
+    if (updatedTrack && typeof updatedTrack.automationMode === 'object' && updatedTrack.automationMode.target) {
+      const value = updatedTrack.automationMode.target.value;
+      updatedTrack = { ...updatedTrack, automationMode: value };
+    }
+    
+    // Update the mock track
+    const index = mockTracks.findIndex(t => t.id === updatedTrack.id);
+    if (index >= 0) {
+      mockTracks[index] = { ...updatedTrack };
+    }
+    return;
+  }),
+  setTracks: vi.fn(),
+  getTrackCurrentValue: vi.fn((track, lane) => {
+    if (lane) {
+      return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
+    }
+    return { value: track.pan?.value || 0, isAutomated: false };
+  }),
+  showMaster: true
+};
 
 const renderMixer = (props = {}) => {
   return render(

@@ -17,11 +17,35 @@ export {
   createMixerTestSuite,
 } from './mixer-test-utils';
 
+// Mixer helper utilities
+export * from './mixer-helper';
+
+// Service mocks
+export * from './mocks/PythonBackendServiceMock';
+export * from './mocks/AudioServiceMock';
+export * from './mocks/CoreTypesMock';
+export * from './mocks/ReactRouterMock';
+
+// Test type definitions
+export * from './mixerTestTypes';
+
+// Setup utilities for specific components - import selectively to avoid conflicts
+export { 
+  setupWorkstationMixerTest, 
+  // Re-exporting only functions, as types are already exported from CoreTypesMock
+} from './workstation-mixer-setup';
+
 // Audio-specific test utilities
 export * from './audio-test-utils';
 
-// Timeline-specific test utilities
-export * from './timeline-test-utils';
+// Timeline-specific test utilities - import selectively to avoid conflicts
+export { 
+  createMockTimelinePosition,
+  createMockTimeSignature,
+  createMockTempoMap,
+  createMockClip,
+  // Avoid re-exporting createMockTimelineContext as it's already exported from workstation-test-utils
+} from './timeline-test-utils';
 
 // Visual test utilities
 export * from './visual/screenshot';
@@ -77,17 +101,26 @@ export const setupMixerTest = () => {
 };
 
 /**
+ * Type definitions for test environment props
+ */
+export interface TestEnvironmentProps {
+  mixer?: Record<string, any>;
+  workstation?: Record<string, any>;
+  [key: string]: any;
+}
+
+/**
  * Utility to create a complete test environment with all contexts
  */
-export const createCompleteTestEnvironment = (customProps = {}) => {
+export const createCompleteTestEnvironment = (customProps: TestEnvironmentProps = {}) => {
   const { 
     createMockMixerContext, 
     createMockWorkstationContext 
   } = require('./workstation-test-utils');
   
   return {
-    mixerContext: createMockMixerContext(customProps.mixer),
-    workstationContext: createMockWorkstationContext(customProps.workstation),
+    mixerContext: createMockMixerContext(customProps.mixer || {}),
+    workstationContext: createMockWorkstationContext(customProps.workstation || {}),
     ...customProps,
   };
 };

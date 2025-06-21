@@ -1,25 +1,24 @@
-// Mock dependencies before imports
-import { describe, it, expect, vi } from 'vitest';
+/**
+ * WorkstationMixer Test
+ * Tests the WorkstationMixer component
+ */
 
-// Mock the ContextMenuType from types/core to fix the unhandled errors
-vi.mock('@orpheus/types/core', async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    ContextMenuType: {
-      Track: "track",
-      Mixer: "mixer",
-      Timeline: "timeline",
-      Clip: "clip",
-      Node: "node",
-      Region: "region",
-      Lane: "lane",
-      Automation: "automation",
-      AddAutomationLane: "add-automation-lane",
-      FXChainPreset: "fx-chain-preset"
-    }
-  };
-});
+// Import setup utility first to define constants and setup mocks
+// This must be imported before any component imports to prevent hoisting issues
+import { 
+  setupWorkstationMixerTest, 
+  TrackType, 
+  AutomationMode, 
+  AutomationLaneEnvelope, 
+  ContextMenuType
+} from '../../../../test/utils/workstation-mixer-setup';
+
+// Initialize mocks
+setupWorkstationMixerTest();
+
+// Now it's safe to import testing utilities
+import { describe, it, expect, vi } from 'vitest';
+import React from 'react';
 
 // Mock SortableList component and other widgets
 vi.mock('@orpheus/widgets', () => ({

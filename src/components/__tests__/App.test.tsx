@@ -7,9 +7,14 @@ import { PreferencesProvider } from "../../contexts/PreferencesContext";
 import { WorkstationProvider } from "../../contexts/WorkstationContext";
 import { MixerProvider } from "../../contexts/MixerContext";
 import { ClipboardProvider } from "../../contexts/ClipboardContext";
+import { setupGlobalAudioContextMock } from "../../test/utils/mocks/AudioServiceMock";
 
-// Mock matchMedia
+// Mock global utilities
 beforeAll(() => {
+  // Setup audio mocks
+  setupGlobalAudioContextMock();
+  
+  // Mock matchMedia
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn().mockImplementation((query) => ({
@@ -25,18 +30,86 @@ beforeAll(() => {
   });
 });
 
-// Create a simplified mock of the router
-const mockUseLocation = vi.fn(() => ({ pathname: "/" }));
+// Import React Router mocks directly
+import { 
+  useLocation, 
+  useNavigate, 
+  useRoutes, 
+  Routes, 
+  Route, 
+  MemoryRouter, 
+  Link, 
+  Outlet 
+} from "../../test/utils/mocks/ReactRouterMock";
 
+// Mock react-router-dom with our improved mocks
 vi.mock("react-router-dom", () => ({
-  MemoryRouter: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="app-root">{children}</div>
-  ),
-  Routes: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  Route: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useNavigate: () => vi.fn(),
-  useLocation: () => mockUseLocation(),
+  useLocation, 
+  useNavigate, 
+  useRoutes, 
+  Routes, 
+  Route, 
+  MemoryRouter, 
+  Link, 
+  Outlet
 }));
+
+// Mock AudioService
+vi.mock("../../services/AudioService", () => {
+  const mockService = {
+    initializeAudioContext: vi.fn(),
+    isAudioContextInitialized: vi.fn().mockReturnValue(true),
+    getAudioContext: vi.fn().mockReturnValue({
+      sampleRate: 44100,
+      destination: {},
+      createGain: vi.fn().mockReturnValue({
+        connect: vi.fn(),
+        gain: { value: 1 }
+      })
+    }),
+    createAudioMeter: vi.fn().mockReturnValue({
+      connect: vi.fn(),
+      getMeteringLevel: vi.fn().mockReturnValue(0),
+      getPeakLevel: vi.fn().mockReturnValue(0)
+    }),
+    createTrackAnalyser: vi.fn().mockReturnValue({
+      connect: vi.fn(),
+      getFrequencyData: vi.fn().mockReturnValue(new Uint8Array(128)),
+      getWaveformData: vi.fn().mockReturnValue(new Uint8Array(128))
+    })
+  };
+
+  return {
+    audioService: mockService,
+    AudioService: {
+      getInstance: () => mockService
+    }
+  };
+});
+
+// Mock PythonBackendService
+vi.mock("../../services/PythonBackendService", () => {
+  const mockService = {
+    initialize: vi.fn().mockResolvedValue(undefined),
+    checkHealth: vi.fn().mockResolvedValue({
+      status: "healthy",
+      version: "1.0.0-test",
+      features: ["audio_analysis", "transcription"],
+    }),
+    isInitialized: vi.fn().mockReturnValue(true),
+    makeRequest: vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ status: "success" }),
+    }),
+  };
+
+  return {
+    pythonBackend: mockService,
+    PythonBackendService: {
+      getInstance: () => mockService,
+    },
+  };
+});
 
 // Create a simplified mock of the Workstation component
 vi.mock("../../screens/workstation/Workstation", () => ({
@@ -44,18 +117,23 @@ vi.mock("../../screens/workstation/Workstation", () => ({
 }));
 
 describe("App component", () => {
-  const renderApp = () =>
-    render(
+  const renderApp = () => {
+    // Use the imported MemoryRouter from our mock
+    const { MemoryRouter } = require('../../test/utils/mocks/ReactRouterMock');
+    return render(
       <PreferencesProvider>
         <WorkstationProvider>
           <MixerProvider>
             <ClipboardProvider>
-              <App />
+              <MemoryRouter>
+                <App />
+              </MemoryRouter>
             </ClipboardProvider>
           </MixerProvider>
         </WorkstationProvider>
       </PreferencesProvider>
     );
+  };
 
   // Mock Selection object for tests
   const createMockSelection = () =>
@@ -96,20 +174,21 @@ describe("App component", () => {
 
   it("renders the DocsPage component on the /docs path", () => {
     // Update the mock location
-    const mockLocation = { 
+    const mockLocation = {
       pathname: "/docs",
       search: "",
       hash: "",
       state: null,
-      key: "test-key"
+      key: "test-key",
     };
-    mockUseLocation.mockReturnValue(mockLocation);
+    // Use the imported function from ReactRouterMock
+    useLocation.mockReturnValue(mockLocation);
 
     const { container } = renderApp();
     expect(container).toBeInTheDocument();
-    
+
     // Reset to default
-    mockUseLocation.mockReturnValue({ pathname: "/" });
+    useLocation.mockReturnValue({ pathname: "/" });
   });
 
   it("handles focusout event to clear text selection", () => {

@@ -1,5 +1,31 @@
-// Import enums from core types - using import type for TypeScript purposes
-import { TrackType, AutomationMode, AutomationLaneEnvelope } from '@orpheus/types/core';
+/**
+ * TrackComponent Test
+ * Tests the TrackComponent component
+ */
+
+// Import setup utility first to define constants and setup mocks
+// This must be imported before any component imports to prevent hoisting issues
+import { 
+  setupWorkstationMixerTest, 
+  TrackType, 
+  AutomationMode, 
+  AutomationLaneEnvelope, 
+  ContextMenuType
+} from '../../../../test/utils/workstation-mixer-setup';
+
+// Initialize mocks
+setupWorkstationMixerTest();
+
+// Now it's safe to import testing utilities
+import { vi } from 'vitest';
+
+// Mock the types using centralized definitions
+vi.mock('@orpheus/types/core', () => ({
+  TrackType,
+  AutomationMode,
+  AutomationLaneEnvelope,
+  ContextMenuType
+}));
 
 // Define interfaces for the mock types
 interface MockTimelinePosition {
