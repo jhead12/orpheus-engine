@@ -161,26 +161,9 @@ vi.mock("@orpheus/types/core", () => {
       ...mockTimelinePosition,
       parseFromString: vi.fn().mockImplementation(() => mockTimelinePosition),
     },
-    TrackType: {
-      Audio: "audio",
-      Midi: "midi",
-      Sequencer: "sequencer",
-    },
-    AutomationMode: {
-      Read: "read",
-      Write: "write",
-      Touch: "touch",
-      Latch: "latch",
-      Off: "off",
-    },
-    AutomationLaneEnvelope: {
-      Volume: "volume",
-      Pan: "pan",
-      Tempo: "tempo",
-      Send: "send",
-      Filter: "filter",
-      Effect: "effect",
-    },
+    TrackType: TrackType, // Use the imported enum 
+    AutomationMode: AutomationMode, // Use the imported enum
+    AutomationLaneEnvelope: AutomationLaneEnvelope, // Use the imported enum
   };
 });
 
