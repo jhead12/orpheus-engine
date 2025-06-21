@@ -1,26 +1,5 @@
-// Define enums FIRST - these must be available before any mocks
-const TrackType = {
-  Audio: "audio" as const,
-  Midi: "midi" as const,
-  Sequencer: "sequencer" as const,
-};
-
-const AutomationMode = {
-  Read: "read" as const,
-  Write: "write" as const,
-  Touch: "touch" as const,
-  Latch: "latch" as const,
-  Off: "off" as const,
-};
-
-const AutomationLaneEnvelope = {
-  Volume: "volume" as const,
-  Pan: "pan" as const,
-  Tempo: "tempo" as const,
-  Send: "send" as const,
-  Filter: "filter" as const,
-  Effect: "effect" as const,
-};
+// Import enums from core types - using import type for TypeScript purposes
+import { TrackType, AutomationMode, AutomationLaneEnvelope } from '@orpheus/types/core';
 
 // Define interfaces for the mock types
 interface MockTimelinePosition {
@@ -42,18 +21,18 @@ interface MockTimelinePosition {
 interface MockTrack {
   id: string;
   name: string;
-  type: string;
+  type: TrackType; // Use TrackType enum instead of string
   mute: boolean;
   solo: boolean;
   armed: boolean;
-  volume: number;
-  pan: number;
+  volume: { value: number; isAutomated: boolean }; // Changed to AutomatableParameter structure
+  pan: { value: number; isAutomated: boolean }; // Changed to AutomatableParameter structure
   automation: boolean;
-  automationMode: string;
+  automationMode: AutomationMode; // Use AutomationMode enum instead of string
   automationLanes: Array<{
     id: string;
     label: string;
-    envelope: string;
+    envelope: AutomationLaneEnvelope;
     enabled: boolean;
     minValue: number;
     maxValue: number;
@@ -94,6 +73,7 @@ interface MockWorkstationContext {
   isPlaying: boolean;
   scrollToItem: null | unknown;
   allowMenuAndShortcuts: boolean;
+  showMaster: boolean; // Added missing property
   setTracks: () => void;
   setPlayheadPos: () => void;
   setSongRegion: () => void;
@@ -109,6 +89,7 @@ interface MockWorkstationContext {
   duplicateTrack: () => void;
   deleteTrack: () => void;
   clearAutomation: () => void;
+  pasteNode: () => void; // Added missing property
   getTrackCurrentValue: () => { value: number; isAutomated: boolean };
   addNode: () => void;
   setLane: () => void;
@@ -180,26 +161,9 @@ vi.mock("@orpheus/types/core", () => {
       ...mockTimelinePosition,
       parseFromString: vi.fn().mockImplementation(() => mockTimelinePosition),
     },
-    TrackType: {
-      Audio: "audio",
-      Midi: "midi",
-      Sequencer: "sequencer",
-    },
-    AutomationMode: {
-      Read: "read",
-      Write: "write",
-      Touch: "touch",
-      Latch: "latch",
-      Off: "off",
-    },
-    AutomationLaneEnvelope: {
-      Volume: "volume",
-      Pan: "pan",
-      Tempo: "tempo",
-      Send: "send",
-      Filter: "filter",
-      Effect: "effect",
-    },
+    TrackType: TrackType, // Use the imported enum 
+    AutomationMode: AutomationMode, // Use the imported enum
+    AutomationLaneEnvelope: AutomationLaneEnvelope, // Use the imported enum
   };
 });
 
@@ -270,6 +234,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
 
 describe("TrackComponent", () => {
   let container: HTMLDivElement;
+  let screenshotContainer: HTMLDivElement; // Define screenshot container for visual tests
 
   // Factory function to create mock TimelinePosition instances for tests
   function createMockTimelinePosition(bar = 0, beat = 0, tick = 0): MockTimelinePosition {
@@ -318,6 +283,10 @@ describe("TrackComponent", () => {
 
   beforeEach(() => {
     container = createTestContainer();
+    // Create screenshot container for visual tests
+    screenshotContainer = document.createElement('div');
+    screenshotContainer.id = 'screenshot-container';
+    document.body.appendChild(screenshotContainer);
   });
 
   afterEach(() => {
@@ -336,8 +305,8 @@ describe("TrackComponent", () => {
     mute: false,
     solo: false,
     armed: false,
-    volume: 0,
-    pan: 0,
+    volume: { value: 0, isAutomated: false },
+    pan: { value: 0, isAutomated: false },
     automation: false,
     automationMode: AutomationMode.Read,
     automationLanes: [],
@@ -383,7 +352,7 @@ describe("TrackComponent", () => {
     setAllowMenuAndShortcuts: vi.fn(),
     addTrack: vi.fn(),
     adjustNumMeasures: vi.fn(),
-    createAudioClip: vi.fn(),
+    createAudioClip: vi.fn().mockResolvedValue(null),
     insertClips: vi.fn(),
     updateTimelineSettings: vi.fn(),
     setTrack: vi.fn(),
@@ -407,6 +376,9 @@ describe("TrackComponent", () => {
     toggleMuteClip: vi.fn(),
     pasteClip: vi.fn(),
     createClipFromTrackRegion: vi.fn(),
+    // Add missing properties
+    pasteNode: vi.fn(),
+    showMaster: true,
   };
 
   const renderWithContext = (component: React.ReactElement, container?: HTMLElement) => {
