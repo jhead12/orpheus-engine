@@ -90,146 +90,67 @@ export const mockWorkstationContext: WorkstationContextType = {
   selectedClipId: null,
   allowMenuAndShortcuts: true,
   isPlaying: false,
-  position: { bars: 1, beats: 1, sixteenths: 1, ticks: 0, totalBeats: 0 } as TimelinePosition,
+  playheadPos: new TimelinePosition(1, 1, 0),
+  maxPos: new TimelinePosition(4, 1, 0),
+  numMeasures: 4,
   setAllowMenuAndShortcuts: vi.fn(),
-  selectTrack: vi.fn(),
-  selectClip: vi.fn(),
-  updateTrack: vi.fn(),
-  reorderTracks: vi.fn(),
-  audioAnalysisResults: null,
-  automationData: {},
-  getTrackAutomationValue: vi.fn().mockReturnValue(0),
-  
-  // Additional properties
+  setSelectedTrackId: vi.fn(),
+  setSelectedClipId: vi.fn(),
   snapGridSize: new TimelinePosition(1, 0, 0),
   snapGridSizeOption: "bar",
-  autoGridSize: 16,
   stretchAudio: false,
   showMaster: true, 
   showTimeRuler: true,
   scrollToItem: null,
   songRegion: null, 
   trackRegion: null,
-  canUndo: false,
-  canRedo: false,
-
-  // FX Chain preset support
-  fxChainPresets: [],
-  setFXChainPresets: vi.fn(),
-
-  // Methods
-  addTrack: vi.fn(),
-  createAudioClip: vi.fn().mockResolvedValue(null),
-  setTrack: vi.fn((updatedTrack) => {
-    // Handle case where an event object is passed instead of a value
-    if (updatedTrack && typeof updatedTrack.automationMode === 'object' && updatedTrack.automationMode.target) {
-      const value = updatedTrack.automationMode.target.value;
-      updatedTrack = { ...updatedTrack, automationMode: value };
-    }
-    
-    // Update the mock track
-    const index = mockTracks.findIndex(t => t.id === updatedTrack.id);
-    if (index >= 0) {
-      mockTracks[index] = { ...updatedTrack };
-    }
-    return;
-  }),
   setTracks: vi.fn(),
   deleteTrack: vi.fn(),
   duplicateTrack: vi.fn(),
   splitClip: vi.fn(),
   toggleMuteClip: vi.fn(),
   consolidateClip: vi.fn(),
-  createClip: vi.fn(),
-  updateClip: vi.fn(),
   deleteClip: vi.fn(),
   duplicateClip: vi.fn(),
   createClipFromTrackRegion: vi.fn(),
   insertClips: vi.fn(),
   setPlayheadPos: vi.fn(),
-  setPosition: vi.fn(),
   adjustNumMeasures: vi.fn(),
   setSongRegion: vi.fn(),
   setScrollToItem: vi.fn(),
   updateTimelineSettings: vi.fn(),
   setVerticalScale: vi.fn(),
-  setSelectedTrackId: vi.fn(),
   setShowTimeRuler: vi.fn(),
   setSnapGridSizeOption: vi.fn(),
   setStretchAudio: vi.fn(),
   setTrackRegion: vi.fn(),
-  deleteSelection: vi.fn(),
   pasteClip: vi.fn(),
   setTimeSignature: vi.fn(),
-  undo: vi.fn(),
-  redo: vi.fn(),
-  setSelectedClipId: vi.fn(),
-  stopRecording: vi.fn().mockResolvedValue(null),
-
-  // Plugin system
-  plugins: [],
-  registerPlugin: vi.fn(),
-  unregisterPlugin: vi.fn(),
-
-  // Track value getter
   getTrackCurrentValue: vi.fn((track: Track, lane?: any) => {
     if (lane) {
       return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
     }
     return { value: track.pan?.value || 0, isAutomated: false };
-  })
+  }),
+  // Required methods from WorkstationContextType
+  addNode: vi.fn(),
+  addTrack: vi.fn(),
+  createAudioClip: vi.fn(),
+  pasteNode: vi.fn(),
+  setLane: vi.fn(),
+  setMetronome: vi.fn(),
+  skipToEnd: vi.fn(),
+  skipToStart: vi.fn(),
+  setTrack: vi.fn(),
+  timelineSettings: {
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    snap: true,
+    snapUnit: 'beat',
+    horizontalScale: 1,
+  },
+  verticalScale: 1,
 };
 
-// Create MixerContext for testing
-export const mockMixerContext = {
-  tracks: mockTracks,
-  masterVolume: 0.8,
-  masterPan: 0,
-  masterMute: false,
-  mixerHeight: 400,
-  setMasterVolume: vi.fn(),
-  setMasterPan: vi.fn(),
-  setMasterMute: vi.fn(),
-  setMixerHeight: vi.fn(),
-  setTrackVolume: vi.fn(),
-  setTrackPan: vi.fn(),
-  setTrackMute: vi.fn((trackId, muted) => {
-    // Update the mock track's mute status
-    mockWorkstationContext.setTrack({
-      ...mockTracks.find(t => t.id === trackId),
-      mute: muted
-    });
-    return Promise.resolve();
-  }),
-  setTrackSolo: vi.fn((trackId, soloed) => {
-    // Update the mock track's solo status
-    mockWorkstationContext.setTrack({
-      ...mockTracks.find(t => t.id === trackId),
-      solo: soloed
-    });
-    return Promise.resolve();
-  }),
-  setTrackArmed: vi.fn((trackId, armed) => {
-    // Update the mock track's armed status
-    mockWorkstationContext.setTrack({
-      ...mockTracks.find(t => t.id === trackId),
-      armed: armed
-    });
-    return Promise.resolve();
-  }),
-  addEffect: vi.fn(),
-  removeEffect: vi.fn(),
-  updateEffect: vi.fn(),
-  reorderEffects: vi.fn(),
-  meters: {
-    'track-1': { left: 0.2, right: 0.3, peak: 0.5 },
-    'track-2': { left: 0.1, right: 0.2, peak: 0.3 },
-    'master': { left: 0.3, right: 0.4, peak: 0.6 }
-  },
-  isVisible: true,
-  setIsVisible: vi.fn(),
-  soloedTracks: [],
-  muteAllTracks: vi.fn(),
-  unmuteAllTracks: vi.fn(),
-  resetAllLevels: vi.fn()
-};
+// Add export for mockMixerContext
+export * from './mockMixerContext';

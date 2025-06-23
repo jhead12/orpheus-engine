@@ -4,6 +4,7 @@ import { Mixer } from '@orpheus/screens/workstation/components/Mixer';
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import { TrackType, AutomationMode } from '@orpheus/types/core';
+import { mockMixerContext } from '@orpheus/test/utils/mockMixerContext';
 
 // Export infinity character for peak displays
 export const INF_SYMBOL = '-∞';
@@ -89,7 +90,7 @@ vi.mock('../TrackVolumeSlider', () => {
         min="0" 
         max="1" 
         step="0.01" 
-        value={track?.volume?.value || track?.volume || 0} 
+        value={typeof track?.volume === 'object' && track?.volume !== null ? track.volume.value : track?.volume ?? 0} 
         {...props} 
       />,
     TrackVolumeSlider: ({ track, ...props }: TrackVolumeSliderProps) => 
@@ -99,7 +100,7 @@ vi.mock('../TrackVolumeSlider', () => {
         min="0" 
         max="1" 
         step="0.01" 
-        value={track?.volume?.value || track?.volume || 0} 
+        value={typeof track?.volume === 'object' && track?.volume !== null ? track.volume.value : track?.volume ?? 0} 
         {...props} 
       />
   };
@@ -178,7 +179,7 @@ interface MUITooltipProps extends MUIComponentProps {
 vi.mock('@mui/material', () => {
   return {
     Tooltip: ({ children, title, ...props }: MUITooltipProps) => 
-      <div data-testid="tooltip" title={title} {...props}>
+      <div data-testid="tooltip" title={typeof title === 'string' ? title : undefined} {...props}>
         {children}
       </div>,
     DialogContent: ({ children, ...props }: MUIComponentProps) => 
@@ -231,7 +232,7 @@ vi.mock('@orpheus/components/widgets', () => {
         max={props.max || 100} 
         value={value} 
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange && onChange(Number(e.target.value))} 
-        title={title || (parameter ? `Pan: ${parameter}` : 'Pan')}
+        title={typeof (title || (parameter ? `Pan: ${parameter}` : 'Pan')) === 'string' ? (title || (parameter ? `Pan: ${parameter}` : 'Pan')) : undefined}
         {...props} 
       />,
     Meter: ({ percent, vertical, peak, ...props }: MeterProps) => 
@@ -262,7 +263,7 @@ vi.mock('@orpheus/components/widgets', () => {
         data-testid="select-spinbox" 
         value={value} 
         onChange={(e) => onChange && onChange(e.target.value)}
-        title={title}
+        title={typeof title === 'string' ? title : undefined}
         {...props}
       >
         {options?.map((option: any) => (
@@ -291,13 +292,14 @@ const mockTracks = [
     id: 'track-1',
     name: 'Vocals',
     type: TrackType.Audio,
-    volume: { value: 0.8 },
-    pan: { value: 0 },
+    volume: { value: 0.8, isAutomated: false }, // FIX: add isAutomated
+    pan: { value: 0, isAutomated: false },     // FIX: add isAutomated
     mute: false,
     solo: false,
     armed: false,
+    automation: false,
     automationMode: AutomationMode.Read,
-    color: { hue: 120, saturation: 70, lightness: 40 },
+    color: '#ff6b6b',
     clips: [],
     effects: [],
     automationLanes: [],
@@ -311,13 +313,14 @@ const mockTracks = [
     id: 'track-2',
     name: 'Drums',
     type: TrackType.Audio,
-    volume: { value: 0.6 },
-    pan: { value: 0.2 },
+    volume: { value: 0.6, isAutomated: false }, // FIX: add isAutomated
+    pan: { value: 0.2, isAutomated: false },   // FIX: add isAutomated
     mute: true,
     solo: false,
     armed: false,
+    automation: false,
     automationMode: AutomationMode.Latch,
-    color: { hue: 240, saturation: 70, lightness: 40 },
+    color: '#4ecdc4',
     clips: [],
     effects: [],
     automationLanes: [],
@@ -333,13 +336,14 @@ const mockMaster = {
   id: 'master',
   name: 'Master',
   type: TrackType.Audio, // Use Audio type as Master type might not be defined
-  volume: { value: 1 },
-  pan: { value: 0 },
+  volume: { value: 1, isAutomated: false },    // FIX: add isAutomated
+  pan: { value: 0, isAutomated: false },       // FIX: add isAutomated
   mute: false,
   solo: false,
   armed: false,
+  automation: false,
   automationMode: AutomationMode.Read,
-  color: { hue: 0, saturation: 0, lightness: 40 },
+  color: '#444444',
   clips: [],
   effects: [],
   automationLanes: [],
@@ -374,7 +378,7 @@ const mockWorkstationContext = {
 };
 
 // Create mock mixer context
-const mockMixerContext = {
+const mockMixerContextLocal = {
   tracks: mockTracks,
   masterVolume: 0.8,
   masterPan: 0,
@@ -415,7 +419,7 @@ const mockMixerContext = {
 const renderWorkstationMixer = () => {
   return render(
     <WorkstationContext.Provider value={mockWorkstationContext as any}>
-      <MixerContext.Provider value={mockMixerContext}>
+      <MixerContext.Provider value={mockMixerContextLocal}>
         <Mixer />
       </MixerContext.Provider>
     </WorkstationContext.Provider>
@@ -504,7 +508,7 @@ describe('Peak Display and Pan Controls', () => {
     
     // Create a spy for the setTrackPan function
     const setTrackPanSpy = vi.fn();
-    mockMixerContext.setTrackPan = setTrackPanSpy;
+    mockMixerContextLocal.setTrackPan = setTrackPanSpy;
     
     // Trigger the change event
     fireEvent.change(panKnob, { target: { value: '0.5' } });

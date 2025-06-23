@@ -27,115 +27,101 @@ vi.mock('@orpheus/types/core', () => ({
   ContextMenuType
 }));
 
-// Define interfaces for the mock types
-interface MockTimelinePosition {
-  bar: number;
-  beat: number;
-  tick: number;
-  ticks: number;
-  toMargin: () => number;
-  fromMargin: () => { ticks: number };
-  snap: () => { ticks: number };
-  toTicks: () => number;
-  toSeconds: () => number;
-  copy: () => MockTimelinePosition;
-  equals: () => boolean;
-  add: () => MockTimelinePosition;
-  compareTo: () => number;
-}
+// Only import real types from core and context at the top
+import {
+  Track,
+  TrackType,
+  AutomationMode,
+  AutomationLaneEnvelope,
+  AutomationLane,
+  AutomationNode,
+  TimelinePosition,
+  Clip,
+  Effect,
+} from "../../../../types/core";
+import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
 
-interface MockTrack {
-  id: string;
-  name: string;
-  type: TrackType; // Use TrackType enum instead of string
-  mute: boolean;
-  solo: boolean;
-  armed: boolean;
-  volume: { value: number; isAutomated: boolean }; // Changed to AutomatableParameter structure
-  pan: { value: number; isAutomated: boolean }; // Changed to AutomatableParameter structure
-  automation: boolean;
-  automationMode: AutomationMode; // Use AutomationMode enum instead of string
-  automationLanes: Array<{
-    id: string;
-    label: string;
-    envelope: AutomationLaneEnvelope;
-    enabled: boolean;
-    minValue: number;
-    maxValue: number;
-    nodes: Array<unknown>;
-    show: boolean;
-    expanded: boolean;
-  }>;
-  clips: Array<unknown>;
-  color: string;
-  height: number;
-  collapsed: boolean;
-  selected: boolean;
-  effects: Array<unknown>;
+// Base track for tests
+const baseTrack: Track = {
+  id: "test-track",
+  name: "Test Track",
+  type: TrackType.Audio,
+  color: "#ff0000",
+  mute: false,
+  solo: false,
+  armed: false,
+  volume: { value: 0, isAutomated: false },
+  pan: { value: 0, isAutomated: false },
+  automation: false,
+  automationMode: AutomationMode.Read,
+  automationLanes: [],
+  clips: [],
+  effects: [],
   fx: {
-    preset: null | unknown;
-    effects: Array<unknown>;
-    selectedEffectIndex: number;
-  };
-  inputs: Array<unknown>;
-  outputs: Array<unknown>;
-}
+    preset: null,
+    effects: [],
+    selectedEffectIndex: 0,
+  },
+  inputs: [],
+  outputs: [],
+};
 
-interface MockWorkstationContext {
-  tracks: Array<MockTrack>;
-  masterTrack: MockTrack;
-  playheadPos: MockTimelinePosition;
-  maxPos: MockTimelinePosition;
-  numMeasures: number;
-  snapGridSize: MockTimelinePosition;
-  songRegion: null | unknown;
-  verticalScale: number;
+// Mock context with all required properties
+const mockWorkstationContext: WorkstationContextType = {
+  tracks: [baseTrack],
+  masterTrack: baseTrack,
+  playheadPos: new TimelinePosition(0, 0, 0),
+  maxPos: new TimelinePosition(0, 0, 0),
+  numMeasures: 4,
+  snapGridSize: new TimelinePosition(0, 0, 0),
+  songRegion: null,
+  verticalScale: 1,
   timelineSettings: {
-    beatWidth: number;
-    timeSignature: { beats: number; noteValue: number };
-    horizontalScale: number;
-    tempo: number;
-  };
-  isPlaying: boolean;
-  scrollToItem: null | unknown;
-  allowMenuAndShortcuts: boolean;
-  showMaster: boolean; // Added missing property
-  setTracks: () => void;
-  setPlayheadPos: () => void;
-  setSongRegion: () => void;
-  setVerticalScale: () => void;
-  setScrollToItem: () => void;
-  setAllowMenuAndShortcuts: () => void;
-  addTrack: () => void;
-  adjustNumMeasures: () => void;
-  createAudioClip: () => void;
-  insertClips: () => void;
-  updateTimelineSettings: () => void;
-  setTrack: () => void;
-  duplicateTrack: () => void;
-  deleteTrack: () => void;
-  clearAutomation: () => void;
-  pasteNode: () => void; // Added missing property
-  getTrackCurrentValue: () => { value: number; isAutomated: boolean };
-  addNode: () => void;
-  setLane: () => void;
-  setSelectedNodeId: () => void;
-  selectedTrackId: null | string;
-  setSelectedTrackId: () => void;
-  trackRegion: null | unknown;
-  setTrackRegion: () => void;
-  selectedClipId: null | string;
-  setSelectedClipId: () => void;
-  deleteClip: () => void;
-  duplicateClip: () => void;
-  splitClip: () => void;
-  consolidateClip: () => void;
-  toggleMuteClip: () => void;
-  pasteClip: () => void;
-  createClipFromTrackRegion: () => void;
-}
+    tempo: 120,
+    timeSignature: { beats: 4, noteValue: 4 },
+    snap: true,
+    snapUnit: "beat",
+    horizontalScale: 1,
+  },
+  isPlaying: false,
+  scrollToItem: null,
+  allowMenuAndShortcuts: true,
+  setTracks: vi.fn(),
+  setPlayheadPos: vi.fn(),
+  setSongRegion: vi.fn(),
+  setVerticalScale: vi.fn(),
+  setScrollToItem: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn(),
+  addTrack: vi.fn(),
+  adjustNumMeasures: vi.fn(),
+  createAudioClip: vi.fn().mockResolvedValue(null),
+  insertClips: vi.fn(),
+  updateTimelineSettings: vi.fn(),
+  setTrack: vi.fn(),
+  duplicateTrack: vi.fn(),
+  deleteTrack: vi.fn(),
+  pasteNode: vi.fn(),
+  getTrackCurrentValue: vi.fn(() => ({ value: 0.8, isAutomated: false })),
+  addNode: vi.fn(),
+  setLane: vi.fn(),
+  setSelectedNodeId: vi.fn(),
+  selectedTrackId: null,
+  setSelectedTrackId: vi.fn(),
+  trackRegion: null,
+  setTrackRegion: vi.fn(),
+  selectedClipId: null,
+  setSelectedClipId: vi.fn(),
+  deleteClip: vi.fn(),
+  duplicateClip: vi.fn(),
+  splitClip: vi.fn(),
+  consolidateClip: vi.fn(),
+  toggleMuteClip: vi.fn(),
+  pasteClip: vi.fn(),
+  createClipFromTrackRegion: vi.fn(),
+  showMaster: true,
+};
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+// Now it's safe to import the component and testing utilities
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -262,25 +248,6 @@ describe("TrackComponent", () => {
   let container: HTMLDivElement;
   let screenshotContainer: HTMLDivElement; // Define screenshot container for visual tests
 
-  // Factory function to create mock TimelinePosition instances for tests
-  function createMockTimelinePosition(bar = 0, beat = 0, tick = 0): MockTimelinePosition {
-    return {
-      bar,
-      beat,
-      tick,
-      ticks: 0,
-      toMargin: vi.fn(() => 0),
-      fromMargin: vi.fn(() => ({ ticks: 0 })),
-      snap: vi.fn(() => ({ ticks: 0 })),
-      toTicks: vi.fn(() => 0),
-      toSeconds: vi.fn(() => 0),
-      copy: vi.fn(() => createMockTimelinePosition(bar, beat, tick)),
-      equals: vi.fn(() => true),
-      add: vi.fn(() => createMockTimelinePosition()),
-      compareTo: vi.fn(() => 0),
-    };
-  }
-
   const createTestContainer = () => {
     const div = document.createElement("div");
     div.style.width = "800px";
@@ -324,89 +291,6 @@ describe("TrackComponent", () => {
     styleTags.forEach(tag => tag.remove());
   });
 
-  const baseTrack: MockTrack = {
-    id: "test-track",
-    name: "Test Track",
-    type: TrackType.Audio,
-    mute: false,
-    solo: false,
-    armed: false,
-    volume: { value: 0, isAutomated: false },
-    pan: { value: 0, isAutomated: false },
-    automation: false,
-    automationMode: AutomationMode.Read,
-    automationLanes: [],
-    clips: [],
-    color: "#ff0000",
-    height: 100,
-    collapsed: false,
-    selected: false,
-    effects: [],
-    fx: {
-      preset: null,
-      effects: [],
-      selectedEffectIndex: 0,
-    },
-    inputs: [],
-    outputs: [],
-  };
-
-  // Mock context with all required properties
-  const mockWorkstationContext: MockWorkstationContext = {
-    tracks: [],
-    masterTrack: baseTrack,
-    playheadPos: createMockTimelinePosition(),
-    maxPos: createMockTimelinePosition(),
-    numMeasures: 4,
-    snapGridSize: createMockTimelinePosition(),
-    songRegion: null,
-    verticalScale: 1,
-    timelineSettings: {
-      beatWidth: 40,
-      timeSignature: { beats: 4, noteValue: 4 },
-      horizontalScale: 1,
-      tempo: 120,
-    },
-    isPlaying: false,
-    scrollToItem: null,
-    allowMenuAndShortcuts: true,
-    setTracks: vi.fn(),
-    setPlayheadPos: vi.fn(),
-    setSongRegion: vi.fn(),
-    setVerticalScale: vi.fn(),
-    setScrollToItem: vi.fn(),
-    setAllowMenuAndShortcuts: vi.fn(),
-    addTrack: vi.fn(),
-    adjustNumMeasures: vi.fn(),
-    createAudioClip: vi.fn().mockResolvedValue(null),
-    insertClips: vi.fn(),
-    updateTimelineSettings: vi.fn(),
-    setTrack: vi.fn(),
-    duplicateTrack: vi.fn(),
-    deleteTrack: vi.fn(),
-    clearAutomation: vi.fn(),
-    getTrackCurrentValue: vi.fn(() => ({ value: 0.8, isAutomated: false })),
-    addNode: vi.fn(),
-    setLane: vi.fn(),
-    setSelectedNodeId: vi.fn(),
-    selectedTrackId: null,
-    setSelectedTrackId: vi.fn(),
-    trackRegion: null,
-    setTrackRegion: vi.fn(),
-    selectedClipId: null,
-    setSelectedClipId: vi.fn(),
-    deleteClip: vi.fn(),
-    duplicateClip: vi.fn(),
-    splitClip: vi.fn(),
-    consolidateClip: vi.fn(),
-    toggleMuteClip: vi.fn(),
-    pasteClip: vi.fn(),
-    createClipFromTrackRegion: vi.fn(),
-    // Add missing properties
-    pasteNode: vi.fn(),
-    showMaster: true,
-  };
-
   const renderWithContext = (component: React.ReactElement, container?: HTMLElement) => {
     return render(
       <WorkstationContext.Provider value={mockWorkstationContext}>
@@ -428,7 +312,10 @@ describe("TrackComponent", () => {
   });
 
   it("should display track volume", () => {
-    const track = { ...baseTrack, volume: -10 };
+    const track = { 
+      ...baseTrack, 
+      volume: { value: -10, isAutomated: false } // Use AutomatableParameter
+    };
     renderWithContext(<TrackComponent track={track} />, container);
     // Since volume display might be in a specific format, just check that the component renders
     expect(container.querySelector('[data-testid="track-component"], [class*="track"]')).toBeTruthy();
@@ -512,7 +399,7 @@ describe("TrackComponent", () => {
         {
           id: "effect-1",
           name: "Reverb",
-          type: "juce",
+          type: "juce" as const,
           enabled: true,
           parameters: { mix: 0.5 },
         }
@@ -523,7 +410,7 @@ describe("TrackComponent", () => {
           {
             id: "effect-1",
             name: "Reverb",
-            type: "juce",
+            type: "juce" as const,
             enabled: true,
             parameters: { mix: 0.5 },
           }
@@ -632,15 +519,15 @@ describe("TrackComponent", () => {
           ...baseTrack, 
           type: TrackType.Audio,
           name: "Audio Track",
-          volume: -6,
+          volume: { value: -6, isAutomated: false }, // Use AutomatableParameter
           armed: true,
           clips: [
             {
               id: "audio-clip-1",
               name: "Audio Clip",
-              start: createMockTimelinePosition(1, 0, 0),
-              end: createMockTimelinePosition(5, 0, 0),
-              position: createMockTimelinePosition(1, 0, 0),
+              start: new TimelinePosition(1, 0, 0),
+              end: new TimelinePosition(5, 0, 0),
+              position: new TimelinePosition(1, 0, 0),
               audioFile: { path: "test.wav", duration: 4.0 }
             }
           ]
@@ -680,15 +567,15 @@ describe("TrackComponent", () => {
           ...baseTrack, 
           type: TrackType.Midi,
           name: "MIDI Track",
-          volume: 0,
+          volume: { value: 0, isAutomated: false }, // Use AutomatableParameter
           solo: true,
           clips: [
             {
               id: "midi-clip-1",
               name: "MIDI Clip",
-              start: createMockTimelinePosition(0, 0, 0),
-              end: createMockTimelinePosition(4, 0, 0),
-              position: createMockTimelinePosition(0, 0, 0),
+              start: new TimelinePosition(0, 0, 0),
+              end: new TimelinePosition(4, 0, 0),
+              position: new TimelinePosition(0, 0, 0),
               notes: []
             }
           ]
@@ -734,11 +621,15 @@ describe("TrackComponent", () => {
               id: "volume-lane",
               envelope: AutomationLaneEnvelope.Volume,
               enabled: true,
-              points: [
-                { position: createMockTimelinePosition(0, 0, 0), value: 0.8 },
-                { position: createMockTimelinePosition(2, 0, 0), value: 0.4 },
-                { position: createMockTimelinePosition(4, 0, 0), value: 1.0 }
-              ]
+              minValue: -60,
+              maxValue: 6,
+              nodes: [
+                { position: new TimelinePosition(0, 0, 0), value: 0.8 },
+                { position: new TimelinePosition(2, 0, 0), value: 0.4 },
+                { position: new TimelinePosition(4, 0, 0), value: 1.0 }
+              ],
+              show: true,
+              expanded: true,
             }
           ]
         };
@@ -751,7 +642,7 @@ describe("TrackComponent", () => {
         );
 
         // Wait for automation processing
-        await new Promise(resolve => setTimeout(resolve, 1800));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         await expectScreenshot(container, "track-automation-component");
       } catch (error) {
         console.warn("Visual snapshot test failed:", error);

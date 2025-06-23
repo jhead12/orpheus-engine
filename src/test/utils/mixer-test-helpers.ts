@@ -1,5 +1,5 @@
 import { AutomatableParameter } from '@orpheus/types/core';
-import { expect, vi } from 'vitest';
+import { expect } from 'vitest';
 
 /**
  * Creates an AutomatableParameter with the given initial value

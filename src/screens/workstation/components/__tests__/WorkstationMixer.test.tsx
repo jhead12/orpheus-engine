@@ -6,11 +6,9 @@
 // Import setup utility first to define constants and setup mocks
 // This must be imported before any component imports to prevent hoisting issues
 import { 
-  setupWorkstationMixerTest, 
-  TrackType, 
-  AutomationMode, 
-  AutomationLaneEnvelope, 
-  ContextMenuType
+  setupWorkstationMixerTest,
+  // Import the constants needed by the test
+  AutomationMode
 } from '../../../../test/utils/workstation-mixer-setup';
 
 // Initialize mocks
@@ -18,7 +16,14 @@ setupWorkstationMixerTest();
 
 // Now it's safe to import testing utilities
 import { describe, it, expect, vi } from 'vitest';
-import React from 'react';
+
+// Define a type for the vitest mock functions
+type MockFunction<T extends (...args: any) => any> = T & {
+  mockReset: () => void;
+  mock: {
+    calls: any[][];
+  };
+};
 
 // Mock SortableList component and other widgets
 vi.mock('@orpheus/widgets', () => ({
@@ -124,12 +129,9 @@ import { Mixer } from '../Mixer';
 import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import { 
-  Track, 
-  TrackType, 
-  AutomationMode,
-  AutomatableParameter,
+  Track,
   TimelinePosition,
-  // ContextMenuType  // Removed unused import
+  // Importing only the required types, not those duplicated from workstation-mixer-setup
 } from '@orpheus/types/core';
 
 import { 
@@ -292,7 +294,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Peak displays and meters
     peakDisplaysCount = ensurePeakDisplays(container);
   } catch (error) {
-    console.warn('Error in peak displays helper:', error.message);
+    console.warn('Error in peak displays helper:', error instanceof Error ? error.message : String(error));
     peakDisplaysCount = 0;
   }
   
@@ -300,7 +302,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Pan knobs
     knobsCount = ensureKnobs(container);
   } catch (error) {
-    console.warn('Error in knobs helper:', error.message);
+    console.warn('Error in knobs helper:', error instanceof Error ? error.message : String(error));
     knobsCount = 0;
   }
   
@@ -308,7 +310,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Volume sliders
     volumeSlidersCount = ensureVolumeSliders(container);
   } catch (error) {
-    console.warn('Error in volume sliders helper:', error.message);
+    console.warn('Error in volume sliders helper:', error instanceof Error ? error.message : String(error));
     volumeSlidersCount = 0;
   }
   
@@ -316,7 +318,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Dialog elements 
     dialogsCount = ensureDialogElements(container);
   } catch (error) {
-    console.warn('Error in dialogs helper:', error.message);
+    console.warn('Error in dialogs helper:', error instanceof Error ? error.message : String(error));
     dialogsCount = 0;
   }
   
@@ -324,7 +326,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Track icons
     trackIconsCount = ensureTrackIcons(container);
   } catch (error) {
-    console.warn('Error in track icons helper:', error.message);
+    console.warn('Error in track icons helper:', error instanceof Error ? error.message : String(error));
     trackIconsCount = 0;
   }
   
@@ -332,7 +334,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Track name inputs 
     trackNamesCount = ensureTrackNameInputs(container, mockTracks.map(track => track.name));
   } catch (error) {
-    console.warn('Error in track names helper:', error.message);
+    console.warn('Error in track names helper:', error instanceof Error ? error.message : String(error));
     trackNamesCount = 0;
   }
   
@@ -340,7 +342,7 @@ const renderWorkstationMixer = (props = {}) => {
     // Track name text nodes
     textNodesCount = ensureTrackNameTextNodes(container, [...mockTracks.map(track => track.name), mockMasterTrack.name]);
   } catch (error) {
-    console.warn('Error in text nodes helper:', error.message);
+    console.warn('Error in text nodes helper:', error instanceof Error ? error.message : String(error));
     textNodesCount = 0;
   }
   
@@ -486,10 +488,9 @@ describe('Workstation Mixer Component', () => {
       
       // Look for any input that might be a track name input
       const inputs = container.querySelectorAll('input[maxlength="30"], input.form-control');
-      const trackInputs = Array.from(inputs).filter(input => 
-        input.value === 'Vocals' || 
-        input.title === 'Vocals' || 
-        input.placeholder === 'Vocals'
+      const trackInputs = Array.from(inputs).filter(input =>        (input as HTMLInputElement).value === 'Vocals' ||
+        (input as HTMLElement).title === 'Vocals' ||
+        (input as HTMLInputElement).placeholder === 'Vocals'
       );
       
       let nameInput = trackInputs[0] || null;
@@ -515,7 +516,7 @@ describe('Workstation Mixer Component', () => {
       
       if (nameInput) {
         // Store original value to verify we're editing the right thing
-        const originalValue = nameInput.value;
+        const originalValue = (nameInput as HTMLInputElement).value;
         expect(originalValue).toContain('Vocals');
         
         // Perform the edit - need to be careful with typing as it might not compose correctly
@@ -525,7 +526,7 @@ describe('Workstation Mixer Component', () => {
         
         // Verify the value was updated - use includes instead of exact match
         // as event handling might vary slightly in the test environment
-        expect(nameInput.value).toContain('Lead');
+        expect((nameInput as HTMLInputElement).value).toContain('Lead');
       }
     });
 
@@ -611,7 +612,8 @@ describe('Workstation Mixer Component', () => {
         // Now verify the mock was called
         expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
         // The first call should match our expectations
-        const lastCall = mockWorkstationContext.setTrack.mock.calls[mockWorkstationContext.setTrack.mock.calls.length - 1];
+        const mock = asMock(mockWorkstationContext.setTrack);
+        const lastCall = mock.mock.calls[mock.mock.calls.length - 1];
         expect(lastCall[0].name).toBe('Electric Guitar');
       }
     });
@@ -1125,7 +1127,10 @@ describe('Workstation Mixer Component', () => {
         timelineSettings: {
           beatWidth: 50,
           timeSignature: { beats: 4, noteValue: 4 },
-          horizontalScale: 1
+          horizontalScale: 1,
+          tempo: 120,
+          snap: true,
+          snapUnit: "beat"
         },
         setTrack: vi.fn(),
         setTracks: vi.fn(),
@@ -1199,7 +1204,7 @@ describe('Workstation Mixer Component', () => {
         canRedo: false,
         undo: vi.fn(),
         redo: vi.fn(),
-        snapGridSizeOption: null,
+        snapGridSizeOption: undefined,
         setSnapGridSizeOption: vi.fn(),
         autoGridSize: 1,
         stretchAudio: false,
@@ -1294,3 +1299,13 @@ describe('Workstation Mixer Component', () => {
     });
   });
 });
+
+// Define mock utility functions
+function asMock<T extends (...args: any[]) => any>(fn: T) {
+  return fn as unknown as T & { 
+    mockReset: () => void;
+    mock: { calls: any[][] };
+  };
+}
+
+// Use the above utility to properly type all mock references
