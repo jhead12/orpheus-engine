@@ -1,8 +1,6 @@
-import { render } from "@testing-library/react";
 import { expectScreenshot } from "../../helpers/screenshot";
-import { recordGif } from "./gif-recorder";
+import { recordComponentGif } from "./gif-recorder";
 import { VisualTestConfig } from "../types";
-import React from "react";
 
 /**
  * Renders a visual test for a specific component state
@@ -31,9 +29,6 @@ export async function renderVisualTest(
   document.body.appendChild(container);
 
   try {
-    // Render component
-    const componentProps = { ...config.props, ...(state.props || {}) };
-
     // Create a div element with innerHTML for the component
     const componentElement = document.createElement("div");
     componentElement.innerHTML = `<div data-component="${config.componentName}" data-testid="${config.componentName}">Component Placeholder</div>`;
@@ -66,8 +61,14 @@ export async function renderVisualTest(
 
     // Capture screenshot or GIF
     const filename = `${config.componentName.toLowerCase()}-${stateName}`;
-    if (state.captureGif || config.captureGif) {
-      await recordGif(container, filename, config.animationDuration || 2000);
+    // Use type assertion to access captureGif property
+    const stateWithCapture = state as { captureGif?: boolean; };
+    const shouldCaptureGif = stateWithCapture.captureGif || config.captureGif;
+    
+    if (shouldCaptureGif) {
+      const animationDuration = config.animationDuration || 2000;
+      const htmlContent = container.outerHTML;
+      await recordComponentGif(htmlContent, filename, animationDuration);
     } else {
       await expectScreenshot(container, filename);
     }

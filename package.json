@@ -41,7 +41,7 @@
     "dev:headless": "cross-env NODE_ENV=development ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
     "build": "npm run test:screenshots && tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
     "preview": "vite preview",
-    "start": "node electron-launch.js",
+    "start": "node electron-launch.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
