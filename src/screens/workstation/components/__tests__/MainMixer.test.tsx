@@ -3,7 +3,73 @@
  * Tests the MainMixer component
  */
 
-// Initialize AudioContext mock first (must happen before any other imports)
+// Define constants at the very top, before any imports
+// These avoid the "Cannot access before initialization" errors
+const TrackType = {
+  Audio: "audio",
+  Midi: "midi",
+  Sequencer: "sequencer",
+};
+
+const AutomationMode = {
+  Read: "read",
+  Write: "write", 
+  Touch: "touch",
+  Latch: "latch",
+  Trim: "trim",
+  Off: "off",
+};
+
+const AutomationLaneEnvelope = {
+  Volume: "volume",
+  Pan: "pan",
+  Send: "send",
+  Filter: "filter",
+  Tempo: "tempo",
+  Effect: "effect",
+};
+
+const ContextMenuType = {
+  Track: "track",
+  Mixer: "mixer",
+  Timeline: "timeline",
+  Clip: "clip",
+  Node: "node",
+  Region: "region",
+  Lane: "lane",
+  Automation: "automation",
+  AddAutomationLane: "add-automation-lane",
+  FXChainPreset: "fx-chain-preset"
+};
+
+// Mock types module first
+import { vi } from 'vitest';
+vi.mock("@orpheus/types/core", () => ({
+  AutomationMode,
+  AutomationLaneEnvelope,
+  TrackType,
+  TimelinePosition: class TimelinePosition {
+    bars: number;
+    beats: number;
+    sixteenths: number;
+    ticks: number;
+    totalBeats: number;
+  
+    constructor(bars = 1, beats = 1, sixteenths = 1, ticks = 0) {
+      this.bars = bars;
+      this.beats = beats;
+      this.sixteenths = sixteenths;
+      this.ticks = ticks;
+      this.totalBeats = this.calculateTotalBeats();
+    }
+  
+    calculateTotalBeats() {
+      return ((this.bars - 1) * 4) + (this.beats - 1) + (this.sixteenths - 1) / 4 + this.ticks / 960;
+    }
+  }
+}));
+
+// Initialize AudioContext mock first (must happen before other imports)
 if (typeof window !== 'undefined') {
   window.AudioContext = window.AudioContext || (() => ({
     createGain: () => ({ connect: () => {}, gain: { value: 1 } }),
@@ -266,6 +332,35 @@ const createMockUtils = () => ({
   })
 });
 
+// Function to create many tracks for performance tests
+const createManyTracks = (count = 10) => {
+  const tracks = [];
+  for (let i = 1; i <= count; i++) {
+    tracks.push({
+      id: `track-${i}`,
+      name: `Track ${i}`,
+      type: TrackType.Audio,
+      color: i % 2 === 0 ? '#ff6b6b' : '#4ecdc4',
+      mute: i % 3 === 0,
+      solo: i % 5 === 0,
+      armed: i % 7 === 0,
+      volume: createAutomatableParam(0.7 + (i % 4) * 0.1),
+      pan: createAutomatableParam((i % 11 - 5) / 10),
+      automation: false,
+      automationMode: i % 2 === 0 ? AutomationMode.Read : AutomationMode.Write,
+      automationLanes: [],
+      clips: [],
+      effects: [],
+      fx: {
+        preset: null,
+        effects: [],
+        selectedEffectIndex: 0,
+      }
+    });
+  }
+  return tracks;
+};
+
 // Mock components and dependencies
 vi.mock('../../../components/widgets', () => createMockWidgets());
 vi.mock('../index', () => createMockComponents());
@@ -278,25 +373,8 @@ vi.mock('../editor-utils', () => ({
 }));
 vi.mock('../../../services/utils/utils', () => createMockUtils());
 
-// Interface for mock workstation context
-interface WorkstationContextMock {
-  tracks: typeof mockTracks;
-  masterTrack: typeof mockMasterTrack;
-  selectedTrackId: string | null;
-  setAllowMenuAndShortcuts: typeof vi.fn;
-  selectTrack: typeof vi.fn;
-  getTrackCurrentValue: typeof vi.fn;
-  setTrack: typeof vi.fn;
-  updateTrack: typeof vi.fn;
-  setTracks: typeof vi.fn;
-  showMaster: boolean;
-  [key: string]: any;
-}
-
-// Create a properly typed mixer context implementation
-const mockMixerContext = {
-  tracks: mockTracks,
-  selectedTrackId: null,
+// Create mock functions for use in context
+const mockFunctions = {
   setSelectedTrackId: vi.fn(),
   updateTrack: vi.fn(),
   updateTrackProperty: vi.fn(),
@@ -305,12 +383,6 @@ const mockMixerContext = {
   removeTrack: vi.fn(),
   moveTrack: vi.fn(),
   getTrackById: vi.fn(),
-  
-  // Adding required MixerContextType properties
-  masterVolume: 0.8,
-  masterPan: 0,
-  masterMute: false,
-  mixerHeight: 400,
   setMasterVolume: vi.fn(),
   setMasterPan: vi.fn(),
   setMasterMute: vi.fn(),
@@ -324,55 +396,53 @@ const mockMixerContext = {
   removeEffect: vi.fn(),
   updateEffect: vi.fn(),
   reorderEffects: vi.fn(),
+  setIsVisible: vi.fn(),
+  muteAllTracks: vi.fn(),
+  unmuteAllTracks: vi.fn(),
+  resetAllLevels: vi.fn(),
+  setAllowMenuAndShortcuts: vi.fn(),
+  selectTrack: vi.fn(),
+  setTrack: vi.fn(),
+  setTracks: vi.fn(),
+};
+
+// Create a properly typed mixer context implementation
+const mockMixerContext = {
+  tracks: mockTracks,
+  selectedTrackId: null,
+  masterVolume: 0.8,
+  masterPan: 0,
+  masterMute: false,
+  mixerHeight: 400,
   meters: {
     'track-1': { left: 0.2, right: 0.3, peak: 0.5 },
     'track-2': { left: 0.1, right: 0.2, peak: 0.3 },
     'master': { left: 0.3, right: 0.4, peak: 0.6 }
   },
   isVisible: true,
-  setIsVisible: vi.fn(),
   soloedTracks: [],
-  muteAllTracks: vi.fn(),
-  unmuteAllTracks: vi.fn(),
-  resetAllLevels: vi.fn()
+  ...mockFunctions
 };
 
 // Create mock workstation context
-const mockWorkstationContext: WorkstationContextMock = {
+const mockWorkstationContext = {
   tracks: mockTracks,
   masterTrack: mockMasterTrack,
   selectedTrackId: 'track-1',
-  setAllowMenuAndShortcuts: vi.fn(),
-  selectTrack: vi.fn(),
-  updateTrack: vi.fn(),
-  setTrack: vi.fn((updatedTrack) => {
-    // Handle case where an event object is passed instead of a value
-    if (updatedTrack && typeof updatedTrack.automationMode === 'object' && updatedTrack.automationMode.target) {
-      const value = updatedTrack.automationMode.target.value;
-      updatedTrack = { ...updatedTrack, automationMode: value };
-    }
-    
-    // Update the mock track
-    const index = mockTracks.findIndex(t => t.id === updatedTrack.id);
-    if (index >= 0) {
-      mockTracks[index] = { ...updatedTrack };
-    }
-    return;
-  }),
-  setTracks: vi.fn(),
-  getTrackCurrentValue: vi.fn((track, lane) => {
+  showMaster: true,
+  getTrackCurrentValue: (track: any, lane: any) => {
     if (lane) {
       return { value: lane.nodes?.[0]?.value || 0, isAutomated: true };
     }
     return { value: track.pan?.value || 0, isAutomated: false };
-  }),
-  showMaster: true
+  },
+  ...mockFunctions
 };
 
 const renderMixer = (props = {}) => {
   return render(
     <WorkstationContext.Provider value={mockWorkstationContext as any}>
-      <MixerContext.Provider value={mockMixerContext}>
+      <MixerContext.Provider value={mockMixerContext as any}>
         <Mixer {...props} />
       </MixerContext.Provider>
     </WorkstationContext.Provider>
