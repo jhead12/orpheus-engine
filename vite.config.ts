@@ -11,9 +11,9 @@ export default defineConfig({
       jsxRuntime: 'automatic',
     }),
   ],
-  base: "./",
+  base: "/",
   build: {
-    outDir: "build/src",
+    outDir: "dist",
     sourcemap: true,
   },
   resolve: {

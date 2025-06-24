@@ -23,6 +23,9 @@ export interface VisualTestConfig {
     /** Component props for this state (overrides default props) */
     props?: Record<string, any>;
 
+    /** Whether to capture a GIF for this specific state */
+    captureGif?: boolean;
+
     /** User interactions to simulate */
     interactions?: Array<{
       /** Type of interaction */
@@ -33,7 +36,9 @@ export interface VisualTestConfig {
         | "input"
         | "mousedown"
         | "mouseup"
-        | "mousemove";
+        | "mousemove"
+        | "mouseenter"
+        | "mouseleave";
 
       /** CSS selector or data-testid to target */
       target: string;

@@ -6,7 +6,8 @@
 // Import setup utility first to define constants and setup mocks
 // This must be imported before any component imports to prevent hoisting issues
 import { 
-  setupWorkstationMixerTest
+  setupWorkstationMixerTest, 
+  ContextMenuType
 } from '../../../../test/utils/workstation-mixer-setup';
 
 // Initialize mocks
@@ -24,6 +25,14 @@ import {
   TimelinePosition,
 } from "../../../../types/core";
 import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
+
+// Mock the types using centralized definitions
+vi.mock('@orpheus/types/core', () => ({
+  TrackType,
+  AutomationMode,
+  AutomationLaneEnvelope,
+  ContextMenuType
+}));
 
 // Base track for tests
 const baseTrack: Track = {
@@ -140,17 +149,21 @@ vi.mock("@orpheus/types/core", () => {
     ticks: 0,
     bar: 0,
     beat: 0,
-    tick: 0,
+    sixteenth: 0,
+    measure: 0,
+    fraction: 0,
+    samples: 0,
+    milliseconds: 0,
     toMargin: vi.fn(() => 0),
     fromMargin: vi.fn(() => ({ ticks: 0 })),
-    snap: vi.fn(() => new TimelinePosition(1, 1, 1, 0)),
+    snap: vi.fn(() => ({ ticks: 0 })),
     toTicks: vi.fn(() => 0),
     toSeconds: vi.fn(() => 0),
     copy: vi.fn(() => mockTimelinePosition),
     equals: vi.fn(() => true),
     add: vi.fn(() => mockTimelinePosition),
     compareTo: vi.fn(() => 0),
-  };
+  } as any;
 
   return {
     TimelinePosition: {
