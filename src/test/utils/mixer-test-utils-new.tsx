@@ -29,10 +29,13 @@ export {
 // Mixer-specific helpers
 export const waitForMixerToRender = async () => {
   // Wait for any async operations in mixer
-  await new Promise(resolve => setTimeout(resolve, 50));
+  await new Promise((resolve) => setTimeout(resolve, 50));
 };
 
-export const simulateVolumeChange = async (volumeFader: HTMLElement, value: string) => {
+export const simulateVolumeChange = async (
+  volumeFader: HTMLElement,
+  value: string
+) => {
   const event = new Event('change', { bubbles: true });
   Object.defineProperty(event, 'target', {
     writable: false,
@@ -42,7 +45,10 @@ export const simulateVolumeChange = async (volumeFader: HTMLElement, value: stri
   await waitForMixerToRender();
 };
 
-export const simulatePanChange = async (panKnob: HTMLElement, value: string) => {
+export const simulatePanChange = async (
+  panKnob: HTMLElement,
+  value: string
+) => {
   const event = new Event('change', { bubbles: true });
   Object.defineProperty(event, 'target', {
     writable: false,
@@ -55,24 +61,24 @@ export const simulatePanChange = async (panKnob: HTMLElement, value: string) => 
 // Mixer-specific test suite generators
 export const createMixerTestSuite = (renderFunction: () => void) => ({
   ...createBasicRenderingTests(renderFunction),
-  
+
   'should display volume controls': () => {
     renderFunction();
-    
+
     expect(screen.getByTestId('mixer-volume-track-1')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-volume-track-2')).toBeInTheDocument();
   },
-  
+
   'should display pan controls': () => {
     renderFunction();
-    
+
     expect(screen.getByTestId('mixer-pan-track-1')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-pan-track-2')).toBeInTheDocument();
   },
-  
+
   'should display mute/solo/arm buttons': () => {
     renderFunction();
-    
+
     expect(screen.getByTestId('mixer-mute-track-1')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-solo-track-1')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-arm-track-1')).toBeInTheDocument();
@@ -95,11 +101,14 @@ export const assertMasterChannelRenders = () => {
   expect(screen.getByTestId('mixer-master-mute')).toBeInTheDocument();
 };
 
-export const assertMixerState = (trackId: string, state: { 
-  muted?: boolean; 
-  solo?: boolean; 
-  armed?: boolean; 
-}) => {
+export const assertMixerState = (
+  trackId: string,
+  state: {
+    muted?: boolean;
+    solo?: boolean;
+    armed?: boolean;
+  }
+) => {
   if (state.muted !== undefined) {
     assertButtonState(`mixer-mute-${trackId}`, state.muted);
   }

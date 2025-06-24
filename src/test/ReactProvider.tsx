@@ -50,7 +50,9 @@ export const useReactInstance = () => {
 };
 
 // Test helper to wrap components
-export const withReactProvider = <P extends object>(Component: React.ComponentType<P>) => {
+export const withReactProvider = <P extends object>(
+  Component: React.ComponentType<P>
+) => {
   return function WrappedComponent(props: P) {
     return (
       <ReactProvider>

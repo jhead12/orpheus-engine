@@ -2,7 +2,7 @@ export interface TimelineSettings {
   tempo: number;
   timeSignature: { beats: number; noteValue: number };
   snap: boolean;
-  snapUnit: "beat" | "bar" | "sixteenth";
+  snapUnit: 'beat' | 'bar' | 'sixteenth';
   horizontalScale: number;
 }
 
@@ -11,7 +11,7 @@ export class TimelinePosition {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
+    snapUnit: 'beat',
     horizontalScale: 1,
   };
 
@@ -96,7 +96,7 @@ export class TimelinePosition {
 
   snap(
     gridSize: number | TimelinePosition,
-    direction: "floor" | "ceil" | "round" = "round"
+    direction: 'floor' | 'ceil' | 'round' = 'round'
   ): TimelinePosition {
     // Handle gridSize as TimelinePosition or number
     const gridSizeValue =
@@ -111,13 +111,13 @@ export class TimelinePosition {
 
     let snappedTicks: number;
     switch (direction) {
-      case "floor":
+      case 'floor':
         snappedTicks = Math.floor(totalTicks / gridTicks) * gridTicks;
         break;
-      case "ceil":
+      case 'ceil':
         snappedTicks = Math.ceil(totalTicks / gridTicks) * gridTicks;
         break;
-      case "round":
+      case 'round':
       default:
         snappedTicks = Math.round(totalTicks / gridTicks) * gridTicks;
     }

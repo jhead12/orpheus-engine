@@ -37,7 +37,8 @@ export class AudioService {
 
   async initialize(): Promise<void> {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
     } catch (error) {
       console.warn('AudioContext not available:', error);
     }
@@ -59,13 +60,13 @@ export class AudioService {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      
+
       return {
         buffer: arrayBuffer,
         name: file.name,
         type: file.type,
         duration: audioBuffer.duration,
-        sampleRate: audioBuffer.sampleRate
+        sampleRate: audioBuffer.sampleRate,
       };
     } catch (error) {
       console.error('Error loading audio file:', error);
@@ -101,17 +102,19 @@ export class AudioService {
     return (globalThis as any).electronAPI.analyzeAudio({
       filePath: undefined, // File path would be handled by Electron
       buffer: arrayBuffer,
-      options: { includeWaveform: true, includePeaks: true }
+      options: { includeWaveform: true, includePeaks: true },
     });
   }
 
-  private async analyzeAudioBrowser(fileOrBuffer: File | AudioBuffer): Promise<any> {
+  private async analyzeAudioBrowser(
+    fileOrBuffer: File | AudioBuffer
+  ): Promise<any> {
     if (!globalThis.AudioContext && !(globalThis as any).webkitAudioContext) {
       throw new Error('Web Audio API not supported');
     }
 
     let audioBuffer: AudioBuffer;
-    
+
     if (fileOrBuffer instanceof File) {
       const arrayBuffer = await fileOrBuffer.arrayBuffer();
       if (!this.audioContext) {
@@ -128,7 +131,7 @@ export class AudioService {
       numberOfChannels: audioBuffer.numberOfChannels,
       length: audioBuffer.length,
       waveform: this.generateWaveform(audioBuffer.getChannelData(0), 1000),
-      peaks: this.extractPeaks(audioBuffer)
+      peaks: this.extractPeaks(audioBuffer),
     };
   }
 
@@ -139,13 +142,13 @@ export class AudioService {
     const response = await fetch(`${endpoint}/api/audio/analyze`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         fileName: file.name,
         fileType: file.type,
-        audioData: Array.from(new Uint8Array(arrayBuffer))
-      })
+        audioData: Array.from(new Uint8Array(arrayBuffer)),
+      }),
     });
 
     if (!response.ok) {
@@ -155,7 +158,10 @@ export class AudioService {
     return response.json();
   }
 
-  private extractPeaks(audioBuffer: AudioBuffer, sampleSize: number = 1000): number[] {
+  private extractPeaks(
+    audioBuffer: AudioBuffer,
+    sampleSize: number = 1000
+  ): number[] {
     const channelData = audioBuffer.getChannelData(0);
     const blockSize = Math.floor(channelData.length / sampleSize);
     const peaks: number[] = [];
@@ -177,37 +183,37 @@ export class AudioService {
 
   generateWaveform(audioData: Float32Array, samplesPerPixel: number): number[] {
     if (audioData.length === 0) return [];
-    
+
     const waveform: number[] = [];
     const blockSize = samplesPerPixel;
-    
+
     for (let i = 0; i < audioData.length; i += blockSize) {
       const end = Math.min(i + blockSize, audioData.length);
       let sum = 0;
-      
+
       for (let j = i; j < end; j++) {
         sum += Math.abs(audioData[j]);
       }
-      
+
       waveform.push(sum / (end - i));
     }
-    
+
     return waveform;
   }
 
   findPeaks(audioData: Float32Array, threshold: number): number[] {
     const peaks: number[] = [];
-    
+
     for (let i = 1; i < audioData.length - 1; i++) {
       const current = Math.abs(audioData[i]);
       const prev = Math.abs(audioData[i - 1]);
       const next = Math.abs(audioData[i + 1]);
-      
+
       if (current > threshold && current > prev && current > next) {
         peaks.push(i);
       }
     }
-    
+
     return peaks;
   }
 
@@ -222,35 +228,35 @@ export class AudioService {
       'audio/webm',
       'audio/flac',
       'audio/aac',
-      'audio/m4a'
+      'audio/m4a',
     ];
-    
+
     return supportedFormats.includes(mimeType);
   }
 
   search(query: string, tracks: Track[], clips: Clip[]): AudioSearchResult[] {
     const results: AudioSearchResult[] = [];
-    
+
     // Search tracks
-    tracks.forEach(track => {
+    tracks.forEach((track) => {
       if (track.name.toLowerCase().includes(query.toLowerCase())) {
         results.push({
           id: track.id,
           name: track.name,
           type: 'track',
-          data: track
+          data: track,
         });
       }
     });
 
     // Search clips
-    clips.forEach(clip => {
+    clips.forEach((clip) => {
       if (clip.name.toLowerCase().includes(query.toLowerCase())) {
         results.push({
           id: clip.id,
           name: clip.name,
           type: 'clip',
-          data: clip
+          data: clip,
         });
       }
     });
@@ -258,7 +264,9 @@ export class AudioService {
     return results;
   }
 
-  async getSegmentDetails(segmentId: string): Promise<{ file_path: string } | null> {
+  async getSegmentDetails(
+    segmentId: string
+  ): Promise<{ file_path: string } | null> {
     // Placeholder implementation for audio segment details
     // In a real implementation, this would query a database or API
     console.log('Getting segment details for:', segmentId);

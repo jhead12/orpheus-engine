@@ -1,0 +1,58 @@
+# Prettier ignore file
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Generated files
+coverage/
+test-results/
+playwright-report/
+__snapshots__/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Template files (handled by Handlebars)
+*.hbs
+*.template.*
+
+# Compressed files
+*.zip
+*.tar.gz
+
+# Electron outputs
+electron/
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.AppImage
+
+# Visual test artifacts
+__snapshots__/**/*.png
+__snapshots__/**/*.gif

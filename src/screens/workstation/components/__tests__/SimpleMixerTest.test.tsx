@@ -10,11 +10,13 @@ const mockWorkstationContext = {
   masterTrack: { id: 'master', name: 'Master', type: 'Audio', volume: 0.8 },
   selectedTrackId: null,
   setSelectedTrackId: vi.fn(),
-  getTrackCurrentValue: vi.fn().mockReturnValue({ value: 0, isAutomated: false }),
+  getTrackCurrentValue: vi
+    .fn()
+    .mockReturnValue({ value: 0, isAutomated: false }),
   setTrack: vi.fn(),
   automationMode: 'Off',
   setAutomationMode: vi.fn(),
-  setAllowMenuAndShortcuts: vi.fn()
+  setAllowMenuAndShortcuts: vi.fn(),
 };
 
 const mockMixerContext = {
@@ -22,41 +24,67 @@ const mockMixerContext = {
   setTrackPan: vi.fn(),
   setTrackMute: vi.fn(),
   setTrackSolo: vi.fn(),
-  setTrackArmed: vi.fn()
+  setTrackArmed: vi.fn(),
 };
 
 // Mock the widgets package
 vi.mock('@orpheus/widgets', () => ({
   Dialog: ({ children, ...rest }) => <div {...rest}>{children}</div>,
   SelectSpinBox: ({ title, value, onChange, ...rest }) => (
-    <select title={title} value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
+    <select
+      title={title}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      {...rest}
+    />
   ),
   Knob: ({ value, onChange, ...rest }) => (
     <div data-testid="knob" {...rest}>
-      <input type="range" value={value || 0} onChange={(e) => onChange(parseFloat(e.target.value))} />
+      <input
+        type="range"
+        value={value || 0}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+      />
     </div>
   ),
-  Meter: ({ value, ...rest }) => <div data-testid="meter" {...rest}>{value}</div>,
-  SortableList: ({ children, ...rest }) => <div data-testid="sortable-list" {...rest}>{children}</div>,
+  Meter: ({ value, ...rest }) => (
+    <div data-testid="meter" {...rest}>
+      {value}
+    </div>
+  ),
+  SortableList: ({ children, ...rest }) => (
+    <div data-testid="sortable-list" {...rest}>
+      {children}
+    </div>
+  ),
   SortableListItem: ({ children, index, ...rest }) => (
-    <div data-testid={`sortable-item-${index}`} {...rest}>{children}</div>
+    <div data-testid={`sortable-item-${index}`} {...rest}>
+      {children}
+    </div>
   ),
   HueInput: ({ value, onChange, ...rest }) => (
-    <input data-testid="hue-input" value={value || 0} onChange={(e) => onChange && onChange(parseFloat(e.target.value))} {...rest} />
-  )
+    <input
+      data-testid="hue-input"
+      value={value || 0}
+      onChange={(e) => onChange && onChange(parseFloat(e.target.value))}
+      {...rest}
+    />
+  ),
 }));
 
 // Mock the icons component
 vi.mock('../../../components/icons/TrackIcon', () => ({
-  default: ({ type }) => <div>Icon-{type}</div>
+  default: ({ type }) => <div>Icon-{type}</div>,
 }));
 
 // Mock the TrackVolumeSlider
 vi.mock('../index', () => ({
   TrackVolumeSlider: ({ track }) => (
-    <div data-testid={`mixer-volume-${track?.id}`}>{track?.volume?.value || 0}</div>
+    <div data-testid={`mixer-volume-${track?.id}`}>
+      {track?.volume?.value || 0}
+    </div>
   ),
-  FXComponent: () => <div>FX</div>
+  FXComponent: () => <div>FX</div>,
 }));
 
 describe('Simple Mixer Test', () => {
@@ -68,7 +96,7 @@ describe('Simple Mixer Test', () => {
         </MixerContext.Provider>
       </WorkstationContext.Provider>
     );
-    
+
     expect(container).toBeTruthy();
   });
 });

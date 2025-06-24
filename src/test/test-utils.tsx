@@ -1,4 +1,10 @@
-import { render as rtlRender, RenderOptions, renderHook as rtlRenderHook, RenderHookOptions, RenderHookResult } from '@testing-library/react';
+import {
+  render as rtlRender,
+  RenderOptions,
+  renderHook as rtlRenderHook,
+  RenderHookOptions,
+  RenderHookResult,
+} from '@testing-library/react';
 import { ReactElement, ReactNode } from 'react';
 import { ReactProvider } from './ReactProvider';
 
@@ -8,11 +14,7 @@ function renderWithProvider(
   options?: Omit<RenderOptions, 'wrapper'>
 ) {
   return rtlRender(ui, {
-    wrapper: ({ children }) => (
-      <ReactProvider>
-        {children}
-      </ReactProvider>
-    ),
+    wrapper: ({ children }) => <ReactProvider>{children}</ReactProvider>,
     ...options,
   });
 }
@@ -23,11 +25,7 @@ function renderHookWithProvider<TResult, TProps>(
   options?: Omit<RenderHookOptions<TProps>, 'wrapper'>
 ): RenderHookResult<TResult, TProps> {
   return rtlRenderHook(callback, {
-    wrapper: ({ children }) => (
-      <ReactProvider>
-        {children}
-      </ReactProvider>
-    ),
+    wrapper: ({ children }) => <ReactProvider>{children}</ReactProvider>,
     ...options,
   });
 }

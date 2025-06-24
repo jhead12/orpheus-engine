@@ -1,13 +1,13 @@
-import { VisualTestConfig } from "../types";
-import { DNRConfig } from "./DNRConfig";
-import { ScrollbarConfig } from "./ScrollbarConfig";
-import { TimelineConfig } from "./TimelineConfig";
-import { MixerConfig } from "./MixerConfig";
-import { ClipComponentConfig } from "./ClipComponentConfig";
-import { TrackComponentConfig } from "./TrackComponentConfig";
-import { KnobConfig } from "./KnobConfig";
-import { MeterConfig } from "./MeterConfig";
-import { SidePanelConfig } from "./SidePanelConfig";
+import { VisualTestConfig } from '../types';
+import { DNRConfig } from './DNRConfig';
+import { ScrollbarConfig } from './ScrollbarConfig';
+import { TimelineConfig } from './TimelineConfig';
+import { MixerConfig } from './MixerConfig';
+import { ClipComponentConfig } from './ClipComponentConfig';
+import { TrackComponentConfig } from './TrackComponentConfig';
+import { KnobConfig } from './KnobConfig';
+import { MeterConfig } from './MeterConfig';
+import { SidePanelConfig } from './SidePanelConfig';
 
 /**
  * Map of all component test configurations
@@ -54,17 +54,17 @@ export function getConfigByName(name: string): VisualTestConfig | undefined {
  * Priority order for generating tests
  */
 export const GenerationPriority: string[] = [
-  "Timeline",
-  "Mixer", 
-  "TrackComponent",
-  "ClipComponent",
-  "Knob",
-  "Meter",
-  "SidePanel",
-  "DNR",
-  "Scrollbar",
-  "Lane",
-  "PaneResize",
-  "SyncScrollPane",
-  "WindowAutoScroll",
+  'Timeline',
+  'Mixer',
+  'TrackComponent',
+  'ClipComponent',
+  'Knob',
+  'Meter',
+  'SidePanel',
+  'DNR',
+  'Scrollbar',
+  'Lane',
+  'PaneResize',
+  'SyncScrollPane',
+  'WindowAutoScroll',
 ];

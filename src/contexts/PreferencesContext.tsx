@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { Preferences } from '../types/settings';
 
 // Default preferences
@@ -52,7 +58,9 @@ interface PreferencesContextType {
 }
 
 // Create context
-export const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
+export const PreferencesContext = createContext<
+  PreferencesContextType | undefined
+>(undefined);
 
 // Storage key
 const PREFERENCES_STORAGE_KEY = 'orpheus-engine-preferences';
@@ -62,9 +70,13 @@ interface PreferencesProviderProps {
   children: ReactNode;
 }
 
-export const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ children }) => {
-  const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
-  const [savedPreferences, setSavedPreferences] = useState<Preferences>(defaultPreferences);
+export const PreferencesProvider: React.FC<PreferencesProviderProps> = ({
+  children,
+}) => {
+  const [preferences, setPreferences] =
+    useState<Preferences>(defaultPreferences);
+  const [savedPreferences, setSavedPreferences] =
+    useState<Preferences>(defaultPreferences);
   const [showPreferences, setShowPreferences] = useState(false);
 
   // Load preferences from localStorage on mount
@@ -72,7 +84,10 @@ export const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ childr
     try {
       const stored = localStorage.getItem(PREFERENCES_STORAGE_KEY);
       if (stored) {
-        const parsedPreferences = { ...defaultPreferences, ...JSON.parse(stored) };
+        const parsedPreferences = {
+          ...defaultPreferences,
+          ...JSON.parse(stored),
+        };
         setPreferences(parsedPreferences);
         setSavedPreferences(parsedPreferences);
       }
@@ -87,7 +102,10 @@ export const PreferencesProvider: React.FC<PreferencesProviderProps> = ({ childr
 
   const savePreferences = () => {
     try {
-      localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+      localStorage.setItem(
+        PREFERENCES_STORAGE_KEY,
+        JSON.stringify(preferences)
+      );
       setSavedPreferences(preferences);
     } catch (error) {
       console.error('Failed to save preferences:', error);

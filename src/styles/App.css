@@ -1,51 +1,51 @@
-@import "colors.css";
-@import "themes.css";
-@import "plugins.css";
+@import 'colors.css';
+@import 'themes.css';
+@import 'plugins.css';
 
 @font-face {
-  font-family: "Abel";
-  src: url("./../assets/fonts/Abel.ttf");
+  font-family: 'Abel';
+  src: url('./../assets/fonts/Abel.ttf');
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-ExtraLight.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-ExtraLight.otf');
   font-weight: 200;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-Light.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-Light.otf');
   font-weight: 300;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-Regular.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-Regular.otf');
   font-weight: 400;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-Medium.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-Medium.otf');
   font-weight: 500;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-SemiBold.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-SemiBold.otf');
   font-weight: 600;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-Bold.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-Bold.otf');
   font-weight: 700;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("./../assets/fonts/Manrope/Manrope-ExtraBold.otf");
+  font-family: 'Manrope';
+  src: url('./../assets/fonts/Manrope/Manrope-ExtraBold.otf');
   font-weight: 800;
 }
 
@@ -63,29 +63,32 @@ button {
   border: none;
 }
 
-input, button, textarea, :focus {
+input,
+button,
+textarea,
+:focus {
   outline: none;
 }
 
 .btn-1 {
   background-color: #0000;
-  border: 1px solid var(--border1)!important;
-  border-radius: 50%!important;
+  border: 1px solid var(--border1) !important;
+  border-radius: 50% !important;
   height: 24px;
   width: 24px;
 }
 
 .btn-2 {
   border: 1px solid var(--border1);
-  font-size: 13px; 
-  background-color: #0000; 
+  font-size: 13px;
+  background-color: #0000;
   color: var(--border6);
 }
 
 .btn-3 {
   font-size: 13px;
   background-color: var(--color1);
-  color: var(--bg6); 
+  color: var(--bg6);
   border: none;
   transition: 0.25s ease-in-out background-color;
 }
@@ -109,7 +112,7 @@ input, button, textarea, :focus {
 }
 
 .clip-title:hover {
-  color: #0008!important;
+  color: #0008 !important;
 }
 
 .disabled {
@@ -118,11 +121,12 @@ input, button, textarea, :focus {
 }
 
 .focus-1:focus {
-  background-color: var(--bg5)!important;
+  background-color: var(--bg5) !important;
   transition: 0.2s;
 }
 
-.focus-2:focus, .focus-3:focus {
+.focus-2:focus,
+.focus-3:focus {
   background-color: #fff3;
   transition: 0.2s;
 }
@@ -136,7 +140,7 @@ input, button, textarea, :focus {
 }
 
 .force-cursor * {
-  cursor: inherit!important;
+  cursor: inherit !important;
 }
 
 .guideline {
@@ -155,8 +159,9 @@ input, button, textarea, :focus {
   background-color: #0000;
 }
 
-.hover-1:hover, .hover-1:focus {
-  background-color: var(--bg5)!important;
+.hover-1:hover,
+.hover-1:focus {
+  background-color: var(--bg5) !important;
   transition: 0.1s;
 }
 
@@ -165,32 +170,39 @@ input, button, textarea, :focus {
 }
 
 .hover-1:active {
-  border: 1px solid var(--color1)!important;
-  color: var(--color1)!important;
+  border: 1px solid var(--color1) !important;
+  color: var(--color1) !important;
   transition: 0.1s;
 }
 
-.hover-1:active svg, .hover-1:active * {
-  color: var(--color1)!important;
+.hover-1:active svg,
+.hover-1:active * {
+  color: var(--color1) !important;
   transition: 0.1s;
 }
 
-.hover-2, .hover-3 {
+.hover-2,
+.hover-3 {
   cursor: pointer;
 }
 
-.hover-2:hover, .hover-2:focus,
-.hover-3:hover, .hover-3:focus,
-.hover-4:hover, .hover-4:focus {
+.hover-2:hover,
+.hover-2:focus,
+.hover-3:hover,
+.hover-3:focus,
+.hover-4:hover,
+.hover-4:focus {
   background-color: var(--bg5);
   transition: 0.2s;
 }
 
-.hover-2:hover, .hover-2:focus {
-  background-color: var(--bg5)!important;
+.hover-2:hover,
+.hover-2:focus {
+  background-color: var(--bg5) !important;
 }
 
-.hover-4:hover, .hover-4:focus {
+.hover-4:hover,
+.hover-4:focus {
   transition: 0s;
 }
 
@@ -209,25 +221,25 @@ input, button, textarea, :focus {
 }
 
 .input-2 {
-  background-color: var(--bg6); 
-  width: 50px; 
-  border: 1px solid var(--border6); 
-  color: var(--border6); 
+  background-color: var(--bg6);
+  width: 50px;
+  border: 1px solid var(--border6);
+  color: var(--border6);
   font-size: 13px;
 }
 
 .invalid-track-type {
-  cursor: not-allowed!important;
+  cursor: not-allowed !important;
   opacity: 0.4;
   filter: brightness(0.95);
 }
 
 .invalid-track-type * {
-  cursor: not-allowed!important;
+  cursor: not-allowed !important;
 }
 
 .no-borders {
-  border: none!important;
+  border: none !important;
 }
 
 .no-outline {
@@ -235,11 +247,11 @@ input, button, textarea, :focus {
 }
 
 .no-shadow {
-  box-shadow: none!important;
+  box-shadow: none !important;
 }
 
 .no-shadow * {
-  box-shadow: none!important;
+  box-shadow: none !important;
 }
 
 .overlay-1::before {
@@ -283,11 +295,11 @@ input, button, textarea, :focus {
 }
 
 .show-on-hover:not(:hover):not(:focus-within) .hidden {
-  opacity: 0!important;
+  opacity: 0 !important;
 }
 
 .show-on-hover:not(:hover):not(:focus-within) .removed {
-  display: none!important;
+  display: none !important;
 }
 
 .sort-indicator::after {
@@ -300,12 +312,12 @@ input, button, textarea, :focus {
   background-color: var(--color1);
   z-index: 14;
   pointer-events: none;
-} 
+}
 
 .sort-indicator-top::after {
   top: -1px;
-  bottom: auto
-} 
+  bottom: auto;
+}
 
 .sort-indicator-v::after {
   content: '';
@@ -317,12 +329,12 @@ input, button, textarea, :focus {
   background-color: var(--color1);
   z-index: 14;
   pointer-events: none;
-} 
+}
 
 .sort-indicator-v-left::after {
   left: -1px;
   right: auto;
-} 
+}
 
 .track-btn {
   font-size: 12px;

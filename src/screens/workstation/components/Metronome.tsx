@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import { WorkstationContext } from '@orpheus/contexts';
-import { MusicNote as MetronomeIcon, ArrowDropDown } from "@mui/icons-material";
-import metronomeTick from "../../../assets/audio/metronome-tick.wav";
-import metronomeTickAccentuated from "../../../assets/audio/metronome-tick-accentuated.wav";
+import { MusicNote as MetronomeIcon, ArrowDropDown } from '@mui/icons-material';
+import metronomeTick from '../../../assets/audio/metronome-tick.wav';
+import metronomeTickAccentuated from '../../../assets/audio/metronome-tick-accentuated.wav';
 
 // Define different metronome sound options
 const METRONOME_SOUNDS = {
@@ -28,7 +28,7 @@ const audioInstances = Object.entries(METRONOME_SOUNDS).reduce(
 
 export function triggerMetronomeTick(
   isAccentuated: boolean,
-  soundType = "default"
+  soundType = 'default'
 ) {
   const sounds = audioInstances[soundType] || audioInstances.default;
   if (isAccentuated) {
@@ -44,7 +44,7 @@ export default function Metronome() {
   const { isPlaying, metronome, setMetronome, timelineSettings } =
     useContext(WorkstationContext)!;
 
-  const [soundType, setSoundType] = useState("default");
+  const [soundType, setSoundType] = useState('default');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -117,10 +117,10 @@ export default function Metronome() {
   return (
     <div className="d-flex align-items-center">
       <IconButton
-        className={`p-0 btn-1 mx-1 ${metronome ? "no-borders" : "hover-1"}`}
+        className={`p-0 btn-1 mx-1 ${metronome ? 'no-borders' : 'hover-1'}`}
         onClick={() => setMetronome(!metronome)}
         style={{
-          backgroundColor: metronome ? "var(--color1)" : "#0000",
+          backgroundColor: metronome ? 'var(--color1)' : '#0000',
           width: 24,
           height: 24,
         }}
@@ -128,7 +128,7 @@ export default function Metronome() {
       >
         <MetronomeIcon
           fontSize="small"
-          sx={{ color: metronome ? "var(--bg6)" : "var(--border6)" }}
+          sx={{ color: metronome ? 'var(--bg6)' : 'var(--border6)' }}
         />
       </IconButton>
 
@@ -139,16 +139,13 @@ export default function Metronome() {
             onClick={handleMenuClick}
             title="Change Metronome Sound"
           >
-            <ArrowDropDown
-              fontSize="small"
-              sx={{ color: "var(--border6)" }}
-            />
+            <ArrowDropDown fontSize="small" sx={{ color: 'var(--border6)' }} />
           </IconButton>
 
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
             <MenuItem
-              onClick={() => handleSoundChange("default")}
-              selected={soundType === "default"}
+              onClick={() => handleSoundChange('default')}
+              selected={soundType === 'default'}
             >
               Default
             </MenuItem>

@@ -5,9 +5,9 @@
 
 // Import setup utility first to define constants and setup mocks
 // This must be imported before any component imports to prevent hoisting issues
-import { 
-  setupWorkstationMixerTest, 
-  ContextMenuType
+import {
+  setupWorkstationMixerTest,
+  ContextMenuType,
 } from '../../../../test/utils/workstation-mixer-setup';
 
 // Initialize mocks
@@ -23,23 +23,23 @@ import {
   AutomationMode,
   AutomationLaneEnvelope,
   TimelinePosition,
-} from "../../../../types/core";
-import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
+} from '../../../../types/core';
+import { WorkstationContextType } from '../../../../contexts/WorkstationContext';
 
 // Mock the types using centralized definitions
 vi.mock('@orpheus/types/core', () => ({
   TrackType,
   AutomationMode,
   AutomationLaneEnvelope,
-  ContextMenuType
+  ContextMenuType,
 }));
 
 // Base track for tests
 const baseTrack: Track = {
-  id: "test-track",
-  name: "Test Track",
+  id: 'test-track',
+  name: 'Test Track',
   type: TrackType.Audio,
-  color: "#ff0000",
+  color: '#ff0000',
   mute: false,
   solo: false,
   armed: false,
@@ -73,7 +73,7 @@ const mockWorkstationContext: WorkstationContextType = {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
+    snapUnit: 'beat',
     horizontalScale: 1,
   },
   isPlaying: false,
@@ -115,16 +115,16 @@ const mockWorkstationContext: WorkstationContextType = {
 };
 
 // Now it's safe to import the component and testing utilities
-import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom";
-import TrackComponent from "../TrackComponent";
-import { WorkstationContext } from "@orpheus/contexts";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+import TrackComponent from '../TrackComponent';
+import { WorkstationContext } from '@orpheus/contexts';
+import { expectScreenshot } from '@orpheus/test/helpers/screenshot';
 
 // Mock volume utility functions
-vi.mock("@orpheus/utils/utils", () => ({
+vi.mock('@orpheus/utils/utils', () => ({
   volumeToNormalized: vi.fn().mockImplementation((volume) => {
     if (volume <= -60) return 0;
     if (volume >= 0) return 1;
@@ -136,15 +136,15 @@ vi.mock("@orpheus/utils/utils", () => ({
     return 20 * Math.log10(normalized);
   }),
   formatVolume: vi.fn().mockImplementation((volume) => {
-    if (volume <= -60) return "-∞ dB";
+    if (volume <= -60) return '-∞ dB';
     return `${volume.toFixed(1)} dB`;
   }),
-  getLaneColor: vi.fn().mockReturnValue("#808080"),
+  getLaneColor: vi.fn().mockReturnValue('#808080'),
   BASE_HEIGHT: 100,
 }));
 
 // Mock TimelinePosition with parseFromString method
-vi.mock("@orpheus/types/core", () => {
+vi.mock('@orpheus/types/core', () => {
   const mockTimelinePosition: TimelinePosition = {
     ticks: 0,
     bar: 0,
@@ -166,40 +166,40 @@ vi.mock("@orpheus/types/core", () => {
       ...mockTimelinePosition,
       parseFromString: vi.fn().mockImplementation(() => mockTimelinePosition),
     },
-    TrackType: TrackType, // Use the imported enum 
-    AutomationMode: AutomationMode, // Use the imported enum
-    AutomationLaneEnvelope: AutomationLaneEnvelope, // Use the imported enum
+    TrackType, // Use the imported enum
+    AutomationMode, // Use the imported enum
+    AutomationLaneEnvelope, // Use the imported enum
   };
 });
 
 // Mock AutomationLaneTrack to avoid dependency issues
-vi.mock("../AutomationLaneTrack", () => ({
-  default: vi.fn(() => null)
+vi.mock('../AutomationLaneTrack', () => ({
+  default: vi.fn(() => null),
 }));
 
 // Mock electron utils
-vi.mock("@orpheus/services/electron/utils", () => ({
-  openContextMenu: vi.fn()
+vi.mock('@orpheus/services/electron/utils', () => ({
+  openContextMenu: vi.fn(),
 }));
 
 // Mock general utils - consolidate both @orpheus/services/utils/general and @orpheus/utils/general
-vi.mock("@orpheus/services/utils/general", () => ({
+vi.mock('@orpheus/services/utils/general', () => ({
   hueFromHex: vi.fn().mockReturnValue(120),
-  hslToHex: vi.fn().mockReturnValue("#00ff00")
+  hslToHex: vi.fn().mockReturnValue('#00ff00'),
 }));
 
 // Mock widgets
-vi.mock("@orpheus/components/widgets", () => ({
-  Dialog: vi.fn(({ children, open }) => open ? children : null),
-  HueInput: vi.fn(() => null)
+vi.mock('@orpheus/components/widgets', () => ({
+  Dialog: vi.fn(({ children, open }) => (open ? children : null)),
+  HueInput: vi.fn(() => null),
 }));
 
 // Mock CSS variable utils - consolidate with hue functions
-vi.mock("@orpheus/utils/general", () => ({
-  getCSSVarValue: vi.fn().mockReturnValue("#000000"),
+vi.mock('@orpheus/utils/general', () => ({
+  getCSSVarValue: vi.fn().mockReturnValue('#000000'),
   normalizeHex: vi.fn().mockImplementation((hex: string) => hex),
   hueFromHex: vi.fn().mockReturnValue(120),
-  hslToHex: vi.fn().mockReturnValue("#00ff00")
+  hslToHex: vi.fn().mockReturnValue('#00ff00'),
 }));
 
 // Mock ResizeObserver
@@ -237,21 +237,21 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   writable: true,
 });
 
-describe("TrackComponent", () => {
+describe('TrackComponent', () => {
   let container: HTMLDivElement;
   let screenshotContainer: HTMLDivElement; // Define screenshot container for visual tests
 
   const createTestContainer = () => {
-    const div = document.createElement("div");
-    div.style.width = "800px";
-    div.style.height = "600px";
-    div.style.position = "absolute";
-    div.style.top = "0";
-    div.style.left = "0";
-    div.style.background = "white";
+    const div = document.createElement('div');
+    div.style.width = '800px';
+    div.style.height = '600px';
+    div.style.position = 'absolute';
+    div.style.top = '0';
+    div.style.left = '0';
+    div.style.background = 'white';
 
     // Add basic CSS variables that the component might use
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     style.textContent = `
       :root {
         --bg1: #ffffff;
@@ -280,11 +280,14 @@ describe("TrackComponent", () => {
       container.parentNode.removeChild(container);
     }
     // Clean up style tags
-    const styleTags = document.head.querySelectorAll("style");
-    styleTags.forEach(tag => tag.remove());
+    const styleTags = document.head.querySelectorAll('style');
+    styleTags.forEach((tag) => tag.remove());
   });
 
-  const renderWithContext = (component: React.ReactElement, container?: HTMLElement) => {
+  const renderWithContext = (
+    component: React.ReactElement,
+    container?: HTMLElement
+  ) => {
     return render(
       <WorkstationContext.Provider value={mockWorkstationContext}>
         {component}
@@ -293,67 +296,92 @@ describe("TrackComponent", () => {
     );
   };
 
-  it("should render track component", () => {
+  it('should render track component', () => {
     expect(() => {
       renderWithContext(<TrackComponent track={baseTrack} />, container);
     }).not.toThrow();
   });
 
-  it("should display track name", () => {
-    const { getByDisplayValue } = renderWithContext(<TrackComponent track={baseTrack} />, container);
-    expect(getByDisplayValue("Test Track")).toBeInTheDocument();
+  it('should display track name', () => {
+    const { getByDisplayValue } = renderWithContext(
+      <TrackComponent track={baseTrack} />,
+      container
+    );
+    expect(getByDisplayValue('Test Track')).toBeInTheDocument();
   });
 
-  it("should display track volume", () => {
-    const track = { 
-      ...baseTrack, 
-      volume: { value: -10, isAutomated: false } // Use AutomatableParameter
+  it('should display track volume', () => {
+    const track = {
+      ...baseTrack,
+      volume: { value: -10, isAutomated: false }, // Use AutomatableParameter
     };
     renderWithContext(<TrackComponent track={track} />, container);
     // Since volume display might be in a specific format, just check that the component renders
-    expect(container.querySelector('[data-testid="track-component"], [class*="track"]')).toBeTruthy();
+    expect(
+      container.querySelector(
+        '[data-testid="track-component"], [class*="track"]'
+      )
+    ).toBeTruthy();
   });
 
-  it("should handle mute toggle", () => {
+  it('should handle mute toggle', () => {
     const track = { ...baseTrack, mute: false };
-    const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
+    const { container: renderedContainer } = renderWithContext(
+      <TrackComponent track={track} />,
+      container
+    );
 
-    const muteButton = renderedContainer.querySelector('button[title*="mute"], button[aria-label*="mute"], button:has([class*="mute"])');
+    const muteButton = renderedContainer.querySelector(
+      'button[title*="mute"], button[aria-label*="mute"], button:has([class*="mute"])'
+    );
     if (muteButton) {
       fireEvent.click(muteButton);
       expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
     }
   });
 
-  it("should handle solo toggle", () => {
+  it('should handle solo toggle', () => {
     const track = { ...baseTrack, solo: false };
-    const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
+    const { container: renderedContainer } = renderWithContext(
+      <TrackComponent track={track} />,
+      container
+    );
 
-    const soloButton = renderedContainer.querySelector('button[title*="solo"], button[aria-label*="solo"], button:has([class*="solo"])');
+    const soloButton = renderedContainer.querySelector(
+      'button[title*="solo"], button[aria-label*="solo"], button:has([class*="solo"])'
+    );
     if (soloButton) {
       fireEvent.click(soloButton);
       expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
     }
   });
 
-  it("should handle arm toggle", () => {
+  it('should handle arm toggle', () => {
     const track = { ...baseTrack, armed: false };
-    const { container: renderedContainer } = renderWithContext(<TrackComponent track={track} />, container);
+    const { container: renderedContainer } = renderWithContext(
+      <TrackComponent track={track} />,
+      container
+    );
 
-    const armButton = renderedContainer.querySelector('button[title*="arm"], button[aria-label*="arm"], button:has([class*="arm"])');
+    const armButton = renderedContainer.querySelector(
+      'button[title*="arm"], button[aria-label*="arm"], button:has([class*="arm"])'
+    );
     if (armButton) {
       fireEvent.click(armButton);
       expect(mockWorkstationContext.setTrack).toHaveBeenCalled();
     }
   });
 
-  it("should handle track name change", async () => {
+  it('should handle track name change', async () => {
     const user = userEvent.setup();
-    const { getByDisplayValue } = renderWithContext(<TrackComponent track={baseTrack} />, container);
+    const { getByDisplayValue } = renderWithContext(
+      <TrackComponent track={baseTrack} />,
+      container
+    );
 
-    const nameInput = getByDisplayValue("Test Track");
+    const nameInput = getByDisplayValue('Test Track');
     await user.clear(nameInput);
-    await user.type(nameInput, "New Track Name");
+    await user.type(nameInput, 'New Track Name');
 
     // The component might call setTrack multiple times during typing
     await waitFor(() => {
@@ -361,14 +389,14 @@ describe("TrackComponent", () => {
     });
   });
 
-  it("should handle track with automation lanes", () => {
+  it('should handle track with automation lanes', () => {
     const track = {
       ...baseTrack,
       automation: true,
       automationLanes: [
         {
-          id: "lane-1",
-          label: "Volume",
+          id: 'lane-1',
+          label: 'Volume',
           envelope: AutomationLaneEnvelope.Volume,
           enabled: true,
           minValue: -60,
@@ -376,8 +404,8 @@ describe("TrackComponent", () => {
           nodes: [],
           show: true,
           expanded: true,
-        }
-      ]
+        },
+      ],
     };
 
     expect(() => {
@@ -385,31 +413,31 @@ describe("TrackComponent", () => {
     }).not.toThrow();
   });
 
-  it("should handle track with effects", () => {
+  it('should handle track with effects', () => {
     const track = {
       ...baseTrack,
       effects: [
         {
-          id: "effect-1",
-          name: "Reverb",
-          type: "juce" as const,
+          id: 'effect-1',
+          name: 'Reverb',
+          type: 'juce' as const,
           enabled: true,
           parameters: { mix: 0.5 },
-        }
+        },
       ],
       fx: {
         preset: null,
         effects: [
           {
-            id: "effect-1",
-            name: "Reverb",
-            type: "juce" as const,
+            id: 'effect-1',
+            name: 'Reverb',
+            type: 'juce' as const,
             enabled: true,
             parameters: { mix: 0.5 },
-          }
+          },
         ],
         selectedEffectIndex: 0,
-      }
+      },
     };
 
     expect(() => {
@@ -417,28 +445,30 @@ describe("TrackComponent", () => {
     }).not.toThrow();
   });
 
-  describe("visual regression tests", () => {
-    const isCI = process.env.CI === "true";
-    const isCodespaces = process.env.CODESPACES === "true";
+  describe('visual regression tests', () => {
+    const isCI = process.env.CI === 'true';
+    const isCodespaces = process.env.CODESPACES === 'true';
     const hasDisplay = process.env.DISPLAY !== undefined;
     const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
 
-    it("should match visual snapshot for audio track", async () => {
+    it('should match visual snapshot for audio track', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
       renderWithContext(<TrackComponent track={baseTrack} />, container);
-      
+
       // Wait for any animations or async rendering to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       try {
-        await expectScreenshot(container, "track-component-audio");
+        await expectScreenshot(container, 'track-component-audio');
       } catch (error) {
         // Visual tests might fail in CI environment, log but don't fail the test
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (screenshotContainer.parentNode) {
           screenshotContainer.parentNode.removeChild(screenshotContainer);
@@ -446,21 +476,23 @@ describe("TrackComponent", () => {
       }
     });
 
-    it("should match visual snapshot for muted track", async () => {
+    it('should match visual snapshot for muted track', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
       const track = { ...baseTrack, mute: true };
       renderWithContext(<TrackComponent track={track} />, container);
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       try {
-        await expectScreenshot(container, "track-component-muted");
+        await expectScreenshot(container, 'track-component-muted');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (screenshotContainer.parentNode) {
           screenshotContainer.parentNode.removeChild(screenshotContainer);
@@ -468,21 +500,23 @@ describe("TrackComponent", () => {
       }
     });
 
-    it("should match visual snapshot for armed track", async () => {
+    it('should match visual snapshot for armed track', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
       const track = { ...baseTrack, armed: true };
       renderWithContext(<TrackComponent track={track} />, container);
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       try {
-        await expectScreenshot(container, "track-component-armed");
+        await expectScreenshot(container, 'track-component-armed');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (screenshotContainer.parentNode) {
           screenshotContainer.parentNode.removeChild(screenshotContainer);
@@ -491,39 +525,42 @@ describe("TrackComponent", () => {
     });
   });
 
-  describe("Enhanced Audio Visual Tests with Processing Monitor", () => {
-    const isCI = process.env.CI === "true";
-    const isCodespaces = process.env.CODESPACES === "true";
+  describe('Enhanced Audio Visual Tests with Processing Monitor', () => {
+    const isCI = process.env.CI === 'true';
+    const isCodespaces = process.env.CODESPACES === 'true';
     const hasDisplay = process.env.DISPLAY !== undefined;
     const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
 
-    it("should render audio track with proper timing @visual", async () => {
+    it('should render audio track with proper timing @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 784px; height: 200px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
-        const audioTrack = { 
-          ...baseTrack, 
+        const audioTrack = {
+          ...baseTrack,
           type: TrackType.Audio,
-          name: "Audio Track",
+          name: 'Audio Track',
           volume: { value: -6, isAutomated: false }, // Use AutomatableParameter
           armed: true,
           clips: [
             {
-              id: "audio-clip-1",
-              name: "Audio Clip",
+              id: 'audio-clip-1',
+              name: 'Audio Clip',
               start: new TimelinePosition(1, 0, 0),
               end: new TimelinePosition(5, 0, 0),
               position: new TimelinePosition(1, 0, 0),
-              audioFile: { path: "test.wav", duration: 4.0 }
-            }
-          ]
+              audioFile: { path: 'test.wav', duration: 4.0 },
+            },
+          ],
         };
 
         render(
@@ -534,10 +571,10 @@ describe("TrackComponent", () => {
         );
 
         // Extended wait for audio processing
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await expectScreenshot(container, "track-audio-component");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await expectScreenshot(container, 'track-audio-component');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);
@@ -545,33 +582,36 @@ describe("TrackComponent", () => {
       }
     });
 
-    it("should render MIDI track with sequencer processing @visual", async () => {
+    it('should render MIDI track with sequencer processing @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 784px; height: 200px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 784px; height: 200px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
-        const midiTrack = { 
-          ...baseTrack, 
+        const midiTrack = {
+          ...baseTrack,
           type: TrackType.Midi,
-          name: "MIDI Track",
+          name: 'MIDI Track',
           volume: { value: 0, isAutomated: false }, // Use AutomatableParameter
           solo: true,
           clips: [
             {
-              id: "midi-clip-1",
-              name: "MIDI Clip",
+              id: 'midi-clip-1',
+              name: 'MIDI Clip',
               start: new TimelinePosition(0, 0, 0),
               end: new TimelinePosition(4, 0, 0),
               position: new TimelinePosition(0, 0, 0),
-              notes: []
-            }
-          ]
+              notes: [],
+            },
+          ],
         };
 
         render(
@@ -582,10 +622,10 @@ describe("TrackComponent", () => {
         );
 
         // Wait for MIDI sequencer processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await expectScreenshot(container, "track-midi-component");
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await expectScreenshot(container, 'track-midi-component');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);
@@ -593,25 +633,28 @@ describe("TrackComponent", () => {
       }
     });
 
-    it("should render automation lanes with processing monitoring @visual", async () => {
+    it('should render automation lanes with processing monitoring @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment'
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 784px; height: 300px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 784px; height: 300px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
-        const automationTrack = { 
-          ...baseTrack, 
-          name: "Automation Track",
+        const automationTrack = {
+          ...baseTrack,
+          name: 'Automation Track',
           automation: true,
           automationMode: AutomationMode.Write,
           automationLanes: [
             {
-              id: "volume-lane",
+              id: 'volume-lane',
               envelope: AutomationLaneEnvelope.Volume,
               enabled: true,
               minValue: -60,
@@ -619,12 +662,12 @@ describe("TrackComponent", () => {
               nodes: [
                 { position: new TimelinePosition(0, 0, 0), value: 0.8 },
                 { position: new TimelinePosition(2, 0, 0), value: 0.4 },
-                { position: new TimelinePosition(4, 0, 0), value: 1.0 }
+                { position: new TimelinePosition(4, 0, 0), value: 1.0 },
               ],
               show: true,
               expanded: true,
-            }
-          ]
+            },
+          ],
         };
 
         render(
@@ -635,10 +678,10 @@ describe("TrackComponent", () => {
         );
 
         // Wait for automation processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await expectScreenshot(container, "track-automation-component");
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await expectScreenshot(container, 'track-automation-component');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);

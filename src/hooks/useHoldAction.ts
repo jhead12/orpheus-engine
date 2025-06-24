@@ -11,14 +11,14 @@ interface UseHoldActionProps {
  * Hook for handling hold-to-repeat actions
  * @param onHoldAction Function to call when hold action triggers
  * @param delay Initial delay before repeat starts (ms)
- * @param interval Interval between repeat actions (ms) 
+ * @param interval Interval between repeat actions (ms)
  * @param holdActionOnMouseDown Whether to trigger action on initial mouse down
  */
 export function useHoldAction({
   onHoldAction,
   delay = 500,
   interval = 50,
-  holdActionOnMouseDown = true
+  holdActionOnMouseDown = true,
 }: UseHoldActionProps) {
   const initialCallMadeRef = useRef(false);
   const delayCallMadeRef = useRef(false);
@@ -49,11 +49,11 @@ export function useHoldAction({
   const startHold = useCallback(() => {
     // Don't restart if already holding
     if (isHoldingRef.current) return;
-    
+
     // Reset state
     cleanup();
     isHoldingRef.current = true;
-    
+
     // Initial call if holdActionOnMouseDown is true
     if (holdActionOnMouseDown) {
       onHoldAction();
@@ -64,11 +64,11 @@ export function useHoldAction({
     // First call exactly after delay ms
     timeoutRef.current = setTimeout(() => {
       if (!isHoldingRef.current) return;
-      
+
       // Make the delayed call
       onHoldAction();
       delayCallMadeRef.current = true;
-      
+
       // Then set up regular interval for subsequent calls
       // Use setInterval instead of nested setTimeout for more consistent timing
       intervalRef.current = setInterval(() => {
@@ -78,7 +78,6 @@ export function useHoldAction({
         }
         onHoldAction();
       }, interval);
-      
     }, delay);
   }, [delay, holdActionOnMouseDown, interval, onHoldAction, cleanup]);
 
@@ -88,7 +87,7 @@ export function useHoldAction({
 
   return {
     startHold,
-    endHold
+    endHold,
   };
 }
 

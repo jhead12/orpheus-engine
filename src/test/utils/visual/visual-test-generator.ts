@@ -6,7 +6,7 @@ export function generateVisualTest({
   componentName,
   componentImportPath,
   testSuiteName,
-  props = {}
+  props = {},
 }: {
   componentName: string;
   componentImportPath: string;
@@ -17,6 +17,6 @@ export function generateVisualTest({
     ComponentName: componentName,
     ComponentPath: componentImportPath,
     testNamePattern: testSuiteName,
-    props
+    props,
   });
 }

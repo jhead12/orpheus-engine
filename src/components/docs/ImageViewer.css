@@ -2,7 +2,8 @@
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .image-viewer-header {
@@ -267,39 +268,39 @@
   .image-viewer {
     padding: 16px;
   }
-  
+
   .image-viewer-controls {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
   }
-  
+
   .search-input {
     min-width: auto;
     max-width: none;
   }
-  
+
   .filter-buttons {
     justify-content: center;
   }
-  
+
   .image-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .component-section {
     padding: 16px;
   }
-  
+
   .image-modal {
     padding: 10px;
   }
-  
+
   .image-modal-content {
     max-width: 95vw;
     max-height: 95vh;
   }
-  
+
   .image-modal-content img {
     max-height: calc(95vh - 80px);
   }
@@ -309,15 +310,15 @@
   .image-viewer-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .component-title {
     font-size: 1.25rem;
   }
-  
+
   .filter-buttons {
     flex-wrap: wrap;
   }
-  
+
   .filter-buttons button {
     flex: 1;
     min-width: 80px;

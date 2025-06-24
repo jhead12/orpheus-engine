@@ -1,8 +1,8 @@
-import React from "react";
-import { render, fireEvent, screen, act } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { SyncScroll, ScrollSyncContext } from "../SyncScroll";
-import SyncScrollPane from "../SyncScrollPane";
+import React from 'react';
+import { render, fireEvent, screen, act } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { SyncScroll, ScrollSyncContext } from '../SyncScroll';
+import SyncScrollPane from '../SyncScrollPane';
 
 // Mock the ScrollSyncContext
 const mockRegisterPane = vi.fn();
@@ -22,7 +22,7 @@ const TestProvider = ({ children }: { children: React.ReactNode }) => (
 );
 */
 
-describe("SyncScrollPane", () => {
+describe('SyncScrollPane', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
@@ -34,26 +34,26 @@ describe("SyncScrollPane", () => {
 
   const TestComponent = () => (
     <SyncScroll>
-      <div style={{ display: "flex", height: "200px" }}>
-        <SyncScrollPane id="pane1" style={{ width: "200px", overflow: "auto" }}>
-          <div style={{ height: "400px", width: "400px" }}>Content 1</div>
+      <div style={{ display: 'flex', height: '200px' }}>
+        <SyncScrollPane id="pane1" style={{ width: '200px', overflow: 'auto' }}>
+          <div style={{ height: '400px', width: '400px' }}>Content 1</div>
         </SyncScrollPane>
-        <SyncScrollPane id="pane2" style={{ width: "200px", overflow: "auto" }}>
-          <div style={{ height: "400px", width: "400px" }}>Content 2</div>
+        <SyncScrollPane id="pane2" style={{ width: '200px', overflow: 'auto' }}>
+          <div style={{ height: '400px', width: '400px' }}>Content 2</div>
         </SyncScrollPane>
       </div>
     </SyncScroll>
   );
 
-  it("renders without crashing", () => {
+  it('renders without crashing', () => {
     render(<TestComponent />);
     expect(screen.getAllByText(/Content/)).toHaveLength(2);
   });
 
-  it("maintains scroll synchronization between panes", () => {
+  it('maintains scroll synchronization between panes', () => {
     const scrollFn2 = vi.fn();
 
-    // Update mock context to include scroll handler  
+    // Update mock context to include scroll handler
     const contextWithHandler = {
       ...mockContext,
       registerPane: (pane: HTMLElement) => {
@@ -61,36 +61,48 @@ describe("SyncScrollPane", () => {
           // Mock scroll synchronization
           if (e.target) {
             const target = e.target as HTMLElement;
-            if (target.getAttribute('data-testid') === 'sync-scroll-pane-pane1') {
+            if (
+              target.getAttribute('data-testid') === 'sync-scroll-pane-pane1'
+            ) {
               scrollFn2({
                 top: target.scrollTop,
                 left: target.scrollLeft,
-                behavior: undefined
+                behavior: undefined,
               });
             }
           }
         });
       },
-      unregisterPane: vi.fn()
+      unregisterPane: vi.fn(),
     };
 
     const { container } = render(
       <ScrollSyncContext.Provider value={contextWithHandler}>
-        <div style={{ display: "flex", height: "200px" }}>
-          <SyncScrollPane id="pane1" style={{ width: "200px", overflow: "auto" }}>
-            <div style={{ height: "400px", width: "400px" }}>Content 1</div>
+        <div style={{ display: 'flex', height: '200px' }}>
+          <SyncScrollPane
+            id="pane1"
+            style={{ width: '200px', overflow: 'auto' }}
+          >
+            <div style={{ height: '400px', width: '400px' }}>Content 1</div>
           </SyncScrollPane>
-          <SyncScrollPane id="pane2" style={{ width: "200px", overflow: "auto" }}>
-            <div style={{ height: "400px", width: "400px" }}>Content 2</div>
+          <SyncScrollPane
+            id="pane2"
+            style={{ width: '200px', overflow: 'auto' }}
+          >
+            <div style={{ height: '400px', width: '400px' }}>Content 2</div>
           </SyncScrollPane>
         </div>
       </ScrollSyncContext.Provider>
     );
 
     // Get references to both panes
-    const pane1 = container.querySelector('[data-testid="sync-scroll-pane-pane1"]');
-    const pane2 = container.querySelector('[data-testid="sync-scroll-pane-pane2"]');
-    
+    const pane1 = container.querySelector(
+      '[data-testid="sync-scroll-pane-pane1"]'
+    );
+    const pane2 = container.querySelector(
+      '[data-testid="sync-scroll-pane-pane2"]'
+    );
+
     expect(pane1).toBeTruthy();
     expect(pane2).toBeTruthy();
 
@@ -102,7 +114,7 @@ describe("SyncScrollPane", () => {
         scrollHeight: { value: 1000, configurable: true },
         clientHeight: { value: 500, configurable: true },
         scrollLeft: { value: 100, configurable: true },
-        scrollTop: { value: 100, configurable: true }
+        scrollTop: { value: 100, configurable: true },
       });
 
       Object.defineProperties(pane2, {
@@ -110,7 +122,7 @@ describe("SyncScrollPane", () => {
         scrollWidth: { value: 1000, configurable: true },
         clientWidth: { value: 500, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
-        clientHeight: { value: 500, configurable: true }
+        clientHeight: { value: 500, configurable: true },
       });
 
       // Verify registration occurred
@@ -127,12 +139,12 @@ describe("SyncScrollPane", () => {
       expect(scrollFn2).toHaveBeenCalledWith({
         top: 100,
         left: 100,
-        behavior: undefined
+        behavior: undefined,
       });
     }
   });
 
-  it("handles wheel events", () => {
+  it('handles wheel events', () => {
     const onWheel = jest.fn();
     render(
       <SyncScrollPane id="test" onWheel={onWheel}>
@@ -140,20 +152,20 @@ describe("SyncScrollPane", () => {
       </SyncScrollPane>
     );
 
-    const pane = screen.getByTestId("sync-scroll-pane-test");
+    const pane = screen.getByTestId('sync-scroll-pane-test');
     fireEvent.wheel(pane, { deltaY: 100 });
 
     expect(onWheel).toHaveBeenCalled();
   });
 
-  it("applies custom styles", () => {
+  it('applies custom styles', () => {
     const { container } = render(
       <SyncScrollPane
         id="test"
         style={{
-          backgroundColor: "rgb(255, 0, 0)", // Use RGB format
-          margin: "10px",
-          padding: "15px",
+          backgroundColor: 'rgb(255, 0, 0)', // Use RGB format
+          margin: '10px',
+          padding: '15px',
         }}
       >
         <div>Content</div>
@@ -169,14 +181,14 @@ describe("SyncScrollPane", () => {
     const computedStyle = window.getComputedStyle(pane!);
 
     // Check each style property individually
-    expect(computedStyle.backgroundColor).toBe("rgb(255, 0, 0)");
-    expect(computedStyle.margin).toBe("10px");
-    expect(computedStyle.padding).toBe("15px");
-    expect(computedStyle.overflowX).toBe("auto");
-    expect(computedStyle.overflowY).toBe("hidden");
+    expect(computedStyle.backgroundColor).toBe('rgb(255, 0, 0)');
+    expect(computedStyle.margin).toBe('10px');
+    expect(computedStyle.padding).toBe('15px');
+    expect(computedStyle.overflowX).toBe('auto');
+    expect(computedStyle.overflowY).toBe('hidden');
   });
 
-  it("forwards ref correctly", () => {
+  it('forwards ref correctly', () => {
     const ref = React.createRef<HTMLDivElement>();
     render(
       <SyncScrollPane id="test" ref={ref}>
@@ -185,6 +197,6 @@ describe("SyncScrollPane", () => {
     );
 
     expect(ref.current).toBeTruthy();
-    expect(ref.current?.tagName).toBe("DIV");
+    expect(ref.current?.tagName).toBe('DIV');
   });
 });

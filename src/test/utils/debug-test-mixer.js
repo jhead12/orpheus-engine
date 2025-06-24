@@ -1,6 +1,9 @@
 // Debug script to print the HTML structure during the tests
 export function debugElement(elementName, element) {
-  console.log(`DEBUG ${elementName}:`, element ? element.outerHTML : 'Not found');
+  console.log(
+    `DEBUG ${elementName}:`,
+    element ? element.outerHTML : 'Not found'
+  );
 }
 
 export function debugAllInContainer(container) {

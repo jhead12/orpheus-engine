@@ -4,13 +4,13 @@
 
 export interface InteractionStep {
   type:
-    | "click"
-    | "hover"
-    | "drag"
-    | "input"
-    | "mouseDown"
-    | "mouseMove"
-    | "mouseUp";
+    | 'click'
+    | 'hover'
+    | 'drag'
+    | 'input'
+    | 'mouseDown'
+    | 'mouseMove'
+    | 'mouseUp';
   target: string;
   value?: any;
 }

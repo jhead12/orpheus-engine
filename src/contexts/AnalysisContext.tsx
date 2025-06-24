@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { AudioAnalysisType } from "../types";
-import { AnalysisContextType } from "./types";
+import { createContext } from 'react';
+import { AudioAnalysisType } from '../types';
+import { AnalysisContextType } from './types';
 
 export const AnalysisContext = createContext<AnalysisContextType>({
   analysisType: AudioAnalysisType.Spectral,

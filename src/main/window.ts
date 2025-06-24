@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, app } from 'electron';
 
 class MainWindow {
   private window: BrowserWindow | null = null;
@@ -14,25 +14,25 @@ class MainWindow {
     });
 
     // Handle macOS window state
-    if (process.platform === "darwin") {
+    if (process.platform === 'darwin') {
       app.delegate = {
         applicationSupportsSecureRestorableState: () => true,
       };
     }
 
     // Handle window close
-    this.window.on("close", (event) => {
-      if (process.platform === "darwin") {
+    this.window.on('close', (event) => {
+      if (process.platform === 'darwin') {
         event.preventDefault();
         this.window?.hide();
       }
     });
 
     // Load your app
-    if (process.env.NODE_ENV === "development") {
-      this.window.loadURL("http://localhost:5174");
+    if (process.env.NODE_ENV === 'development') {
+      this.window.loadURL('http://localhost:5174');
     } else {
-      this.window.loadFile("dist/index.html");
+      this.window.loadFile('dist/index.html');
     }
   }
 }

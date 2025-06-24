@@ -28,7 +28,7 @@ export class MockAudioBuffer {
     const data = new Float32Array(this.length);
     for (let i = 0; i < this.length; i++) {
       // Generate some mock waveform data
-      data[i] = Math.sin(2 * Math.PI * 440 * i / this.sampleRate) * 0.5;
+      data[i] = Math.sin((2 * Math.PI * 440 * i) / this.sampleRate) * 0.5;
     }
     return data;
   }
@@ -115,11 +115,13 @@ export class MockAudioContext {
   }));
 
   decodeAudioData = vi.fn((arrayBuffer: ArrayBuffer) => {
-    return Promise.resolve(new MockAudioBuffer({
-      numberOfChannels: 2,
-      length: 44100,
-      sampleRate: 44100,
-    }));
+    return Promise.resolve(
+      new MockAudioBuffer({
+        numberOfChannels: 2,
+        length: 44100,
+        sampleRate: 44100,
+      })
+    );
   });
 
   suspend = vi.fn(() => Promise.resolve());
@@ -161,7 +163,10 @@ export const setupAudioMocks = () => {
 };
 
 // Mock File API for audio file testing
-export const createMockAudioFile = (name: string = 'test.wav', size: number = 1024) => {
+export const createMockAudioFile = (
+  name: string = 'test.wav',
+  size: number = 1024
+) => {
   const buffer = new ArrayBuffer(size);
   const file = new File([buffer], name, { type: 'audio/wav' });
   return file;

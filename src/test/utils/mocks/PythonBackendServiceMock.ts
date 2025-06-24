@@ -26,14 +26,14 @@ export class PythonBackendServiceMock {
     return Promise.resolve({
       status: 'healthy',
       version: '1.0.0-test',
-      features: ['audio_analysis', 'transcription']
+      features: ['audio_analysis', 'transcription'],
     });
   }
 
   public async makeRequest(_endpoint: string, _options: any): Promise<any> {
     return Promise.resolve({
       ok: true,
-      json: () => Promise.resolve({ status: 'success' })
+      json: () => Promise.resolve({ status: 'success' }),
     });
   }
 

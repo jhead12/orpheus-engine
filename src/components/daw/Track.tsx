@@ -39,11 +39,11 @@ interface TrackProps {
 }
 
 // Styled components
-const TrackContainer = styled.div<{ isSelected?: boolean, height?: number }>`
+const TrackContainer = styled.div<{ isSelected?: boolean; height?: number }>`
   display: flex;
   width: 100%;
-  height: ${props => props.height || 100}px;
-  background-color: ${props => props.isSelected ? '#334a5f' : '#1f2a33'};
+  height: ${(props) => props.height || 100}px;
+  background-color: ${(props) => (props.isSelected ? '#334a5f' : '#1f2a33')};
   border-bottom: 1px solid #192430;
   position: relative;
   color: #fff;
@@ -53,7 +53,7 @@ const TrackContainer = styled.div<{ isSelected?: boolean, height?: number }>`
 const TrackHeader = styled.div<{ width?: number }>`
   display: flex;
   flex-direction: column;
-  width: ${props => props.width || 200}px;
+  width: ${(props) => props.width || 200}px;
   background-color: #1a2430;
   border-right: 1px solid #192430;
   padding: 8px;
@@ -68,16 +68,9 @@ const TrackContent = styled.div`
   position: relative;
   overflow: hidden;
   background-color: #1f2a33;
-  background-image: 
-    linear-gradient(
-      90deg, 
-      rgba(255, 255, 255, 0.05) 1px, 
-      transparent 1px
-    ),
-    linear-gradient(
-      rgba(255, 255, 255, 0.05) 1px, 
-      transparent 1px
-    );
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 60px 60px; /* Grid size - adjust based on timelineScale */
 `;
 
@@ -99,34 +92,34 @@ const TrackControls = styled.div`
 
 const Button = styled.button<{ active?: boolean }>`
   padding: 4px 8px;
-  background-color: ${props => props.active ? '#3080c0' : '#273748'};
+  background-color: ${(props) => (props.active ? '#3080c0' : '#273748')};
   border: none;
   border-radius: 3px;
   color: white;
   font-size: 12px;
   cursor: pointer;
-  
+
   &:hover {
-    background-color: ${props => props.active ? '#3c90d5' : '#334a5f'};
+    background-color: ${(props) => (props.active ? '#3c90d5' : '#334a5f')};
   }
 `;
 
-const TrackClipElement = styled.div<{ 
-  left: number, 
-  width: number, 
-  color?: string 
+const TrackClipElement = styled.div<{
+  left: number;
+  width: number;
+  color?: string;
 }>`
   position: absolute;
   height: 80%;
   top: 10%;
-  left: ${props => props.left}px;
-  width: ${props => props.width}px;
-  background-color: ${props => props.color || '#3080c0'};
+  left: ${(props) => props.left}px;
+  width: ${(props) => props.width}px;
+  background-color: ${(props) => props.color || '#3080c0'};
   border-radius: 3px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   overflow: hidden;
-  
+
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   }
@@ -137,12 +130,12 @@ const ClipWaveform = styled.div`
   width: 100%;
   position: relative;
   opacity: 0.7;
-  
+
   /* Placeholder for waveform visualization */
   background-image: linear-gradient(
-    transparent 50%, 
-    rgba(255, 255, 255, 0.2) 50%, 
-    rgba(255, 255, 255, 0.2) 51%, 
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 51%,
     transparent 51%
   );
   background-size: 100% 4px;
@@ -157,15 +150,15 @@ const ClipTitle = styled.div`
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 `;
 
-const Track: React.FC<TrackProps> = ({ 
-  track, 
+const Track: React.FC<TrackProps> = ({
+  track,
   isSelected = false,
   timelineScale,
   onSelectTrack,
   onMuteTrack,
-  onSoloTrack, 
+  onSoloTrack,
   onClipClick,
-  headerWidth = 200
+  headerWidth = 200,
 }) => {
   const handleTrackClick = () => {
     if (onSelectTrack) {
@@ -195,8 +188,8 @@ const Track: React.FC<TrackProps> = ({
   };
 
   return (
-    <TrackContainer 
-      isSelected={isSelected} 
+    <TrackContainer
+      isSelected={isSelected}
       height={track.height}
       onClick={handleTrackClick}
     >
@@ -212,9 +205,9 @@ const Track: React.FC<TrackProps> = ({
         </TrackControls>
         {/* Volume slider could go here */}
       </TrackHeader>
-      
+
       <TrackContent>
-        {track.clips.map(clip => (
+        {track.clips.map((clip) => (
           <TrackClipElement
             key={clip.id}
             left={clip.startTime * timelineScale}

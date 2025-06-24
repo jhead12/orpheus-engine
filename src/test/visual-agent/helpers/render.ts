@@ -1,6 +1,6 @@
-import { expectScreenshot } from "../../helpers/screenshot";
-import { recordComponentGif } from "./gif-recorder";
-import { VisualTestConfig } from "../types";
+import { expectScreenshot } from '../../helpers/screenshot';
+import { recordComponentGif } from './gif-recorder';
+import { VisualTestConfig } from '../types';
 
 /**
  * Renders a visual test for a specific component state
@@ -17,7 +17,7 @@ export async function renderVisualTest(
   }
 
   // Create container
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   container.style.cssText =
     config.containerStyle ||
     `
@@ -30,7 +30,7 @@ export async function renderVisualTest(
 
   try {
     // Create a div element with innerHTML for the component
-    const componentElement = document.createElement("div");
+    const componentElement = document.createElement('div');
     componentElement.innerHTML = `<div data-component="${config.componentName}" data-testid="${config.componentName}">Component Placeholder</div>`;
     container.appendChild(componentElement);
 
@@ -62,9 +62,9 @@ export async function renderVisualTest(
     // Capture screenshot or GIF
     const filename = `${config.componentName.toLowerCase()}-${stateName}`;
     // Use type assertion to access captureGif property
-    const stateWithCapture = state as { captureGif?: boolean; };
+    const stateWithCapture = state as { captureGif?: boolean };
     const shouldCaptureGif = stateWithCapture.captureGif || config.captureGif;
-    
+
     if (shouldCaptureGif) {
       const animationDuration = config.animationDuration || 2000;
       const htmlContent = container.outerHTML;

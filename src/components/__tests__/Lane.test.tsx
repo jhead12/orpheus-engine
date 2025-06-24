@@ -11,20 +11,20 @@ vi.mock('@orpheus/utils/utils', () => ({
   BASE_HEIGHT: 64,
   getLaneColor: vi.fn(() => '#ff0000'),
   removeAllClipOverlap: vi.fn((clips) => clips),
-  timelineEditorWindowScrollThresholds: [100, 200]
+  timelineEditorWindowScrollThresholds: [100, 200],
 }));
 
 vi.mock('@orpheus/utils/general', () => ({
   getCSSVarValue: vi.fn(() => '#ffffff'),
-  normalizeHex: vi.fn((color) => color)
+  normalizeHex: vi.fn((color) => color),
 }));
 
 vi.mock('@orpheus/services/electron/utils', () => ({
-  openContextMenu: vi.fn()
+  openContextMenu: vi.fn(),
 }));
 
 vi.mock('@orpheus/services/electron/channels', () => ({
-  TRACK_FILE_UPLOAD: 'track-file-upload'
+  TRACK_FILE_UPLOAD: 'track-file-upload',
 }));
 
 // Mock the component imports from the index file
@@ -32,17 +32,17 @@ vi.mock('@orpheus/screens/workstation/components/index', () => ({
   AudioClipComponent: vi.fn(() => <div data-testid="audio-clip" />),
   AutomationLaneComponent: vi.fn(() => <div data-testid="automation-lane" />),
   ClipComponent: vi.fn(() => <div data-testid="clip" />),
-  RegionComponent: vi.fn(() => <div data-testid="region" />)
+  RegionComponent: vi.fn(() => <div data-testid="region" />),
 }));
 
 // Mock global window electronAPI
 Object.defineProperty(window, 'electronAPI', {
   value: {
     ipcRenderer: {
-      invoke: vi.fn().mockResolvedValue([])
-    }
+      invoke: vi.fn().mockResolvedValue([]),
+    },
   },
-  writable: true
+  writable: true,
 });
 
 // Mock TimelinePosition class with all required methods - fix the typing
@@ -224,7 +224,15 @@ Object.defineProperty(HTMLAudioElement.prototype, 'load', {
 });
 
 // Mock audio properties
-['currentTime', 'duration', 'volume', 'playbackRate', 'muted', 'paused', 'ended'].forEach(prop => {
+[
+  'currentTime',
+  'duration',
+  'volume',
+  'playbackRate',
+  'muted',
+  'paused',
+  'ended',
+].forEach((prop) => {
   Object.defineProperty(HTMLAudioElement.prototype, prop, {
     value: prop === 'volume' ? 1 : 0,
     writable: true,
@@ -285,7 +293,7 @@ describe('Lane Component', () => {
       tempo: 120,
       timeSignature: { beats: 4, noteValue: 4 },
       snap: true,
-      snapUnit: "sixteenth" as const,
+      snapUnit: 'sixteenth' as const,
       horizontalScale: 1,
       beatWidth: 80,
     },
@@ -455,11 +463,11 @@ describe('Lane Component', () => {
           startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: 'track-1',
-          type: TrackType.Audio
-        }
-      ]
+          type: TrackType.Audio,
+        },
+      ],
     };
-    
+
     renderWithContext({ track: trackWithClips });
     // Check if clip container exists
     const laneElement = document.querySelector('[data-track="track-1"]');
@@ -486,16 +494,16 @@ describe('Lane Component', () => {
           startPosition: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: 'track-1',
-          type: TrackType.Audio
-        }
-      ]
+          type: TrackType.Audio,
+        },
+      ],
     };
-    
-    renderWithContext({ 
-      track: trackWithClips, 
-      onSelectClip 
+
+    renderWithContext({
+      track: trackWithClips,
+      onSelectClip,
     });
-    
+
     // This would need to be adjusted based on actual clip interaction implementation
     // expect(onSelectClip).toHaveBeenCalled();
   });
@@ -508,10 +516,10 @@ describe('Lane Component', () => {
           id: 'auto-1',
           parameter: 'volume',
           points: [],
-        }
-      ]
+        },
+      ],
     };
-    
+
     renderWithContext({ track: trackWithAutomation });
     // Add assertions for automation lane rendering
   });
@@ -521,7 +529,7 @@ describe('Lane Component', () => {
       ...mockTimelinePosition,
       ticks: 1920,
     };
-    
+
     renderWithContext({ currentPosition: customPosition });
     // Add assertions for timeline position handling
   });

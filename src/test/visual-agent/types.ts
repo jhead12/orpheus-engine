@@ -30,15 +30,15 @@ export interface VisualTestConfig {
     interactions?: Array<{
       /** Type of interaction */
       type:
-        | "click"
-        | "hover"
-        | "drag"
-        | "input"
-        | "mousedown"
-        | "mouseup"
-        | "mousemove"
-        | "mouseenter"
-        | "mouseleave";
+        | 'click'
+        | 'hover'
+        | 'drag'
+        | 'input'
+        | 'mousedown'
+        | 'mouseup'
+        | 'mousemove'
+        | 'mouseenter'
+        | 'mouseleave';
 
       /** CSS selector or data-testid to target */
       target: string;

@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Create an instance of MockAudioContext from test setup
 const mockAudioContext = new (global.AudioContext as any)();

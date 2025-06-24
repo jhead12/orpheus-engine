@@ -34,7 +34,7 @@ export class AudioAnalysisPlugin extends BasePlugin {
 
   async initialize(context: PluginContext): Promise<void> {
     await super.initialize(context);
-    
+
     // Check if Python backend is available
     if (!context.capabilities.pythonBackend) {
       throw new Error('Python backend is required for audio analysis');
@@ -45,12 +45,12 @@ export class AudioAnalysisPlugin extends BasePlugin {
 
   async activate(): Promise<void> {
     await super.activate();
-    
+
     if (this.context) {
       // Register for audio events
       this.context.on('audio:loaded', this.handleAudioLoaded.bind(this));
       this.context.on('audio:playing', this.handleAudioPlaying.bind(this));
-      
+
       this.context.log.info('Audio Analysis Plugin activated');
     }
   }
@@ -61,7 +61,7 @@ export class AudioAnalysisPlugin extends BasePlugin {
       this.context.off('audio:loaded', this.handleAudioLoaded.bind(this));
       this.context.off('audio:playing', this.handleAudioPlaying.bind(this));
     }
-    
+
     await super.deactivate();
   }
 
@@ -76,7 +76,7 @@ export class AudioAnalysisPlugin extends BasePlugin {
     try {
       // Send audio data to Python backend for analysis
       const analysisResult = await this.analyzeWithPython(audioData);
-      
+
       // Store results for UI display
       this.analysisResults.push({
         timestamp: Date.now(),
@@ -129,8 +129,12 @@ export class AudioAnalysisPlugin extends BasePlugin {
     `;
 
     // Add event listeners
-    const clearBtn = container.querySelector('#clear-analysis') as HTMLButtonElement;
-    const exportBtn = container.querySelector('#export-analysis') as HTMLButtonElement;
+    const clearBtn = container.querySelector(
+      '#clear-analysis'
+    ) as HTMLButtonElement;
+    const exportBtn = container.querySelector(
+      '#export-analysis'
+    ) as HTMLButtonElement;
 
     clearBtn?.addEventListener('click', () => {
       this.analysisResults = [];
@@ -154,7 +158,7 @@ export class AudioAnalysisPlugin extends BasePlugin {
     if (!this.context) return;
 
     this.context.log.info('Audio loaded, starting analysis...', data);
-    
+
     // Trigger initial analysis
     if (data.audioBuffer) {
       await this.processAudio(data.audioBuffer);
@@ -183,7 +187,7 @@ export class AudioAnalysisPlugin extends BasePlugin {
 
     // Convert audio data to format suitable for Python
     const audioArray = Array.from(audioData[0]); // Use first channel for mono analysis
-    
+
     try {
       // Use actual Python backend service
       const response = await this.context.pythonBackend.analyzeAudio({
@@ -223,7 +227,9 @@ export class AudioAnalysisPlugin extends BasePlugin {
         confidence: 0.8 + Math.random() * 0.2,
       },
       key: {
-        note: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][Math.floor(Math.random() * 12)],
+        note: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][
+          Math.floor(Math.random() * 12)
+        ],
         mode: Math.random() > 0.5 ? 'major' : 'minor',
         confidence: 0.7 + Math.random() * 0.3,
       },
@@ -257,7 +263,9 @@ export class AudioAnalysisPlugin extends BasePlugin {
     }
 
     // Update frequency canvas
-    const canvas = container.querySelector('#frequency-canvas') as HTMLCanvasElement;
+    const canvas = container.querySelector(
+      '#frequency-canvas'
+    ) as HTMLCanvasElement;
     if (canvas && analysis.frequency) {
       this.drawFrequencySpectrum(canvas, analysis.frequency.spectrum);
     }
@@ -266,18 +274,26 @@ export class AudioAnalysisPlugin extends BasePlugin {
   /**
    * Draw frequency spectrum on canvas
    */
-  private drawFrequencySpectrum(canvas: HTMLCanvasElement, spectrum: number[]): void {
+  private drawFrequencySpectrum(
+    canvas: HTMLCanvasElement,
+    spectrum: number[]
+  ): void {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     const barWidth = canvas.width / spectrum.length;
-    
+
     ctx.fillStyle = '#4CAF50';
     spectrum.forEach((value, index) => {
       const barHeight = value * canvas.height;
-      ctx.fillRect(index * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+      ctx.fillRect(
+        index * barWidth,
+        canvas.height - barHeight,
+        barWidth - 1,
+        barHeight
+      );
     });
   }
 
@@ -295,16 +311,18 @@ export class AudioAnalysisPlugin extends BasePlugin {
     };
 
     // Create downloadable file
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
+    });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `audio-analysis-${Date.now()}.json`;
     a.click();
-    
+
     URL.revokeObjectURL(url);
-    
+
     this.context.log.info('Analysis results exported');
   }
 

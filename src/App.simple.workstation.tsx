@@ -1,6 +1,6 @@
-import React from "react";
-import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import "./styles/App.css";
+import React from 'react';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import './styles/App.css';
 
 function App(): React.ReactElement {
   console.log('App component is rendering...');
@@ -14,19 +14,21 @@ function App(): React.ReactElement {
         </header>
         <main className="app-main">
           <Routes>
-            <Route 
-              path="/" 
+            <Route
+              path="/"
               element={
                 <div className="workstation-placeholder">
                   <h2>Welcome to Orpheus Engine</h2>
                   <p>This is the main workstation interface.</p>
-                  <div style={{ 
-                    padding: '20px', 
-                    background: '#2a2a2a', 
-                    color: '#fff', 
-                    borderRadius: '8px',
-                    margin: '20px 0'
-                  }}>
+                  <div
+                    style={{
+                      padding: '20px',
+                      background: '#2a2a2a',
+                      color: '#fff',
+                      borderRadius: '8px',
+                      margin: '20px 0',
+                    }}
+                  >
                     <h3>DAW Features:</h3>
                     <ul>
                       <li>Multi-track audio recording</li>
@@ -36,7 +38,7 @@ function App(): React.ReactElement {
                     </ul>
                   </div>
                 </div>
-              } 
+              }
             />
           </Routes>
         </main>

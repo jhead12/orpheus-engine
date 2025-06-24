@@ -1,5 +1,5 @@
-import { useTracksManager } from "../hooks/useTracksManager";
-import { TrackType, Track, Clip } from "../types/core";
+import { useTracksManager } from '../hooks/useTracksManager';
+import { TrackType, Track, Clip } from '../types/core';
 
 export function TracksView() {
   const { tracks, loading, error, addNewTrack } = useTracksManager();
@@ -8,7 +8,7 @@ export function TracksView() {
   if (error) return <div>Error: {error.message}</div>;
 
   const handleAddTrack = () => {
-    addNewTrack("New Track", TrackType.Audio);
+    addNewTrack('New Track', TrackType.Audio);
   };
 
   return (
@@ -19,8 +19,16 @@ export function TracksView() {
           <div key={track.id}>
             <h3>{track.name}</h3>
             <div>Type: {track.type}</div>
-            <div>Volume: {typeof track.volume === 'number' ? track.volume : track.volume.value}dB</div>
-            <div>Pan: {typeof track.pan === 'number' ? track.pan : track.pan.value}</div>
+            <div>
+              Volume:{' '}
+              {typeof track.volume === 'number'
+                ? track.volume
+                : track.volume.value}
+              dB
+            </div>
+            <div>
+              Pan: {typeof track.pan === 'number' ? track.pan : track.pan.value}
+            </div>
             {track.clips.length > 0 && (
               <div>
                 <h4>Clips</h4>

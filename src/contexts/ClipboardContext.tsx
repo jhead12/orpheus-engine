@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-import { ClipboardItemType } from "../types/clipboard";
+import React, { createContext, useContext, useState } from 'react';
+import { ClipboardItemType } from '../types/clipboard';
 
 interface ClipboardItem {
   type: ClipboardItemType;
@@ -18,7 +18,7 @@ const ClipboardContext = createContext<ClipboardContextType | undefined>(
 export const useClipboard = () => {
   const context = useContext(ClipboardContext);
   if (context === undefined) {
-    throw new Error("useClipboard must be used within a ClipboardProvider");
+    throw new Error('useClipboard must be used within a ClipboardProvider');
   }
   return context;
 };
@@ -26,7 +26,9 @@ export const useClipboard = () => {
 export const ClipboardProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [clipboardItem, setClipboardItem] = useState<ClipboardItem | null>(null);
+  const [clipboardItem, setClipboardItem] = useState<ClipboardItem | null>(
+    null
+  );
 
   return (
     <ClipboardContext.Provider value={{ clipboardItem, setClipboardItem }}>

@@ -1,6 +1,6 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
-import { Clip, TrackType, TimelinePosition } from "../../types/core";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
+import { Clip, TrackType, TimelinePosition } from '../../types/core';
 
 interface ClipInput {
   name: string;
@@ -65,7 +65,7 @@ export class ClipAPI {
   async update(id: string, input: Partial<ClipInput>): Promise<Clip> {
     const existingClip = await this.get(id);
     if (!existingClip) {
-      throw new Error("Clip not found");
+      throw new Error('Clip not found');
     }
 
     const updatedClip: Clip = {

@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts/WorkstationContext';
+import {
+  WorkstationContext,
+  WorkstationContextType,
+} from '@orpheus/contexts/WorkstationContext';
 import { TimelinePosition, Track } from '@orpheus/types/core'; // Removed unused TrackType
 
 export interface TimelineProps {
@@ -12,7 +15,9 @@ export interface TimelineProps {
   onPositionChange?: (position: TimelinePosition) => void;
   onZoomChange?: (zoom: number) => void;
   onTrackSelect?: (trackId: string) => void;
-  onSelectionChange?: (selection: { start: TimelinePosition; end: TimelinePosition } | null) => void;
+  onSelectionChange?: (
+    selection: { start: TimelinePosition; end: TimelinePosition } | null
+  ) => void;
   pixelsPerSecond?: number;
 }
 
@@ -27,15 +32,20 @@ export const Timeline: React.FC<TimelineProps> = ({
   onZoomChange,
   onTrackSelect,
   // onSelectionChange, // Commented out unused prop
-  pixelsPerSecond = 50
+  pixelsPerSecond = 50,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [selection] = useState<{ start: TimelinePosition; end: TimelinePosition } | null>(null); 
+  const [selection] = useState<{
+    start: TimelinePosition;
+    end: TimelinePosition;
+  } | null>(null);
   // Removed setSelection since it's currently unused
   const [playheadPosition, setPlayheadPosition] = useState(currentPosition);
-  
-  const context = useContext(WorkstationContext) as WorkstationContextType | null;
+
+  const context = useContext(
+    WorkstationContext
+  ) as WorkstationContextType | null;
 
   // Update playhead position when currentPosition prop changes
   useEffect(() => {
@@ -72,9 +82,23 @@ export const Timeline: React.FC<TimelineProps> = ({
     if (selection) {
       drawSelection(ctx, selection, height, zoom, pixelsPerSecond);
     }
-  }, [width, height, tracks, zoom, playheadPosition, selection, pixelsPerSecond]);
+  }, [
+    width,
+    height,
+    tracks,
+    zoom,
+    playheadPosition,
+    selection,
+    pixelsPerSecond,
+  ]);
 
-  const drawTimeRuler = (ctx: CanvasRenderingContext2D, w: number, h: number, z: number, pps: number) => {
+  const drawTimeRuler = (
+    ctx: CanvasRenderingContext2D,
+    w: number,
+    h: number,
+    z: number,
+    pps: number
+  ) => {
     ctx.fillStyle = '#333';
     ctx.fillRect(0, 0, w, 30);
 
@@ -87,7 +111,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
     for (let i = 0; i <= visibleSeconds; i++) {
       const x = i * secondWidth;
-      
+
       // Draw major tick (seconds)
       ctx.beginPath();
       ctx.moveTo(x, 20);
@@ -101,12 +125,21 @@ export const Timeline: React.FC<TimelineProps> = ({
     }
   };
 
-  const drawTrack = (ctx: CanvasRenderingContext2D, track: Track, index: number, w: number, h: number, z: number, pps: number) => {
+  const drawTrack = (
+    ctx: CanvasRenderingContext2D,
+    track: Track,
+    index: number,
+    w: number,
+    h: number,
+    z: number,
+    pps: number
+  ) => {
     const trackHeight = (h - 30) / Math.max(tracks.length, 1);
     const y = 30 + index * trackHeight;
 
     // Draw track background
-    ctx.fillStyle = track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a';
+    ctx.fillStyle =
+      track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a';
     ctx.fillRect(0, y, w, trackHeight);
 
     // Draw track border
@@ -120,10 +153,10 @@ export const Timeline: React.FC<TimelineProps> = ({
     ctx.fillText(track.name, 10, y + trackHeight / 2 + 5);
 
     // Draw clips
-    track.clips?.forEach(clip => {
+    track.clips?.forEach((clip) => {
       const clipX = clip.startTime * pps * z;
       const clipWidth = clip.duration * pps * z;
-      
+
       // Draw clip background
       ctx.fillStyle = '#4a90e2';
       ctx.fillRect(clipX, y + 5, clipWidth, trackHeight - 10);
@@ -140,9 +173,15 @@ export const Timeline: React.FC<TimelineProps> = ({
     });
   };
 
-  const drawPlayhead = (ctx: CanvasRenderingContext2D, position: TimelinePosition, h: number, z: number, pps: number) => {
+  const drawPlayhead = (
+    ctx: CanvasRenderingContext2D,
+    position: TimelinePosition,
+    h: number,
+    z: number,
+    pps: number
+  ) => {
     const x = position.toSeconds() * pps * z;
-    
+
     ctx.strokeStyle = '#ff4444';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -155,10 +194,16 @@ export const Timeline: React.FC<TimelineProps> = ({
     ctx.fillRect(x - 5, 0, 10, 20);
   };
 
-  const drawSelection = (ctx: CanvasRenderingContext2D, sel: { start: TimelinePosition; end: TimelinePosition }, h: number, z: number, pps: number) => {
+  const drawSelection = (
+    ctx: CanvasRenderingContext2D,
+    sel: { start: TimelinePosition; end: TimelinePosition },
+    h: number,
+    z: number,
+    pps: number
+  ) => {
     const startX = sel.start.toSeconds() * pps * z;
     const endX = sel.end.toSeconds() * pps * z;
-    
+
     ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
     ctx.fillRect(startX, 30, endX - startX, h - 30);
 
@@ -179,7 +224,7 @@ export const Timeline: React.FC<TimelineProps> = ({
     // Check if clicking on a track
     const trackHeight = (height - 30) / Math.max(tracks.length, 1);
     const trackIndex = Math.floor(y / trackHeight);
-    
+
     if (trackIndex < tracks.length) {
       onTrackSelect?.(tracks[trackIndex].id);
     }
@@ -208,11 +253,13 @@ export const Timeline: React.FC<TimelineProps> = ({
       case 'ArrowLeft':
         event.preventDefault();
         const currentSeconds = playheadPosition.toSeconds();
-        const prevPosition = TimelinePosition.fromSeconds(Math.max(0, currentSeconds - 1));
+        const prevPosition = TimelinePosition.fromSeconds(
+          Math.max(0, currentSeconds - 1)
+        );
         setPlayheadPosition(prevPosition);
         onPositionChange?.(prevPosition);
         break;
-      
+
       case 'ArrowRight':
         event.preventDefault();
         const nextSeconds = playheadPosition.toSeconds();
@@ -220,12 +267,12 @@ export const Timeline: React.FC<TimelineProps> = ({
         setPlayheadPosition(nextPosition);
         onPositionChange?.(nextPosition);
         break;
-      
+
       case ' ':
         event.preventDefault();
         // context?.togglePlayback();
         break;
-      
+
       case 'Home':
         event.preventDefault();
         const homePosition = new TimelinePosition(0, 0, 0);
@@ -245,30 +292,40 @@ export const Timeline: React.FC<TimelineProps> = ({
   return (
     <div className={`timeline ${className}`} style={{ position: 'relative' }}>
       {/* Time Ruler */}
-      <div data-testid="time-ruler" style={{ height: '30px', background: '#333', position: 'relative' }}>
-        {Array.from({ length: Math.ceil(width / (pixelsPerSecond * zoom)) + 1 }, (_, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${i * pixelsPerSecond * zoom}px`,
-              top: '20px',
-              height: '10px',
-              borderLeft: '1px solid #555',
-              fontSize: '12px',
-              color: '#aaa',
-              paddingLeft: '2px'
-            }}
-          >
-            {i}
-          </div>
-        ))}
+      <div
+        data-testid="time-ruler"
+        style={{ height: '30px', background: '#333', position: 'relative' }}
+      >
+        {Array.from(
+          { length: Math.ceil(width / (pixelsPerSecond * zoom)) + 1 },
+          (_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: `${i * pixelsPerSecond * zoom}px`,
+                top: '20px',
+                height: '10px',
+                borderLeft: '1px solid #555',
+                fontSize: '12px',
+                color: '#aaa',
+                paddingLeft: '2px',
+              }}
+            >
+              {i}
+            </div>
+          )
+        )}
       </div>
 
       {/* Timeline Content Area */}
-      <div 
+      <div
         data-testid="timeline-content"
-        style={{ position: 'relative', height: `${height - 30}px`, overflow: 'hidden' }}
+        style={{
+          position: 'relative',
+          height: `${height - 30}px`,
+          overflow: 'hidden',
+        }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -287,7 +344,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             left: 0,
             backgroundColor: '#1a1a1a',
             cursor: isDragging ? 'grabbing' : 'crosshair',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
           }}
           data-testid="timeline-canvas"
         />
@@ -297,34 +354,56 @@ export const Timeline: React.FC<TimelineProps> = ({
           data-testid="timeline-playhead"
           style={{
             position: 'absolute',
-            left: `${(playheadPosition && typeof playheadPosition.toSeconds === 'function' 
-              ? playheadPosition.toSeconds() 
-              : 0) * pixelsPerSecond * zoom}px`,
+            left: `${
+              (playheadPosition &&
+              typeof playheadPosition.toSeconds === 'function'
+                ? playheadPosition.toSeconds()
+                : 0) *
+              pixelsPerSecond *
+              zoom
+            }px`,
             top: 0,
             width: '2px',
             height: '100%',
             backgroundColor: '#ff6b6b',
             pointerEvents: 'none',
-            zIndex: 10
+            zIndex: 10,
           }}
         />
 
         {/* Snap Grid */}
         {context?.timelineSettings && (
-          <div data-testid="snap-grid" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-            {Array.from({ length: Math.ceil(width / (context.timelineSettings.beatWidth || 64)) }, (_, i) => (
-              <div
-                key={i}
-                style={{
-                  position: 'absolute',
-                  left: `${i * (context.timelineSettings.beatWidth || 64)}px`,
-                  top: 0,
-                  width: '1px',
-                  height: '100%',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                }}
-              />
-            ))}
+          <div
+            data-testid="snap-grid"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+            }}
+          >
+            {Array.from(
+              {
+                length: Math.ceil(
+                  width / (context.timelineSettings.beatWidth || 64)
+                ),
+              },
+              (_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    left: `${i * (context.timelineSettings.beatWidth || 64)}px`,
+                    top: 0,
+                    width: '1px',
+                    height: '100%',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  }}
+                />
+              )
+            )}
           </div>
         )}
 
@@ -332,7 +411,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         {tracks.map((track, index) => {
           const trackHeight = (height - 30) / Math.max(tracks.length, 1);
           const y = index * trackHeight;
-          
+
           return (
             <div
               key={track.id}
@@ -344,10 +423,11 @@ export const Timeline: React.FC<TimelineProps> = ({
                 width: '100%',
                 height: `${trackHeight}px`,
                 border: '1px solid #444',
-                backgroundColor: track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a',
+                backgroundColor:
+                  track.id === context?.selectedClipId ? '#2a4d3a' : '#2a2a2a',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 10px'
+                padding: '0 10px',
               }}
               onContextMenu={(e) => {
                 e.preventDefault();
@@ -363,20 +443,25 @@ export const Timeline: React.FC<TimelineProps> = ({
                 menu.style.zIndex = '1000';
                 menu.textContent = 'Track Menu';
                 document.body.appendChild(menu);
-                
+
                 const removeMenu = () => {
                   if (document.body.contains(menu)) {
                     document.body.removeChild(menu);
                   }
                   document.removeEventListener('click', removeMenu);
                 };
-                
-                setTimeout(() => document.addEventListener('click', removeMenu), 100);
+
+                setTimeout(
+                  () => document.addEventListener('click', removeMenu),
+                  100
+                );
               }}
               onClick={() => onTrackSelect?.(track.id)}
             >
-              <span style={{ color: '#fff', marginRight: '10px' }}>{track.name}</span>
-              
+              <span style={{ color: '#fff', marginRight: '10px' }}>
+                {track.name}
+              </span>
+
               {/* Mute Button */}
               <button
                 data-testid={`track-${track.id}-mute`}
@@ -387,7 +472,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                   color: '#fff',
                   border: 'none',
                   borderRadius: '3px',
-                  fontSize: '12px'
+                  fontSize: '12px',
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -407,7 +492,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                   color: '#fff',
                   border: 'none',
                   borderRadius: '3px',
-                  fontSize: '12px'
+                  fontSize: '12px',
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -432,7 +517,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
           onClick={() => context?.addTrack?.('audio')}
         >

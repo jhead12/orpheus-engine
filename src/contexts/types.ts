@@ -1,7 +1,7 @@
 /**
  * Shared type definitions for contexts to ensure consistency
  */
-import { AudioAnalysisType, Clip } from "../types";
+import { AudioAnalysisType, Clip } from '../types';
 
 export interface AudioAnalysisResults {
   spectral?: Float32Array[];

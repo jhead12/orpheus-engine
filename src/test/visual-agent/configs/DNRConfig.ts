@@ -1,11 +1,11 @@
-import { VisualTestConfig } from "../types";
+import { VisualTestConfig } from '../types';
 
 /**
  * Test configuration for the DNR (Drag and Resize) component
  */
 export const DNRConfig: VisualTestConfig = {
-  componentName: "DNR",
-  importPath: "../../components/DNR",
+  componentName: 'DNR',
+  importPath: '../../components/DNR',
   props: {
     coords: {
       startX: 100,
@@ -13,41 +13,41 @@ export const DNRConfig: VisualTestConfig = {
       endX: 300,
       endY: 200,
     },
-    className: "test-dnr",
+    className: 'test-dnr',
     drag: true,
-    dragAxis: "both",
+    dragAxis: 'both',
     children:
       '<div data-testid="dnr-content" style="width: 100%; height: 100%; background: linear-gradient(45deg, #ff0000, #0000ff); display: flex; align-items: center; justify-content: center; color: white;">Drag Me</div>',
   },
   states: [
     {
-      name: "default",
+      name: 'default',
       props: {},
     },
     {
-      name: "dragging",
+      name: 'dragging',
       interactions: [
         {
-          type: "mousedown",
-          target: "dnr-content",
+          type: 'mousedown',
+          target: 'dnr-content',
           delay: 300,
         },
         {
-          type: "mousemove",
-          target: "document",
+          type: 'mousemove',
+          target: 'document',
           value: { clientX: 200, clientY: 150 },
           delay: 500,
         },
         {
-          type: "mousemove",
-          target: "document",
+          type: 'mousemove',
+          target: 'document',
           value: { clientX: 250, clientY: 180 },
           delay: 500,
         },
       ],
     },
     {
-      name: "resizing",
+      name: 'resizing',
       props: {
         // Add resize handles
         children:
@@ -55,19 +55,19 @@ export const DNRConfig: VisualTestConfig = {
       },
       interactions: [
         {
-          type: "mousedown",
-          target: "resize-handle",
+          type: 'mousedown',
+          target: 'resize-handle',
           delay: 300,
         },
         {
-          type: "mousemove",
-          target: "document",
+          type: 'mousemove',
+          target: 'document',
           value: { clientX: 320, clientY: 220 },
           delay: 500,
         },
         {
-          type: "mousemove",
-          target: "document",
+          type: 'mousemove',
+          target: 'document',
           value: { clientX: 350, clientY: 250 },
           delay: 500,
         },

@@ -1,10 +1,10 @@
-import { GraphQLScalarType } from "graphql";
-import { audioContext } from "@orpheus/services/utils/audio";
-import { TimelinePosition } from "@orpheus/types/core";
+import { GraphQLScalarType } from 'graphql';
+import { audioContext } from '@orpheus/services/utils/audio';
+import { TimelinePosition } from '@orpheus/types/core';
 
 const AudioBufferScalar = new GraphQLScalarType({
-  name: "AudioBuffer",
-  description: "AudioBuffer custom scalar type",
+  name: 'AudioBuffer',
+  description: 'AudioBuffer custom scalar type',
   serialize(value: unknown) {
     const audioBuffer = value as AudioBuffer;
     // Convert AudioBuffer to a format that can be sent over the wire
@@ -35,8 +35,8 @@ const AudioBufferScalar = new GraphQLScalarType({
 });
 
 const TimelinePositionScalar = new GraphQLScalarType({
-  name: "TimelinePosition",
-  description: "TimelinePosition custom scalar type",
+  name: 'TimelinePosition',
+  description: 'TimelinePosition custom scalar type',
   serialize(value: any) {
     return {
       bar: value.bar,

@@ -1,5 +1,5 @@
 // Mock implementations must be at the top of the file, before any imports
-vi.mock("@orpheus/types/core", () => {
+vi.mock('@orpheus/types/core', () => {
   const mockPosition = {
     bar: 0,
     beat: 0,
@@ -11,7 +11,7 @@ vi.mock("@orpheus/types/core", () => {
     equals: vi.fn().mockReturnValue(true),
     add: vi.fn(),
     snap: vi.fn(),
-    toString: vi.fn().mockReturnValue("0:0:0")
+    toString: vi.fn().mockReturnValue('0:0:0'),
   };
 
   mockPosition.copy.mockReturnValue(mockPosition);
@@ -25,42 +25,42 @@ vi.mock("@orpheus/types/core", () => {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
-    horizontalScale: 1
+    snapUnit: 'beat',
+    horizontalScale: 1,
   };
 
   return {
     TimelinePosition,
-    TrackType: { Midi: "Midi", Audio: "Audio" },
+    TrackType: { Midi: 'Midi', Audio: 'Audio' },
     Track: vi.fn(),
     AutomationMode: {
-      Off: "off",
-      Read: "read",
-      Write: "write",
-      Touch: "touch",
-      Latch: "latch",
-      Trim: "trim"
-    }
+      Off: 'off',
+      Read: 'read',
+      Write: 'write',
+      Touch: 'touch',
+      Latch: 'latch',
+      Trim: 'trim',
+    },
   };
 });
 
-vi.mock("@orpheus/contexts/WorkstationContext", () => ({
+vi.mock('@orpheus/contexts/WorkstationContext', () => ({
   WorkstationContext: {
-    Provider: ({ children }: { children: React.ReactNode }) => children
-  }
+    Provider: ({ children }: { children: React.ReactNode }) => children,
+  },
 }));
 
 // Core testing utilities
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render } from "@testing-library/react";
-import { Timeline } from "../Timeline";
-import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render } from '@testing-library/react';
+import { Timeline } from '../Timeline';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import {
   Track,
   TrackType,
   AutomationMode,
   TimelinePosition,
-} from "@orpheus/types/core";
+} from '@orpheus/types/core';
 
 // Mock canvas setup
 const setupCanvasMock = () => {
@@ -68,19 +68,19 @@ const setupCanvasMock = () => {
     fillRect: vi.fn(),
     clearRect: vi.fn(),
     strokeRect: vi.fn(),
-    fillStyle: "#000000",
-    strokeStyle: "#000000",
+    fillStyle: '#000000',
+    strokeStyle: '#000000',
     lineWidth: 1,
     getImageData: vi.fn(() => ({
       data: new Uint8ClampedArray(4),
       width: 1,
-      height: 1
+      height: 1,
     })),
     putImageData: vi.fn(),
     createImageData: vi.fn(() => ({
       data: new Uint8ClampedArray(4),
       width: 1,
-      height: 1
+      height: 1,
     })),
     setTransform: vi.fn(),
     drawImage: vi.fn(),
@@ -101,7 +101,7 @@ const setupCanvasMock = () => {
     transform: vi.fn(),
     rect: vi.fn(),
     clip: vi.fn(),
-    font: "10px sans-serif"
+    font: '10px sans-serif',
   };
 
   HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockContext);
@@ -113,12 +113,14 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
   root: null,
-  rootMargin: "",
-  thresholds: []
+  rootMargin: '',
+  thresholds: [],
 }));
 
 // Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn().mockImplementation((cb) => setTimeout(cb, 16));
+global.requestAnimationFrame = vi
+  .fn()
+  .mockImplementation((cb) => setTimeout(cb, 16));
 global.cancelAnimationFrame = vi.fn().mockImplementation(clearTimeout);
 
 // Mock WorkstationContext - add all required properties
@@ -126,7 +128,7 @@ const createDefaultTrack = (id: string): Track => ({
   id,
   name: id,
   type: TrackType.Midi,
-  color: "#FF0000",
+  color: '#FF0000',
   volume: { value: 0, isAutomated: false },
   pan: { value: 0, isAutomated: false },
   mute: false,
@@ -140,13 +142,13 @@ const createDefaultTrack = (id: string): Track => ({
   fx: {
     preset: null,
     selectedEffectIndex: 0,
-    effects: []
-  }
+    effects: [],
+  },
 });
 
 const createMockWorkstationContext = (overrides = {}) => ({
-  tracks: [createDefaultTrack("track-1")],
-  masterTrack: createDefaultTrack("master"),
+  tracks: [createDefaultTrack('track-1')],
+  masterTrack: createDefaultTrack('master'),
   isPlaying: false,
   playheadPos: new TimelinePosition(),
   maxPos: new TimelinePosition(4, 0, 0),
@@ -167,7 +169,7 @@ const createMockWorkstationContext = (overrides = {}) => ({
   timelineSettings: {
     beatWidth: 64,
     timeSignature: { beats: 4, noteValue: 4 },
-    horizontalScale: 1
+    horizontalScale: 1,
   },
   toggleMuteClip: vi.fn(),
   verticalScale: 1,
@@ -180,10 +182,10 @@ const createMockWorkstationContext = (overrides = {}) => ({
   setVerticalScale: vi.fn(),
   songRegion: null,
   updateTimelineSettings: vi.fn(),
-  ...overrides
+  ...overrides,
 });
 
-describe("Timeline", () => {
+describe('Timeline', () => {
   beforeEach(() => {
     setupCanvasMock();
   });
@@ -192,33 +194,33 @@ describe("Timeline", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders canvas element with proper dimensions", () => {
+  it('renders canvas element with proper dimensions', () => {
     const { container } = render(
       <WorkstationContext.Provider value={createMockWorkstationContext()}>
         <Timeline />
       </WorkstationContext.Provider>
     );
 
-    const canvas = container.querySelector("canvas");
+    const canvas = container.querySelector('canvas');
     expect(canvas).toBeInTheDocument();
     expect(canvas?.width).toBe(800);
     expect(canvas?.height).toBe(370); // 400 - 30 for time ruler
   });
 
-  it("handles canvas resizing", () => {
+  it('handles canvas resizing', () => {
     const { container } = render(
       <WorkstationContext.Provider value={createMockWorkstationContext()}>
         <Timeline />
       </WorkstationContext.Provider>
     );
 
-    const canvas = container.querySelector("canvas");
+    const canvas = container.querySelector('canvas');
     expect(canvas).toBeInTheDocument();
 
     // Simulate canvas resize
     if (canvas) {
-      canvas.setAttribute("width", "1000");
-      canvas.setAttribute("height", "500");
+      canvas.setAttribute('width', '1000');
+      canvas.setAttribute('height', '500');
       expect(canvas.width).toBe(1000);
       expect(canvas.height).toBe(500);
     }

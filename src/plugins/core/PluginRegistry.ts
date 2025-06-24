@@ -40,10 +40,12 @@ export class PluginRegistry {
    */
   public async registerPlugin(plugin: IPlugin): Promise<void> {
     const manifest = plugin.manifest;
-    
+
     // Validate plugin compatibility
     if (!this.platformDetector.validatePluginCompatibility(manifest)) {
-      throw new Error(`Plugin ${manifest.id} is not compatible with current platform`);
+      throw new Error(
+        `Plugin ${manifest.id} is not compatible with current platform`
+      );
     }
 
     // Check for duplicate plugin IDs
@@ -54,7 +56,7 @@ export class PluginRegistry {
     try {
       // Initialize the plugin
       await plugin.initialize(this.context);
-      
+
       const registeredPlugin: RegisteredPlugin = {
         plugin,
         manifest,
@@ -64,7 +66,7 @@ export class PluginRegistry {
 
       this.plugins.set(manifest.id, registeredPlugin);
       this.emit('plugin:registered', { id: manifest.id, manifest });
-      
+
       console.log(`Plugin registered: ${manifest.name} (${manifest.id})`);
     } catch (error) {
       const registeredPlugin: RegisteredPlugin = {
@@ -85,7 +87,7 @@ export class PluginRegistry {
    */
   public async activatePlugin(pluginId: string): Promise<void> {
     const registeredPlugin = this.plugins.get(pluginId);
-    
+
     if (!registeredPlugin) {
       throw new Error(`Plugin ${pluginId} is not registered`);
     }
@@ -99,7 +101,7 @@ export class PluginRegistry {
       await registeredPlugin.plugin.activate();
       registeredPlugin.status = 'active';
       this.emit('plugin:activated', { id: pluginId });
-      
+
       console.log(`Plugin activated: ${registeredPlugin.manifest.name}`);
     } catch (error) {
       registeredPlugin.status = 'error';
@@ -113,7 +115,7 @@ export class PluginRegistry {
    */
   public async deactivatePlugin(pluginId: string): Promise<void> {
     const registeredPlugin = this.plugins.get(pluginId);
-    
+
     if (!registeredPlugin) {
       throw new Error(`Plugin ${pluginId} is not registered`);
     }
@@ -127,7 +129,7 @@ export class PluginRegistry {
       await registeredPlugin.plugin.deactivate();
       registeredPlugin.status = 'inactive';
       this.emit('plugin:deactivated', { id: pluginId });
-      
+
       console.log(`Plugin deactivated: ${registeredPlugin.manifest.name}`);
     } catch (error) {
       registeredPlugin.status = 'error';
@@ -141,7 +143,7 @@ export class PluginRegistry {
    */
   public async unregisterPlugin(pluginId: string): Promise<void> {
     const registeredPlugin = this.plugins.get(pluginId);
-    
+
     if (!registeredPlugin) {
       throw new Error(`Plugin ${pluginId} is not registered`);
     }
@@ -154,11 +156,11 @@ export class PluginRegistry {
 
       // Destroy the plugin
       await registeredPlugin.plugin.destroy();
-      
+
       // Remove from registry
       this.plugins.delete(pluginId);
       this.emit('plugin:unregistered', { id: pluginId });
-      
+
       console.log(`Plugin unregistered: ${registeredPlugin.manifest.name}`);
     } catch (error) {
       console.error(`Error unregistering plugin ${pluginId}:`, error);
@@ -185,7 +187,7 @@ export class PluginRegistry {
    */
   public getPluginsByCategory(category: string): RegisteredPlugin[] {
     return Array.from(this.plugins.values()).filter(
-      p => p.manifest.category === category
+      (p) => p.manifest.category === category
     );
   }
 
@@ -194,7 +196,7 @@ export class PluginRegistry {
    */
   public getActivePlugins(): RegisteredPlugin[] {
     return Array.from(this.plugins.values()).filter(
-      p => p.status === 'active'
+      (p) => p.status === 'active'
     );
   }
 
@@ -233,7 +235,7 @@ export class PluginRegistry {
   public emit(event: string, data?: any): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
-      listeners.forEach(callback => {
+      listeners.forEach((callback) => {
         try {
           callback(data);
         } catch (error) {
@@ -248,34 +250,40 @@ export class PluginRegistry {
    */
   private createPluginContext(): PluginContext {
     const platformDetector = this.platformDetector;
-    
+
     return {
       // Core services
-      audioService: audioService, // Inject Audio service
-      pythonBackend: pythonBackend, // Inject Python backend service
-      
+      audioService, // Inject Audio service
+      pythonBackend, // Inject Python backend service
+
       // Platform detection
       platform: platformDetector.platform,
       capabilities: platformDetector.capabilities,
-      
+
       // Event system
       emit: (event: string, data?: any) => this.emit(event, data),
-      on: (event: string, callback: (data: any) => void) => this.on(event, callback),
-      off: (event: string, callback: (data: any) => void) => this.off(event, callback),
-      
+      on: (event: string, callback: (data: any) => void) =>
+        this.on(event, callback),
+      off: (event: string, callback: (data: any) => void) =>
+        this.off(event, callback),
+
       // State management (simple in-memory store for now)
       getState: (key: string) => (this as any).state?.[key],
       setState: (key: string, value: any) => {
         if (!(this as any).state) (this as any).state = {};
         (this as any).state[key] = value;
       },
-      
+
       // Logging
       log: {
-        info: (message: string, data?: any) => console.log(`[Plugin] ${message}`, data),
-        warn: (message: string, data?: any) => console.warn(`[Plugin] ${message}`, data),
-        error: (message: string, data?: any) => console.error(`[Plugin] ${message}`, data),
-        debug: (message: string, data?: any) => console.debug(`[Plugin] ${message}`, data),
+        info: (message: string, data?: any) =>
+          console.log(`[Plugin] ${message}`, data),
+        warn: (message: string, data?: any) =>
+          console.warn(`[Plugin] ${message}`, data),
+        error: (message: string, data?: any) =>
+          console.error(`[Plugin] ${message}`, data),
+        debug: (message: string, data?: any) =>
+          console.debug(`[Plugin] ${message}`, data),
       },
     };
   }
@@ -287,7 +295,7 @@ export class PluginRegistry {
     console.log('Initializing Plugin Registry...');
     console.log(`Platform: ${this.platformDetector.platform}`);
     console.log('Capabilities:', this.platformDetector.capabilities);
-    
+
     // Initialize Python backend if available
     try {
       await pythonBackend.initialize();
@@ -295,7 +303,7 @@ export class PluginRegistry {
     } catch (error) {
       console.warn('Python backend not available:', error);
     }
-    
+
     this.emit('registry:initialized');
   }
 
@@ -304,17 +312,20 @@ export class PluginRegistry {
    */
   public async shutdown(): Promise<void> {
     console.log('Shutting down Plugin Registry...');
-    
+
     // Deactivate all active plugins
     const activePlugins = this.getActivePlugins();
     for (const registeredPlugin of activePlugins) {
       try {
         await this.deactivatePlugin(registeredPlugin.manifest.id);
       } catch (error) {
-        console.error(`Error deactivating plugin ${registeredPlugin.manifest.id}:`, error);
+        console.error(
+          `Error deactivating plugin ${registeredPlugin.manifest.id}:`,
+          error
+        );
       }
     }
-    
+
     // Unregister all plugins
     const allPlugins = Array.from(this.plugins.keys());
     for (const pluginId of allPlugins) {
@@ -324,7 +335,7 @@ export class PluginRegistry {
         console.error(`Error unregistering plugin ${pluginId}:`, error);
       }
     }
-    
+
     this.emit('registry:shutdown');
   }
 }

@@ -10,12 +10,12 @@ export interface PluginManifest {
   description: string;
   author: string;
   category: 'effect' | 'instrument' | 'analysis' | 'ui' | 'utility';
-  
+
   // Compatibility and dependencies
   engineVersion: string;
   platform: 'electron' | 'browser' | 'universal';
   dependencies?: string[];
-  
+
   // Plugin capabilities
   capabilities: {
     audio?: boolean;
@@ -23,21 +23,23 @@ export interface PluginManifest {
     ui?: boolean;
     python?: boolean;
   };
-  
+
   // Entry points
   main: string;
   ui?: string;
   python?: string;
-  
+
   // Permissions required
-  permissions?: Array<'file_system' | 'audio_devices' | 'network' | 'python_backend'>;
+  permissions?: Array<
+    'file_system' | 'audio_devices' | 'network' | 'python_backend'
+  >;
 }
 
 export interface PluginContext {
   // Core services
   audioService: any; // Will be typed properly when AudioService is available
   pythonBackend: any; // Connection to Python RAG backend
-  
+
   // Platform detection
   platform: 'electron' | 'browser';
   capabilities: {
@@ -45,16 +47,16 @@ export interface PluginContext {
     audioDevices: boolean;
     pythonBackend: boolean;
   };
-  
+
   // Event system
   emit(event: string, data?: any): void;
   on(event: string, callback: (data: any) => void): void;
   off(event: string, callback: (data: any) => void): void;
-  
+
   // State management
   getState(key: string): any;
   setState(key: string, value: any): void;
-  
+
   // Logging
   log: {
     info: (message: string, data?: any) => void;
@@ -66,24 +68,24 @@ export interface PluginContext {
 
 export interface IPlugin {
   manifest: PluginManifest;
-  
+
   // Lifecycle methods
   initialize(context: PluginContext): Promise<void>;
   activate(): Promise<void>;
   deactivate(): Promise<void>;
   destroy(): Promise<void>;
-  
+
   // Plugin-specific processing
   processAudio?(audioData: Float32Array[]): Promise<Float32Array[]>;
   processMidi?(midiData: any): Promise<any>;
-  
+
   // UI integration
   createUI?(): HTMLElement | React.ReactElement;
-  
+
   // Configuration
   getConfiguration?(): Record<string, any>;
   setConfiguration?(config: Record<string, any>): void;
-  
+
   // Health check
   isHealthy(): boolean;
 }

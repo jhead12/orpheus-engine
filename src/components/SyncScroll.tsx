@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-} from "react";
+} from 'react';
 
 interface ScrollSyncContextType {
   registerPane: (pane: HTMLElement) => void;
@@ -63,7 +63,7 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
           p.contains(entry.target)
         );
         if (pane && !scrollingRef.current) {
-          const event = new Event("scroll");
+          const event = new Event('scroll');
           pane.dispatchEvent(event);
         }
       }

@@ -16,7 +16,7 @@ const mockFn = () => () => {};
 // Basic audio utilities
 export function createAudioContext() {
   // Add test environment check
-  if (process.env.NODE_ENV === "test" || !globalThis.AudioContext) {
+  if (process.env.NODE_ENV === 'test' || !globalThis.AudioContext) {
     return new (class MockAudioContext {
       destination = {};
       sampleRate = 44100;
@@ -49,7 +49,7 @@ export const audioContext = createAudioContext();
 // Ensure audioContext is available for operations that require it
 export const getAudioContext = () => {
   if (!audioContext) {
-    throw new Error("AudioContext is not available in this environment");
+    throw new Error('AudioContext is not available in this environment');
   }
   return audioContext;
 };
@@ -61,7 +61,7 @@ export const getAudioContext = () => {
  * @returns Formatted panning string
  */
 export const formatPanning = (panning: number, detailed?: boolean): string => {
-  if (panning === 0) return "C";
+  if (panning === 0) return 'C';
   if (detailed) {
     if (panning < 0) return `L ${Math.abs(Math.round(panning * 100))}%`;
     return `R ${Math.round(panning * 100)}%`;
@@ -80,10 +80,10 @@ export const audioBufferToBuffer = async (
   const buffer = Buffer.alloc(44 + length * numberOfChannels * 2);
 
   // Write WAV header
-  buffer.write("RIFF", 0);
+  buffer.write('RIFF', 0);
   buffer.writeUInt32LE(36 + length * numberOfChannels * 2, 4);
-  buffer.write("WAVE", 8);
-  buffer.write("fmt ", 12);
+  buffer.write('WAVE', 8);
+  buffer.write('fmt ', 12);
   buffer.writeUInt32LE(16, 16);
   buffer.writeUInt16LE(1, 20);
   buffer.writeUInt16LE(numberOfChannels, 22);
@@ -91,7 +91,7 @@ export const audioBufferToBuffer = async (
   buffer.writeUInt32LE(sampleRate * numberOfChannels * 2, 28);
   buffer.writeUInt16LE(numberOfChannels * 2, 32);
   buffer.writeUInt16LE(16, 34);
-  buffer.write("data", 36);
+  buffer.write('data', 36);
   buffer.writeUInt32LE(length * numberOfChannels * 2, 40);
 
   // Write audio data

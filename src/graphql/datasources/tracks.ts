@@ -24,11 +24,13 @@ export class TrackAPI {
 
   constructor() {
     this.tracks = new Map();
-    this.trackLoader = new DataLoader(ids => this.batchLoadTracks(ids));
+    this.trackLoader = new DataLoader((ids) => this.batchLoadTracks(ids));
   }
 
-  private async batchLoadTracks(ids: readonly string[]): Promise<(Track | null)[]> {
-    return ids.map(id => this.tracks.get(id) || null);
+  private async batchLoadTracks(
+    ids: readonly string[]
+  ): Promise<(Track | null)[]> {
+    return ids.map((id) => this.tracks.get(id) || null);
   }
 
   async get(id: string): Promise<Track | null> {
@@ -57,9 +59,10 @@ export class TrackAPI {
       fx: {
         preset: null,
         effects: [],
-        selectedEffectIndex: 0
+        selectedEffectIndex: 0,
       },
-      color: input.color || '#' + Math.floor(Math.random() * 16777215).toString(16)
+      color:
+        input.color || `#${Math.floor(Math.random() * 16777215).toString(16)}`,
     };
 
     this.tracks.set(id, newTrack);
@@ -76,12 +79,12 @@ export class TrackAPI {
       ...existingTrack,
       ...input,
       // Ensure volume and pan are proper AutomatableParameter objects
-      ...(input.volume !== undefined && typeof input.volume === 'number' 
-        ? { volume: { value: input.volume, isAutomated: false } } 
+      ...(input.volume !== undefined && typeof input.volume === 'number'
+        ? { volume: { value: input.volume, isAutomated: false } }
         : {}),
-      ...(input.pan !== undefined && typeof input.pan === 'number' 
-        ? { pan: { value: input.pan, isAutomated: false } } 
-        : {})
+      ...(input.pan !== undefined && typeof input.pan === 'number'
+        ? { pan: { value: input.pan, isAutomated: false } }
+        : {}),
     };
 
     this.tracks.set(id, updatedTrack);

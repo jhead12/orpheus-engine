@@ -1,9 +1,13 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 // Add the missing getScrollParent function
-function getScrollParent(element: HTMLElement, direction: "vertical" | "horizontal" = "vertical"): HTMLElement | null {
-  const overflowProperty = direction === "horizontal" ? "overflowX" : "overflowY";
-  
+function getScrollParent(
+  element: HTMLElement,
+  direction: 'vertical' | 'horizontal' = 'vertical'
+): HTMLElement | null {
+  const overflowProperty =
+    direction === 'horizontal' ? 'overflowX' : 'overflowY';
+
   const isScrollable = (style: CSSStyleDeclaration) => {
     const overflow = style[overflowProperty as keyof CSSStyleDeclaration];
     return overflow === 'auto' || overflow === 'scroll';
@@ -14,16 +18,16 @@ function getScrollParent(element: HTMLElement, direction: "vertical" | "horizont
 
   while (parent) {
     style = window.getComputedStyle(parent);
-    
+
     if (isScrollable(style)) {
       return parent;
     }
-    
+
     parent = parent.parentElement;
   }
 
   // If no scrollable parent found, return document.scrollingElement or body as fallback
-  return document.scrollingElement as HTMLElement || document.body;
+  return (document.scrollingElement as HTMLElement) || document.body;
 }
 
 // Define and export the WindowAutoScrollThresholds interface
@@ -65,12 +69,15 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
   eventType,
   thresholds,
   withinBounds,
-  onScroll
+  onScroll,
 }) => {
-  const [windows, setWindows] = useState<{ horizontal: HTMLElement | null; vertical: HTMLElement | null; }>({
+  const [windows, setWindows] = useState<{
+    horizontal: HTMLElement | null;
+    vertical: HTMLElement | null;
+  }>({
     horizontal: null,
-    vertical: null
-  })
+    vertical: null,
+  });
 
   const coords = useRef({ x: 0, y: 0 });
   const hInterval = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -90,119 +97,155 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
   }, []);
 
   // Move scroll to useCallback to avoid recreation on every render
-  const scroll = useCallback((el: Element, by: number, vertical: boolean) => {
-    const callback = () => {
-      const scrollMargin = vertical ? el.scrollTop : el.scrollLeft;
-      const scrollLength = vertical ? el.scrollHeight : el.scrollWidth;
-      const clientLength = vertical ? el.clientHeight : el.clientWidth;
-      
-      // Don't scroll further if we've hit the boundary
-      if ((by < 0 && scrollMargin <= 0) || (by > 0 && scrollMargin + clientLength >= scrollLength)) {
-        return;
-      }
-      
+  const scroll = useCallback(
+    (el: Element, by: number, vertical: boolean) => {
+      const callback = () => {
+        const scrollMargin = vertical ? el.scrollTop : el.scrollLeft;
+        const scrollLength = vertical ? el.scrollHeight : el.scrollWidth;
+        const clientLength = vertical ? el.clientHeight : el.clientWidth;
+
+        // Don't scroll further if we've hit the boundary
+        if (
+          (by < 0 && scrollMargin <= 0) ||
+          (by > 0 && scrollMargin + clientLength >= scrollLength)
+        ) {
+          return;
+        }
+
+        if (vertical) {
+          el.scrollTop += by;
+        } else {
+          el.scrollLeft += by;
+        }
+
+        // Call the onScroll callback if provided
+        if (onScroll) {
+          onScroll(by, vertical);
+        }
+      };
+
+      callback();
+
+      const intervalRef = setInterval(callback, 100);
       if (vertical) {
-        el.scrollTop += by;
+        vInterval.current = intervalRef;
       } else {
-        el.scrollLeft += by;
+        hInterval.current = intervalRef;
       }
-      
-      // Call the onScroll callback if provided
-      if (onScroll) {
-        onScroll(by, vertical);
-      }
-    };
-    
-    callback();
-    
-    const intervalRef = setInterval(callback, 100);
-    if (vertical) {
-      vInterval.current = intervalRef;
-    } else {
-      hInterval.current = intervalRef;
-    }
-  }, [onScroll]);
+    },
+    [onScroll]
+  );
 
   // Move checkCoords to useCallback with appropriate dependencies
-  const checkCoords = useCallback((x: number, y: number) => {
-    clearIntervals();
+  const checkCoords = useCallback(
+    (x: number, y: number) => {
+      clearIntervals();
 
-    if (windows.horizontal) {
-      const rect = windows.horizontal.getBoundingClientRect();
-      
-      if (!withinBounds || (rect.left <= x && x <= rect.right)) {
-        const leftDiff = x - rect.left;
-        const rightDiff = rect.right - x;
-        const leftThresholds = thresholds?.left || { slow: 20, medium: 9, fast: 3 };
-        const rightThresholds = thresholds?.right || { slow: 20, medium: 9, fast: 3 };
+      if (windows.horizontal) {
+        const rect = windows.horizontal.getBoundingClientRect();
 
-        if (leftDiff <= leftThresholds.slow && windows.horizontal.scrollLeft > 0) {
-          let by = 5;
-          if (leftDiff < leftThresholds.fast) {
-            by = 30;
-          } else if (leftDiff < leftThresholds.medium) {
-            by = 15;
+        if (!withinBounds || (rect.left <= x && x <= rect.right)) {
+          const leftDiff = x - rect.left;
+          const rightDiff = rect.right - x;
+          const leftThresholds = thresholds?.left || {
+            slow: 20,
+            medium: 9,
+            fast: 3,
+          };
+          const rightThresholds = thresholds?.right || {
+            slow: 20,
+            medium: 9,
+            fast: 3,
+          };
+
+          if (
+            leftDiff <= leftThresholds.slow &&
+            windows.horizontal.scrollLeft > 0
+          ) {
+            let by = 5;
+            if (leftDiff < leftThresholds.fast) {
+              by = 30;
+            } else if (leftDiff < leftThresholds.medium) {
+              by = 15;
+            }
+            scroll(windows.horizontal, -by, false);
+          } else if (
+            rightDiff <= rightThresholds.slow &&
+            windows.horizontal.scrollLeft <
+              windows.horizontal.scrollWidth - windows.horizontal.clientWidth
+          ) {
+            let by = 5;
+            if (rightDiff < rightThresholds.fast) {
+              by = 30;
+            } else if (rightDiff < rightThresholds.medium) {
+              by = 15;
+            }
+            scroll(windows.horizontal, by, false);
           }
-          scroll(windows.horizontal, -by, false);
-        } else if (
-          rightDiff <= rightThresholds.slow &&
-          windows.horizontal.scrollLeft < windows.horizontal.scrollWidth - windows.horizontal.clientWidth
-        ) {
-          let by = 5;
-          if (rightDiff < rightThresholds.fast) {
-            by = 30;
-          } else if (rightDiff < rightThresholds.medium) {
-            by = 15;
-          }
-          scroll(windows.horizontal, by, false);
         }
       }
-    }
 
-    if (windows.vertical) {
-      const rect = windows.vertical.getBoundingClientRect();
-      
-      if (!withinBounds || (rect.top <= y && y <= rect.bottom)) {
-        const topDiff = y - rect.top;
-        const bottomDiff = rect.bottom - y;
-        const topThresholds = thresholds?.top || { slow: 20, medium: 9, fast: 3 };
-        const bottomThresholds = thresholds?.bottom || { slow: 20, medium: 9, fast: 3 };
-        
-        if (topDiff <= topThresholds.slow && windows.vertical.scrollTop > 0) {
-          let by = 5;
-          if (topDiff < topThresholds.fast) {
-            by = 30;
-          } else if (topDiff < topThresholds.medium) {
-            by = 15;
+      if (windows.vertical) {
+        const rect = windows.vertical.getBoundingClientRect();
+
+        if (!withinBounds || (rect.top <= y && y <= rect.bottom)) {
+          const topDiff = y - rect.top;
+          const bottomDiff = rect.bottom - y;
+          const topThresholds = thresholds?.top || {
+            slow: 20,
+            medium: 9,
+            fast: 3,
+          };
+          const bottomThresholds = thresholds?.bottom || {
+            slow: 20,
+            medium: 9,
+            fast: 3,
+          };
+
+          if (topDiff <= topThresholds.slow && windows.vertical.scrollTop > 0) {
+            let by = 5;
+            if (topDiff < topThresholds.fast) {
+              by = 30;
+            } else if (topDiff < topThresholds.medium) {
+              by = 15;
+            }
+            scroll(windows.vertical, -by, true);
+          } else if (
+            bottomDiff <= bottomThresholds.slow &&
+            windows.vertical.scrollTop <
+              windows.vertical.scrollHeight - windows.vertical.clientHeight
+          ) {
+            let by = 5;
+            if (bottomDiff < bottomThresholds.fast) {
+              by = 30;
+            } else if (bottomDiff < bottomThresholds.medium) {
+              by = 15;
+            }
+            scroll(windows.vertical, by, true);
           }
-          scroll(windows.vertical, -by, true);
-        } else if (
-          bottomDiff <= bottomThresholds.slow &&
-          windows.vertical.scrollTop < windows.vertical.scrollHeight - windows.vertical.clientHeight
-        ) {
-          let by = 5;
-          if (bottomDiff < bottomThresholds.fast) {
-            by = 30;
-          } else if (bottomDiff < bottomThresholds.medium) {
-            by = 15;
-          }
-          scroll(windows.vertical, by, true);
         }
       }
-    }
-  }, [windows, withinBounds, thresholds, scroll, clearIntervals]);
+    },
+    [windows, withinBounds, thresholds, scroll, clearIntervals]
+  );
 
   // Create event handlers with useCallback
-  const handleDragOver = useCallback((e: DragEvent) => {
-    if (coords.current.x !== e.x || coords.current.y !== e.y) {
-      checkCoords(e.x, e.y);
-      coords.current = { x: e.x, y: e.y };
-    }
-  }, [checkCoords]);
+  const handleDragOver = useCallback(
+    (e: DragEvent) => {
+      if (coords.current.x !== e.x || coords.current.y !== e.y) {
+        checkCoords(e.x, e.y);
+        coords.current = { x: e.x, y: e.y };
+      }
+    },
+    [checkCoords]
+  );
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    checkCoords(e.x, e.y);
-  }, [checkCoords]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      checkCoords(e.x, e.y);
+    },
+    [checkCoords]
+  );
 
   // Clean up intervals when component unmounts or dependencies change
   useEffect(() => {
@@ -212,30 +255,34 @@ export const WindowAutoScroll: React.FC<WindowAutoScrollProps> = ({
   // Set up scrollable parent windows
   useEffect(() => {
     if (active) {
-      let horizontal = ref.current ? getScrollParent(ref.current, "horizontal") : null;
-      let vertical = ref.current ? getScrollParent(ref.current, "vertical") : null;
-      
+      let horizontal = ref.current
+        ? getScrollParent(ref.current, 'horizontal')
+        : null;
+      let vertical = ref.current
+        ? getScrollParent(ref.current, 'vertical')
+        : null;
+
       setWindows({ horizontal, vertical });
     }
   }, [active]);
-  
+
   // Set up event listeners
   useEffect(() => {
     if (!active || !eventType) return;
-    
-    if (eventType === "drag") {
-      document.addEventListener("dragover", handleDragOver);
-    } else if (eventType === "mouse") {
-      document.addEventListener("mousemove", handleMouseMove);
+
+    if (eventType === 'drag') {
+      document.addEventListener('dragover', handleDragOver);
+    } else if (eventType === 'mouse') {
+      document.addEventListener('mousemove', handleMouseMove);
     }
 
     return () => {
-      document.removeEventListener("dragover", handleDragOver);
-      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener('dragover', handleDragOver);
+      document.removeEventListener('mousemove', handleMouseMove);
     };
   }, [active, eventType, handleDragOver, handleMouseMove]);
 
-  return <div ref={ref} style={{ width: '100%', height: '100%' }}></div>;
-}
+  return <div ref={ref} style={{ width: '100%', height: '100%' }} />;
+};
 
 export default WindowAutoScroll;

@@ -5,7 +5,7 @@
 import {
   recordComponentGif,
   createComponentHtml,
-} from "../visual-agent/helpers/gif-recorder";
+} from '../visual-agent/helpers/gif-recorder';
 
 /**
  * Records a GIF of an element with animation

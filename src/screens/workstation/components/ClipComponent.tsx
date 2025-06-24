@@ -6,9 +6,9 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import { createPortal, flushSync } from "react-dom";
-import DNR, { DNRData } from "../../../components/DNR";
+} from 'react';
+import { createPortal, flushSync } from 'react-dom';
+import DNR, { DNRData } from '../../../components/DNR';
 import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
 import { openContextMenu } from '@orpheus/services/electron/utils';
 import {
@@ -17,9 +17,12 @@ import {
   TimelinePosition,
   Track,
 } from '@orpheus/types/core';
-import { BaseClipComponentProps, ResizeDNRData } from '@orpheus/types/components';
+import {
+  BaseClipComponentProps,
+  ResizeDNRData,
+} from '@orpheus/types/components';
 import { shadeColor } from '@orpheus/utils/general';
-import useClickAway from "../../../services/hooks/useClickAway";
+import useClickAway from '../../../services/hooks/useClickAway';
 import {
   scrollToAndAlign,
   waitForScrollWheelStop,
@@ -105,13 +108,13 @@ function ClipComponent({
   const ref = useClickAway<HTMLDivElement>(handleClickAway);
 
   useEffect(() => {
-    const element = document.getElementById("timeline-editor-window");
+    const element = document.getElementById('timeline-editor-window');
     if (element instanceof HTMLElement) {
       timelineEditorWindowInner.current = element;
     }
 
     if (ref.current)
-      laneRef.current = ref.current.closest<HTMLElement>(".lane");
+      laneRef.current = ref.current.closest<HTMLElement>('.lane');
 
     return () => setAllowMenuAndShortcuts(true);
   }, []);
@@ -120,18 +123,18 @@ function ClipComponent({
     function handleKeyDown(e: KeyboardEvent) {
       if (selectedClipId === clip.id && allowMenuAndShortcuts) {
         switch (e.code) {
-          case "F2":
+          case 'F2':
             setRenaming(true);
             break;
-          case "Delete":
+          case 'Delete':
             deleteClip(clip);
             break;
         }
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedClipId, clip, allowMenuAndShortcuts, deleteClip]);
 
   useEffect(() => {
@@ -163,7 +166,7 @@ function ClipComponent({
         !ref.current?.contains(target) &&
         !loopRef.current?.contains(target)
       ) {
-        const newEnteredLane = target.closest<HTMLElement>(".lane");
+        const newEnteredLane = target.closest<HTMLElement>('.lane');
 
         if (
           newEnteredLane &&
@@ -176,7 +179,7 @@ function ClipComponent({
           if (targetTrack) {
             if (targetTrack.type === track.type)
               setLaneTarget({ track: targetTrack, element: newEnteredLane });
-            else newEnteredLane.classList.add("invalid-track-type");
+            else newEnteredLane.classList.add('invalid-track-type');
 
             setEnteredLane(newEnteredLane);
           }
@@ -185,17 +188,17 @@ function ClipComponent({
     }
 
     function handleMouseLeave(e: MouseEvent) {
-      (e.currentTarget as HTMLElement).classList.remove("invalid-track-type");
+      (e.currentTarget as HTMLElement).classList.remove('invalid-track-type');
     }
 
     if (dragging) {
-      document.addEventListener("mouseover", handleMouseOver);
-      enteredLane?.addEventListener("mouseleave", handleMouseLeave);
+      document.addEventListener('mouseover', handleMouseOver);
+      enteredLane?.addEventListener('mouseleave', handleMouseLeave);
     }
 
     return () => {
-      document.removeEventListener("mouseover", handleMouseOver);
-      enteredLane?.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener('mouseover', handleMouseOver);
+      enteredLane?.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, [dragging, laneTarget, enteredLane]);
 
@@ -226,11 +229,11 @@ function ClipComponent({
 
   useLayoutEffect(() => {
     if (
-      scrollToItem?.type === "clip" &&
+      scrollToItem?.type === 'clip' &&
       scrollToItem.params?.clipId === clip.id
     ) {
       const timelineEditorWindow = document.getElementById(
-        "timeline-editor-window"
+        'timeline-editor-window'
       )!;
 
       waitForScrollWheelStop(timelineEditorWindow, () => {
@@ -305,7 +308,7 @@ function ClipComponent({
   function handleContextMenu(e: React.MouseEvent) {
     e.stopPropagation();
 
-    if (document.activeElement?.nodeName !== "INPUT") {
+    if (document.activeElement?.nodeName !== 'INPUT') {
       openContextMenu(ContextMenuType.Clip, { clip }, (params) => {
         switch (params.action) {
           case 0:
@@ -356,7 +359,7 @@ function ClipComponent({
   }
 
   function handleDragStop(e: MouseEvent, data: DNRData) {
-    enteredLane?.classList.remove("invalid-track-type");
+    enteredLane?.classList.remove('invalid-track-type');
 
     setDragging(false);
     setShowGuidelines([false, false, false]);
@@ -399,9 +402,10 @@ function ClipComponent({
 
     onSetClip({
       ...clip,
-      loopEnd: loopWidth > 0 
-        ? TimelinePosition.fromMargin(coords.endX + loopWidth)
-        : TimelinePosition.fromMargin(coords.endX)
+      loopEnd:
+        loopWidth > 0
+          ? TimelinePosition.fromMargin(coords.endX + loopWidth)
+          : TimelinePosition.fromMargin(coords.endX),
     });
     setAllowMenuAndShortcuts(true);
     rest.onLoopStop?.(e, data);
@@ -420,7 +424,7 @@ function ClipComponent({
       if (newCoords.endX > endLimitX) newCoords.endX = endLimitX;
     }
 
-    if (data.edge.x === "right")
+    if (data.edge.x === 'right')
       if (loopWidth > 0)
         setLoopWidth(Math.max(0, loopWidth - (newCoords.endX - coords.endX)));
 
@@ -430,7 +434,7 @@ function ClipComponent({
   }
 
   function handleResizeStart(e: React.MouseEvent, data: ResizeDNRData) {
-    setShowGuidelines([data.edge.x === "left", data.edge.x === "right", false]);
+    setShowGuidelines([data.edge.x === 'left', data.edge.x === 'right', false]);
     setAllowMenuAndShortcuts(false);
     rest.onResizeStart?.(e, data);
   }
@@ -465,11 +469,11 @@ function ClipComponent({
 
   const style = {
     clip: {
-      position: "relative",
+      position: 'relative',
       height: height - 15,
-      border: "1px solid var(--border3)",
-      borderTop: "none",
-      borderRadius: "0 0 9px 9px",
+      border: '1px solid var(--border3)',
+      borderTop: 'none',
+      borderRadius: '0 0 9px 9px',
       opacity: clip.muted ? 0.55 : 1,
     },
     resizeRight: {
@@ -480,26 +484,26 @@ function ClipComponent({
       width: Math.max(width + loopWidth, 1),
       height: 16,
       zIndex: selected ? 13 : 12,
-      border: "1px solid var(--border3)",
-      minWidth: renaming ? 100 : "auto",
+      border: '1px solid var(--border3)',
+      minWidth: renaming ? 100 : 'auto',
     },
     clipNameContainerInner: {
-      backgroundColor: selected ? "#fff" : shadeColor(track.color, 0.25),
+      backgroundColor: selected ? '#fff' : shadeColor(track.color, 0.25),
       opacity: clip.muted ? 0.55 : 1,
       paddingRight: renaming ? 0 : 3,
     },
     nameForm: {
-      display: "flex",
-      width: "100%",
-      height: "100%",
-      overflow: "hidden",
-      padding: "0 2px",
+      display: 'flex',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+      padding: '0 2px',
     },
     nameText: {
       fontSize: 13,
-      color: "#000a",
-      fontWeight: "bold",
-      padding: "0 3px",
+      color: '#000a',
+      fontWeight: 'bold',
+      padding: '0 3px',
       lineHeight: 1,
     },
     spriteContainer: {
@@ -507,49 +511,49 @@ function ClipComponent({
       zIndex: (selected ? 10 : 9) + (width === 0 ? 1 : 0),
     },
     sprite: {
-      backgroundColor: selected ? "#fff" : shadeColor(track.color, 0.2),
+      backgroundColor: selected ? '#fff' : shadeColor(track.color, 0.2),
     },
-    loopOverlay: { top: 0, left: "100%", width: loopWidth - 5, zIndex: 11 },
+    loopOverlay: { top: 0, left: '100%', width: loopWidth - 5, zIndex: 11 },
     loopContainer: {
       width: Math.max(0, loopWidth + 1),
       height: height + 1,
-      transform: "translate(-1px, -2px)",
+      transform: 'translate(-1px, -2px)',
       zIndex: selected ? 10 : 9,
-      borderRight: repetitions % 1 === 0 ? "none" : "1px solid var(--border3)",
+      borderRight: repetitions % 1 === 0 ? 'none' : '1px solid var(--border3)',
       backgroundColor:
-        width === 0 ? (selected ? "#fff" : shadeColor(track.color, 0.2)) : "",
+        width === 0 ? (selected ? '#fff' : shadeColor(track.color, 0.2)) : '',
     },
     loopRepetition: {
       width: width + 1,
       flexShrink: 0,
-      backgroundColor: selected ? "#fff" : shadeColor(track.color, 0.2),
+      backgroundColor: selected ? '#fff' : shadeColor(track.color, 0.2),
       marginTop: 17,
       marginRight: -1,
     },
     automationContainer: {
-      top: "calc(100% - 1px)",
+      top: 'calc(100% - 1px)',
       zIndex: 9,
-      borderTop: "1px solid var(--border13)",
+      borderTop: '1px solid var(--border13)',
     },
     automationLaneContainer: (lane: AutomationLane, idx: number) => ({
       width: Math.max(0, width + loopWidth),
       height: (lane.expanded ? BASE_HEIGHT * verticalScale : 22) + 1,
-      overflow: "hidden",
+      overflow: 'hidden',
       borderBottom: `1px solid ${
-        idx === automationLanes.length - 1 ? "#0000" : "var(--border13)"
+        idx === automationLanes.length - 1 ? '#0000' : 'var(--border13)'
       }`,
-      borderRight: repetitions % 1 === 0 ? "none" : "1px solid var(--border3)",
+      borderRight: repetitions % 1 === 0 ? 'none' : '1px solid var(--border3)',
       marginTop: -1,
-      filter: clip.muted ? "grayscale(0.5)" : "",
+      filter: clip.muted ? 'grayscale(0.5)' : '',
     }),
     automationLoopContainer: (idx: number) => ({
       width: width + (idx > 0 ? 1 : 0),
-      minHeight: "calc(100% + 1px)",
+      minHeight: 'calc(100% + 1px)',
       flexShrink: 0,
-      border: "1px solid var(--border3)",
+      border: '1px solid var(--border3)',
       marginRight: -1,
       borderRadius: 9,
-      overflow: "hidden",
+      overflow: 'hidden',
     }),
   } as const;
 
@@ -581,7 +585,7 @@ function ClipComponent({
         }}
         restrictToContainerBounds={{ x: true, y: false }}
         snapGridSize={{ x: snapWidth }}
-        style={{ borderRadius: "0 0 10px 10px" }}
+        style={{ borderRadius: '0 0 10px 10px' }}
       >
         <div className="position-relative m-0" style={style.clipNameContainer}>
           <div
@@ -603,9 +607,9 @@ function ClipComponent({
                   ref={nameInputRef}
                   style={{
                     fontSize: 13,
-                    fontWeight: "bold",
-                    width: "100%",
-                    color: "#000a",
+                    fontWeight: 'bold',
+                    width: '100%',
+                    color: '#000a',
                   }}
                   value={name}
                 />
@@ -613,18 +617,18 @@ function ClipComponent({
             ) : (
               <div
                 className="position-relative col-12 h-100"
-                style={{ contain: "paint" }}
+                style={{ contain: 'paint' }}
               >
                 <span
                   className="d-flex position-sticky clip-title text-nowrap"
                   onDoubleClick={() => setRenaming(true)}
                   style={{
                     left: 0,
-                    width: "fit-content",
-                    cursor: "text",
+                    width: 'fit-content',
+                    cursor: 'text',
                     ...style.nameText,
                   }}
-                  title={clip.name + (clip.muted ? " (muted)" : "")}
+                  title={clip.name + (clip.muted ? ' (muted)' : '')}
                 >
                   {clip.name}
                 </span>
@@ -650,10 +654,10 @@ function ClipComponent({
           {automationTrack.automation &&
             automationLanes.map((lane: AutomationLane, idx: number) => {
               const color = selected
-                ? "#fff"
+                ? '#fff'
                 : lane.enabled === false
-                ? "var(--bg12)"
-                : track.color;
+                  ? 'var(--bg12)'
+                  : track.color;
               const sprite = rest.automationSprite?.(
                 lane.expanded ? BASE_HEIGHT * verticalScale : 22
               );
@@ -675,9 +679,9 @@ function ClipComponent({
                         >
                           <div
                             style={{
-                              height: "100%",
+                              height: '100%',
                               backgroundColor: color,
-                              opacity: "var(--opacity1)",
+                              opacity: 'var(--opacity1)',
                             }}
                           >
                             <div style={{ opacity: i > 0 ? 0.75 : 1 }}>
@@ -692,7 +696,7 @@ function ClipComponent({
                       className="col-12 h-100"
                       style={{
                         backgroundColor: color,
-                        opacity: "var(--opacity1)",
+                        opacity: 'var(--opacity1)',
                       }}
                     />
                   )}
@@ -719,7 +723,7 @@ function ClipComponent({
           right: {
             style: {
               zIndex: renaming ? 11 : selected ? 15 : 14,
-              cursor: "e-resize",
+              cursor: 'e-resize',
             },
           },
         }}

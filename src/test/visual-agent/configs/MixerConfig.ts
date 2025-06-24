@@ -1,105 +1,106 @@
-import { VisualTestConfig } from "../types";
+import { VisualTestConfig } from '../types';
 
 /**
  * Test configuration for the Mixer component
  */
 export const MixerConfig: VisualTestConfig = {
-  componentName: "Mixer",
-  importPath: "../../screens/workstation/components/Mixer",
+  componentName: 'Mixer',
+  importPath: '../../screens/workstation/components/Mixer',
   props: {
     tracks: [
       {
-        id: "track-1",
-        name: "Vocals",
-        type: "audio",
+        id: 'track-1',
+        name: 'Vocals',
+        type: 'audio',
         mute: false,
         solo: false,
         armed: false,
         volume: -6,
         pan: 0,
-        color: "#ff6b6b",
-        effects: []
+        color: '#ff6b6b',
+        effects: [],
       },
       {
-        id: "track-2",
-        name: "Guitar", 
-        type: "audio",
+        id: 'track-2',
+        name: 'Guitar',
+        type: 'audio',
         mute: false,
         solo: false,
         armed: true,
         volume: -3,
         pan: 0.2,
-        color: "#4ecdc4",
-        effects: []
-      }
+        color: '#4ecdc4',
+        effects: [],
+      },
     ],
     masterVolume: -2,
     onVolumeChange: () => {},
     onPanChange: () => {},
     onMuteToggle: () => {},
     onSoloToggle: () => {},
-    onEffectChange: () => {}
+    onEffectChange: () => {},
   },
   states: [
     {
-      name: "default-layout",
-      props: {}
+      name: 'default-layout',
+      props: {},
     },
     {
-      name: "with-master-section",
+      name: 'with-master-section',
       props: {
         showMaster: true,
-        masterVolume: 0
-      }
+        masterVolume: 0,
+      },
     },
     {
-      name: "fader-interaction",
+      name: 'fader-interaction',
       captureGif: true,
       interactions: [
         {
-          type: "drag",
+          type: 'drag',
           target: "[data-testid='volume-fader-track-1']",
           value: { startY: 200, endY: 100 },
-          delay: 800
+          delay: 800,
         },
         {
-          type: "drag",
-          target: "[data-testid='volume-fader-track-2']", 
+          type: 'drag',
+          target: "[data-testid='volume-fader-track-2']",
           value: { startY: 180, endY: 120 },
-          delay: 1200
-        }
-      ]
+          delay: 1200,
+        },
+      ],
     },
     {
-      name: "mute-solo-interactions",
+      name: 'mute-solo-interactions',
       captureGif: true,
       interactions: [
         {
-          type: "click",
+          type: 'click',
           target: "[data-testid='mute-button-track-1']",
-          delay: 600
+          delay: 600,
         },
         {
-          type: "click",
+          type: 'click',
           target: "[data-testid='solo-button-track-2']",
-          delay: 1200
-        }
-      ]
-    }
+          delay: 1200,
+        },
+      ],
+    },
   ],
-  containerStyle: "width: 1200px; height: 800px; background: #1e1e1e; padding: 20px;",
+  containerStyle:
+    'width: 1200px; height: 800px; background: #1e1e1e; padding: 20px;',
   animationDuration: 4000,
   additionalImports: [
-    "import { WorkstationContext } from '@orpheus/contexts';"
+    "import { WorkstationContext } from '@orpheus/contexts';",
   ],
   contextProviders: [
     {
-      import: "WorkstationContext",
+      import: 'WorkstationContext',
       props: {
         tracks: [],
-        setTracks: "() => {}",
-        setTrack: "() => {}"
-      }
-    }
-  ]
+        setTracks: '() => {}',
+        setTrack: '() => {}',
+      },
+    },
+  ],
 };

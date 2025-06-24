@@ -11,6 +11,7 @@ Orpheus Engine Workstation (OEW) is a modern Digital Audio & Video Workstation b
 - ✅ **Enhanced UI Components**: Professional DAW interface with Ableton -inspired design
 - ✅ **Advanced Testing Suite**: Comprehensive test coverage with visual regression testing
 - ✅ **TypeScript Compliance**: 100% TypeScript compliance with zero compilation errors
+- ✅ **Coding Best Practices**: Industry-leading code quality standards and automation
 - ✅ **Alias System**: Improved import path resolution with `@orpheus/*` aliases
 - ✅ **Test Infrastructure**: Fixed import path issues and comprehensive Lane component testing
 
@@ -21,6 +22,13 @@ Orpheus Engine Workstation (OEW) is a modern Digital Audio & Video Workstation b
 - Fixed import path alias resolution in test files
 - Resolved ipcRenderer errors in WorkstationProvider
 
+## 📚 Documentation
+
+- **[Development Setup Guide](docs/DEVELOPMENT_SETUP.md)** - Complete setup instructions
+- **[Coding Standards](docs/CODING_STANDARDS.md)** - Comprehensive coding best practices
+- **[Code Review Checklist](docs/CODE_REVIEW_CHECKLIST.md)** - Quality assurance guidelines
+- **[Best Practices Implementation](docs/BEST_PRACTICES_IMPLEMENTATION.md)** - Implementation summary
+
 ## ✨ Features
 
 - **🎛️ Professional DAW Interface**: Modern workstation UI with timeline, track management, and mixer
@@ -28,6 +36,7 @@ Orpheus Engine Workstation (OEW) is a modern Digital Audio & Video Workstation b
 - **🖥️ Electron Desktop App**: Native desktop experience with system integration
 - **⚡ Fast Development**: Vite-powered development with hot module replacement
 - **🧪 Comprehensive Testing**: Well-tested components with visual regression testing
+- **🔧 Code Quality**: Automated linting, formatting, and quality checks
 - **📊 Advanced UI Components**: Resizable panels, drag-and-drop, and professional controls
 - **🎨 Modern Styling**: FL Studio-inspired design with dark theme and professional aesthetics
 - **🔧 TypeScript**: Full type safety with zero compilation errors

@@ -21,7 +21,7 @@ export async function expectScreenshot(
   const {
     threshold = 0.01,
     snapshotsDir = '__snapshots__/screenshots',
-    diffsDir = '__snapshots__/diffs'
+    diffsDir = '__snapshots__/diffs',
   } = options;
 
   // Create directories if they don't exist
@@ -36,7 +36,7 @@ export async function expectScreenshot(
     customSnapshotsDir: snapshotsDir,
     customDiffDir: diffsDir,
     customSnapshotIdentifier: name,
-    failureThreshold: threshold
+    failureThreshold: threshold,
   });
 }
 
@@ -57,8 +57,8 @@ export async function takeScreenshot(element: HTMLElement): Promise<Buffer> {
       x: 0,
       y: 0,
       width: element.clientWidth,
-      height: element.clientHeight
-    }
+      height: element.clientHeight,
+    },
   });
 
   await browser.close();

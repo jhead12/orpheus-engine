@@ -1,19 +1,19 @@
-import { describe, it, expect } from "vitest";
-import { TimelinePosition } from "../../../../types/core";
+import { describe, it, expect } from 'vitest';
+import { TimelinePosition } from '../../../../types/core';
 
-describe("TimelinePosition toSeconds() fix", () => {
-  it("should have toSeconds method available", () => {
+describe('TimelinePosition toSeconds() fix', () => {
+  it('should have toSeconds method available', () => {
     const position = new TimelinePosition(1, 2, 240);
 
     // This should not throw "toSeconds is not a function" error
-    expect(typeof position.toSeconds).toBe("function");
+    expect(typeof position.toSeconds).toBe('function');
 
     // Should return a number
     const result = position.toSeconds();
-    expect(typeof result).toBe("number");
+    expect(typeof result).toBe('number');
   });
 
-  it("should calculate seconds correctly", () => {
+  it('should calculate seconds correctly', () => {
     const position = new TimelinePosition(2, 1, 480);
     const seconds = position.toSeconds();
 

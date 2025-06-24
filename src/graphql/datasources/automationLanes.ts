@@ -1,10 +1,10 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
 import {
   AutomationLane,
   AutomationNode,
   AutomationLaneEnvelope,
-} from "../../types/core";
+} from '../../types/core';
 
 interface AutomationLaneInput {
   label: string;
@@ -87,7 +87,7 @@ export class AutomationLaneAPI {
   ): Promise<AutomationNode> {
     const lane = await this.get(laneId);
     if (!lane) {
-      throw new Error("Automation lane not found");
+      throw new Error('Automation lane not found');
     }
 
     const nodeId = uuidv4();
@@ -121,7 +121,7 @@ export class AutomationLaneAPI {
   ): Promise<AutomationLane> {
     const existingLane = await this.get(id);
     if (!existingLane) {
-      throw new Error("Automation lane not found");
+      throw new Error('Automation lane not found');
     }
 
     const updatedLane: AutomationLane = {

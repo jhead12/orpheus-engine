@@ -5,8 +5,8 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { Buffer } from "buffer";
+} from 'react';
+import { Buffer } from 'buffer';
 import {
   IconButton,
   SpeedDial,
@@ -14,14 +14,14 @@ import {
   SpeedDialIcon,
   Tabs,
   Tab,
-} from "@mui/material";
-import { useResizeDetector } from "react-resize-detector";
+} from '@mui/material';
+import { useResizeDetector } from 'react-resize-detector';
 import {
   SyncScroll,
   SyncScrollPane,
   Scrollbar,
   WindowAutoScroll,
-} from "../../components";
+} from '../../components';
 import {
   TrackComponent,
   RegionComponent,
@@ -29,21 +29,21 @@ import {
   Lane,
   ZoomControls,
   AudioAnalysisPanel,
-} from "./components";
-import { AudioPluginDemo } from "../../components/demos/AudioPluginDemo";
-import { Playhead as PlayheadIcon, TrackIcon } from "../../components/icons";
-import { SortableList, SortableListItem } from "../../components/widgets";
-import { AnalysisContext, useWorkstation } from "../../contexts";
-import { AudioAnalysisResults } from "../../contexts/types";
+} from './components';
+import { AudioPluginDemo } from '../../components/demos/AudioPluginDemo';
+import { Playhead as PlayheadIcon, TrackIcon } from '../../components/icons';
+import { SortableList, SortableListItem } from '../../components/widgets';
+import { AnalysisContext, useWorkstation } from '../../contexts';
+import { AudioAnalysisResults } from '../../contexts/types';
 import {
   Clip,
   ContextMenuType,
   Track,
   TrackType,
   AutomationMode,
-} from "../../types/core";
-import { TimelinePosition } from "@orpheus/types/core";
-import { AudioAnalysisType } from "@orpheus/services/types/types";
+} from '../../types/core';
+import { TimelinePosition } from '@orpheus/types/core';
+import { AudioAnalysisType } from '@orpheus/services/types/types';
 import {
   BASE_HEIGHT,
   isValidAudioTrackFileFormat,
@@ -51,7 +51,7 @@ import {
   scrollToAndAlign,
   timelineEditorWindowScrollThresholds,
   waitForScrollWheelStop,
-} from "../../services/utils/utils";
+} from '../../services/utils/utils';
 import {
   SortData,
   clamp,
@@ -59,21 +59,21 @@ import {
   isMacOS,
   openContextMenu,
   debounce,
-} from "./editor-utils";
+} from './editor-utils';
 
 // Define getBaseTrack locally since it's not exported from utils
-const getBaseTrack = (type = "audio") => ({
-  id: "track-" + Math.random().toString(36).substring(2, 11),
+const getBaseTrack = (type = 'audio') => ({
+  id: `track-${Math.random().toString(36).substring(2, 11)}`,
   name: `New ${type.charAt(0).toUpperCase() + type.substring(1)} Track`,
   automationLanes: [],
   clips: [],
-  color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+  color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
   effects: [],
   expanded: true,
   pan: 0,
   solo: false,
   muted: false,
-  type: type === "midi" ? TrackType.Midi : TrackType.Audio, // Use TrackType enum instead of raw numbers
+  type: type === 'midi' ? TrackType.Midi : TrackType.Audio, // Use TrackType enum instead of raw numbers
   volume: 0,
   // Add missing properties required by Track type with correct structure
   fx: {
@@ -131,7 +131,7 @@ export function AudioAnalysisProvider({
           break;
       }
     } catch (error) {
-      console.error("Error running audio analysis:", error);
+      console.error('Error running audio analysis:', error);
     }
 
     setAnalysisResults(results);
@@ -194,7 +194,7 @@ export function AudioAnalysisProvider({
     };
 
     return {
-      features: features,
+      features,
     };
   };
 
@@ -291,14 +291,14 @@ export default function Editor() {
       if (!e.ctrlKey) macOSCtrlPressed.current = false;
     }
 
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       setAllowMenuAndShortcuts?.(true);
     };
   }, [setAllowMenuAndShortcuts]);
@@ -340,21 +340,21 @@ export default function Editor() {
       e.preventDefault();
       if (e.dataTransfer)
         e.dataTransfer.dropEffect =
-          !dragData.target || dragData.target.incompatible ? "none" : "copy";
+          !dragData.target || dragData.target.incompatible ? 'none' : 'copy';
     }
 
-    document.body.addEventListener("dragenter", handleDragEnter, {
+    document.body.addEventListener('dragenter', handleDragEnter, {
       capture: true,
     });
-    document.body.addEventListener("dragleave", handleDragLeave);
-    document.body.addEventListener("dragover", handleDragOver);
+    document.body.addEventListener('dragleave', handleDragLeave);
+    document.body.addEventListener('dragover', handleDragOver);
 
     return () => {
-      document.body.removeEventListener("dragenter", handleDragEnter, {
+      document.body.removeEventListener('dragenter', handleDragEnter, {
         capture: true,
       });
-      document.body.removeEventListener("dragleave", handleDragLeave);
-      document.body.removeEventListener("dragover", handleDragOver);
+      document.body.removeEventListener('dragleave', handleDragLeave);
+      document.body.removeEventListener('dragover', handleDragOver);
     };
   }, [dragData.target, setAllowMenuAndShortcuts]);
 
@@ -390,15 +390,15 @@ export default function Editor() {
   }, [scrollToBottom]);
 
   useEffect(() => {
-    if (scrollToItem?.type === "cursor") {
+    if (scrollToItem?.type === 'cursor') {
       const timelineEditorWindow = timelineEditorWindowRef.current!;
 
       waitForScrollWheelStop(timelineEditorWindow, () => {
         switch (scrollToItem.params?.alignment) {
-          case "center":
+          case 'center':
             centerOnPlayhead();
             break;
-          case "scrollIntoView":
+          case 'scrollIntoView':
             const playheadEl = playheadRef.current!;
 
             if (playheadEl.offsetLeft < timelineEditorWindow.scrollLeft)
@@ -456,11 +456,11 @@ export default function Editor() {
       : !dragData.target?.track;
 
     return {
-      className:
-        "dropzone" +
-        (isDragTarget && dragData.target?.incompatible
-          ? " invalid-track-type"
-          : ""),
+      className: `dropzone${
+        isDragTarget && dragData.target?.incompatible
+          ? ' invalid-track-type'
+          : ''
+      }`,
       onDragEnter: (e) => handleDropzoneDragEnter(e, track),
       onDragLeave: handleDropzoneDragLeave,
       onDragOver: (e) => e.preventDefault(),
@@ -469,18 +469,18 @@ export default function Editor() {
   }
 
   function getTrackClass(idx: number) {
-    let className = "";
+    let className = '';
 
     const sorting =
       trackReorderData.sourceIndex > -1 && trackReorderData.edgeIndex > -1;
     const isSortTarget = sorting && trackReorderData.sourceIndex === idx;
 
-    if (trackReorderData.edgeIndex === idx + 1) className += "sort-indicator";
+    if (trackReorderData.edgeIndex === idx + 1) className += 'sort-indicator';
     else if (trackReorderData.edgeIndex === 0 && idx === 0)
-      className += "sort-indicator sort-indicator-top";
+      className += 'sort-indicator sort-indicator-top';
 
     if (isSortTarget || dragData.target?.track?.id === tracks[idx].id)
-      className += " overlay-1";
+      className += ' overlay-1';
 
     return className;
   }
@@ -502,7 +502,7 @@ export default function Editor() {
                 break;
               case TrackType.Midi:
                 incompatible = !dragData.items.filter(
-                  (file) => file.type === "audio/midi"
+                  (file) => file.type === 'audio/midi'
                 ).length;
                 break;
               default:
@@ -528,7 +528,7 @@ export default function Editor() {
     if (outOfBounds) {
       if (
         !e.relatedTarget ||
-        !(e.relatedTarget as HTMLElement).closest(".dropzone")
+        !(e.relatedTarget as HTMLElement).closest('.dropzone')
       ) {
         handleDropzoneDragEnter.cancel();
         setDragData({ ...dragData, target: null });
@@ -561,17 +561,17 @@ export default function Editor() {
             });
             const clip = await createAudioClip(
               file,
-              dragData.target.track?.id || "", // Track ID
+              dragData.target.track?.id || '', // Track ID
               pos // Position
             );
 
             if (clip) {
               clips.push(clip);
               if (dragData.target.track)
-                pos = clip.end.copy().snap(snapGridSize, "ceil");
+                pos = clip.end.copy().snap(snapGridSize, 'ceil');
             }
           }
-        } else if (files[i].type === "audio/midi") {
+        } else if (files[i].type === 'audio/midi') {
           if (
             !dragData.target.track ||
             dragData.target.track.type === TrackType.Midi
@@ -586,7 +586,7 @@ export default function Editor() {
       } else if (clips.length > 0) {
         const newTracks = clips.map((clip) => ({
           ...getBaseTrack(),
-          name: clip.name || `New ${clip.type || "Audio"} Track`, // Ensure name is never undefined
+          name: clip.name || `New ${clip.type || 'Audio'} Track`, // Ensure name is never undefined
           clips: [clip],
         }));
 
@@ -597,7 +597,7 @@ export default function Editor() {
           timelineEditorWindow.scrollHeight - timelineEditorWindow.clientHeight
         )
           setScrollToItem({
-            type: "track",
+            type: 'track',
             params: { trackId: newTracks[newTracks.length - 1].id },
           });
       }
@@ -635,7 +635,7 @@ export default function Editor() {
   function handleClipContextMenu(_e: React.MouseEvent, clip: Clip) {
     openContextMenu(ContextMenuType.Clip, {}, (params: { action: string }) => {
       switch (params.action) {
-        case "analyze":
+        case 'analyze':
           handleSelectForAnalysis(clip);
           break;
         // ... other context menu actions ...
@@ -656,7 +656,7 @@ export default function Editor() {
 
       setTracks(newTracks);
       setScrollToItem({
-        type: "track",
+        type: 'track',
         params: { trackId: newTracks[data.destIndex].id },
       });
     }
@@ -751,9 +751,9 @@ export default function Editor() {
 
   const dropzonePlaceholderTracks = useMemo(() => {
     return dragData.items.map((item) => {
-      const track = { ...getBaseTrack("placeholder"), name: "" };
+      const track = { ...getBaseTrack('placeholder'), name: '' };
 
-      if (item.type === "audio/midi") track.type = TrackType.Midi;
+      if (item.type === 'audio/midi') track.type = TrackType.Midi;
 
       return track;
     });
@@ -771,61 +771,61 @@ export default function Editor() {
 
   const style = {
     container: {
-      position: "relative",
-      overflow: "hidden",
-      backgroundColor: "var(--bg1)",
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundColor: 'var(--bg1)',
     },
     editorLeftTop: {
-      position: "sticky",
+      position: 'sticky',
       top: 0,
       height: 33,
-      backgroundColor: "var(--bg2)",
-      borderBottom: "1px solid var(--border1)",
+      backgroundColor: 'var(--bg2)',
+      borderBottom: '1px solid var(--border1)',
       zIndex: 17,
     },
     speedDial: {
-      boxShadow: "none",
-      backgroundColor: "var(--color1)",
+      boxShadow: 'none',
+      backgroundColor: 'var(--color1)',
       width: 24,
       height: 24,
       minHeight: 0,
     },
     placeholderTrack: {
       display:
-        !!dragData.target && dragData.target.track === null ? "flex" : "none",
-      pointerEvents: "none",
+        !!dragData.target && dragData.target.track === null ? 'flex' : 'none',
+      pointerEvents: 'none',
     },
     editorRight: {
-      position: "relative",
+      position: 'relative',
       flex: 1,
-      overflow: "hidden",
+      overflow: 'hidden',
       zIndex: 0,
     },
     timelineEditorWindow: {
-      position: "relative",
-      width: "100%",
+      position: 'relative',
+      width: '100%',
       flex: 1,
-      overflow: lockScrolling ? "hidden" : "scroll",
+      overflow: lockScrolling ? 'hidden' : 'scroll',
     },
     timelineEditorWindowInner: {
       width: editorWidth + 11,
-      minWidth: "100%",
-      minHeight: "100%",
+      minWidth: '100%',
+      minHeight: '100%',
     },
     timelineRegionContainer: {
-      position: "sticky",
+      position: 'sticky',
       top: 0,
-      backgroundColor: "var(--bg2)",
+      backgroundColor: 'var(--bg2)',
       height: 12,
-      borderBottom: "1px solid var(--border1)",
+      borderBottom: '1px solid var(--border1)',
       zIndex: 19,
     },
     timelineRulerContainer: {
-      position: "sticky",
+      position: 'sticky',
       top: 12,
       zIndex: 17,
       height: 21,
-      backgroundColor: "var(--bg2)",
+      backgroundColor: 'var(--bg2)',
     },
     placeholderLaneContainer: {
       maxWidth: maxEditorWidth,
@@ -838,31 +838,31 @@ export default function Editor() {
       bottom: 0,
       left: playheadPos.toMargin() - 1,
       zIndex: 18,
-      backgroundColor: "var(--color1)",
+      backgroundColor: 'var(--color1)',
     },
     songRegionOverlay: {
       height: editorHeight ? editorHeight - 15 : undefined,
-      backgroundColor: "var(--color1)",
+      backgroundColor: 'var(--color1)',
       opacity: 0.15,
     },
     laneDropzoneStyle: {
-      backgroundColor: "var(--bg3)",
-      borderBottom: "1px solid var(--border1)",
+      backgroundColor: 'var(--bg3)',
+      borderBottom: '1px solid var(--border1)',
       zIndex: 0,
     },
     timelineEditorWindowControlV: {
-      display: "flex",
-      flexDirection: "column",
+      display: 'flex',
+      flexDirection: 'column',
       width: 12,
-      backgroundColor: "var(--bg1)",
-      borderLeft: "1px solid var,--border1",
+      backgroundColor: 'var(--bg1)',
+      borderLeft: '1px solid var,--border1',
       zIndex: 20,
-      inset: "33px 0 11px auto",
+      inset: '33px 0 11px auto',
     },
     timelineEditorWindowControlH: {
       height: 12,
-      backgroundColor: "var(--bg1)",
-      borderTop: "1px solid var(--border1)",
+      backgroundColor: 'var(--bg1)',
+      borderTop: '1px solid var(--border1)',
     },
   } as const;
 
@@ -915,8 +915,8 @@ export default function Editor() {
           <div
             style={{
               width: 224,
-              height: "100%",
-              borderRight: "1px solid var(--border1)",
+              height: '100%',
+              borderRight: '1px solid var(--border1)',
             }}
           >
             <SyncScrollPane
@@ -924,8 +924,8 @@ export default function Editor() {
               className="d-flex flex-column hide-scrollbar overflow-auto col-12"
               ref={tracksSectionRef}
               style={{
-                height: "calc(100% - 11px)",
-                borderBottom: "1px solid var(--border1)",
+                height: 'calc(100% - 11px)',
+                borderBottom: '1px solid var(--border1)',
               }}
             >
               <div
@@ -938,27 +938,27 @@ export default function Editor() {
                   icon={
                     <SpeedDialIcon
                       style={{
-                        color: "var(--bg6)",
-                        transform: "translate(0, -1.5px)",
+                        color: 'var(--bg6)',
+                        transform: 'translate(0, -1.5px)',
                       }}
                     />
                   }
                   slotProps={{ transition: { style: style.speedDial } }}
                   sx={{
                     flex: 1,
-                    "&:hover .MuiSpeedDial-actions": {
-                      border: "1px solid var(--color1)",
-                      borderRadius: "16px",
+                    '&:hover .MuiSpeedDial-actions': {
+                      border: '1px solid var(--color1)',
+                      borderRadius: '16px',
                     },
-                    "&:has(button:focus) .MuiSpeedDial-actions": {
-                      border: "1px solid var(--color1)",
-                      borderRadius: "16px",
+                    '&:has(button:focus) .MuiSpeedDial-actions': {
+                      border: '1px solid var(--color1)',
+                      borderRadius: '16px',
                     },
-                    "& .MuiSpeedDial-actions": {
-                      padding: "0 4px 0 19px ",
-                      marginLeft: "-20px",
+                    '& .MuiSpeedDial-actions': {
+                      padding: '0 4px 0 19px ',
+                      marginLeft: '-20px',
                     },
-                    "& .MuiTouchRipple-root": { display: "none" },
+                    '& .MuiTouchRipple-root': { display: 'none' },
                   }}
                 >
                   {[TrackType.Audio, TrackType.Midi, TrackType.Sequencer].map(
@@ -968,7 +968,7 @@ export default function Editor() {
                         key={type}
                         icon={
                           <span
-                            style={{ display: "inline-flex" }}
+                            style={{ display: 'inline-flex' }}
                             title={`Create ${type} Track`}
                           >
                             <TrackIcon color="var(--color1)" type={type} />
@@ -979,7 +979,7 @@ export default function Editor() {
                           width: 22,
                           height: 22,
                           minHeight: 0,
-                          margin: "0 4px",
+                          margin: '0 4px',
                         }}
                       />
                     )
@@ -990,7 +990,7 @@ export default function Editor() {
                   onClick={centerOnPlayhead}
                   title="Center on Playhead"
                 >
-                  <PlayheadIcon size={14} style={{ color: "var(--border6)" }} />
+                  <PlayheadIcon size={14} style={{ color: 'var(--border6)' }} />
                 </IconButton>
               </div>
               <div>
@@ -1015,7 +1015,7 @@ export default function Editor() {
                 >
                   {tracks.map((track: Track, idx: number) => (
                     <SortableListItem
-                      className={"position-relative " + getTrackClass(idx)}
+                      className={`position-relative ${getTrackClass(idx)}`}
                       index={idx}
                       key={track.id}
                     >
@@ -1046,8 +1046,8 @@ export default function Editor() {
             <div
               style={{
                 height: 12,
-                width: "100%",
-                backgroundColor: "var(--bg1)",
+                width: '100%',
+                backgroundColor: 'var(--bg1)',
               }}
             />
           </div>
@@ -1070,9 +1070,9 @@ export default function Editor() {
                 <div className="col-12" style={style.timelineRegionContainer}>
                   <div
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      position: "relative",
+                      width: '100%',
+                      height: '100%',
+                      position: 'relative',
                       maxWidth: maxEditorWidth,
                     }}
                   >
@@ -1082,8 +1082,8 @@ export default function Editor() {
                       region={songRegion}
                       style={{
                         zIndex: 13,
-                        background: "var(--color1)",
-                        borderBlock: "3px solid var(--bg1)",
+                        background: 'var(--color1)',
+                        borderBlock: '3px solid var(--bg1)',
                       }}
                     >
                       <div
@@ -1097,7 +1097,7 @@ export default function Editor() {
                   onMouseDown={changePlayheadPos}
                   style={style.timelineRulerContainer}
                 />
-                <div style={{ maxWidth: maxEditorWidth, position: "relative" }}>
+                <div style={{ maxWidth: maxEditorWidth, position: 'relative' }}>
                   {masterTrack && (
                     <div {...dropzoneProps(masterTrack)}>
                       <Lane
@@ -1133,8 +1133,8 @@ export default function Editor() {
                         style={{
                           display:
                             dragData.target && !dragData.target.track
-                              ? "flex"
-                              : "none",
+                              ? 'flex'
+                              : 'none',
                         }}
                       />
                     ))}
@@ -1161,11 +1161,11 @@ export default function Editor() {
             >
               <Scrollbar
                 axis="y"
-                style={{ width: "100%", flex: 1, padding: "3px 0" }}
+                style={{ width: '100%', flex: 1, padding: '3px 0' }}
                 targetEl={timelineEditorWindowRef.current}
                 thumbStyle={{
-                  backgroundColor: "var(--border1)",
-                  borderInline: "3px solid var(--bg1)",
+                  backgroundColor: 'var(--border1)',
+                  borderInline: '3px solid var(--bg1)',
                 }}
               />
               <ZoomControls vertical />
@@ -1176,28 +1176,28 @@ export default function Editor() {
             >
               <Scrollbar
                 axis="x"
-                style={{ height: "100%", flex: 1, padding: "0 3px" }}
+                style={{ height: '100%', flex: 1, padding: '0 3px' }}
                 targetEl={timelineEditorWindowRef.current}
                 thumbStyle={{
-                  backgroundColor: "var(--border1)",
-                  borderBlock: "3px solid var(--bg1)",
+                  backgroundColor: 'var(--border1)',
+                  borderBlock: '3px solid var(--bg1)',
                 }}
               />
               <ZoomControls onZoom={handleZoom} />
-              <div style={{ width: 11, height: "100%" }} />
+              <div style={{ width: 11, height: '100%' }} />
             </div>
           </div>
         </div>
 
         {showAnalysisPanel && (
           <div
-            style={{ height: "300px", borderTop: "1px solid var(--border1)" }}
+            style={{ height: '300px', borderTop: '1px solid var(--border1)' }}
           >
             <div
               className="d-flex justify-content-between align-items-center p-1"
               style={{
-                backgroundColor: "var(--bg2)",
-                borderBottom: "1px solid var(--border1)",
+                backgroundColor: 'var(--bg2)',
+                borderBottom: '1px solid var(--border1)',
               }}
             >
               <Tabs value={analysisTabValue} onChange={handleAnalysisTabChange}>

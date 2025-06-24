@@ -83,12 +83,12 @@ export class PythonBackendService {
     if (typeof process !== 'undefined' && process.env.VITE_BACKEND_URL) {
       return process.env.VITE_BACKEND_URL;
     }
-    
+
     // Check if running in Electron
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       return 'http://localhost:5001';
     }
-    
+
     // Default for web environment
     return import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
   }
@@ -99,7 +99,7 @@ export class PythonBackendService {
   public async initialize(): Promise<void> {
     try {
       console.log(`Connecting to Python backend at ${this.baseUrl}...`);
-      
+
       const health = await this.checkHealth();
       if (health.status === 'healthy') {
         this.isConnected = true;
@@ -123,11 +123,11 @@ export class PythonBackendService {
       const response = await this.makeRequest('/health', {
         method: 'GET',
       });
-      
+
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       return {
         status: 'healthy',
@@ -153,14 +153,16 @@ export class PythonBackendService {
   /**
    * Analyze audio data using Python backend
    */
-  public async analyzeAudio(request: AudioAnalysisRequest): Promise<AudioAnalysisResponse> {
+  public async analyzeAudio(
+    request: AudioAnalysisRequest
+  ): Promise<AudioAnalysisResponse> {
     if (!this.isConnected) {
       throw new Error('Backend not connected. Call initialize() first.');
     }
 
     try {
       const startTime = performance.now();
-      
+
       const response = await this.makeRequest('/api/audio/analyze', {
         method: 'POST',
         headers: {
@@ -171,7 +173,9 @@ export class PythonBackendService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(`Analysis failed: ${response.statusText} - ${errorData.detail || errorData.error || 'Unknown error'}`);
+        throw new Error(
+          `Analysis failed: ${response.statusText} - ${errorData.detail || errorData.error || 'Unknown error'}`
+        );
       }
 
       const data = await response.json();
@@ -194,7 +198,9 @@ export class PythonBackendService {
   /**
    * Process batch audio analysis
    */
-  public async batchAnalyzeAudio(requests: AudioAnalysisRequest[]): Promise<AudioAnalysisResponse[]> {
+  public async batchAnalyzeAudio(
+    requests: AudioAnalysisRequest[]
+  ): Promise<AudioAnalysisResponse[]> {
     if (!this.isConnected) {
       throw new Error('Backend not connected. Call initialize() first.');
     }
@@ -247,7 +253,10 @@ export class PythonBackendService {
   /**
    * Upload audio file for analysis
    */
-  public async uploadAudioFile(file: File, analysisType: string = 'full'): Promise<AudioAnalysisResponse> {
+  public async uploadAudioFile(
+    file: File,
+    analysisType: string = 'full'
+  ): Promise<AudioAnalysisResponse> {
     if (!this.isConnected) {
       throw new Error('Backend not connected. Call initialize() first.');
     }
@@ -283,7 +292,10 @@ export class PythonBackendService {
   /**
    * Make HTTP request with retry logic
    */
-  private async makeRequest(endpoint: string, options: RequestInit): Promise<Response> {
+  private async makeRequest(
+    endpoint: string,
+    options: RequestInit
+  ): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
     let lastError: Error | null = null;
 
@@ -293,15 +305,15 @@ export class PythonBackendService {
           timeout: 30000, // 30 second timeout
           ...options,
         });
-        
+
         return response;
       } catch (error) {
         lastError = error as Error;
         console.warn(`Request attempt ${attempt} failed:`, error);
-        
+
         if (attempt < this.retryAttempts) {
           console.log(`Retrying in ${this.retryDelay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, this.retryDelay));
+          await new Promise((resolve) => setTimeout(resolve, this.retryDelay));
         }
       }
     }
@@ -334,9 +346,11 @@ export class PythonBackendService {
   /**
    * Subscribe to real-time analysis events (WebSocket)
    */
-  public subscribeToRealTimeAnalysis(callback: (analysis: any) => void): WebSocket | null {
+  public subscribeToRealTimeAnalysis(
+    callback: (analysis: any) => void
+  ): WebSocket | null {
     try {
-      const wsUrl = this.baseUrl.replace(/^http/, 'ws') + '/ws/analysis';
+      const wsUrl = `${this.baseUrl.replace(/^http/, 'ws')}/ws/analysis`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

@@ -1,8 +1,8 @@
-import { render, fireEvent, screen } from "@testing-library/react";
-import { vi } from "vitest";
-import DNR from "../DNR";
+import { render, fireEvent, screen } from '@testing-library/react';
+import { vi } from 'vitest';
+import DNR from '../DNR';
 
-describe("DNR (Drag and Resize) Component", () => {
+describe('DNR (Drag and Resize) Component', () => {
   const defaultProps = {
     coords: { startX: 100, startY: 100, endX: 300, endY: 300 },
     drag: true,
@@ -17,7 +17,7 @@ describe("DNR (Drag and Resize) Component", () => {
         if (
           this &&
           this.classList &&
-          this.classList.contains("dnr-container")
+          this.classList.contains('dnr-container')
         ) {
           // Use the coords from props for DNR components
           return {
@@ -48,9 +48,9 @@ describe("DNR (Drag and Resize) Component", () => {
 
     // Mock getComputedStyle
     window.getComputedStyle = vi.fn().mockImplementation(() => ({
-      transform: "matrix(1, 0, 0, 1, 0, 0)",
+      transform: 'matrix(1, 0, 0, 1, 0, 0)',
       // Add other needed properties
-      getPropertyValue: () => "",
+      getPropertyValue: () => '',
     }));
   });
 
@@ -58,19 +58,19 @@ describe("DNR (Drag and Resize) Component", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders without crashing", async () => {
+  it('renders without crashing', async () => {
     const { container } = render(
       <DNR {...defaultProps}>
         <div data-testid="dnr-child-content">Draggable Content</div>
       </DNR>
     );
 
-    const dnrElement = container.querySelector(".dnr-container");
+    const dnrElement = container.querySelector('.dnr-container');
     expect(dnrElement).toBeInTheDocument();
-    expect(screen.getByTestId("dnr-child-content")).toBeInTheDocument();
+    expect(screen.getByTestId('dnr-child-content')).toBeInTheDocument();
   });
 
-  it("handles drag operations", () => {
+  it('handles drag operations', () => {
     const onDrag = vi.fn();
     const onDragStart = vi.fn();
     const onDragStop = vi.fn();
@@ -86,7 +86,7 @@ describe("DNR (Drag and Resize) Component", () => {
       </DNR>
     );
 
-    const dnrContainer = container.querySelector(".dnr-container")!;
+    const dnrContainer = container.querySelector('.dnr-container')!;
 
     // Start drag
     fireEvent.mouseDown(dnrContainer, {
@@ -126,7 +126,7 @@ describe("DNR (Drag and Resize) Component", () => {
     );
   });
 
-  it("handles resize operations", () => {
+  it('handles resize operations', () => {
     const onResize = vi.fn();
     const { container } = render(
       <DNR
@@ -144,7 +144,7 @@ describe("DNR (Drag and Resize) Component", () => {
     );
 
     // Find a resize handle (e.g., bottom-right)
-    const resizeHandles = container.getElementsByClassName("dnr-resize-handle");
+    const resizeHandles = container.getElementsByClassName('dnr-resize-handle');
     expect(resizeHandles.length).toBeGreaterThan(0);
     const resizeHandle = resizeHandles[0];
 
@@ -159,13 +159,13 @@ describe("DNR (Drag and Resize) Component", () => {
     fireEvent.mouseUp(document);
   });
 
-  it("respects bounds constraints", () => {
+  it('respects bounds constraints', () => {
     const onDrag = vi.fn();
 
     // Override the mock for this specific test
     window.getComputedStyle = vi.fn().mockImplementation(() => ({
-      transform: "matrix(1, 0, 0, 1, 100, 100)",
-      getPropertyValue: (_: string) => "",
+      transform: 'matrix(1, 0, 0, 1, 100, 100)',
+      getPropertyValue: (_: string) => '',
     }));
 
     const { container } = render(
@@ -178,7 +178,7 @@ describe("DNR (Drag and Resize) Component", () => {
       </DNR>
     );
 
-    const dnrContainer = container.querySelector(".dnr-container")!;
+    const dnrContainer = container.querySelector('.dnr-container')!;
 
     fireEvent.mouseDown(dnrContainer, {
       clientX: 100,
@@ -199,7 +199,7 @@ describe("DNR (Drag and Resize) Component", () => {
     // The mock will be automatically restored by vi.restoreAllMocks() in afterEach
   });
 
-  it("applies min/max size constraints during resize", () => {
+  it('applies min/max size constraints during resize', () => {
     // Set up a special mockImplementation for getBoundingClientRect just for this test
     const originalGetBoundingClientRect =
       Element.prototype.getBoundingClientRect;
@@ -207,7 +207,7 @@ describe("DNR (Drag and Resize) Component", () => {
     Element.prototype.getBoundingClientRect = vi
       .fn()
       .mockImplementation(function (this: Element) {
-        if (this.classList?.contains("dnr-container")) {
+        if (this.classList?.contains('dnr-container')) {
           return {
             x: 100,
             y: 100,
@@ -245,7 +245,7 @@ describe("DNR (Drag and Resize) Component", () => {
       </DNR>
     );
 
-    const resizeHandle = container.querySelector(".dnr-resize-handle")!;
+    const resizeHandle = container.querySelector('.dnr-resize-handle')!;
 
     // Start resize
     fireEvent.mouseDown(resizeHandle, {

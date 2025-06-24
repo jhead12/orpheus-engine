@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { AudioAnalysisType } from "../types/audio";
+import { useState, useEffect } from 'react';
+import { AudioAnalysisType } from '../types/audio';
 
 interface MCPAnalysisOptions {
   type: AudioAnalysisType;
@@ -57,7 +57,7 @@ export function useMCPAnalysis(
         setResults(mockResults);
       } catch (err) {
         // Always use a generic error message for consistency
-        setError("Analysis failed");
+        setError('Analysis failed');
       } finally {
         setIsLoading(false);
       }

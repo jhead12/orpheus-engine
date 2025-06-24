@@ -1,6 +1,6 @@
-import { expect } from "vitest";
-import { chromium } from "playwright";
-import { toMatchImageSnapshot } from "jest-image-snapshot";
+import { expect } from 'vitest';
+import { chromium } from 'playwright';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -17,7 +17,7 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
   const allStyles = new Set<string>();
 
   // 1. Styled-components styles
-  document.querySelectorAll("style[data-styled]").forEach((style) => {
+  document.querySelectorAll('style[data-styled]').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -29,13 +29,13 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
           allStyles.add(rule.cssText);
         });
       } catch (e) {
-        console.warn("Could not access stylesheet rules");
+        console.warn('Could not access stylesheet rules');
       }
     }
   });
 
   // 3. Inline styles and other style tags
-  document.querySelectorAll("style:not([data-styled])").forEach((style) => {
+  document.querySelectorAll('style:not([data-styled])').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -68,7 +68,7 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
           }
 
           /* Component styles */
-          ${Array.from(allStyles).join("\n")}
+          ${Array.from(allStyles).join('\n')}
         </style>
       </head>
       <body>
@@ -88,14 +88,14 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
   // Wait for the side panel element to be visible
   await page.waitForSelector('[data-testid="side-panel"]', {
     timeout: 2000,
-    state: "visible",
+    state: 'visible',
   });
 
   // Take the screenshot
   const screenshot = await page.screenshot({
-    type: "png",
-    animations: "disabled",
-    scale: "css",
+    type: 'png',
+    animations: 'disabled',
+    scale: 'css',
   });
 
   await browser.close();
@@ -105,10 +105,10 @@ export async function takeScreenshot(element: HTMLElement, name: string) {
 export async function expectScreenshot(element: HTMLElement, name: string) {
   const screenshot = await takeScreenshot(element, name);
   expect(screenshot).toMatchImageSnapshot({
-    customSnapshotsDir: "__snapshots__/screenshots",
-    customDiffDir: "__snapshots__/diffs",
+    customSnapshotsDir: '__snapshots__/screenshots',
+    customDiffDir: '__snapshots__/diffs',
     customSnapshotIdentifier: name,
     failureThreshold: 0.01, // Allow 1% difference
-    failureThresholdType: "percent",
+    failureThresholdType: 'percent',
   });
 }

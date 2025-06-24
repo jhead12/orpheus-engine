@@ -1,8 +1,8 @@
-import { render, fireEvent, screen } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { SortableList, SortableListItem } from "../SortableList";
+import { render, fireEvent, screen } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { SortableList, SortableListItem } from '../SortableList';
 
-describe("SortableList Widget", () => {
+describe('SortableList Widget', () => {
   const mockAutoScroll = {
     thresholds: {
       top: { slow: 5, medium: 10, fast: 20 },
@@ -20,7 +20,7 @@ describe("SortableList Widget", () => {
     vi.clearAllMocks();
   });
 
-  it("renders list items correctly", () => {
+  it('renders list items correctly', () => {
     render(
       <SortableList
         autoScroll={mockAutoScroll}
@@ -33,11 +33,11 @@ describe("SortableList Widget", () => {
       </SortableList>
     );
 
-    expect(screen.getByText("Item 1")).toBeInTheDocument();
-    expect(screen.getByText("Item 2")).toBeInTheDocument();
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+    expect(screen.getByText('Item 2')).toBeInTheDocument();
   });
 
-  it("handles drag start correctly", () => {
+  it('handles drag start correctly', () => {
     render(
       <SortableList
         autoScroll={mockAutoScroll}
@@ -50,7 +50,7 @@ describe("SortableList Widget", () => {
       </SortableList>
     );
 
-    const item1 = screen.getByText("Item 1");
+    const item1 = screen.getByText('Item 1');
     fireEvent.mouseDown(item1);
 
     expect(mockOnStart).toHaveBeenCalledWith(
@@ -62,7 +62,7 @@ describe("SortableList Widget", () => {
     );
   });
 
-  it("respects cancel selector", () => {
+  it('respects cancel selector', () => {
     render(
       <SortableList
         autoScroll={mockAutoScroll}
@@ -77,14 +77,15 @@ describe("SortableList Widget", () => {
       </SortableList>
     );
 
-    const noDragElement = screen.getByText("No Drag");
+    const noDragElement = screen.getByText('No Drag');
     fireEvent.mouseDown(noDragElement);
 
     expect(mockOnStart).not.toHaveBeenCalled();
   });
 
-  it("handles drag movement and updates", () => {
-    render( // Removed unused container destructuring
+  it('handles drag movement and updates', () => {
+    render(
+      // Removed unused container destructuring
       <SortableList
         autoScroll={mockAutoScroll}
         onSortUpdate={mockOnSortUpdate}
@@ -96,7 +97,7 @@ describe("SortableList Widget", () => {
       </SortableList>
     );
 
-    const item1 = screen.getByText("Item 1");
+    const item1 = screen.getByText('Item 1');
 
     // Start drag
     fireEvent.mouseDown(item1);
@@ -110,7 +111,7 @@ describe("SortableList Widget", () => {
     expect(mockOnSortUpdate).toHaveBeenCalled();
   });
 
-  it("handles drag end correctly", () => {
+  it('handles drag end correctly', () => {
     render(
       <SortableList
         autoScroll={mockAutoScroll}
@@ -123,7 +124,7 @@ describe("SortableList Widget", () => {
       </SortableList>
     );
 
-    const item1 = screen.getByText("Item 1");
+    const item1 = screen.getByText('Item 1');
 
     // Complete drag sequence
     fireEvent.mouseDown(item1);

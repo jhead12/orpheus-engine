@@ -45,7 +45,7 @@ const TransportButton = styled.button`
   align-items: center;
   justify-content: center;
   height: 32px;
-  
+
   &:hover {
     background-color: #334a5f;
   }
@@ -83,7 +83,7 @@ const TimelineHeader = styled.div`
 
 const TimelineTick = styled.div<{ left: number }>`
   position: absolute;
-  left: ${props => props.left}px;
+  left: ${(props) => props.left}px;
   height: 10px;
   border-left: 1px solid #334a5f;
   top: 10px;
@@ -91,7 +91,7 @@ const TimelineTick = styled.div<{ left: number }>`
 
 const TimelineLabel = styled.div<{ left: number }>`
   position: absolute;
-  left: ${props => props.left}px;
+  left: ${(props) => props.left}px;
   font-size: 10px;
   top: 22px;
   transform: translateX(-50%);
@@ -108,7 +108,7 @@ const ActionBar = styled.div`
 
 const Playhead = styled.div<{ left: number }>`
   position: absolute;
-  left: ${props => props.left}px;
+  left: ${(props) => props.left}px;
   top: 0;
   bottom: 0;
   width: 1px;
@@ -174,7 +174,7 @@ const createMockTracks = (): AudioTrack[] => [
         startTime: 1,
         endTime: 6,
         offset: 0,
-        duration: 5
+        duration: 5,
       },
       {
         id: 'clip-2',
@@ -182,9 +182,9 @@ const createMockTracks = (): AudioTrack[] => [
         startTime: 8,
         endTime: 12,
         offset: 0,
-        duration: 4
-      }
-    ]
+        duration: 4,
+      },
+    ],
   },
   {
     id: 'track-2',
@@ -201,9 +201,9 @@ const createMockTracks = (): AudioTrack[] => [
         startTime: 0.5,
         endTime: 7.5,
         offset: 0,
-        duration: 7
-      }
-    ]
+        duration: 7,
+      },
+    ],
   },
   {
     id: 'track-3',
@@ -220,41 +220,43 @@ const createMockTracks = (): AudioTrack[] => [
         startTime: 0,
         endTime: 16,
         offset: 0,
-        duration: 16
-      }
-    ]
-  }
+        duration: 16,
+      },
+    ],
+  },
 ];
 
 const DAWEditor: React.FC<DAWEditorProps> = ({
   tracks: propTracks,
   onAddTrack,
-  onImportAudio
+  onImportAudio,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
-  const [tracks, setTracks] = useState<AudioTrack[]>(propTracks || createMockTracks());
+  const [tracks, setTracks] = useState<AudioTrack[]>(
+    propTracks || createMockTracks()
+  );
   const [timelineSettings] = useState<TimelineSettings>({
     beatWidth: 60,
     timeSignature: { beats: 4, noteValue: 4 },
-    horizontalScale: 100
+    horizontalScale: 100,
   });
-  
+
   // Animation frame reference for playback
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const playheadTimeRef = useRef<number>(currentTime);
-  
+
   const handlePlayPause = () => {
-    setIsPlaying(prev => !prev);
+    setIsPlaying((prev) => !prev);
   };
-  
+
   const handleStop = () => {
     setIsPlaying(false);
     setCurrentTime(0);
   };
-  
+
   const handleAddTrack = () => {
     if (onAddTrack) {
       onAddTrack();
@@ -263,18 +265,18 @@ const DAWEditor: React.FC<DAWEditorProps> = ({
       const newTrack: AudioTrack = {
         id: `track-${tracks.length + 1}-${Date.now()}`,
         name: `Track ${tracks.length + 1}`,
-        color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
         muted: false,
         soloed: false,
         volume: 0.8,
         clips: [],
-        height: 100
+        height: 100,
       };
-      
+
       setTracks([...tracks, newTrack]);
     }
   };
-  
+
   const handleImportAudio = () => {
     if (onImportAudio) {
       onImportAudio();
@@ -283,23 +285,27 @@ const DAWEditor: React.FC<DAWEditorProps> = ({
       console.log('Import audio clicked');
     }
   };
-  
+
   const handleSelectTrack = (trackId: string) => {
     setSelectedTrackId(trackId);
   };
-  
+
   const handleMuteTrack = (trackId: string, muted: boolean) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, muted } : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId ? { ...track, muted } : track
+      )
+    );
   };
-  
+
   const handleSoloTrack = (trackId: string, soloed: boolean) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, soloed } : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId ? { ...track, soloed } : track
+      )
+    );
   };
-  
+
   const handleClipClick = (trackId: string, clipId: string) => {
     console.log(`Clicked clip ${clipId} on track ${trackId}`);
     // Implement clip selection logic here
@@ -309,20 +315,20 @@ const DAWEditor: React.FC<DAWEditorProps> = ({
   useEffect(() => {
     if (isPlaying) {
       startTimeRef.current = performance.now() - playheadTimeRef.current * 1000;
-      
+
       const animate = (time: number) => {
         const elapsed = time - startTimeRef.current;
         playheadTimeRef.current = elapsed / 1000;
         setCurrentTime(playheadTimeRef.current);
         animationRef.current = requestAnimationFrame(animate);
       };
-      
+
       animationRef.current = requestAnimationFrame(animate);
     } else if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
     }
-    
+
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -335,52 +341,48 @@ const DAWEditor: React.FC<DAWEditorProps> = ({
     const ticks = [];
     const maxTime = 60; // Show 60 seconds
     const interval = 1; // 1 second intervals
-    
+
     for (let i = 0; i <= maxTime; i += interval) {
       const position = i * timelineSettings.horizontalScale;
-      
+
       ticks.push(
         <React.Fragment key={`tick-${i}`}>
-          <TimelineTick left={position + 200} /> {/* Offset by track header width */}
+          <TimelineTick left={position + 200} />{' '}
+          {/* Offset by track header width */}
           {i % 5 === 0 && ( // Show labels every 5 seconds
             <TimelineLabel left={position + 200}>{i}s</TimelineLabel>
           )}
         </React.Fragment>
       );
     }
-    
+
     return ticks;
   };
 
   return (
     <DAWContainer>
       <TransportControls>
-        <TransportButton onClick={handlePlayPause} className={isPlaying ? 'active' : ''}>
+        <TransportButton
+          onClick={handlePlayPause}
+          className={isPlaying ? 'active' : ''}
+        >
           {isPlaying ? '⏸' : '▶️'}
         </TransportButton>
-        <TransportButton onClick={handleStop}>
-          ⏹
-        </TransportButton>
-        <span style={{ marginLeft: 10 }}>
-          {currentTime.toFixed(1)}s
-        </span>
+        <TransportButton onClick={handleStop}>⏹</TransportButton>
+        <span style={{ marginLeft: 10 }}>{currentTime.toFixed(1)}s</span>
       </TransportControls>
-      
+
       <ActionBar>
-        <TransportButton onClick={handleAddTrack}>
-          Add Track
-        </TransportButton>
+        <TransportButton onClick={handleAddTrack}>Add Track</TransportButton>
         <TransportButton onClick={handleImportAudio}>
           Import Audio
         </TransportButton>
       </ActionBar>
-      
+
       <TrackListContainer>
-        <TimelineHeader>
-          {renderTimelineTicks()}
-        </TimelineHeader>
-        
-        {tracks.map(track => (
+        <TimelineHeader>{renderTimelineTicks()}</TimelineHeader>
+
+        {tracks.map((track) => (
           <Track
             key={track.id}
             track={track}
@@ -392,10 +394,10 @@ const DAWEditor: React.FC<DAWEditorProps> = ({
             onClipClick={handleClipClick}
           />
         ))}
-        
+
         <Playhead left={currentTime * timelineSettings.horizontalScale + 200} />
       </TrackListContainer>
-      
+
       <AnalysisPanel>
         <AnalysisHeader>Audio Analysis</AnalysisHeader>
         <AnalysisContent>

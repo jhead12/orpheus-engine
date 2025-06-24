@@ -1,21 +1,21 @@
 //This test suite contains visual tests for the TrackComponent component.
 
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef } from 'react';
 import {
   ContextMenuType,
   AutomationMode,
   TrackType,
   Track,
   AutomationLane,
-  Effect
+  Effect,
 } from '@orpheus/types/core';
-import { WorkstationContext, WorkstationContextType } from "@orpheus/contexts";
-import { DialogContent } from "@mui/material";
+import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts';
+import { DialogContent } from '@mui/material';
 // Using MUI Dialog instead of orpheus widgets
-import { Dialog } from "@mui/material";
-import { hueFromHex, hslToHex } from "@orpheus/utils/general";
+import { Dialog } from '@mui/material';
+import { hueFromHex, hslToHex } from '@orpheus/utils/general';
 import { openContextMenu } from '@orpheus/services/electron/utils';
-import AutomationLaneTrack from "./AutomationLaneTrack";
+import AutomationLaneTrack from './AutomationLaneTrack';
 
 interface ExtendedWorkstationContextType extends WorkstationContextType {
   deleteTrack: (track: Track) => void;
@@ -38,7 +38,7 @@ function TrackComponent({ className, track, style, colorless, order }: IProps) {
 
   const { deleteTrack, duplicateTrack, setTrack, masterTrack } = context;
 
-  const [hue, setHue] = useState(hueFromHex(track.color || "#808080"));
+  const [hue, setHue] = useState(hueFromHex(track.color || '#808080'));
   // Use color styling only if colorless is not set
   // const useColor = !colorless; // Commented out as it's currently unused
   const [showChangeHueDialog, setShowChangeHueDialog] = useState(false);
@@ -63,7 +63,7 @@ function TrackComponent({ className, track, style, colorless, order }: IProps) {
             setShowChangeHueDialog(true);
             break;
           case 3:
-            setHue(hueFromHex(track.color || "#808080"));
+            setHue(hueFromHex(track.color || '#808080'));
             break;
         }
       }
@@ -89,63 +89,63 @@ function TrackComponent({ className, track, style, colorless, order }: IProps) {
   return (
     <div
       ref={ref}
-      className={`track ${className || ""} ${
-        order !== undefined ? `order-${order}` : ""
+      className={`track ${className || ''} ${
+        order !== undefined ? `order-${order}` : ''
       }`}
       style={{
         ...style,
         borderColor:
-          track.mute || masterTrack?.mute ? "#ff0000" : "var(--border6)",
-        border: track.mute || masterTrack?.mute ? "1px solid #ff0000" : "none",
-        background: colorless ? "var(--bg5)" : track.color || "var(--bg5)", // Use track color as background unless colorless
-        padding: "4px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "6px",
+          track.mute || masterTrack?.mute ? '#ff0000' : 'var(--border6)',
+        border: track.mute || masterTrack?.mute ? '1px solid #ff0000' : 'none',
+        background: colorless ? 'var(--bg5)' : track.color || 'var(--bg5)', // Use track color as background unless colorless
+        padding: '4px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
       }}
       onContextMenu={onContextMenu}
     >
       <div
         className="track-header"
-        style={{ display: "flex", alignItems: "center", gap: "4px" }}
+        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
       >
         {/* Track controls - buttons on left side per 2022 design */}
         <div
           className="track-controls"
-          style={{ display: "flex", alignItems: "center", gap: "2px" }}
+          style={{ display: 'flex', alignItems: 'center', gap: '2px' }}
         >
           <button
             data-testid="mute-button"
-            className={`track-btn ${track.mute ? "active" : ""}`}
+            className={`track-btn ${track.mute ? 'active' : ''}`}
             onClick={handleMuteClick}
             style={{
-              background: track.mute ? "#ff0000" : "transparent", // Brighter red color for muted state
-              color: track.mute ? "#ffffff" : "var(--fg1)",
-              fontWeight: track.mute ? "bold" : "normal",
+              background: track.mute ? '#ff0000' : 'transparent', // Brighter red color for muted state
+              color: track.mute ? '#ffffff' : 'var(--fg1)',
+              fontWeight: track.mute ? 'bold' : 'normal',
             }}
           >
             M
           </button>
           <button
             data-testid="solo-button"
-            className={`track-btn ${track.solo ? "active" : ""}`}
+            className={`track-btn ${track.solo ? 'active' : ''}`}
             onClick={handleSoloClick}
             style={{
-              background: track.solo ? "#ffcc00" : "transparent",
-              color: track.solo ? "#000" : "var(--fg1)",
+              background: track.solo ? '#ffcc00' : 'transparent',
+              color: track.solo ? '#000' : 'var(--fg1)',
             }}
           >
             S
           </button>
           <button
             data-testid="automation-mode-button"
-            className={`track-btn ${track.automation ? "active" : ""}`}
+            className={`track-btn ${track.automation ? 'active' : ''}`}
             onClick={() =>
               setTrack({ ...track, automation: !track.automation })
             }
             style={{
-              background: track.automation ? "#00cc00" : "transparent",
-              color: track.automation ? "#fff" : "var(--fg1)",
+              background: track.automation ? '#00cc00' : 'transparent',
+              color: track.automation ? '#fff' : 'var(--fg1)',
             }}
           >
             OFF
@@ -164,10 +164,10 @@ function TrackComponent({ className, track, style, colorless, order }: IProps) {
           }}
           className="track-name"
           style={{
-            background: "var(--bg7)",
-            border: "1px solid var(--border4)",
-            color: "var(--fg1)",
-            padding: "2px 4px",
+            background: 'var(--bg7)',
+            border: '1px solid var(--border4)',
+            color: 'var(--fg1)',
+            padding: '2px 4px',
             flex: 1,
           }}
         />

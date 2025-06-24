@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 type AnalysisResult = {
   filename: string;
@@ -9,7 +9,10 @@ type AnalysisResult = {
 };
 
 const AudioAnalysisPanel: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<{ name: string; path: string } | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{
+    name: string;
+    path: string;
+  } | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
     null
   );
@@ -31,7 +34,7 @@ const AudioAnalysisPanel: React.FC = () => {
       );
       setAnalysisResult(result);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to analyze audio");
+      setError(err instanceof Error ? err.message : 'Failed to analyze audio');
     } finally {
       setLoading(false);
     }
@@ -41,7 +44,9 @@ const AudioAnalysisPanel: React.FC = () => {
     try {
       // @ts-expect-error - window.electronAPI is injected by Electron but not typed
       const result = await window.electronAPI.openFileDialog({
-        filters: [{ name: 'Audio files', extensions: ['mp3', 'wav', 'flac', 'ogg'] }]
+        filters: [
+          { name: 'Audio files', extensions: ['mp3', 'wav', 'flac', 'ogg'] },
+        ],
       });
       if (result && !result.canceled && result.filePaths.length > 0) {
         const filePath = result.filePaths[0];
@@ -71,9 +76,9 @@ const AudioAnalysisPanel: React.FC = () => {
         disabled={!selectedFile || loading}
         style={{ marginLeft: 12 }}
       >
-        {loading ? "Analyzing..." : "Analyze"}
+        {loading ? 'Analyzing...' : 'Analyze'}
       </button>
-      {error && <div style={{ color: "red", marginTop: 12 }}>{error}</div>}
+      {error && <div style={{ color: 'red', marginTop: 12 }}>{error}</div>}
       {analysisResult && (
         <div style={{ marginTop: 24 }}>
           <h3>Analysis Result</h3>

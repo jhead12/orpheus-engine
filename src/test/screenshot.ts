@@ -1,6 +1,6 @@
-import { expect } from "vitest";
-import { toMatchImageSnapshot } from "jest-image-snapshot";
-import nodeHtmlToImage from "node-html-to-image";
+import { expect } from 'vitest';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
+import nodeHtmlToImage from 'node-html-to-image';
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -14,12 +14,12 @@ export async function takeScreenshot(
   element: HTMLElement,
   options: ScreenshotOptions = {}
 ) {
-  const { name = "screenshot", width = 1024, height = 768 } = options;
+  const { name = 'screenshot', width = 1024, height = 768 } = options;
 
   const html = element.outerHTML;
   const image = await nodeHtmlToImage({
     html,
-    type: "png",
+    type: 'png',
     puppeteerArgs: {
       defaultViewport: {
         width,
@@ -40,8 +40,8 @@ export async function expectScreenshot(
 ) {
   const { image, name } = await takeScreenshot(element, options);
   expect(image).toMatchImageSnapshot({
-    customSnapshotsDir: "__screenshots__",
-    customDiffDir: "__screenshots__/__diff__",
+    customSnapshotsDir: '__screenshots__',
+    customDiffDir: '__screenshots__/__diff__',
     customSnapshotIdentifier: name,
   });
 }

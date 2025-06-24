@@ -12,29 +12,31 @@ const document = {
       textContent: '',
       attributes: {},
       style: {},
-      
+
       appendChild(child) {
         this.children.push(child);
         return child;
       },
-      
+
       setAttribute(name, value) {
         this.attributes[name] = value;
       },
-      
+
       getAttribute(name) {
         return this.attributes[name];
       },
-      
+
       querySelectorAll(selector) {
         if (selector === '.peak-display') {
-          return this.children.filter(child => child.className === 'peak-display');
+          return this.children.filter(
+            (child) => child.className === 'peak-display'
+          );
         }
         return [];
-      }
+      },
     };
   },
-  
+
   querySelectorAll(selector) {
     if (selector === '[data-testid="knob"]') {
       return knobElements;
@@ -43,7 +45,7 @@ const document = {
       return meterElements;
     }
     return [];
-  }
+  },
 };
 
 // Utility functions from our bailout file
@@ -52,11 +54,11 @@ const INF_SYMBOL = '-∞';
 function ensurePeakDisplaysExist(container) {
   // Try to find existing peak displays
   const existingDisplays = container.querySelectorAll('.peak-display');
-  
+
   if (existingDisplays.length > 0) {
     return existingDisplays;
   }
-  
+
   // If none exist, add one to the first meter
   try {
     // In the real code, this would use screen.getAllByTestId
@@ -67,13 +69,13 @@ function ensurePeakDisplaysExist(container) {
       peakDisplay.textContent = INF_SYMBOL;
       peakDisplay.className = 'peak-display';
       meters[0].appendChild(peakDisplay);
-      
+
       return [peakDisplay];
     }
   } catch (error) {
     console.error('Failed to add peak display element:', error);
   }
-  
+
   return [];
 }
 
@@ -93,14 +95,14 @@ function ensureKnobsExist(container) {
     knob.setAttribute('title', 'Pan: 0');
     knob.setAttribute('value', '0');
     container.appendChild(knob);
-    
+
     try {
       return document.querySelectorAll('[data-testid="knob"]');
     } catch (nestedError) {
       console.error('Failed to add knob element:', nestedError);
     }
   }
-  
+
   return [];
 }
 
@@ -124,7 +126,9 @@ console.log('\n--- Testing Peak Display Utilities ---');
 console.log('Scenario 1: No peak displays initially');
 const peakDisplays1 = ensurePeakDisplaysExist(container);
 console.log(`Peak displays found/created: ${peakDisplays1.length}`);
-console.log(`Peak display has correct text: ${peakDisplays1[0]?.textContent === INF_SYMBOL ? 'Yes' : 'No'}`);
+console.log(
+  `Peak display has correct text: ${peakDisplays1[0]?.textContent === INF_SYMBOL ? 'Yes' : 'No'}`
+);
 
 // Test 2: Knobs
 console.log('\n--- Testing Knob Utilities ---');
@@ -146,5 +150,9 @@ const knobs2 = ensureKnobsExist(container);
 console.log(`Knobs found: ${knobs2.length}`);
 
 console.log('\n=== Test Summary ===');
-console.log(`Peak Display Utilities: ${peakDisplays1.length > 0 ? '✅ PASS' : '❌ FAIL'}`);
-console.log(`Knob Utilities: ${knobs1.length > 0 || knobs2.length > 0 ? '✅ PASS' : '❌ FAIL'}`);
+console.log(
+  `Peak Display Utilities: ${peakDisplays1.length > 0 ? '✅ PASS' : '❌ FAIL'}`
+);
+console.log(
+  `Knob Utilities: ${knobs1.length > 0 || knobs2.length > 0 ? '✅ PASS' : '❌ FAIL'}`
+);

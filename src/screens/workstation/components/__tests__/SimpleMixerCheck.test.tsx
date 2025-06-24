@@ -13,7 +13,7 @@ describe('Simple Mixer Test', () => {
         <MockMixer />
       </WorkstationContext.Provider>
     );
-    
+
     expect(screen.getByTestId('mock-mixer')).toBeInTheDocument();
   });
 });

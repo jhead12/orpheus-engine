@@ -46,7 +46,10 @@ export const mockMixerContext: MixerContextType = {
   removeEffect: vi.fn(),
   updateEffect: vi.fn(),
   reorderEffects: vi.fn(),
-  meters: { 'track-1': { left: 0, right: 0, peak: 0 }, master: { left: 0, right: 0, peak: 0 } },
+  meters: {
+    'track-1': { left: 0, right: 0, peak: 0 },
+    master: { left: 0, right: 0, peak: 0 },
+  },
   isVisible: true,
   setIsVisible: vi.fn(),
   soloedTracks: [],

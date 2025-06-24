@@ -111,7 +111,7 @@ export class MockAudioBuffer implements AudioBuffer {
 
   getChannelData(channel: number): Float32Array {
     if (channel >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     return this._channelData[channel];
   }
@@ -122,7 +122,7 @@ export class MockAudioBuffer implements AudioBuffer {
     startInChannel = 0
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     this._channelData[channelNumber].set(source, startInChannel);
   }
@@ -133,10 +133,13 @@ export class MockAudioBuffer implements AudioBuffer {
     startInChannel = 0
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     destination.set(
-      this._channelData[channelNumber].slice(startInChannel, startInChannel + destination.length)
+      this._channelData[channelNumber].slice(
+        startInChannel,
+        startInChannel + destination.length
+      )
     );
   }
 }
@@ -153,13 +156,25 @@ export class MockResizeObserver implements ResizeObserver {
 
   observe = vi.fn((element: Element) => {
     // Simulate immediate resize observation with default dimensions
-    this.callback([{
-      target: element,
-      contentRect: { width: 800, height: 400, top: 0, left: 0, bottom: 400, right: 800 },
-      borderBoxSize: [{ inlineSize: 800, blockSize: 400 }],
-      contentBoxSize: [{ inlineSize: 800, blockSize: 400 }],
-      devicePixelContentBoxSize: [{ inlineSize: 800, blockSize: 400 }],
-    }], this);
+    this.callback(
+      [
+        {
+          target: element,
+          contentRect: {
+            width: 800,
+            height: 400,
+            top: 0,
+            left: 0,
+            bottom: 400,
+            right: 800,
+          },
+          borderBoxSize: [{ inlineSize: 800, blockSize: 400 }],
+          contentBoxSize: [{ inlineSize: 800, blockSize: 400 }],
+          devicePixelContentBoxSize: [{ inlineSize: 800, blockSize: 400 }],
+        },
+      ],
+      this
+    );
   });
 
   unobserve = vi.fn();
@@ -177,7 +192,7 @@ export class MockDOMMatrix {
     const values = transform
       ? transform
           .match(/matrix\((.*)\)/)![1]
-          .split(",")
+          .split(',')
           .map(Number)
       : [1, 0, 0, 1, 0, 0];
     this.m41 = values[4] || 0;
@@ -247,7 +262,7 @@ export const setupGlobalTestMocks = () => {
   // matchMedia for responsive testing
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: vi.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -260,7 +275,7 @@ export const setupGlobalTestMocks = () => {
   });
 
   // RequestAnimationFrame
-  global.requestAnimationFrame = vi.fn(callback => {
+  global.requestAnimationFrame = vi.fn((callback) => {
     setTimeout(callback, 16); // 60fps
     return 1;
   });
@@ -331,7 +346,11 @@ export const createFreshAudioContextMock = (): MockAudioContext => {
 /**
  * Create a mock File object for testing file uploads
  */
-export const createMockFile = (name: string, type: string, data?: Uint8Array) => {
+export const createMockFile = (
+  name: string,
+  type: string,
+  data?: Uint8Array
+) => {
   const mockArrayBuffer = data ? data.buffer : new ArrayBuffer(1024);
   return {
     name,

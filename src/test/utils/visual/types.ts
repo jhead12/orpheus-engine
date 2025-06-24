@@ -1,1 +1,6 @@
-export type { VisualTestTemplateData, VisualTestState, VisualTestInteraction, VisualTestTemplate } from './types/visual-test.types';
+export type {
+  VisualTestTemplateData,
+  VisualTestState,
+  VisualTestInteraction,
+  VisualTestTemplate,
+} from './types/visual-test.types';

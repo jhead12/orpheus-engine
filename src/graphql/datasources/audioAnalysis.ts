@@ -1,4 +1,4 @@
-import { AudioAnalysisResults } from "../../types/audio";
+import { AudioAnalysisResults } from '../../types/audio';
 
 export class AudioAnalysisAPI {
   async analyze(audioBuffer: AudioBuffer): Promise<AudioAnalysisResults> {

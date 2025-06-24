@@ -23,7 +23,7 @@ export function useResizeObserver<T extends HTMLElement>(
 
     const entry = entries[0];
     const { width, height } = entry.contentRect;
-    
+
     setSize({ width, height });
   }, []);
 

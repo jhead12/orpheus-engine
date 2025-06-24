@@ -69,14 +69,14 @@ describe('AudioAnalysisPanel Visual Tests', () => {
     const audioBuffer = new AudioBuffer({
       length: 44100,
       numberOfChannels: 2,
-      sampleRate: 44100
+      sampleRate: 44100,
     });
 
     // Generate a simple sine wave for visualization
     const channel1 = audioBuffer.getChannelData(0);
     const channel2 = audioBuffer.getChannelData(1);
     for (let i = 0; i < 44100; i++) {
-      const value = Math.sin(2 * Math.PI * 440 * i / 44100);
+      const value = Math.sin((2 * Math.PI * 440 * i) / 44100);
       channel1[i] = value;
       channel2[i] = value;
     }
@@ -86,14 +86,14 @@ describe('AudioAnalysisPanel Visual Tests', () => {
         type={AudioAnalysisType.Waveform}
         clip={{
           id: 'clip-1',
-          audio: { 
-            audioBuffer: audioBuffer,
+          audio: {
+            audioBuffer,
             buffer: audioBuffer,
             waveform: Array.from({ length: 1024 }, (_, i) => Math.sin(i * 0.1)),
             start: new TimelinePosition(0, 0, 0),
-            end: new TimelinePosition(4, 0, 0)
+            end: new TimelinePosition(4, 0, 0),
           },
-          name: 'Test Clip'
+          name: 'Test Clip',
         }}
         results={null}
       />,
@@ -101,21 +101,21 @@ describe('AudioAnalysisPanel Visual Tests', () => {
     );
 
     // Wait for the component to render
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Add a test id to the root element for screenshot testing
     const analysisPanel = renderContainer.querySelector('.analysis-panel');
     if (analysisPanel) {
       analysisPanel.setAttribute('data-testid', 'side-panel');
     }
-    
+
     // Wait a bit more for any canvas rendering
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // For now, just verify the component renders without crashing
     expect(renderContainer.querySelector('canvas')).toBeInTheDocument();
     expect(renderContainer.querySelector('h3')).toBeInTheDocument();
-    
+
     document.body.removeChild(container);
   });
 });

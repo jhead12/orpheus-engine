@@ -11,30 +11,51 @@ interface IMeterProps extends React.HTMLAttributes<HTMLDivElement> {
   vertical?: boolean;
 }
 
-function Meter({ color, marks, percent, style, vertical, ...props }: IMeterProps) {
+function Meter({
+  color,
+  marks,
+  percent,
+  style,
+  vertical,
+  ...props
+}: IMeterProps) {
   const flexStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: vertical ? "column" : "row",
-    justifyContent: vertical ? "flex-end" : "flex-start"
-  }
+    display: 'flex',
+    flexDirection: vertical ? 'column' : 'row',
+    justifyContent: vertical ? 'flex-end' : 'flex-start',
+  };
 
   return (
-    <div style={{width: vertical ? 11 : "100%", height: vertical ? "100%" : 11, ...style}} {...props}>
-      <div style={{width: "100%", height: "100%", position: "relative", ...flexStyle}}>
-        <div 
+    <div
+      style={{
+        width: vertical ? 11 : '100%',
+        height: vertical ? '100%' : 11,
+        ...style,
+      }}
+      {...props}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+          ...flexStyle,
+        }}
+      >
+        <div
           style={{
-            width: vertical ? "100%" : `${percent}%`,
-            height: vertical ? `${percent}%` : "100%",
-            overflow: "hidden",
-            ...flexStyle
+            width: vertical ? '100%' : `${percent}%`,
+            height: vertical ? `${percent}%` : '100%',
+            overflow: 'hidden',
+            ...flexStyle,
           }}
         >
-          <div 
+          <div
             style={{
-              width: vertical ? "100%" : `${10000 / percent}%`,
-              height: vertical ? `${10000 / percent}%` : "100%",
+              width: vertical ? '100%' : `${10000 / percent}%`,
+              height: vertical ? `${10000 / percent}%` : '100%',
               flexShrink: 0,
-              background: color || "#000"
+              background: color || '#000',
             }}
           />
         </div>
@@ -42,19 +63,19 @@ function Meter({ color, marks, percent, style, vertical, ...props }: IMeterProps
           <div
             key={index}
             style={{
-              position: "absolute",
-              backgroundColor: "#000",
+              position: 'absolute',
+              backgroundColor: '#000',
               bottom: vertical ? `${mark.value}%` : 0,
               left: vertical ? 0 : `${mark.value}%`,
-              width: vertical ? "100%" : 1,
-              height: vertical ? 1 : "100%",
-              ...mark.style
+              width: vertical ? '100%' : 1,
+              height: vertical ? 1 : '100%',
+              ...mark.style,
             }}
           />
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default Meter;

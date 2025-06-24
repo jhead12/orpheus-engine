@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  SettingsStore, 
-  defaultSettings, 
-  loadSettings, 
+import {
+  SettingsStore,
+  defaultSettings,
+  loadSettings,
   saveSettings,
-  SettingsContext
+  SettingsContext,
 } from '../../services/settings';
 
 interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
+export const SettingsProvider: React.FC<SettingsProviderProps> = ({
+  children,
+}) => {
   const [settings, setSettings] = useState<SettingsStore>(defaultSettings);
   const [initialized, setInitialized] = useState(false);
 
@@ -31,12 +33,12 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     category: T,
     values: Partial<SettingsStore[T]>
   ) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
-        ...values
-      }
+        ...values,
+      },
     }));
   };
 
@@ -45,7 +47,9 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+    <SettingsContext.Provider
+      value={{ settings, updateSettings, resetSettings }}
+    >
       {children}
     </SettingsContext.Provider>
   );

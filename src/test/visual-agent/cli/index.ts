@@ -2,10 +2,10 @@
  * CLI for the Visual Testing Agent
  */
 
-import fs from "fs/promises";
-import path from "path";
-import { ComponentConfigs, getAllConfigs, getConfig } from "../configs";
-import { generateTestFromTemplate } from "../helpers/template-engine";
+import fs from 'fs/promises';
+import path from 'path';
+import { ComponentConfigs, getAllConfigs, getConfig } from '../configs';
+import { generateTestFromTemplate } from '../helpers/template-engine';
 
 /**
  * Main CLI entry point
@@ -15,10 +15,10 @@ export async function cli(args: string[]): Promise<void> {
   const componentName = args[1];
 
   switch (command) {
-    case "generate":
+    case 'generate':
       await generateTests(componentName);
       break;
-    case "list":
+    case 'list':
       await listTests();
       break;
     default:
@@ -31,7 +31,7 @@ export async function cli(args: string[]): Promise<void> {
  * Generate visual tests for components
  */
 async function generateTests(componentName?: string): Promise<void> {
-  const testsDir = path.join(process.cwd(), "src", "components", "__tests__");
+  const testsDir = path.join(process.cwd(), 'src', 'components', '__tests__');
   await fs.mkdir(testsDir, { recursive: true });
 
   // If a component name is provided, generate test for that component only
@@ -39,8 +39,8 @@ async function generateTests(componentName?: string): Promise<void> {
     const config = getConfig(componentName);
     if (!config) {
       console.error(`No configuration found for component: ${componentName}`);
-      console.log("Available components:");
-      console.log(Object.keys(ComponentConfigs).join(", "));
+      console.log('Available components:');
+      console.log(Object.keys(ComponentConfigs).join(', '));
       return;
     }
 
@@ -89,7 +89,7 @@ async function generateTests(componentName?: string): Promise<void> {
 async function listTests(): Promise<void> {
   // Find all visual test files
   const testDirs = [
-    path.join(process.cwd(), "src", "components", "__tests__"),
+    path.join(process.cwd(), 'src', 'components', '__tests__'),
     // Add more test directories as needed
   ];
 
@@ -99,7 +99,7 @@ async function listTests(): Promise<void> {
     try {
       const files = await fs.readdir(dir);
       const visualTests = files.filter((file) =>
-        file.includes(".visual.test.")
+        file.includes('.visual.test.')
       );
       testFiles.push(...visualTests.map((file) => path.join(dir, file)));
     } catch (error) {
@@ -111,8 +111,8 @@ async function listTests(): Promise<void> {
   const testCases: Record<string, string[]> = {};
 
   for (const file of testFiles) {
-    const content = await fs.readFile(file, "utf-8");
-    const componentName = path.basename(file).replace(".visual.test.tsx", "");
+    const content = await fs.readFile(file, 'utf-8');
+    const componentName = path.basename(file).replace('.visual.test.tsx', '');
 
     // Extract test names
     const regex = /it\(['"]([^'"]+)['"]/g;
@@ -127,7 +127,7 @@ async function listTests(): Promise<void> {
   }
 
   // Print results
-  console.log("Visual Tests:");
+  console.log('Visual Tests:');
   for (const [component, tests] of Object.entries(testCases)) {
     console.log(`\n${component}:`);
     for (const test of tests) {
@@ -146,10 +146,10 @@ async function listTests(): Promise<void> {
  * Print help information
  */
 function printHelp(): void {
-  console.log("Visual Testing Agent");
-  console.log("\nCommands:");
+  console.log('Visual Testing Agent');
+  console.log('\nCommands:');
   console.log(
-    "  generate [component]  Generate visual tests for all components or a specific component"
+    '  generate [component]  Generate visual tests for all components or a specific component'
   );
-  console.log("  list                  List all visual tests in the project");
+  console.log('  list                  List all visual tests in the project');
 }

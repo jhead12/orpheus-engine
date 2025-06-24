@@ -1,4 +1,4 @@
-import { clamp } from "../../services/utils/general";
+import { clamp } from '../../services/utils/general';
 
 declare global {
   interface Window {
@@ -58,7 +58,7 @@ export function openContextMenu(
   params: Record<string, unknown> = {},
   callback: (actionParams: ContextMenuParams) => void
 ): void {
-  window.electron.ipcRenderer.send("show-context-menu", {
+  window.electron.ipcRenderer.send('show-context-menu', {
     type,
     ...params,
     callback,
@@ -69,7 +69,7 @@ export function openContextMenu(
  * Returns true if the current platform is macOS
  */
 export function isMacOS(): boolean {
-  return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 }
 
 /**
@@ -78,7 +78,7 @@ export function isMacOS(): boolean {
 export function shouldOpenContextMenu(
   e: KeyboardEvent | React.KeyboardEvent
 ): boolean {
-  return cmdOrCtrl(e) && e.key === " ";
+  return cmdOrCtrl(e) && e.key === ' ';
 }
 
 /**

@@ -1,13 +1,13 @@
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-import { typeDefs } from "./schema";
-import { resolvers } from "./resolvers";
-import { TrackAPI } from "./datasources/tracks";
-import { ClipAPI } from "./datasources/clips";
-import { AutomationLaneAPI } from "./datasources/automationLanes";
-import { EffectAPI } from "./datasources/effects";
-import { FXChainPresetAPI } from "./datasources/fxChainPresets";
-import { AudioAnalysisAPI } from "./datasources/audioAnalysis";
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { typeDefs } from './schema';
+import { resolvers } from './resolvers';
+import { TrackAPI } from './datasources/tracks';
+import { ClipAPI } from './datasources/clips';
+import { AutomationLaneAPI } from './datasources/automationLanes';
+import { EffectAPI } from './datasources/effects';
+import { FXChainPresetAPI } from './datasources/fxChainPresets';
+import { AudioAnalysisAPI } from './datasources/audioAnalysis';
 
 export async function startApolloServer() {
   const server = new ApolloServer({

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 import { Clip } from '@orpheus/types/core';
 import { AudioAnalysisType, AudioAnalysisResults } from '@orpheus/types/audio';
-import { useMCPAnalysis } from "../../../hooks/useMCPAnalysis";
-import { useAI } from "@orpheus/contexts/AIContext";
-import { invokePythonAnalysis } from "../../../services/pythonBridge";
+import { useMCPAnalysis } from '../../../hooks/useMCPAnalysis';
+import { useAI } from '@orpheus/contexts/AIContext';
+import { invokePythonAnalysis } from '../../../services/pythonBridge';
 
 interface AudioAnalysisPanelProps {
   type: AudioAnalysisType;
@@ -44,7 +44,7 @@ export default function AudioAnalysisPanel({
   useEffect(() => {
     if (results && canvasRef.current) {
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
 
       if (!ctx) return;
 
@@ -80,7 +80,7 @@ export default function AudioAnalysisPanel({
           }
         })
         .catch((err: Error) => {
-          console.error("AI Analysis failed:", err);
+          console.error('AI Analysis failed:', err);
         });
     }
   }, [clip, type]);
@@ -107,39 +107,39 @@ export default function AudioAnalysisPanel({
     }
   }, [clip, type, resolution, windowSize]);
 
-  const downloadResults = (format: "txt" | "pdf" | "csv" | "numpy") => {
+  const downloadResults = (format: 'txt' | 'pdf' | 'csv' | 'numpy') => {
     if (!results && !pythonResults) return;
 
-    if (format === "numpy") {
+    if (format === 'numpy') {
       // Download NumPy array format for further scientific analysis
       const blob = new Blob([pythonResults.rawData], {
-        type: "application/octet-stream",
+        type: 'application/octet-stream',
       });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `analysis-numpy-${Date.now()}.npy`;
       a.click();
       URL.revokeObjectURL(url);
     } else {
       const content =
-        format === "csv"
+        format === 'csv'
           ? convertToCSV(results)
           : JSON.stringify(results, null, 2);
 
-      if (format === "txt") {
-        const blob = new Blob([content], { type: "text/plain" });
+      if (format === 'txt') {
+        const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
         a.download = `analysis-results-${Date.now()}.txt`;
         a.click();
         URL.revokeObjectURL(url);
-      } else if (format === "pdf") {
+      } else if (format === 'pdf') {
         // For PDF, we'll need to format it nicely
-        import("jspdf").then(({ default: JsPDF }) => {
+        import('jspdf').then(({ default: JsPDF }) => {
           const doc = new JsPDF();
-          const lines = content.split("\n");
+          const lines = content.split('\n');
           lines.forEach((line, i) => {
             doc.text(line, 10, 10 + i * 10);
           });
@@ -153,7 +153,7 @@ export default function AudioAnalysisPanel({
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Clear canvas
@@ -179,9 +179,9 @@ export default function AudioAnalysisPanel({
     results: any
   ) => {
     // Draw spectrogram
-    ctx.fillStyle = "var(--color1)";
-    ctx.font = "14px Arial";
-    ctx.fillText("Spectral Analysis", 10, 20);
+    ctx.fillStyle = 'var(--color1)';
+    ctx.font = '14px Arial';
+    ctx.fillText('Spectral Analysis', 10, 20);
 
     // Placeholder for spectral visualization
     ctx.beginPath();
@@ -194,7 +194,7 @@ export default function AudioAnalysisPanel({
       ctx.lineTo(i, y);
     }
 
-    ctx.strokeStyle = "var(--color1)";
+    ctx.strokeStyle = 'var(--color1)';
     ctx.stroke();
 
     // Use actual spectral data if available
@@ -209,9 +209,9 @@ export default function AudioAnalysisPanel({
     _results: any
   ) => {
     // Draw waveform
-    ctx.fillStyle = "var(--color1)";
-    ctx.font = "14px Arial";
-    ctx.fillText("Waveform Analysis", 10, 20);
+    ctx.fillStyle = 'var(--color1)';
+    ctx.font = '14px Arial';
+    ctx.fillText('Waveform Analysis', 10, 20);
 
     // Placeholder for waveform visualization
     const middle = canvas.height / 2;
@@ -226,7 +226,7 @@ export default function AudioAnalysisPanel({
       ctx.lineTo(i, middle - (y - middle));
     }
 
-    ctx.strokeStyle = "var(--color1)";
+    ctx.strokeStyle = 'var(--color1)';
     ctx.stroke();
   };
 
@@ -250,19 +250,19 @@ export default function AudioAnalysisPanel({
       }
     } else {
       // Fallback to basic analysis
-      ctx.fillStyle = "var(--color1)";
-      ctx.font = "14px Arial";
-      ctx.fillText("Audio Feature Analysis - Research View", 10, 20);
+      ctx.fillStyle = 'var(--color1)';
+      ctx.font = '14px Arial';
+      ctx.fillText('Audio Feature Analysis - Research View', 10, 20);
 
       const features = [
-        { name: "RMS Energy", unit: "dB" },
-        { name: "Spectral Centroid", unit: "Hz" },
-        { name: "Spectral Rolloff", unit: "Hz" },
-        { name: "Zero Crossing Rate", unit: "crossings/s" },
-        { name: "Tempo", unit: "BPM" },
-        { name: "Harmonic Ratio", unit: "" },
-        { name: "Pitch", unit: "Hz" },
-        { name: "Onset Strength", unit: "" },
+        { name: 'RMS Energy', unit: 'dB' },
+        { name: 'Spectral Centroid', unit: 'Hz' },
+        { name: 'Spectral Rolloff', unit: 'Hz' },
+        { name: 'Zero Crossing Rate', unit: 'crossings/s' },
+        { name: 'Tempo', unit: 'BPM' },
+        { name: 'Harmonic Ratio', unit: '' },
+        { name: 'Pitch', unit: 'Hz' },
+        { name: 'Onset Strength', unit: '' },
       ];
 
       const padding = { left: 120, right: 20, top: 40, bottom: 30 };
@@ -287,16 +287,16 @@ export default function AudioAnalysisPanel({
 
         // Draw bar
         const barWidth = normalizedValue * chartWidth;
-        ctx.fillStyle = "var(--color1)";
+        ctx.fillStyle = 'var(--color1)';
         ctx.fillRect(x, y, barWidth, 20);
 
         // Draw label
-        ctx.fillStyle = "var(--color1)";
-        ctx.textAlign = "right";
+        ctx.fillStyle = 'var(--color1)';
+        ctx.textAlign = 'right';
         ctx.fillText(`${feature.name} (${feature.unit})`, x - 5, y + 15);
 
         // Draw value
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         ctx.fillText(value.toFixed(2), x + barWidth + 5, y + 15);
       });
 
@@ -304,12 +304,12 @@ export default function AudioAnalysisPanel({
       if (results?.statistics) {
         const stats = [
           `Mean RMS: ${
-            results.statistics.rmsEnergy?.mean?.toFixed(2) || "N/A"
+            results.statistics.rmsEnergy?.mean?.toFixed(2) || 'N/A'
           }`,
           `Std Dev: ${
-            results.statistics.rmsEnergy?.stdDev?.toFixed(2) || "N/A"
+            results.statistics.rmsEnergy?.stdDev?.toFixed(2) || 'N/A'
           }`,
-          `Sample Rate: ${results.sampleRate || "N/A"} Hz`,
+          `Sample Rate: ${results.sampleRate || 'N/A'} Hz`,
         ];
 
         stats.forEach((stat, i) => {
@@ -362,7 +362,7 @@ export default function AudioAnalysisPanel({
       ctx.lineTo(i * (width / features.length), height + value * height);
     });
 
-    ctx.strokeStyle = "var(--color1)";
+    ctx.strokeStyle = 'var(--color1)';
     ctx.stroke();
   };
 
@@ -393,19 +393,19 @@ export default function AudioAnalysisPanel({
     stats: any,
     canvas: HTMLCanvasElement
   ) => {
-    ctx.fillStyle = "var(--color1)";
-    ctx.font = "12px Arial";
+    ctx.fillStyle = 'var(--color1)';
+    ctx.font = '12px Arial';
     Object.entries(stats).forEach(([key, value], i) => {
       ctx.fillText(`${key}: ${value}`, 10, canvas.height - 20 - i * 15);
     });
   };
 
   const convertToCSV = (results: any) => {
-    const headers = ["Timestamp", "Feature", "Value", "Unit"];
+    const headers = ['Timestamp', 'Feature', 'Value', 'Unit'];
     const rows: string[][] = [];
 
     Object.entries(results).forEach(([feature, value]) => {
-      if (typeof value === "number") {
+      if (typeof value === 'number') {
         rows.push([
           new Date().toISOString(),
           feature,
@@ -415,23 +415,23 @@ export default function AudioAnalysisPanel({
       }
     });
 
-    return [headers, ...rows].map((row) => row.join(",")).join("\n");
+    return [headers, ...rows].map((row) => row.join(',')).join('\n');
   };
 
   const getFeatureUnit = (feature: string): string => {
     const units: Record<string, string> = {
-      rmsEnergy: "dB",
-      spectralCentroid: "Hz",
-      tempo: "BPM",
-      pitch: "Hz",
+      rmsEnergy: 'dB',
+      spectralCentroid: 'Hz',
+      tempo: 'BPM',
+      pitch: 'Hz',
       // Add more feature units as needed
     };
-    return units[feature] || "";
+    return units[feature] || '';
   };
 
   return (
     <div className="analysis-panel">
-      <h3>{clip?.name || "No clip selected"}</h3>
+      <h3>{clip?.name || 'No clip selected'}</h3>
       {error && (
         <div className="alert alert-danger">Analysis Error: {error}</div>
       )}
@@ -443,34 +443,34 @@ export default function AudioAnalysisPanel({
             width={800}
             height={200}
             style={{
-              width: "100%",
-              height: "200px",
-              backgroundColor: "var(--bg3)",
+              width: '100%',
+              height: '200px',
+              backgroundColor: 'var(--bg3)',
             }}
           />
           {results && (
             <div className="mt-2">
               <button
                 className="btn btn-sm btn-secondary me-2"
-                onClick={() => downloadResults("txt")}
+                onClick={() => downloadResults('txt')}
               >
                 Download as TXT
               </button>
               <button
                 className="btn btn-sm btn-secondary"
-                onClick={() => downloadResults("pdf")}
+                onClick={() => downloadResults('pdf')}
               >
                 Download as PDF
               </button>
               <button
                 className="btn btn-sm btn-secondary"
-                onClick={() => downloadResults("csv")}
+                onClick={() => downloadResults('csv')}
               >
                 Download as CSV
               </button>
               <button
                 className="btn btn-sm btn-secondary"
-                onClick={() => downloadResults("numpy")}
+                onClick={() => downloadResults('numpy')}
                 disabled={!pythonResults}
               >
                 Download NumPy Data
@@ -478,7 +478,7 @@ export default function AudioAnalysisPanel({
             </div>
           )}
         </div>
-        <div style={{ width: "200px", padding: "0 10px" }}>
+        <div style={{ width: '200px', padding: '0 10px' }}>
           <h4>AI Analysis Controls</h4>
           <div className="mb-2">
             <label>Resolution:</label>

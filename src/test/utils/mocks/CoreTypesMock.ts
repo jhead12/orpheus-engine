@@ -5,40 +5,40 @@
 
 // Define enums
 export const TrackType = {
-  Audio: "audio",
-  Midi: "midi",
-  Sequencer: "sequencer",
+  Audio: 'audio',
+  Midi: 'midi',
+  Sequencer: 'sequencer',
 };
 
 export const AutomationMode = {
-  Read: "read",
-  Write: "write", 
-  Touch: "touch",
-  Latch: "latch",
-  Trim: "trim",
-  Off: "off",
+  Read: 'read',
+  Write: 'write',
+  Touch: 'touch',
+  Latch: 'latch',
+  Trim: 'trim',
+  Off: 'off',
 };
 
 export const AutomationLaneEnvelope = {
-  Volume: "volume",
-  Pan: "pan",
-  Send: "send",
-  Filter: "filter",
-  Tempo: "tempo",
-  Effect: "effect",
+  Volume: 'volume',
+  Pan: 'pan',
+  Send: 'send',
+  Filter: 'filter',
+  Tempo: 'tempo',
+  Effect: 'effect',
 };
 
 export const ContextMenuType = {
-  Track: "track",
-  Mixer: "mixer",
-  Timeline: "timeline",
-  Clip: "clip",
-  Node: "node",
-  Region: "region",
-  Lane: "lane",
-  Automation: "automation",
-  AddAutomationLane: "add-automation-lane",
-  FXChainPreset: "fx-chain-preset"
+  Track: 'track',
+  Mixer: 'mixer',
+  Timeline: 'timeline',
+  Clip: 'clip',
+  Node: 'node',
+  Region: 'region',
+  Lane: 'lane',
+  Automation: 'automation',
+  AddAutomationLane: 'add-automation-lane',
+  FXChainPreset: 'fx-chain-preset',
 };
 
 // TimelinePosition mock
@@ -52,8 +52,8 @@ export class TimelinePosition {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
-    horizontalScale: 1
+    snapUnit: 'beat',
+    horizontalScale: 1,
   };
 
   constructor(bar = 1, beat = 1, tick = 0) {
@@ -95,15 +95,17 @@ export class TimelinePosition {
   }
 
   equals(other: TimelinePosition): boolean {
-    return this.bar === other.bar && 
-           this.beat === other.beat && 
-           this.tick === other.tick;
+    return (
+      this.bar === other.bar &&
+      this.beat === other.beat &&
+      this.tick === other.tick
+    );
   }
 
   add(other: TimelinePosition): TimelinePosition {
     return this;
   }
-  
+
   compareTo(other: TimelinePosition): number {
     return 0;
   }

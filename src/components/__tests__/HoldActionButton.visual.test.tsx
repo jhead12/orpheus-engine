@@ -1,9 +1,9 @@
 /**
  * HoldActionButton Visual Tests
- * 
+ *
  * This file contains visual regression tests for the HoldActionButton component.
  * These tests generate snapshots to visually verify the component's appearance.
- * 
+ *
  * @fileoverview Visual tests for HoldActionButton component
  * @since 2024
  */
@@ -18,7 +18,8 @@ describe('HoldActionButton @visual', () => {
   const isCodespaces = process.env.CODESPACES === 'true';
   const hasDisplay = process.env.DISPLAY || process.env.WAYLAND_DISPLAY;
   const forceVisualTests = process.env.FORCE_VISUAL_TESTS === 'true';
-  const shouldSkipVisualTests = !forceVisualTests && (isCI || isCodespaces || !hasDisplay);
+  const shouldSkipVisualTests =
+    !forceVisualTests && (isCI || isCodespaces || !hasDisplay);
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -34,10 +35,10 @@ describe('HoldActionButton @visual', () => {
       return;
     }
     const onHoldAction = vi.fn();
-    
+
     const { container } = render(
       <div style={{ padding: '20px', background: '#f0f0f0' }}>
-        <HoldActionButton 
+        <HoldActionButton
           interval={100}
           onHoldAction={onHoldAction}
           data-testid="default-hold-button"
@@ -47,7 +48,7 @@ describe('HoldActionButton @visual', () => {
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           Click and Hold
@@ -55,7 +56,10 @@ describe('HoldActionButton @visual', () => {
       </div>
     );
 
-    await expectScreenshot(container.firstElementChild as HTMLElement, 'hold-action-button-default');
+    await expectScreenshot(
+      container.firstElementChild as HTMLElement,
+      'hold-action-button-default'
+    );
   }, 30000); // Increase timeout to 30 seconds
 
   it('renders styled hold action button @visual', async () => {
@@ -64,10 +68,10 @@ describe('HoldActionButton @visual', () => {
       return;
     }
     const onHoldAction = vi.fn();
-    
+
     const { container } = render(
       <div style={{ padding: '20px', background: '#1a1a1a' }}>
-        <HoldActionButton 
+        <HoldActionButton
           interval={50}
           delay={200}
           onHoldAction={onHoldAction}
@@ -81,7 +85,7 @@ describe('HoldActionButton @visual', () => {
             fontSize: '16px',
             fontWeight: 'bold',
             cursor: 'pointer',
-            boxShadow: '0 4px 8px rgba(255, 107, 107, 0.3)'
+            boxShadow: '0 4px 8px rgba(255, 107, 107, 0.3)',
           }}
         >
           🎵 Record Track
@@ -89,7 +93,10 @@ describe('HoldActionButton @visual', () => {
       </div>
     );
 
-    await expectScreenshot(container.firstElementChild as HTMLElement, 'hold-action-button-styled');
+    await expectScreenshot(
+      container.firstElementChild as HTMLElement,
+      'hold-action-button-styled'
+    );
   }, 30000);
 
   it('renders disabled-style hold action button @visual', async () => {
@@ -98,10 +105,10 @@ describe('HoldActionButton @visual', () => {
       return;
     }
     const onHoldAction = vi.fn();
-    
+
     const { container } = render(
       <div style={{ padding: '20px', background: '#f8f9fa' }}>
-        <HoldActionButton 
+        <HoldActionButton
           interval={100}
           onHoldAction={onHoldAction}
           data-testid="disabled-hold-button"
@@ -112,7 +119,7 @@ describe('HoldActionButton @visual', () => {
             border: '1px solid #5a6268',
             borderRadius: '4px',
             cursor: 'not-allowed',
-            opacity: 0.6
+            opacity: 0.6,
           }}
         >
           Unavailable
@@ -120,7 +127,10 @@ describe('HoldActionButton @visual', () => {
       </div>
     );
 
-    await expectScreenshot(container.firstElementChild as HTMLElement, 'hold-action-button-disabled');
+    await expectScreenshot(
+      container.firstElementChild as HTMLElement,
+      'hold-action-button-disabled'
+    );
   }, 30000);
 
   it('renders hold action button with custom content @visual', async () => {
@@ -129,10 +139,10 @@ describe('HoldActionButton @visual', () => {
       return;
     }
     const onHoldAction = vi.fn();
-    
+
     const { container } = render(
       <div style={{ padding: '20px', background: '#2d3748' }}>
-        <HoldActionButton 
+        <HoldActionButton
           interval={75}
           holdActionOnMouseDown={false}
           onHoldAction={onHoldAction}
@@ -146,16 +156,21 @@ describe('HoldActionButton @visual', () => {
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
           }}
         >
           <span style={{ fontSize: '18px' }}>▶️</span>
           <span>Play/Hold</span>
-          <span style={{ fontSize: '12px', opacity: 0.7 }}>(Hold for repeat)</span>
+          <span style={{ fontSize: '12px', opacity: 0.7 }}>
+            (Hold for repeat)
+          </span>
         </HoldActionButton>
       </div>
     );
 
-    await expectScreenshot(container.firstElementChild as HTMLElement, 'hold-action-button-custom');
+    await expectScreenshot(
+      container.firstElementChild as HTMLElement,
+      'hold-action-button-custom'
+    );
   }, 30000);
 });

@@ -1,9 +1,9 @@
-import { Track, TimelinePosition, Region, Clip } from "./core";
+import { Track, TimelinePosition, Region, Clip } from './core';
 import {
   SnapGridSizeOption,
   AudioAnalysisType,
   AudioAnalysisResults,
-} from "./audio";
+} from './audio';
 
 export interface WorkstationContextType {
   addTrack: (type: string) => void;

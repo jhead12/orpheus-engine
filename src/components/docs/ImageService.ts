@@ -9,7 +9,7 @@ export interface ImageFile {
 
 export class ImageService {
   private static instance: ImageService;
-  
+
   public static getInstance(): ImageService {
     if (!ImageService.instance) {
       ImageService.instance = new ImageService();
@@ -22,28 +22,27 @@ export class ImageService {
    */
   async loadImages(): Promise<ImageFile[]> {
     const images: ImageFile[] = [];
-    
+
     try {
       // Load screenshots from __snapshots__/screenshots/
       const screenshotImages = await this.loadScreenshots();
       images.push(...screenshotImages);
-      
+
       // Load GIFs from __snapshots__/gifs/
       const gifImages = await this.loadGifs();
       images.push(...gifImages);
-      
+
       // Load diff images from __snapshots__/diffs/
       const diffImages = await this.loadDiffs();
       images.push(...diffImages);
-      
+
       // Scan for component test snapshots
       const componentImages = await this.loadComponentSnapshots();
       images.push(...componentImages);
-      
     } catch (error) {
       console.error('Error loading images:', error);
     }
-    
+
     return images;
   }
 
@@ -57,7 +56,7 @@ export class ImageService {
         type: 'png',
         component: 'SidePanel',
         testName: 'Collapsed State',
-        category: 'screenshot'
+        category: 'screenshot',
       },
       {
         name: 'sidepanel-expanded.png',
@@ -65,8 +64,8 @@ export class ImageService {
         type: 'png',
         component: 'SidePanel',
         testName: 'Expanded State',
-        category: 'screenshot'
-      }
+        category: 'screenshot',
+      },
     ];
   }
 
@@ -90,7 +89,7 @@ export class ImageService {
         type: 'png',
         component: 'Meter',
         testName: 'Renders Horizontally',
-        category: 'snapshot'
+        category: 'snapshot',
       },
       {
         name: 'Meter.test.tsx.snap-meter-renders-vertically-1.png',
@@ -98,7 +97,7 @@ export class ImageService {
         type: 'png',
         component: 'Meter',
         testName: 'Renders Vertically',
-        category: 'snapshot'
+        category: 'snapshot',
       },
       {
         name: 'Meter.test.tsx.snap-meter-shows-percentage-1.png',
@@ -106,7 +105,7 @@ export class ImageService {
         type: 'png',
         component: 'Meter',
         testName: 'Shows Percentage',
-        category: 'snapshot'
+        category: 'snapshot',
       },
       {
         name: 'Meter.test.tsx.snap-meter-with-custom-colors-1.png',
@@ -114,7 +113,7 @@ export class ImageService {
         type: 'png',
         component: 'Meter',
         testName: 'With Custom Colors',
-        category: 'snapshot'
+        category: 'snapshot',
       },
       {
         name: 'Meter.test.tsx.snap-meter-with-marks-1.png',
@@ -122,8 +121,8 @@ export class ImageService {
         type: 'png',
         component: 'Meter',
         testName: 'With Marks',
-        category: 'snapshot'
-      }
+        category: 'snapshot',
+      },
     ];
   }
 

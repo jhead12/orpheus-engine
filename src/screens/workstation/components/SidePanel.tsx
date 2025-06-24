@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 // import { Track } from '@orpheus/types/core'; // Removed unused import
-import styled from "styled-components";
+import styled from 'styled-components';
 
 interface StyledProps {
   $isCollapsed: boolean;
@@ -16,7 +16,7 @@ const PanelContainer = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
-  width: ${(props) => (props.$isCollapsed ? "50px" : "250px")};
+  width: ${(props) => (props.$isCollapsed ? '50px' : '250px')};
   &:hover {
     width: 250px;
   }
@@ -31,7 +31,7 @@ const Header = styled.div<StyledProps>`
   text-overflow: ellipsis;
   display: flex;
   align-items: center;
-  justify-content: ${(props) => (props.$isCollapsed ? "center" : "flex-start")};
+  justify-content: ${(props) => (props.$isCollapsed ? 'center' : 'flex-start')};
 `;
 
 const AudioList = styled.div<StyledProps>`
@@ -82,7 +82,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -93,7 +93,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
       onMouseLeave={() => setIsCollapsed(true)}
     >
       <Header $isCollapsed={isCollapsed}>
-        {isCollapsed ? "📚" : "Audio Library"}
+        {isCollapsed ? '📚' : 'Audio Library'}
       </Header>
       <AudioList $isCollapsed={isCollapsed}>
         {audioFiles.map((file) => (
@@ -103,7 +103,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             data-testid={`audio-item-${file.id}`}
           >
             <div>{file.name}</div>
-            <div style={{ fontSize: "0.8em", color: "#888" }}>
+            <div style={{ fontSize: '0.8em', color: '#888' }}>
               {formatDuration(file.duration)}
             </div>
           </AudioItem>

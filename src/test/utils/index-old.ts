@@ -24,7 +24,7 @@ export * from './audio-test-utils';
 export * from './timeline-test-utils';
 
 // Visual test utilities
-export { 
+export {
   runVisualTest,
   runAudioVisualTest,
   runSimpleVisualTest,
@@ -34,20 +34,21 @@ export {
 } from '../helpers/visual-test-utils';
 
 // Screenshot utilities
-export { 
-  expectScreenshot,
-} from '../helpers/screenshot';
+export { expectScreenshot } from '../helpers/screenshot';
 
 /**
  * Common test setup function for all workstation components
  */
 export const setupWorkstationTest = () => {
-  const { setupWorkstationTestEnvironment, cleanupWorkstationTest } = require('./workstation-test-utils');
-  
+  const {
+    setupWorkstationTestEnvironment,
+    cleanupWorkstationTest,
+  } = require('./workstation-test-utils');
+
   beforeEach(() => {
     setupWorkstationTestEnvironment();
   });
-  
+
   afterEach(() => {
     cleanupWorkstationTest();
   });
@@ -57,16 +58,16 @@ export const setupWorkstationTest = () => {
  * Quick setup for mixer-specific tests
  */
 export const setupMixerTest = () => {
-  const { 
-    setupWorkstationTestEnvironment, 
-    createMockMixerContext, 
-    createMockWorkstationContext 
+  const {
+    setupWorkstationTestEnvironment,
+    createMockMixerContext,
+    createMockWorkstationContext,
   } = require('./workstation-test-utils');
-  
+
   beforeEach(() => {
     setupWorkstationTestEnvironment();
   });
-  
+
   return {
     mockMixerContext: createMockMixerContext(),
     mockWorkstationContext: createMockWorkstationContext(),
@@ -77,11 +78,11 @@ export const setupMixerTest = () => {
  * Utility to create a complete test environment with all contexts
  */
 export const createCompleteTestEnvironment = (customProps = {}) => {
-  const { 
-    createMockMixerContext, 
-    createMockWorkstationContext 
+  const {
+    createMockMixerContext,
+    createMockWorkstationContext,
   } = require('./workstation-test-utils');
-  
+
   return {
     mixerContext: createMockMixerContext(customProps.mixer),
     workstationContext: createMockWorkstationContext(customProps.workstation),

@@ -11,8 +11,10 @@ import App from '../../App';
 // Mock the entire router module
 vi.mock('react-router-dom', () => ({
   Routes: ({ children }) => <div data-testid="mock-routes">{children}</div>,
-  Route: () => <div data-testid="mock-route"></div>,
-  MemoryRouter: ({ children }) => <div data-testid="mock-memory-router">{children}</div>
+  Route: () => <div data-testid="mock-route" />,
+  MemoryRouter: ({ children }) => (
+    <div data-testid="mock-memory-router">{children}</div>
+  ),
 }));
 
 // Mock PythonBackendService
@@ -22,7 +24,7 @@ vi.mock('../../services/PythonBackendService', () => {
     checkHealth: vi.fn().mockResolvedValue({
       status: 'healthy',
       version: '1.0.0-test',
-      features: ['audio_analysis', 'transcription']
+      features: ['audio_analysis', 'transcription'],
     }),
     isInitialized: vi.fn().mockReturnValue(true),
   };
@@ -30,8 +32,8 @@ vi.mock('../../services/PythonBackendService', () => {
   return {
     pythonBackend: mockService,
     PythonBackendService: {
-      getInstance: () => mockService
-    }
+      getInstance: () => mockService,
+    },
   };
 });
 
@@ -39,8 +41,8 @@ vi.mock('../../services/PythonBackendService', () => {
 vi.mock('../../plugins', () => ({
   pluginSystem: {
     initialize: vi.fn().mockResolvedValue(undefined),
-    activatePlugin: vi.fn().mockResolvedValue(undefined)
-  }
+    activatePlugin: vi.fn().mockResolvedValue(undefined),
+  },
 }));
 
 describe('Simple App Test', () => {
@@ -48,7 +50,7 @@ describe('Simple App Test', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: vi.fn().mockImplementation(query => ({
+      value: vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
@@ -63,7 +65,7 @@ describe('Simple App Test', () => {
 
   it('renders with mock router', () => {
     render(<App />);
-    
+
     // Check for mock router components
     expect(screen.getByTestId('mock-memory-router')).toBeInTheDocument();
     expect(screen.getByTestId('mock-routes')).toBeInTheDocument();

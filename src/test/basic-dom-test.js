@@ -15,18 +15,18 @@ const SimpleComponent = () => (
 describe('DOM Element Testing', () => {
   it('should find peak display by class name', () => {
     const { container } = render(<SimpleComponent />);
-    
+
     console.log('Container HTML:', container.innerHTML);
-    
+
     // Find peak display by class name
     const peakDisplays = container.querySelectorAll('.peak-display');
     console.log('Peak displays count:', peakDisplays.length);
     expect(peakDisplays.length).toBe(1);
   });
-  
+
   it('should find knob by test id', () => {
     const { container } = render(<SimpleComponent />);
-    
+
     // Find knobs using querySelector with data-testid
     const knobs = container.querySelectorAll('[data-testid="knob"]');
     console.log('Knobs count:', knobs.length);

@@ -23,7 +23,11 @@ vi.mock('../../services/audio/AudioService', () => ({
 
 // Mock audio APIs
 global.AudioContext = vi.fn().mockImplementation(() => ({
-  createGain: vi.fn(() => ({ gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() })),
+  createGain: vi.fn(() => ({
+    gain: { value: 1 },
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  })),
   createAnalyser: vi.fn(() => ({ connect: vi.fn(), disconnect: vi.fn() })),
   destination: {},
   state: 'running',
@@ -45,7 +49,7 @@ describe('WorkstationContext', () => {
   describe('Initial State', () => {
     it('should provide default state', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(result.current.tracks).toEqual([]);
       expect(result.current.masterTrack).toBeDefined();
       expect(result.current.masterTrack?.name).toBe('Master');
@@ -68,13 +72,13 @@ describe('WorkstationContext', () => {
   });
 
   describe('Track Management', () => {
-  it('should add new audio track', () => {
-    const { result } = renderHook(() => useWorkstation(), { wrapper });
-    
-    act(() => {
-      result.current.addTrack(TrackType.Audio);
-    });
-      
+    it('should add new audio track', () => {
+      const { result } = renderHook(() => useWorkstation(), { wrapper });
+
+      act(() => {
+        result.current.addTrack(TrackType.Audio);
+      });
+
       expect(result.current.tracks).toHaveLength(1);
       expect(result.current.tracks[0].type).toBe(TrackType.Audio);
       expect(result.current.tracks[0].name).toContain('Track');
@@ -82,11 +86,11 @@ describe('WorkstationContext', () => {
 
     it('should add new MIDI track', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack(TrackType.Midi);
       });
-      
+
       expect(result.current.tracks).toHaveLength(1);
       expect(result.current.tracks[0].type).toBe(TrackType.Midi);
       expect(result.current.tracks[0].name).toContain('Track');
@@ -94,55 +98,55 @@ describe('WorkstationContext', () => {
 
     it('should generate unique track IDs', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
         result.current.addTrack('audio');
         result.current.addTrack('midi');
       });
-      
-      const trackIds = result.current.tracks.map(t => t.id);
+
+      const trackIds = result.current.tracks.map((t) => t.id);
       const uniqueIds = [...new Set(trackIds)];
-      
+
       expect(uniqueIds).toHaveLength(3);
     });
 
     it('should update track properties', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
       });
-      
+
       const track = result.current.tracks[0];
       const updatedTrack = {
         ...track,
         name: 'Updated Track',
         mute: true,
       };
-      
+
       act(() => {
         result.current.setTrack(updatedTrack);
       });
-      
-      const finalTrack = result.current.tracks.find(t => t.id === track.id);
+
+      const finalTrack = result.current.tracks.find((t) => t.id === track.id);
       expect(finalTrack?.name).toBe('Updated Track');
       expect(finalTrack?.mute).toBe(true);
     });
 
     it('should duplicate track', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
       });
-      
+
       const originalTrack = result.current.tracks[0];
-      
+
       act(() => {
         result.current.duplicateTrack(originalTrack.id);
       });
-      
+
       expect(result.current.tracks).toHaveLength(2);
       expect(result.current.tracks[1].name).toContain(originalTrack.name);
       expect(result.current.tracks[1].id).not.toBe(originalTrack.id);
@@ -150,19 +154,19 @@ describe('WorkstationContext', () => {
 
     it('should remove track by ID', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
         result.current.addTrack('midi');
       });
-      
+
       // Variable is currently unused but kept for potential future use in assertions
       // const trackIdToRemove = result.current.tracks[0].id;
-      
+
       act(() => {
         result.current.deleteTrack(result.current.tracks[0]);
       });
-      
+
       expect(result.current.tracks).toHaveLength(1);
       expect(result.current.tracks[0].type).toBe(TrackType.Midi);
     });
@@ -171,20 +175,20 @@ describe('WorkstationContext', () => {
   describe('Playback Control', () => {
     it('should have playback state', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(result.current.isPlaying).toBe(false);
       expect(result.current.playheadPos).toBeDefined();
     });
 
     it('should update playhead position', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       const newPosition = { bar: 2, beat: 1, tick: 120 };
-      
+
       act(() => {
         result.current.setPlayheadPos(newPosition);
       });
-      
+
       expect(result.current.playheadPos.bar).toBe(2);
       expect(result.current.playheadPos.beat).toBe(1);
       expect(result.current.playheadPos.tick).toBe(120);
@@ -194,7 +198,7 @@ describe('WorkstationContext', () => {
   describe('UI State Management', () => {
     it('should manage menu and shortcuts state', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(() => {
         act(() => {
           result.current.setAllowMenuAndShortcuts(false);
@@ -205,17 +209,17 @@ describe('WorkstationContext', () => {
 
     it('should manage track selection', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
       });
-      
+
       const trackId = result.current.tracks[0].id;
-      
+
       act(() => {
         result.current.setSelectedTrackId(trackId);
       });
-      
+
       expect(result.current.selectedTrackId).toBe(trackId);
     });
   });
@@ -223,14 +227,14 @@ describe('WorkstationContext', () => {
   describe('Automation System', () => {
     it('should get track current values', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       act(() => {
         result.current.addTrack('audio');
       });
-      
+
       const track = result.current.tracks[0];
       const currentValue = result.current.getTrackCurrentValue(track);
-      
+
       expect(currentValue).toBeDefined();
       expect(typeof currentValue.value).toBe('number');
       expect(typeof currentValue.isAutomated).toBe('boolean');
@@ -240,7 +244,7 @@ describe('WorkstationContext', () => {
   describe('Master Track', () => {
     it('should have a master track', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(result.current.masterTrack).toBeDefined();
       expect(result.current.masterTrack?.name).toBe('Master');
       expect(result.current.masterTrack?.type).toBe(TrackType.Audio);
@@ -250,20 +254,20 @@ describe('WorkstationContext', () => {
   describe('Error Handling', () => {
     it('should handle invalid track operations gracefully', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(() => {
         act(() => {
           const invalidTrack = { id: 'non-existent', name: 'Test' } as Track;
           result.current.setTrack(invalidTrack);
         });
       }).not.toThrow();
-      
+
       expect(result.current.tracks).toHaveLength(0);
     });
 
     it('should handle invalid playhead positions', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
-      
+
       expect(() => {
         act(() => {
           result.current.setPlayheadPos(null as any);

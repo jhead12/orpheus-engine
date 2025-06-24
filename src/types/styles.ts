@@ -1,5 +1,5 @@
 // Style-related type definitions
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
 
 // Theme colors from themes.css
 export interface ThemeColors {
@@ -36,16 +36,16 @@ export interface ThemeColors {
 }
 
 // Color scheme types
-export type Theme = "light" | "dark" | "system";
+export type Theme = 'light' | 'dark' | 'system';
 export type ColorScheme =
-  | "rose"
-  | "azure"
-  | "aqua"
-  | "crimson"
-  | "olive"
-  | "violet"
-  | "citrus"
-  | "mono";
+  | 'rose'
+  | 'azure'
+  | 'aqua'
+  | 'crimson'
+  | 'olive'
+  | 'violet'
+  | 'citrus'
+  | 'mono';
 
 export interface ColorSet {
   color1: string;
@@ -95,7 +95,7 @@ export interface StyleProps {
 }
 
 // Font definitions from App.css
-export type FontFamily = "Abel" | "Manrope";
+export type FontFamily = 'Abel' | 'Manrope';
 export type FontWeight = 200 | 300 | 400 | 500 | 600 | 700;
 
 // Layout and spacing utilities

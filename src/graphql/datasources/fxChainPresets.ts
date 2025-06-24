@@ -1,6 +1,6 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
-import { FXChainPreset, Effect } from "../../types/core";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
+import { FXChainPreset, Effect } from '../../types/core';
 
 interface FXChainPresetInput {
   name: string;
@@ -48,7 +48,7 @@ export class FXChainPresetAPI {
   ): Promise<FXChainPreset> {
     const existingPreset = await this.get(id);
     if (!existingPreset) {
-      throw new Error("FX Chain Preset not found");
+      throw new Error('FX Chain Preset not found');
     }
 
     const updatedPreset: FXChainPreset = {

@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 // Define all the settings types
 export interface AudioSettings {
@@ -10,16 +10,16 @@ export interface AudioSettings {
 }
 
 export interface ThemeSettings {
-  theme: "light" | "dark" | "system";
+  theme: 'light' | 'dark' | 'system';
   color:
-    | "rose"
-    | "violet"
-    | "azure"
-    | "aqua"
-    | "olive"
-    | "citrus"
-    | "crimson"
-    | "mono";
+    | 'rose'
+    | 'violet'
+    | 'azure'
+    | 'aqua'
+    | 'olive'
+    | 'citrus'
+    | 'crimson'
+    | 'mono';
 }
 
 export interface WorkspaceSettings {
@@ -40,13 +40,13 @@ export const defaultSettings: SettingsStore = {
   audio: {
     sampleRate: 44100,
     bufferSize: 1024,
-    inputDevice: "default",
-    outputDevice: "default",
+    inputDevice: 'default',
+    outputDevice: 'default',
     defaultMixerHeight: 200,
   },
   theme: {
-    theme: "system",
-    color: "rose",
+    theme: 'system',
+    color: 'rose',
   },
   workspace: {
     autosaveInterval: 5,
@@ -74,7 +74,7 @@ export const SettingsContext = createContext<SettingsContextType>({
 });
 
 // Local storage key
-const SETTINGS_STORAGE_KEY = "orpheus-engine-settings";
+const SETTINGS_STORAGE_KEY = 'orpheus-engine-settings';
 
 // Load settings from localStorage
 export function loadSettings(): SettingsStore {
@@ -93,7 +93,7 @@ export function loadSettings(): SettingsStore {
       };
     }
   } catch (error) {
-    console.error("Failed to load settings:", error);
+    console.error('Failed to load settings:', error);
   }
   return defaultSettings;
 }
@@ -103,7 +103,7 @@ export function saveSettings(settings: SettingsStore): void {
   try {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
   } catch (error) {
-    console.error("Failed to save settings:", error);
+    console.error('Failed to save settings:', error);
   }
 }
 
@@ -111,7 +111,7 @@ export function saveSettings(settings: SettingsStore): void {
 export function useSettings(): SettingsContextType {
   const context = createContext(SettingsContext);
   if (context === undefined) {
-    throw new Error("useSettings must be used within a SettingsProvider");
+    throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
 }

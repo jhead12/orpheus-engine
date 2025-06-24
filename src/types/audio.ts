@@ -1,8 +1,8 @@
 // Audio-related type definitions
 export enum AudioAnalysisType {
-  Spectral = "spectral",
-  Waveform = "waveform",
-  Features = "features",
+  Spectral = 'spectral',
+  Waveform = 'waveform',
+  Features = 'features',
 }
 
 export interface AudioAnalysisResults {
@@ -33,20 +33,20 @@ export interface WorkstationAudioInputFile {
 }
 
 export enum SnapGridSizeOption {
-  None = "none",
-  Auto = "auto",
-  HundredTwentyEighthBeat = "128th",
-  SixtyFourthBeat = "64th",
-  ThirtySecondBeat = "32nd",
-  SixteenthBeat = "sixteenth",
-  EighthBeat = "eighth",
-  QuarterBeat = "quarter",
-  HalfBeat = "half",
-  Beat = "beat",
-  Measure = "measure",
-  TwoMeasures = "two_measures",
-  FourMeasures = "four_measures",
-  EightMeasures = "eight_measures",
+  None = 'none',
+  Auto = 'auto',
+  HundredTwentyEighthBeat = '128th',
+  SixtyFourthBeat = '64th',
+  ThirtySecondBeat = '32nd',
+  SixteenthBeat = 'sixteenth',
+  EighthBeat = 'eighth',
+  QuarterBeat = 'quarter',
+  HalfBeat = 'half',
+  Beat = 'beat',
+  Measure = 'measure',
+  TwoMeasures = 'two_measures',
+  FourMeasures = 'four_measures',
+  EightMeasures = 'eight_measures',
 }
 
 export interface BaseClipComponentProps {

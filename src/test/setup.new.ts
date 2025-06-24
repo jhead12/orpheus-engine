@@ -1,5 +1,5 @@
-import "@testing-library/jest-dom";
-import { vi, beforeEach, beforeAll, afterAll } from "vitest";
+import '@testing-library/jest-dom';
+import { vi, beforeEach, beforeAll, afterAll } from 'vitest';
 
 // Add jest globals
 globalThis.jest = {
@@ -53,7 +53,7 @@ class MockAudioBuffer implements AudioBuffer {
 
   getChannelData(channel: number): Float32Array {
     if (channel >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     return this._channelData[channel];
   }
@@ -64,7 +64,7 @@ class MockAudioBuffer implements AudioBuffer {
     startInChannel = 0
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     this._channelData[channelNumber].set(source, startInChannel);
   }
@@ -75,7 +75,7 @@ class MockAudioBuffer implements AudioBuffer {
     startInChannel = 0
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     const end = Math.min(startInChannel + destination.length, this.length);
     destination.set(
@@ -90,7 +90,7 @@ class MockAudioContext implements AudioContext {
   readonly outputLatency = 0;
   readonly destination: AudioDestinationNode;
   readonly sampleRate = 44100;
-  readonly state: AudioContextState = "running";
+  readonly state: AudioContextState = 'running';
   readonly audioWorklet: AudioWorklet;
   readonly listener: AudioListener;
   readonly currentTime = 0;
@@ -118,8 +118,8 @@ class MockAudioContext implements AudioContext {
       numberOfInputs: 1,
       numberOfOutputs: 0,
       channelCount: 2,
-      channelCountMode: "explicit",
-      channelInterpretation: "speakers",
+      channelCountMode: 'explicit',
+      channelInterpretation: 'speakers',
       maxChannelCount: 2,
       connect: vi.fn(),
       disconnect: vi.fn(),
@@ -142,7 +142,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),
-      } as unknown as AudioBufferSourceNode)
+      }) as unknown as AudioBufferSourceNode
   );
 
   createGain = vi.fn(
@@ -151,7 +151,7 @@ class MockAudioContext implements AudioContext {
         gain: { value: 1 },
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as GainNode)
+      }) as unknown as GainNode
   );
 
   createAnalyser = vi.fn(
@@ -163,7 +163,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         getFloatFrequencyData: vi.fn(),
         getByteFrequencyData: vi.fn(),
-      } as unknown as AnalyserNode)
+      }) as unknown as AnalyserNode
   );
 
   decodeAudioData = vi.fn().mockResolvedValue(
@@ -234,7 +234,7 @@ const setupGlobals = () => {
   });
 
   // Set on window if it exists
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     Object.entries(audioMocks).forEach(([key, value]) => {
       Object.defineProperty(window, key, {
         value,
@@ -245,7 +245,7 @@ const setupGlobals = () => {
 
     // Add electron API mock
     window.electronAPI = {
-      openFile: vi.fn().mockResolvedValue(""),
+      openFile: vi.fn().mockResolvedValue(''),
       saveFile: vi.fn().mockResolvedValue(undefined),
     };
   }
@@ -266,10 +266,10 @@ global.ResizeObserver = MockResizeObserver;
 
 // Console error handling
 const SUPPRESSED_ERRORS = [
-  "Warning:",
-  "Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]",
-  "The above error occurred in the <TestComponent> component",
-  "Consider adding an error boundary",
+  'Warning:',
+  'Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]',
+  'The above error occurred in the <TestComponent> component',
+  'Consider adding an error boundary',
 ];
 
 const originalConsoleError = console.error;
@@ -280,7 +280,7 @@ beforeAll(() => {
   console.error = (...args: Parameters<typeof console.error>) => {
     const firstArg = args[0];
     if (
-      typeof firstArg === "string" &&
+      typeof firstArg === 'string' &&
       SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))
     ) {
       return;
@@ -291,7 +291,7 @@ beforeAll(() => {
   // Mock console.warn
   console.warn = (...args: Parameters<typeof console.warn>) => {
     const firstArg = args[0];
-    if (typeof firstArg === "string" && firstArg.includes("Warning:")) {
+    if (typeof firstArg === 'string' && firstArg.includes('Warning:')) {
       return;
     }
     originalConsoleWarn.apply(console, args);
