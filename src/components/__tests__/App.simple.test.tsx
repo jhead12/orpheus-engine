@@ -2,7 +2,6 @@
  * Simple App Test
  * Simplified test without Router dependencies
  */
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -10,9 +9,9 @@ import App from '../../App';
 
 // Mock the entire router module
 vi.mock('react-router-dom', () => ({
-  Routes: ({ children }) => <div data-testid="mock-routes">{children}</div>,
+  Routes: ({ children }: { children?: React.ReactNode }) => <div data-testid="mock-routes">{children}</div>,
   Route: () => <div data-testid="mock-route"></div>,
-  MemoryRouter: ({ children }) => <div data-testid="mock-memory-router">{children}</div>
+  MemoryRouter: ({ children }: { children?: React.ReactNode }) => <div data-testid="mock-memory-router">{children}</div>
 }));
 
 // Mock PythonBackendService
