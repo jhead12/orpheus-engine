@@ -29,19 +29,6 @@ const AutomationLaneEnvelope = {
   Effect: "effect",
 };
 
-const ContextMenuType = {
-  Track: "track",
-  Mixer: "mixer",
-  Timeline: "timeline",
-  Clip: "clip",
-  Node: "node",
-  Region: "region",
-  Lane: "lane",
-  Automation: "automation",
-  AddAutomationLane: "add-automation-lane",
-  FXChainPreset: "fx-chain-preset"
-};
-
 // Mock types module first
 import { vi } from 'vitest';
 vi.mock("@orpheus/types/core", () => ({
@@ -95,36 +82,29 @@ global.AudioContext = global.AudioContext || (() => ({
 }));
 global.webkitAudioContext = global.AudioContext;
 
-// Define constants separately to avoid hoisting issues
-const TrackType = {
-  Audio: "audio",
-  Midi: "midi",
-  Sequencer: "sequencer",
-};
-
-const AutomationMode = {
-  Read: "read",
-  Write: "write", 
-  Touch: "touch",
-  Latch: "latch",
-  Trim: "trim",
-  Off: "off",
-};
-
-const AutomationLaneEnvelope = {
-  Volume: "volume",
-  Pan: "pan",
-  Send: "send",
-  Filter: "filter",
-  Tempo: "tempo",
-  Effect: "effect",
-};
-
 // Mock types module first
 vi.mock("@orpheus/types/core", () => ({
-  AutomationMode,
-  AutomationLaneEnvelope,
-  TrackType,
+  AutomationMode: {
+    Read: "read",
+    Write: "write", 
+    Touch: "touch",
+    Latch: "latch",
+    Trim: "trim",
+    Off: "off",
+  },
+  AutomationLaneEnvelope: {
+    Volume: "volume",
+    Pan: "pan",
+    Send: "send",
+    Filter: "filter",
+    Tempo: "tempo",
+    Effect: "effect",
+  },
+  TrackType: {
+    Audio: "audio",
+    Midi: "midi",
+    Sequencer: "sequencer",
+  },
   TimelinePosition: class TimelinePosition {
     bars: number;
     beats: number;
@@ -147,8 +127,7 @@ vi.mock("@orpheus/types/core", () => ({
 }));
 
 // Now it's safe to import testing utilities
-import React from 'react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Mixer from '@orpheus/screens/workstation/components/Mixer';
@@ -664,7 +643,7 @@ describe('Main Mixer Component', () => {
 
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithSolo}>
+          <MixerContext.Provider value={contextWithSolo as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -706,7 +685,7 @@ describe('Main Mixer Component', () => {
 
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithClipping}>
+          <MixerContext.Provider value={contextWithClipping as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -802,7 +781,7 @@ describe('Main Mixer Component', () => {
 
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithMultipleEffects}>
+          <MixerContext.Provider value={contextWithMultipleEffects as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -939,7 +918,7 @@ describe('Main Mixer Component', () => {
       
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithManyTracks}>
+          <MixerContext.Provider value={contextWithManyTracks as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -960,7 +939,7 @@ describe('Main Mixer Component', () => {
 
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithManyTracks}>
+          <MixerContext.Provider value={contextWithManyTracks as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -981,7 +960,7 @@ describe('Main Mixer Component', () => {
 
       render(
         <WorkstationContext.Provider value={mockWorkstationContext as any}>
-          <MixerContext.Provider value={contextWithoutMeters}>
+          <MixerContext.Provider value={contextWithoutMeters as any}>
             <Mixer />
           </MixerContext.Provider>
         </WorkstationContext.Provider>
@@ -1014,7 +993,7 @@ describe('Main Mixer Component', () => {
       expect(() => {
         render(
           <WorkstationContext.Provider value={mockWorkstationContext as any}>
-            <MixerContext.Provider value={contextWithInvalidEffect}>
+            <MixerContext.Provider value={contextWithInvalidEffect as any}>
               <Mixer />
             </MixerContext.Provider>
           </WorkstationContext.Provider>

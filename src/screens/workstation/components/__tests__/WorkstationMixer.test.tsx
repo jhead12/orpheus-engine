@@ -17,27 +17,19 @@ setupWorkstationMixerTest();
 // Now it's safe to import testing utilities
 import { describe, it, expect, vi } from 'vitest';
 
-// Define a type for the vitest mock functions
-type MockFunction<T extends (...args: any) => any> = T & {
-  mockReset: () => void;
-  mock: {
-    calls: any[][];
-  };
-};
-
 // Mock SortableList component and other widgets
 vi.mock('@orpheus/widgets', () => ({
   // Destructuring props but ignoring onSortEnd and onKeyDown as they're not used in this mock
-  Dialog: ({ children, ...rest }) => <div {...rest}>{children}</div>,
-  HueInput: ({ onChange, value }) => <input data-testid="hue-input" value={value} onChange={e => onChange(e.target.value)} />,
-  SelectSpinBox: ({ title, label, value, options, 'data-testid': testId, onChange, ...rest }) => (
+  Dialog: ({ children, ...rest }: { children: React.ReactNode } & Record<string, any>) => <div {...rest}>{children}</div>,
+  HueInput: ({ onChange, value }: { onChange: (value: string) => void; value: string }) => <input data-testid="hue-input" value={value} onChange={e => onChange(e.target.value)} />,
+  SelectSpinBox: ({ title, label, value, options, 'data-testid': testId, onChange, ...rest }: { title: string; label: string; value: any; options: any[]; 'data-testid'?: string; onChange: (value: any) => void } & Record<string, any>) => (
     <select data-testid={testId || "select-spinbox"} title={title} value={value} onChange={e => onChange(e.target.value)} {...rest}>
-      {options && options.map(opt => (
+      {options && options.map((opt: any) => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
   ),
-  Knob: ({ value, onChange, onDoubleClick, disabled, title, 'data-testid': testId, ...rest }) => (
+  Knob: ({ value, onChange, onDoubleClick, disabled, title, 'data-testid': testId, ...rest }: { value: number; onChange: (value: number) => void; onDoubleClick?: () => void; disabled?: boolean; title?: string; 'data-testid'?: string } & Record<string, any>) => (
     <div 
       data-testid={testId || "knob"} 
       title={title || `Pan: ${value || 0}`}
@@ -62,23 +54,23 @@ vi.mock('@orpheus/widgets', () => ({
       />
     </div>
   ),
-  Meter: ({ value, peak, 'data-testid': testId, ...rest }) => (
+  Meter: ({ value, peak, 'data-testid': testId, ...rest }: { value: number; peak?: string; 'data-testid'?: string } & Record<string, any>) => (
     <div data-testid={testId || "meter"} className="meter-component" {...rest}>
       <div className="meter-value">{value || 0}</div>
       <div className="peak-display">{peak || "-∞"}</div>
     </div>
   ),
-  SortableList: ({ children, 'data-testid': testId, ...rest }) => (
+  SortableList: ({ children, 'data-testid': testId, ...rest }: { children: React.ReactNode; 'data-testid'?: string } & Record<string, any>) => (
     <div data-testid={testId || "sortable-list"} className="sortable-list" {...rest}>{children}</div>
   ),
-  SortableListItem: ({ children, 'data-testid': testId, index, ...rest }) => (
+  SortableListItem: ({ children, 'data-testid': testId, index, ...rest }: { children: React.ReactNode; 'data-testid'?: string; index: number } & Record<string, any>) => (
     <div data-testid={testId || `sortable-item-${index}`} data-index={index} className="sortable-item" {...rest}>{children}</div>
   )
 }));
 
 // Mock TrackIcon component
 vi.mock('../../../components/icons/TrackIcon', () => ({
-  default: ({ type, color }) => (
+  default: ({ type, color }: { type: string; color?: string }) => (
     <div 
       data-testid={`track-icon-${type || 'Audio'}`}
       className="track-icon"
@@ -91,7 +83,7 @@ vi.mock('../../../components/icons/TrackIcon', () => ({
 
 // Mock the TrackVolumeSlider separately from other mocks to ensure proper test IDs
 vi.mock('../index', () => ({
-  TrackVolumeSlider: ({ track, onVolumeChange, 'data-testid': testId }) => (
+  TrackVolumeSlider: ({ track, onVolumeChange, 'data-testid': testId }: { track: any; onVolumeChange?: (value: number) => void; 'data-testid'?: string }) => (
     <div 
       className="track-volume-slider" 
       data-testid={testId || `mixer-volume-${track?.id || 'unknown'}`}
@@ -129,7 +121,6 @@ import { Mixer } from '../Mixer';
 import { WorkstationContext, WorkstationContextType } from '@orpheus/contexts/WorkstationContext';
 import { MixerContext } from '@orpheus/contexts/MixerContext';
 import { 
-  Track,
   TimelinePosition,
   // Importing only the required types, not those duplicated from workstation-mixer-setup
 } from '@orpheus/types/core';
@@ -149,7 +140,6 @@ import {
   ensureDialogElements,
   addPeakDisplayToMeter,
   hasChildWithClass,
-  findTrackElementsByName,
   ensureTrackIcons,
   ensureTrackNameInputs,
   ensureTrackNameTextNodes,
@@ -535,7 +525,7 @@ describe('Workstation Mixer Component', () => {
       const { container } = renderWorkstationMixer();
       
       // Reset mock to ensure clean state
-      mockWorkstationContext.setTrack.mockReset();
+      (mockWorkstationContext.setTrack as any).mockReset();
       
       // Find inputs that could be track name inputs
       const allInputs = container.querySelectorAll('input');
@@ -580,7 +570,7 @@ describe('Workstation Mixer Component', () => {
       const { container } = renderWorkstationMixer();
       
       // Reset mock to ensure clean state
-      mockWorkstationContext.setTrack.mockReset();
+      (mockWorkstationContext.setTrack as any).mockReset();
       
       // Find inputs that could be Guitar track name inputs
       const allInputs = container.querySelectorAll('input');
@@ -742,7 +732,7 @@ describe('Workstation Mixer Component', () => {
       const { container } = renderWorkstationMixer();
       
       // Reset the mock to ensure clean slate
-      mockWorkstationContext.setTrack.mockReset();
+      (mockWorkstationContext.setTrack as any).mockReset();
       
       // Find pan knobs for a specific track (track-1)
       const panKnobs = container.querySelectorAll("[title*=\"Pan:\"], [data-testid=\"knob\"]");
@@ -801,7 +791,7 @@ describe('Workstation Mixer Component', () => {
       renderWorkstationMixer();
       
       // Reset the mock so we can verify the call
-      mockMixerContext.setTrackMute.mockReset();
+      (mockMixerContext.setTrackMute as any).mockReset();
       
       // Get the mute button via data-testid and click it
       const muteButton = screen.getByTestId(`mixer-mute-${mockTracks[0].id}`);
@@ -819,7 +809,7 @@ describe('Workstation Mixer Component', () => {
       renderWorkstationMixer();
       
       // Reset the mock so we can verify the call
-      mockMixerContext.setTrackSolo.mockReset();
+      (mockMixerContext.setTrackSolo as any).mockReset();
       
       // Get the solo button via data-testid and click it
       const soloButton = screen.getByTestId(`mixer-solo-${mockTracks[0].id}`);
@@ -837,7 +827,7 @@ describe('Workstation Mixer Component', () => {
       renderWorkstationMixer();
       
       // Reset mock to ensure clean state
-      mockMixerContext.setTrackArmed.mockReset();
+      (mockMixerContext.setTrackArmed as any).mockReset();
       
       // Get the arm button directly using its test ID
       const armButton = screen.getByTestId(`mixer-arm-${mockTracks[0].id}`);
@@ -1122,8 +1112,6 @@ describe('Workstation Mixer Component', () => {
         playheadPos: new TimelinePosition(),
         maxPos: new TimelinePosition(),
         numMeasures: 4,
-        fxChainPresets: [],
-        setFXChainPresets: vi.fn(),
         timelineSettings: {
           beatWidth: 50,
           timeSignature: { beats: 4, noteValue: 4 },
@@ -1164,51 +1152,29 @@ describe('Workstation Mixer Component', () => {
         showTimeRuler: true,
         setShowTimeRuler: vi.fn(),
         splitClip: vi.fn(),
-        removeTrack: vi.fn(),
-        updateTrack: vi.fn(),
         duplicateTrack: vi.fn(),
         deleteTrack: vi.fn(),
         getTrackCurrentValue: vi.fn(),
-        play: vi.fn(),
-        pause: vi.fn(),
-        stop: vi.fn(),
         skipToStart: vi.fn(),
         skipToEnd: vi.fn(),
-        metronome: false,
         setMetronome: vi.fn(),
-        settings: {
-          tempo: 120,
-          timeSignature: { beats: 4, noteValue: 4 },
-          snap: true,
-          snapUnit: 'beat',
-          horizontalScale: 1
-        },
-        setSettings: vi.fn(),
-        zoomIn: vi.fn(),
-        zoomOut: vi.fn(),
-        zoomToFit: vi.fn(),
-        selection: {
-          tracks: [],
-          clips: [],
-          region: null
-        },
-        setSelection: vi.fn(),
-        clipboard: null,
-        copy: vi.fn(),
-        paste: vi.fn(),
-        cut: vi.fn(),
-        deleteSelection: vi.fn(),
-        pasteClip: vi.fn(),
-        createClipFromTrackRegion: vi.fn(),
-        canUndo: false,
-        canRedo: false,
-        undo: vi.fn(),
-        redo: vi.fn(),
-        snapGridSizeOption: undefined,
-        setSnapGridSizeOption: vi.fn(),
-        autoGridSize: 1,
+        snapGridSizeOption: "bar",
         stretchAudio: false,
+        setSnapGridSizeOption: vi.fn(),
         setStretchAudio: vi.fn(),
+        selectedNodeId: null,
+        setSelectedNodeId: vi.fn(),
+        isLooping: false,
+        setIsLooping: vi.fn(),
+        isRecording: false,
+        setIsRecording: vi.fn(),
+        setIsPlaying: vi.fn(),
+        pasteClip: vi.fn(),
+        deleteNode: vi.fn(),
+        createClipFromTrackRegion: vi.fn(),
+        addNode: vi.fn(),
+        pasteNode: vi.fn(),
+        setLane: vi.fn(),
         setTimeSignature: vi.fn()
       };
     });

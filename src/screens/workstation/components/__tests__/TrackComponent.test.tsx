@@ -6,11 +6,7 @@
 // Import setup utility first to define constants and setup mocks
 // This must be imported before any component imports to prevent hoisting issues
 import { 
-  setupWorkstationMixerTest, 
-  TrackType, 
-  AutomationMode, 
-  AutomationLaneEnvelope, 
-  ContextMenuType
+  setupWorkstationMixerTest
 } from '../../../../test/utils/workstation-mixer-setup';
 
 // Initialize mocks
@@ -19,25 +15,13 @@ setupWorkstationMixerTest();
 // Now it's safe to import testing utilities
 import { vi } from 'vitest';
 
-// Mock the types using centralized definitions
-vi.mock('@orpheus/types/core', () => ({
-  TrackType,
-  AutomationMode,
-  AutomationLaneEnvelope,
-  ContextMenuType
-}));
-
 // Only import real types from core and context at the top
 import {
   Track,
   TrackType,
   AutomationMode,
   AutomationLaneEnvelope,
-  AutomationLane,
-  AutomationNode,
   TimelinePosition,
-  Clip,
-  Effect,
 } from "../../../../types/core";
 import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
 
@@ -152,14 +136,14 @@ vi.mock("@orpheus/utils/utils", () => ({
 
 // Mock TimelinePosition with parseFromString method
 vi.mock("@orpheus/types/core", () => {
-  const mockTimelinePosition: MockTimelinePosition = {
+  const mockTimelinePosition: TimelinePosition = {
     ticks: 0,
     bar: 0,
     beat: 0,
     tick: 0,
     toMargin: vi.fn(() => 0),
     fromMargin: vi.fn(() => ({ ticks: 0 })),
-    snap: vi.fn(() => ({ ticks: 0 })),
+    snap: vi.fn(() => new TimelinePosition(1, 1, 1, 0)),
     toTicks: vi.fn(() => 0),
     toSeconds: vi.fn(() => 0),
     copy: vi.fn(() => mockTimelinePosition),
@@ -535,7 +519,7 @@ describe("TrackComponent", () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={audioTrack} />
+            <TrackComponent track={audioTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
@@ -583,7 +567,7 @@ describe("TrackComponent", () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={midiTrack} />
+            <TrackComponent track={midiTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
@@ -636,7 +620,7 @@ describe("TrackComponent", () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={automationTrack} />
+            <TrackComponent track={automationTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
