@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
@@ -7,6 +8,27 @@ import { WorkstationProvider } from '../../contexts/WorkstationContext';
 import { MixerProvider } from '../../contexts/MixerContext';
 import { ClipboardProvider } from '../../contexts/ClipboardContext';
 import { setupGlobalAudioContextMock } from '../../test/utils/mocks/AudioServiceMock';
+
+// Mock global utilities
+beforeAll(() => {
+  // Setup audio mocks
+  setupGlobalAudioContextMock();
+
+  // Mock matchMedia
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // Deprecated
+      removeListener: vi.fn(), // Deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 // Import React Router mocks directly
 import {
@@ -93,27 +115,6 @@ vi.mock('../../services/PythonBackendService', () => {
 vi.mock('../../screens/workstation/Workstation', () => ({
   default: () => null,
 }));
-
-// Mock global utilities
-beforeAll(() => {
-  // Setup audio mocks
-  setupGlobalAudioContextMock();
-
-  // Mock matchMedia
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // Deprecated
-      removeListener: vi.fn(), // Deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-});
 
 describe('App component', () => {
   const renderApp = () => {

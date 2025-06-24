@@ -19,11 +19,20 @@ function useWorkstation() {
     // Add missing properties used in this component
     showMixer: true,
     mixerHeight: 200,
-    setMixerHeight: () => {},
+    setMixerHeight: (_height: number) => {}, // Updated to accept a height parameter with underscore to avoid unused warning
   };
 }
 
-export default function Workstation() {
+// Define the props interface for Workstation
+interface WorkstationProps {
+  user?: any; // Using any for now - could be properly typed from App.main.tsx
+  session?: any; // Using any for now - could be properly typed from App.main.tsx
+  onBackToSessions?: () => void;
+  onLogout?: () => void;
+}
+
+export default function Workstation(_props: WorkstationProps) {
+  // Using _props to indicate it's received but not used yet
   const { mixerHeight, setAllowMenuAndShortcuts, setMixerHeight, showMixer } =
     useWorkstation();
 
@@ -50,8 +59,8 @@ export default function Workstation() {
   }, [showMixer, mixerHeight]);
 
   function handlePaneResizeStop(data: PaneResizeData) {
-    if (data.activeNext) setMixerHeight(data.activeNext.size);
-    setAllowMenuAndShortcuts(true);
+    if (data.activeNext && setMixerHeight) setMixerHeight(data.activeNext.size);
+    setAllowMenuAndShortcuts?.(true);
   }
 
   return (
@@ -68,7 +77,7 @@ export default function Workstation() {
       <Header />
       <PaneResize
         direction="vertical"
-        onPaneResize={() => setAllowMenuAndShortcuts(false)}
+        onPaneResize={() => setAllowMenuAndShortcuts?.(false)}
         onPaneResizeStop={handlePaneResizeStop}
         panes={panes}
         style={{

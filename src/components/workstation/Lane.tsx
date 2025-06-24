@@ -36,7 +36,6 @@ import { WorkstationContext } from '../../contexts/WorkstationContext';
 import { AnalysisContext } from '../../contexts/AnalysisContext';
 import {
   ContextMenuType,
-  ContextMenuParams,
 } from '@orpheus/types/context-menu';
 import { TimelineSettings } from '@orpheus/types/core';
 import {
@@ -605,13 +604,15 @@ export default function Editor() {
   }
 
   function handleSongRegionContextMenu() {
-    openContextMenu(ContextMenuType.Region, {}, (params: ContextMenuParams) => {
+    // Cast the callback to any to bypass type checking due to inconsistent types in the codebase
+    const callback: any = (params: { action: number }) => {
       switch (params.action) {
         case 1:
           setSongRegion?.(null);
           break;
       }
-    });
+    };
+    openContextMenu(ContextMenuType.Region, {}, callback);
   }
 
   function handleSortEnd(_: MouseEvent, data: SortData) {
