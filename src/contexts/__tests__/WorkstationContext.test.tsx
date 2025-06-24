@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { WorkstationProvider, useWorkstation } from '../WorkstationContext';
-import { Track, TrackType } from '@orpheus/types/core'; // Removed unused AutomationMode
+import { Track, TrackType, TimelinePosition } from '@orpheus/types/core'; // Removed unused AutomationMode
 
 // Mock services
 vi.mock('../../services/PlatformService', () => ({
@@ -96,9 +96,9 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
-        result.current.addTrack('audio');
-        result.current.addTrack('midi');
+        result.current.addTrack(TrackType.Audio);
+        result.current.addTrack(TrackType.Audio);
+        result.current.addTrack(TrackType.Midi);
       });
       
       const trackIds = result.current.tracks.map(t => t.id);
@@ -111,7 +111,7 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
+        result.current.addTrack(TrackType.Audio);
       });
       
       const track = result.current.tracks[0];
@@ -134,13 +134,13 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
+        result.current.addTrack(TrackType.Audio);
       });
       
       const originalTrack = result.current.tracks[0];
       
       act(() => {
-        result.current.duplicateTrack(originalTrack.id);
+        result.current.duplicateTrack?.(originalTrack.id);
       });
       
       expect(result.current.tracks).toHaveLength(2);
@@ -152,15 +152,15 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
-        result.current.addTrack('midi');
+        result.current.addTrack(TrackType.Audio);
+        result.current.addTrack(TrackType.Midi);
       });
       
       // Variable is currently unused but kept for potential future use in assertions
       // const trackIdToRemove = result.current.tracks[0].id;
       
       act(() => {
-        result.current.deleteTrack(result.current.tracks[0]);
+        result.current.deleteTrack?.(result.current.tracks[0]);
       });
       
       expect(result.current.tracks).toHaveLength(1);
@@ -179,7 +179,7 @@ describe('WorkstationContext', () => {
     it('should update playhead position', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
-      const newPosition = { bar: 2, beat: 1, tick: 120 };
+      const newPosition = new TimelinePosition(2, 1, 120);
       
       act(() => {
         result.current.setPlayheadPos(newPosition);
@@ -197,8 +197,8 @@ describe('WorkstationContext', () => {
       
       expect(() => {
         act(() => {
-          result.current.setAllowMenuAndShortcuts(false);
-          result.current.setAllowMenuAndShortcuts(true);
+          result.current.setAllowMenuAndShortcuts?.(false);
+          result.current.setAllowMenuAndShortcuts?.(true);
         });
       }).not.toThrow();
     });
@@ -207,7 +207,7 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
+        result.current.addTrack(TrackType.Audio);
       });
       
       const trackId = result.current.tracks[0].id;
@@ -225,15 +225,15 @@ describe('WorkstationContext', () => {
       const { result } = renderHook(() => useWorkstation(), { wrapper });
       
       act(() => {
-        result.current.addTrack('audio');
+        result.current.addTrack(TrackType.Audio);
       });
       
       const track = result.current.tracks[0];
-      const currentValue = result.current.getTrackCurrentValue(track);
+      const currentValue = result.current.getTrackCurrentValue?.(track);
       
       expect(currentValue).toBeDefined();
-      expect(typeof currentValue.value).toBe('number');
-      expect(typeof currentValue.isAutomated).toBe('boolean');
+      expect(typeof currentValue?.value).toBe('number');
+      expect(typeof currentValue?.isAutomated).toBe('boolean');
     });
   });
 
