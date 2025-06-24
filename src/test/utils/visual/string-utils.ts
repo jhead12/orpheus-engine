@@ -17,5 +17,8 @@ export function joinLines(lines: string[]) {
  */
 export function indentCode(code: string, spaces = 2) {
   const indent = ' '.repeat(spaces);
-  return code.split('\n').map(line => line ? indent + line : line).join('\n');
+  return code
+    .split('\n')
+    .map((line) => (line ? indent + line : line))
+    .join('\n');
 }

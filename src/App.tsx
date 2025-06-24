@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { ClipboardProvider } from "./contexts/ClipboardContext";
-import { WorkstationProvider } from "./contexts/WorkstationContext";
-import { MixerProvider } from "./contexts/MixerContext";
-import { PreferencesProvider } from "./contexts/PreferencesContext";
-import Workstation from "./screens/workstation/Workstation";
-import Preferences from "./components/Preferences";
-import SettingsProvider from "./components/settings/SettingsManager";
-import { DocsPage, DocsNavigation } from "./components/docs";
-import "./styles/App.css";
+import React, { useEffect } from 'react';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { ClipboardProvider } from './contexts/ClipboardContext';
+import { WorkstationProvider } from './contexts/WorkstationContext';
+import { MixerProvider } from './contexts/MixerContext';
+import { PreferencesProvider } from './contexts/PreferencesContext';
+import Workstation from './screens/workstation/Workstation';
+import Preferences from './components/Preferences';
+import SettingsProvider from './components/settings/SettingsManager';
+import { DocsPage, DocsNavigation } from './components/docs';
+import './styles/App.css';
 
 // Import plugin system
-import { pluginSystem } from "./plugins";
+import { pluginSystem } from './plugins';
 
 function App(): React.ReactElement {
   useEffect(() => {
@@ -20,7 +20,7 @@ function App(): React.ReactElement {
       try {
         await pluginSystem.initialize();
         console.log('Plugin system initialized successfully');
-        
+
         // Activate audio analysis plugin by default
         await pluginSystem.activatePlugin('orpheus.audio.analysis');
         console.log('Audio analysis plugin activated');
@@ -45,8 +45,8 @@ function App(): React.ReactElement {
 
       if (
         !relatedTarget ||
-        (relatedTarget.tagName !== "INPUT" &&
-          relatedTarget.tagName !== "TEXTAREA")
+        (relatedTarget.tagName !== 'INPUT' &&
+          relatedTarget.tagName !== 'TEXTAREA')
       ) {
         const selection = window.getSelection();
         if (selection && selection.rangeCount > 0) {
@@ -55,9 +55,9 @@ function App(): React.ReactElement {
       }
     }
 
-    document.addEventListener("focusout", handleFocusOut, { capture: true });
+    document.addEventListener('focusout', handleFocusOut, { capture: true });
     return () =>
-      document.removeEventListener("focusout", handleFocusOut, {
+      document.removeEventListener('focusout', handleFocusOut, {
         capture: true,
       });
   }, []);
@@ -79,10 +79,7 @@ function App(): React.ReactElement {
                   </ClipboardProvider>
                 }
               />
-              <Route
-                path="/docs"
-                element={<DocsPage />}
-              />
+              <Route path="/docs" element={<DocsPage />} />
             </Routes>
             <DocsNavigation />
             <Preferences />

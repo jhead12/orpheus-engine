@@ -1,6 +1,6 @@
 // Type definitions for component props
-import { CSSProperties } from "react";
-import { Track, Clip } from "./core";
+import { CSSProperties } from 'react';
+import { Track, Clip } from './core';
 
 // Base clip component props
 export interface BaseClipComponentProps {
@@ -28,8 +28,8 @@ export interface DNRData {
 }
 
 export interface ResizeEdge {
-  x?: "left" | "right";
-  y?: "top" | "bottom";
+  x?: 'left' | 'right';
+  y?: 'top' | 'bottom';
 }
 
 export interface ResizeDNRData extends DNRData {

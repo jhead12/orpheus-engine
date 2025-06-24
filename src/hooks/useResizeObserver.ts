@@ -12,7 +12,7 @@ interface ResizeState {
  */
 export function useResizeObserver<T extends HTMLElement>(
   targetRef: React.RefObject<T>,
-  options: ResizeObserverOptions = {}
+  options: ResizeObserverOptions = {},
 ) {
   const [size, setSize] = useState<ResizeState>({ width: 0, height: 0 });
 
@@ -23,7 +23,7 @@ export function useResizeObserver<T extends HTMLElement>(
 
     const entry = entries[0];
     const { width, height } = entry.contentRect;
-    
+
     setSize({ width, height });
   }, []);
 

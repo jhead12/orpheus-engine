@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 // Query to get all tracks
 const GET_TRACKS = gql`
@@ -66,7 +66,7 @@ export function useTracksManager() {
         },
       });
     } catch (err) {
-      console.error("Error creating track:", err);
+      console.error('Error creating track:', err);
     }
   };
 

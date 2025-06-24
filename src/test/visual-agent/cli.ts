@@ -1,15 +1,15 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { getAllConfigs, getConfigByName, GenerationPriority } from "./configs";
-import { generateTestFile } from "./generate-test";
-import { AgentConfig } from "./types";
+import { promises as fs } from 'fs';
+import path from 'path';
+import { getAllConfigs, getConfigByName, GenerationPriority } from './configs';
+import { generateTestFile } from './generate-test';
+import { AgentConfig } from './types';
 
 /**
  * Default agent configuration
  */
 const defaultConfig: AgentConfig = {
-  testOutputDir: path.join(process.cwd(), "src", "components", "__tests__"),
-  gifOutputDir: path.join(process.cwd(), "__snapshots__", "gifs"),
+  testOutputDir: path.join(process.cwd(), 'src', 'components', '__tests__'),
+  gifOutputDir: path.join(process.cwd(), '__snapshots__', 'gifs'),
   defaultContainerStyle: `
     width: 500px;
     height: 300px;
@@ -24,12 +24,12 @@ const defaultConfig: AgentConfig = {
  * Run the visual test agent CLI
  */
 export async function runCLI(
-  args: string[] = process.argv.slice(2)
+  args: string[] = process.argv.slice(2),
 ): Promise<void> {
-  console.log("🎨 OEW Visual Testing Agent 🧪");
+  console.log('🎨 OEW Visual Testing Agent 🧪');
 
   // Parse arguments
-  const command = args[0] || "help";
+  const command = args[0] || 'help';
   const componentName = args[1];
 
   // Create directories if they don't exist
@@ -38,7 +38,7 @@ export async function runCLI(
 
   // Handle commands
   switch (command) {
-    case "generate":
+    case 'generate':
       if (componentName) {
         await generateTestsForComponent(componentName);
       } else {
@@ -46,11 +46,11 @@ export async function runCLI(
       }
       break;
 
-    case "list":
+    case 'list':
       listAvailableComponents();
       break;
 
-    case "help":
+    case 'help':
     default:
       showHelp();
       break;
@@ -65,9 +65,9 @@ async function generateTestsForComponent(componentName: string): Promise<void> {
 
   if (!config) {
     console.error(
-      `❌ Component "${componentName}" not found in configurations.`
+      `❌ Component "${componentName}" not found in configurations.`,
     );
-    console.log("Available components:");
+    console.log('Available components:');
     listAvailableComponents();
     return;
   }
@@ -77,7 +77,7 @@ async function generateTestsForComponent(componentName: string): Promise<void> {
   try {
     const filePath = await generateTestFile(
       config,
-      defaultConfig.testOutputDir
+      defaultConfig.testOutputDir,
     );
     console.log(`✅ Test generated: ${filePath}`);
   } catch (error) {
@@ -89,7 +89,7 @@ async function generateTestsForComponent(componentName: string): Promise<void> {
  * Generate tests for all components in priority order
  */
 async function generateAllTests(): Promise<void> {
-  console.log("🧪 Generating visual tests for all components...");
+  console.log('🧪 Generating visual tests for all components...');
 
   // Get all configs
   const allConfigs = getAllConfigs();
@@ -111,18 +111,18 @@ async function generateAllTests(): Promise<void> {
       console.log(`🧪 Generating test for ${config.componentName}...`);
       const filePath = await generateTestFile(
         config,
-        defaultConfig.testOutputDir
+        defaultConfig.testOutputDir,
       );
       console.log(`✅ Test generated: ${filePath}`);
     } catch (error) {
       console.error(
         `❌ Error generating test for ${config.componentName}:`,
-        error
+        error,
       );
     }
   }
 
-  console.log("✅ All tests generated!");
+  console.log('✅ All tests generated!');
 }
 
 /**
@@ -131,10 +131,10 @@ async function generateAllTests(): Promise<void> {
 function listAvailableComponents(): void {
   const allConfigs = getAllConfigs();
 
-  console.log("📋 Available components:");
+  console.log('📋 Available components:');
   allConfigs.forEach((config, index) => {
     const priority = GenerationPriority.indexOf(config.componentName);
-    const priorityLabel = priority !== -1 ? `(Priority: ${priority + 1})` : "";
+    const priorityLabel = priority !== -1 ? `(Priority: ${priority + 1})` : '';
     console.log(`${index + 1}. ${config.componentName} ${priorityLabel}`);
   });
 }

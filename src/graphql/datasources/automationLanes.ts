@@ -1,10 +1,10 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
 import {
   AutomationLane,
   AutomationNode,
   AutomationLaneEnvelope,
-} from "../../types/core";
+} from '../../types/core';
 
 interface AutomationLaneInput {
   label: string;
@@ -37,7 +37,7 @@ export class AutomationLaneAPI {
   }
 
   private async batchLoadLanes(
-    ids: readonly string[]
+    ids: readonly string[],
   ): Promise<(AutomationLane | null)[]> {
     return ids.map((id) => this.lanes.get(id) || null);
   }
@@ -49,14 +49,14 @@ export class AutomationLaneAPI {
   async getByTrackId(trackId: string): Promise<AutomationLane[]> {
     const laneIds = this.trackLanes.get(trackId) || new Set();
     const lanes = await Promise.all(
-      Array.from(laneIds).map((id) => this.get(id))
+      Array.from(laneIds).map((id) => this.get(id)),
     );
     return lanes.filter((lane): lane is AutomationLane => lane !== null);
   }
 
   async create(
     trackId: string,
-    input: AutomationLaneInput
+    input: AutomationLaneInput,
   ): Promise<AutomationLane> {
     const id = uuidv4();
     const newLane: AutomationLane = {
@@ -83,11 +83,11 @@ export class AutomationLaneAPI {
 
   async addNode(
     laneId: string,
-    input: AutomationNodeInput
+    input: AutomationNodeInput,
   ): Promise<AutomationNode> {
     const lane = await this.get(laneId);
     if (!lane) {
-      throw new Error("Automation lane not found");
+      throw new Error('Automation lane not found');
     }
 
     const nodeId = uuidv4();
@@ -117,11 +117,11 @@ export class AutomationLaneAPI {
 
   async update(
     id: string,
-    input: Partial<AutomationLaneInput>
+    input: Partial<AutomationLaneInput>,
   ): Promise<AutomationLane> {
     const existingLane = await this.get(id);
     if (!existingLane) {
-      throw new Error("Automation lane not found");
+      throw new Error('Automation lane not found');
     }
 
     const updatedLane: AutomationLane = {

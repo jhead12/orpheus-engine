@@ -57,7 +57,11 @@ export const createMockAudioContext = (overrides = {}) => ({
 });
 
 // Audio buffer mock
-export const createMockAudioBuffer = (length = 44100, channels = 2, sampleRate = 44100) => ({
+export const createMockAudioBuffer = (
+  length = 44100,
+  channels = 2,
+  sampleRate = 44100,
+) => ({
   length,
   numberOfChannels: channels,
   sampleRate,
@@ -98,13 +102,19 @@ export const createMockEQNode = () => ({
 });
 
 // Audio meter mocks
-export const createMockMeterData = (trackId: string, levels = { left: 0.5, right: 0.6, peak: 0.8 }) => ({
+export const createMockMeterData = (
+  trackId: string,
+  levels = { left: 0.5, right: 0.6, peak: 0.8 },
+) => ({
   [trackId]: levels,
 });
 
-export const createMockMeterContext = (trackIds: string[] = ['track-1', 'track-2']) => {
-  const meters: Record<string, { left: number; right: number; peak: number }> = {};
-  
+export const createMockMeterContext = (
+  trackIds: string[] = ['track-1', 'track-2'],
+) => {
+  const meters: Record<string, { left: number; right: number; peak: number }> =
+    {};
+
   trackIds.forEach((id, index) => {
     meters[id] = {
       left: Math.random() * 0.8,
@@ -112,7 +122,7 @@ export const createMockMeterContext = (trackIds: string[] = ['track-1', 'track-2
       peak: Math.random() * 1.0,
     };
   });
-  
+
   return {
     meters,
     updateMeter: vi.fn(),
@@ -167,9 +177,11 @@ export const createMockMediaRecorder = () => ({
 // Setup all audio mocks at once
 export const setupAudioTestEnvironment = () => {
   // Mock AudioContext
-  global.AudioContext = vi.fn().mockImplementation(() => createMockAudioContext());
+  global.AudioContext = vi
+    .fn()
+    .mockImplementation(() => createMockAudioContext());
   global.webkitAudioContext = global.AudioContext;
-  
+
   // Mock MediaDevices
   Object.defineProperty(navigator, 'mediaDevices', {
     writable: true,
@@ -178,10 +190,12 @@ export const setupAudioTestEnvironment = () => {
       enumerateDevices: vi.fn().mockResolvedValue([]),
     },
   });
-  
+
   // Mock MediaRecorder
-  global.MediaRecorder = vi.fn().mockImplementation(() => createMockMediaRecorder());
-  
+  global.MediaRecorder = vi
+    .fn()
+    .mockImplementation(() => createMockMediaRecorder());
+
   // Mock URL.createObjectURL
   global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
   global.URL.revokeObjectURL = vi.fn();
@@ -189,7 +203,7 @@ export const setupAudioTestEnvironment = () => {
 
 // Audio testing utilities
 export const simulateAudioProcessing = async (duration = 100) => {
-  await new Promise(resolve => setTimeout(resolve, duration));
+  await new Promise((resolve) => setTimeout(resolve, duration));
 };
 
 export const waitForAudioContextReady = async (context: any) => {
@@ -199,7 +213,11 @@ export const waitForAudioContextReady = async (context: any) => {
   await simulateAudioProcessing(50);
 };
 
-export const triggerAudioEvent = (element: HTMLElement, eventType: string, data = {}) => {
+export const triggerAudioEvent = (
+  element: HTMLElement,
+  eventType: string,
+  data = {},
+) => {
   const event = new CustomEvent(eventType, { detail: data });
   element.dispatchEvent(event);
 };
@@ -213,7 +231,11 @@ export const assertAudioNodeConnected = (node: any, destination: any) => {
   expect(node.connect).toHaveBeenCalledWith(destination);
 };
 
-export const assertAudioParameterSet = (parameter: any, value: number, time?: number) => {
+export const assertAudioParameterSet = (
+  parameter: any,
+  value: number,
+  time?: number,
+) => {
   if (time !== undefined) {
     expect(parameter.setValueAtTime).toHaveBeenCalledWith(value, time);
   } else {

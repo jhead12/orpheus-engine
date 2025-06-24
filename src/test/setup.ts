@@ -1,6 +1,6 @@
-import "@testing-library/jest-dom";
-import { vi, beforeEach, beforeAll, afterAll } from "vitest";
-import type { Mock } from "vitest";
+import '@testing-library/jest-dom';
+import { vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import type { Mock } from 'vitest';
 
 // Add jest globals
 const mockJest = {
@@ -38,7 +38,7 @@ class MockAudioBuffer implements AudioBuffer {
 
   getChannelData(channel: number): Float32Array {
     if (channel >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     return this._channelData[channel];
   }
@@ -46,10 +46,10 @@ class MockAudioBuffer implements AudioBuffer {
   copyToChannel(
     source: Float32Array,
     channelNumber: number,
-    startInChannel = 0
+    startInChannel = 0,
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     this._channelData[channelNumber].set(source, startInChannel);
   }
@@ -57,14 +57,14 @@ class MockAudioBuffer implements AudioBuffer {
   copyFromChannel(
     destination: Float32Array,
     channelNumber: number,
-    startInChannel = 0
+    startInChannel = 0,
   ): void {
     if (channelNumber >= this.numberOfChannels) {
-      throw new Error("Channel index out of bounds");
+      throw new Error('Channel index out of bounds');
     }
     const end = Math.min(startInChannel + destination.length, this.length);
     destination.set(
-      this._channelData[channelNumber].subarray(startInChannel, end)
+      this._channelData[channelNumber].subarray(startInChannel, end),
     );
   }
 }
@@ -75,7 +75,7 @@ class MockAudioContext implements AudioContext {
   readonly outputLatency = 0;
   readonly destination: AudioDestinationNode;
   readonly sampleRate = 44100;
-  readonly state: AudioContextState = "running";
+  readonly state: AudioContextState = 'running';
   readonly audioWorklet: AudioWorklet;
   readonly listener: AudioListener;
   readonly currentTime = 0;
@@ -104,8 +104,8 @@ class MockAudioContext implements AudioContext {
       numberOfInputs: 1,
       numberOfOutputs: 0,
       channelCount: 2,
-      channelCountMode: "explicit",
-      channelInterpretation: "speakers",
+      channelCountMode: 'explicit',
+      channelInterpretation: 'speakers',
       maxChannelCount: 2,
       connect: vi.fn(),
       disconnect: vi.fn(),
@@ -114,7 +114,7 @@ class MockAudioContext implements AudioContext {
 
   createBuffer = vi.fn(
     (numChannels: number, length: number, sampleRate: number) =>
-      new MockAudioBuffer({ numberOfChannels: numChannels, length, sampleRate })
+      new MockAudioBuffer({ numberOfChannels: numChannels, length, sampleRate }),
   );
 
   createBufferSource = vi.fn(
@@ -128,7 +128,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),
-      } as unknown as AudioBufferSourceNode)
+      }) as unknown as AudioBufferSourceNode,
   );
 
   createGain = vi.fn(
@@ -137,7 +137,7 @@ class MockAudioContext implements AudioContext {
         gain: { value: 1 },
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as GainNode)
+      }) as unknown as GainNode,
   );
 
   createAnalyser = vi.fn(
@@ -149,7 +149,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         getFloatFrequencyData: vi.fn(),
         getByteFrequencyData: vi.fn(),
-      } as unknown as AnalyserNode)
+      }) as unknown as AnalyserNode,
   );
 
   createMediaElementSource = vi.fn(
@@ -157,7 +157,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as MediaElementAudioSourceNode)
+      }) as unknown as MediaElementAudioSourceNode,
   );
 
   createMediaStreamDestination = vi.fn(
@@ -166,7 +166,7 @@ class MockAudioContext implements AudioContext {
         stream: new MediaStream(),
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as MediaStreamAudioDestinationNode)
+      }) as unknown as MediaStreamAudioDestinationNode,
   );
 
   createMediaStreamSource = vi.fn(
@@ -174,7 +174,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as MediaStreamAudioSourceNode)
+      }) as unknown as MediaStreamAudioSourceNode,
   );
 
   getOutputTimestamp = vi.fn(() => ({
@@ -187,7 +187,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as BiquadFilterNode)
+      }) as unknown as BiquadFilterNode,
   );
 
   createOscillator = vi.fn(
@@ -197,7 +197,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),
-      } as unknown as OscillatorNode)
+      }) as unknown as OscillatorNode,
   );
 
   createPanner = vi.fn(
@@ -205,7 +205,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as PannerNode)
+      }) as unknown as PannerNode,
   );
 
   createDynamicsCompressor = vi.fn(
@@ -213,7 +213,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as DynamicsCompressorNode)
+      }) as unknown as DynamicsCompressorNode,
   );
 
   createStereoPanner = vi.fn(
@@ -221,7 +221,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as StereoPannerNode)
+      }) as unknown as StereoPannerNode,
   );
 
   createDelay = vi.fn(
@@ -229,7 +229,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as DelayNode)
+      }) as unknown as DelayNode,
   );
 
   createConvolver = vi.fn(
@@ -237,7 +237,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as ConvolverNode)
+      }) as unknown as ConvolverNode,
   );
 
   createConstantSource = vi.fn(
@@ -247,7 +247,7 @@ class MockAudioContext implements AudioContext {
         disconnect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),
-      } as unknown as ConstantSourceNode)
+      }) as unknown as ConstantSourceNode,
   );
 
   createChannelMerger = vi.fn(
@@ -255,7 +255,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as ChannelMergerNode)
+      }) as unknown as ChannelMergerNode,
   );
 
   createChannelSplitter = vi.fn(
@@ -263,7 +263,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as ChannelSplitterNode)
+      }) as unknown as ChannelSplitterNode,
   );
 
   createWaveShaper = vi.fn(
@@ -271,7 +271,7 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as WaveShaperNode)
+      }) as unknown as WaveShaperNode,
   );
 
   createIIRFilter = vi.fn(
@@ -279,10 +279,10 @@ class MockAudioContext implements AudioContext {
       ({
         connect: vi.fn(),
         disconnect: vi.fn(),
-      } as unknown as IIRFilterNode)
+      }) as unknown as IIRFilterNode,
   );
 
-  createPeriodicWave = vi.fn(() => ({} as unknown as PeriodicWave));
+  createPeriodicWave = vi.fn(() => ({}) as unknown as PeriodicWave);
 
   createScriptProcessor = vi.fn(
     () =>
@@ -290,7 +290,7 @@ class MockAudioContext implements AudioContext {
         connect: vi.fn(),
         disconnect: vi.fn(),
         onaudioprocess: null,
-      } as unknown as ScriptProcessorNode)
+      }) as unknown as ScriptProcessorNode,
   );
 
   decodeAudioData = vi.fn().mockResolvedValue(
@@ -298,7 +298,7 @@ class MockAudioContext implements AudioContext {
       numberOfChannels: 2,
       length: 44100,
       sampleRate: 44100,
-    })
+    }),
   );
 
   close = vi.fn().mockResolvedValue(undefined);
@@ -366,7 +366,7 @@ const setupGlobals = () => {
   });
 
   // Set on window if it exists
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     Object.entries(audioMocks).forEach(([key, value]) => {
       Object.defineProperty(window, key, {
         value,
@@ -377,7 +377,7 @@ const setupGlobals = () => {
 
     // Add electron API mock
     window.electronAPI = {
-      openFile: vi.fn().mockResolvedValue(""),
+      openFile: vi.fn().mockResolvedValue(''),
       saveFile: vi.fn().mockResolvedValue(undefined),
     };
   }
@@ -402,7 +402,7 @@ class MockDOMMatrix {
     const values = transform
       ? transform
           .match(/matrix\((.*)\)/)![1]
-          .split(",")
+          .split(',')
           .map(Number)
       : [1, 0, 0, 1, 0, 0];
     this.m41 = values[4] || 0;
@@ -416,10 +416,10 @@ global.DOMMatrix = MockDOMMatrix as any;
 
 // Console error handling
 const SUPPRESSED_ERRORS = [
-  "Warning:",
-  "Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]",
-  "The above error occurred in the <TestComponent> component",
-  "Consider adding an error boundary",
+  'Warning:',
+  'Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]',
+  'The above error occurred in the <TestComponent> component',
+  'Consider adding an error boundary',
 ];
 
 const originalConsoleError = console.error;
@@ -430,7 +430,7 @@ beforeAll(() => {
   console.error = (...args: Parameters<typeof console.error>) => {
     const firstArg = args[0];
     if (
-      typeof firstArg === "string" &&
+      typeof firstArg === 'string' &&
       SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))
     ) {
       return;
@@ -441,7 +441,7 @@ beforeAll(() => {
   // Mock console.warn
   console.warn = (...args: Parameters<typeof console.warn>) => {
     const firstArg = args[0];
-    if (typeof firstArg === "string" && firstArg.includes("Warning:")) {
+    if (typeof firstArg === 'string' && firstArg.includes('Warning:')) {
       return;
     }
     originalConsoleWarn.apply(console, args);

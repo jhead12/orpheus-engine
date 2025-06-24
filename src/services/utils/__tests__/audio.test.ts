@@ -1,13 +1,13 @@
-import { vi, beforeEach } from "vitest";
+import { vi, beforeEach } from 'vitest';
 import {
   audioContext,
   audioBufferToBuffer,
   reverseAudio,
   getAudioContext,
-} from "../audio";
+} from '../audio';
 
 // Mock audio.ts to use our test AudioContext
-vi.mock("../audio", () => {
+vi.mock('../audio', () => {
   // Create a mock AudioContext
   const mockContext = {
     createBuffer: vi.fn(),
@@ -29,7 +29,7 @@ vi.mock("../audio", () => {
 const createTestAudioBuffer = (
   numChannels = 2,
   length = 44100,
-  sampleRate = 44100
+  sampleRate = 44100,
 ) => {
   const buffer = {
     numberOfChannels: numChannels,
@@ -54,7 +54,7 @@ beforeEach(() => {
     const reversed = createTestAudioBuffer(
       audioBuffer.numberOfChannels,
       audioBuffer.length,
-      audioBuffer.sampleRate
+      audioBuffer.sampleRate,
     );
 
     // Mock the reversed data - just reverse the input for testing
@@ -67,9 +67,7 @@ beforeEach(() => {
       reversed.getChannelData = vi
         .fn()
         .mockImplementation((ch) =>
-          ch === channel
-            ? reversedData
-            : new Float32Array(inputData.length)
+          ch === channel ? reversedData : new Float32Array(inputData.length),
         );
     }
 
@@ -80,16 +78,16 @@ beforeEach(() => {
   vi.mocked(audioContext.createBuffer).mockImplementation(
     (numChannels, length, sampleRate) => {
       return createTestAudioBuffer(numChannels, length, sampleRate);
-    }
+    },
   );
 });
 
-describe("Audio Utilities", () => {
-  it("audioContext is initialized", () => {
+describe('Audio Utilities', () => {
+  it('audioContext is initialized', () => {
     expect(audioContext).toBeTruthy();
   });
 
-  it("converts AudioBuffer to Buffer", async () => {
+  it('converts AudioBuffer to Buffer', async () => {
     const ctx = getAudioContext();
     const sampleRate = 44100;
     const audioBuffer = ctx.createBuffer(2, sampleRate, sampleRate);
@@ -98,7 +96,7 @@ describe("Audio Utilities", () => {
     expect(buffer).toBeInstanceOf(Buffer);
   });
 
-  it("reverses audio data", async () => {
+  it('reverses audio data', async () => {
     const ctx = getAudioContext();
     const bufferSize = 4;
     const audioBuffer = ctx.createBuffer(1, bufferSize, 44100);
@@ -109,7 +107,7 @@ describe("Audio Utilities", () => {
 
     // Setup the mock to return our test values
     vi.mocked(audioBuffer.getChannelData).mockReturnValue(
-      new Float32Array(testValues)
+      new Float32Array(testValues),
     );
 
     const reversed = await reverseAudio(audioBuffer);

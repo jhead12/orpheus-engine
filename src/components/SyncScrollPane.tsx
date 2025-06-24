@@ -4,8 +4,8 @@ import React, {
   useEffect,
   useRef,
   type HTMLAttributes,
-} from "react";
-import { ScrollSyncContext } from "./SyncScroll";
+} from 'react';
+import { ScrollSyncContext } from './SyncScroll';
 
 interface SyncScrollPaneProps extends HTMLAttributes<HTMLDivElement> {
   id?: string;
@@ -44,13 +44,13 @@ const SyncScrollPane = forwardRef<HTMLDivElement, SyncScrollPaneProps>(
     const setRefs = React.useCallback(
       (node: HTMLDivElement | null) => {
         internalRef.current = node;
-        if (typeof ref === "function") {
+        if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
           (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
         }
       },
-      [ref]
+      [ref],
     );
 
     return (
@@ -60,16 +60,16 @@ const SyncScrollPane = forwardRef<HTMLDivElement, SyncScrollPaneProps>(
         data-testid={`sync-scroll-pane-${id}`}
         className={className}
         style={{
-          overflowX: "auto",
-          overflowY: "hidden",
+          overflowX: 'auto',
+          overflowY: 'hidden',
           ...style,
         }}
         onWheel={handleWheel}
       />
     );
-  }
+  },
 );
 
-SyncScrollPane.displayName = "SyncScrollPane";
+SyncScrollPane.displayName = 'SyncScrollPane';
 
 export default SyncScrollPane;

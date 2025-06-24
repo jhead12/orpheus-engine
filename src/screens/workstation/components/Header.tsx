@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FastForward,
   FastRewind,
@@ -14,7 +14,7 @@ import {
   Chat,
   AudiotrackOutlined,
   Extension,
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 import {
   IconButton,
   Menu,
@@ -26,25 +26,22 @@ import {
   Tab,
   Drawer,
   Badge,
-} from "@mui/material";
-import { WorkstationContext } from "@orpheus/contexts";
-import { Meter, NumberInput, SelectSpinBox } from "@orpheus/widgets";
+} from '@mui/material';
+import { WorkstationContext } from '@orpheus/contexts';
+import { Meter, NumberInput, SelectSpinBox } from '@orpheus/widgets';
 import {
   AutomationLaneEnvelope,
   TimelinePosition,
   TrackType,
 } from '@orpheus/types/core';
 import { SnapGridSizeOption } from '@orpheus/types/audio';
-import { FaMagnet } from "react-icons/fa";
-import {
-  sliceClip,
-  volumeToNormalized,
-} from '@orpheus/utils/utils';
-import { HoldActionButton } from "../../../components";
-import { Metronome, TrackVolumeSlider } from "./index";
-import { StretchAudio } from "../../../components/icons";
+import { FaMagnet } from 'react-icons/fa';
+import { sliceClip, volumeToNormalized } from '@orpheus/utils/utils';
+import { HoldActionButton } from '../../../components';
+import { Metronome, TrackVolumeSlider } from './index';
+import { StretchAudio } from '../../../components/icons';
 import { parseDuration } from '@orpheus/utils/general';
-import SettingsPanel from "../../../components/settings/SettingsPanel";
+import SettingsPanel from '../../../components/settings/SettingsPanel';
 
 const noteValues: { label: string; value: number }[] = [];
 
@@ -81,7 +78,7 @@ export default function Header() {
     snapGridSize,
   } = useContext(WorkstationContext)!;
 
-  const [timePosText, setTimePosText] = useState("");
+  const [timePosText, setTimePosText] = useState('');
   const [typeCursorPosMode, setTypeCursorPosMode] = useState(false);
 
   const posTimeTextInput = useRef<HTMLInputElement>(null);
@@ -133,27 +130,27 @@ export default function Header() {
               const originalTempo = TimelinePosition.timelineSettings.tempo;
 
               const durationSinceAudioStart = TimelinePosition.fromSpan(
-                clip.start.diff(clip.audio.start)
+                clip.start.diff(clip.audio.start),
               ).toSeconds();
               const audioDuration = TimelinePosition.fromSpan(
-                clip.audio.end.diff(clip.audio.start)
+                clip.audio.end.diff(clip.audio.start),
               ).toSeconds();
               const clipRepetitionDuration = TimelinePosition.fromSpan(
-                clip.end.diff(clip.start)
+                clip.end.diff(clip.start),
               ).toSeconds();
               const durationSinceStartLimit = clip.startLimit
                 ? TimelinePosition.fromSpan(
-                    clip.start.diff(clip.startLimit)
+                    clip.start.diff(clip.startLimit),
                   ).toSeconds()
                 : null;
               const durationFromStartToEndLimit = clip.endLimit
                 ? TimelinePosition.fromSpan(
-                    clip.endLimit.diff(clip.start)
+                    clip.endLimit.diff(clip.start),
                   ).toSeconds()
                 : null;
               const clipDuration = clip.loopEnd
                 ? TimelinePosition.fromSpan(
-                    clip.loopEnd.diff(clip.start)
+                    clip.loopEnd.diff(clip.start),
                   ).toSeconds()
                 : null;
 
@@ -172,7 +169,7 @@ export default function Header() {
                 end: clip.audio.start.add(measures, beats, fraction, false),
               };
               ({ measures, beats, fraction } = TimelinePosition.durationToSpan(
-                clipRepetitionDuration
+                clipRepetitionDuration,
               ));
               clip.end = clip.start.add(measures, beats, fraction, false);
 
@@ -183,7 +180,7 @@ export default function Header() {
                   measures,
                   beats,
                   fraction,
-                  false
+                  false,
                 );
               }
 
@@ -243,7 +240,7 @@ export default function Header() {
         const totalSeconds =
           hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
         pos = TimelinePosition.fromSpan(
-          TimelinePosition.durationToSpan(totalSeconds)
+          TimelinePosition.durationToSpan(totalSeconds),
         );
       }
     }
@@ -258,35 +255,35 @@ export default function Header() {
       if (pos.compareTo(maxPos) > 0) pos = maxPos.copy();
 
       setPlayheadPos(pos);
-      setScrollToItem({ type: "cursor", params: { alignment: "center" } });
+      setScrollToItem({ type: 'cursor', params: { alignment: 'center' } });
     }
   }
 
   function fastForward() {
     const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "ceil");
+    const newPos = playheadPos.copy().snap(span, 'ceil');
 
     if (playheadPos.equals(newPos))
       newPos.add(span.measures, span.beats, span.fraction);
 
     setPlayheadPos(TimelinePosition.min(maxPos.copy(), newPos));
     setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
+      type: 'cursor',
+      params: { alignment: 'scrollIntoView' },
     });
   }
 
   function fastRewind() {
     const span = { measures: 1, beats: 0, fraction: 0 };
-    const newPos = playheadPos.copy().snap(span, "floor");
+    const newPos = playheadPos.copy().snap(span, 'floor');
 
     if (playheadPos.equals(newPos))
       newPos.subtract(span.measures, span.beats, span.fraction);
 
     setPlayheadPos(TimelinePosition.max(TimelinePosition.start.copy(), newPos));
     setScrollToItem({
-      type: "cursor",
-      params: { alignment: "scrollIntoView" },
+      type: 'cursor',
+      params: { alignment: 'scrollIntoView' },
     });
   }
 
@@ -299,7 +296,7 @@ export default function Header() {
 
   const tempo = useMemo(() => {
     const lane = masterTrack.automationLanes.find(
-      (lane) => lane.envelope === AutomationLaneEnvelope.Tempo
+      (lane) => lane.envelope === AutomationLaneEnvelope.Tempo,
     );
     return getTrackCurrentValue(masterTrack, lane);
   }, [
@@ -313,147 +310,147 @@ export default function Header() {
 
   const style = {
     titleBar: {
-      backgroundColor: "var(--bg2)",
-      borderBottom: "1px solid var(--border1)",
+      backgroundColor: 'var(--bg2)',
+      borderBottom: '1px solid var(--border1)',
       lineHeight: 1.2,
       paddingBottom: 3.5,
     },
     projectTitle: {
-      color: "var(--bg1)",
+      color: 'var(--bg1)',
       fontSize: 12,
-      fontWeight: "bold",
-      backgroundColor: "var(--border1)",
-      padding: "0 8px 1px",
+      fontWeight: 'bold',
+      backgroundColor: 'var(--border1)',
+      padding: '0 8px 1px',
       letterSpacing: 1,
       borderRadius: 3,
     },
     headerContainer: {
       height: 45,
-      backgroundColor: "var(--bg2)",
-      borderBottom: "1px solid var(--border1)",
+      backgroundColor: 'var(--bg2)',
+      borderBottom: '1px solid var(--border1)',
     },
     timeSignatureBeats: {
       container: { width: 50, height: 13, lineHeight: 1, marginBottom: 4 },
-      decr: { width: 14, height: "100%" },
-      decrIcon: { color: "var(--fg1)" },
-      incr: { width: 14, height: "100%" },
-      incrIcon: { color: "var(--fg1)" },
+      decr: { width: 14, height: '100%' },
+      decrIcon: { color: 'var(--fg1)' },
+      incr: { width: 14, height: '100%' },
+      incrIcon: { color: 'var(--fg1)' },
       input: {
-        color: "var(--fg1)",
+        color: 'var(--fg1)',
         fontSize: 13,
-        textAlign: "center",
-        padding: "0 3px",
-        height: "100%",
+        textAlign: 'center',
+        padding: '0 3px',
+        height: '100%',
       },
     },
     timeSignatureNoteValue: {
       container: {
         width: 50,
-        height: "fit-content",
-        backgroundColor: "#0000",
+        height: 'fit-content',
+        backgroundColor: '#0000',
         padding: 0,
         marginTop: 4,
       },
       next: { width: 14 },
-      nextIcon: { color: "var(--fg1)", fontSize: 18 },
+      nextIcon: { color: 'var(--fg1)', fontSize: 18 },
       prev: { width: 14 },
-      prevIcon: { color: "var(--fg1)", fontSize: 18 },
+      prevIcon: { color: 'var(--fg1)', fontSize: 18 },
       select: {
-        textAlign: "center",
-        color: "var(--fg1)",
+        textAlign: 'center',
+        color: 'var(--fg1)',
         fontSize: 13,
-        fontWeight: "bold",
-        padding: "0 3px",
+        fontWeight: 'bold',
+        padding: '0 3px',
       },
     },
     tempoControlContainer: {
-      padding: tempo.isAutomated ? 0 : "0 7px 0 2px",
-      borderRight: "1px solid var(--border1)",
+      padding: tempo.isAutomated ? 0 : '0 7px 0 2px',
+      borderRight: '1px solid var(--border1)',
       width: 77,
     },
     automatedText: {
       fontSize: 11,
-      color: "var(--fg1)",
-      fontFamily: "Abel, Roboto, sans-serif",
+      color: 'var(--fg1)',
+      fontFamily: 'Abel, Roboto, sans-serif',
     },
     tempo: {
       container: {
         width: 40,
-        height: "fit-content",
-        backgroundColor: "#0000",
-        margin: "auto",
-        pointerEvents: tempo.isAutomated ? "none" : "auto",
+        height: 'fit-content',
+        backgroundColor: '#0000',
+        margin: 'auto',
+        pointerEvents: tempo.isAutomated ? 'none' : 'auto',
         opacity: tempo.isAutomated ? 0.5 : 1,
       },
-      decrIcon: { color: "var(--fg1)", fontSize: 12 },
-      incrIcon: { color: "var(--fg1)", fontSize: 12 },
+      decrIcon: { color: 'var(--fg1)', fontSize: 12 },
+      incrIcon: { color: 'var(--fg1)', fontSize: 12 },
       input: {
-        textAlign: "center",
-        color: "var(--fg1)",
-        fontWeight: "bold",
+        textAlign: 'center',
+        color: 'var(--fg1)',
+        fontWeight: 'bold',
         padding: 0,
         height: 16,
       },
     },
     currentPosTimeTextContainer: {
-      alignItems: "center",
-      cursor: "pointer",
-      borderRight: "1px solid var(--border1)",
-      backgroundColor: "var(--bg5)",
+      alignItems: 'center',
+      cursor: 'pointer',
+      borderRight: '1px solid var(--border1)',
+      backgroundColor: 'var(--bg5)',
       width: 128,
       flexShrink: 0,
     },
     currentPosTimeText: {
       fontSize: 18,
-      color: "var(--fg1)",
-      backgroundColor: "#0000",
-      border: "none",
-      pointerEvents: typeCursorPosMode ? "auto" : "none",
+      color: 'var(--fg1)',
+      backgroundColor: '#0000',
+      border: 'none',
+      pointerEvents: typeCursorPosMode ? 'auto' : 'none',
     },
     playbackControl: {
-      flexDirection: "column",
-      borderRight: "1px solid var(--border1)",
+      flexDirection: 'column',
+      borderRight: '1px solid var(--border1)',
     },
-    playbackControlRow: { margin: 0, height: "50%" },
+    playbackControlRow: { margin: 0, height: '50%' },
     playbackControlButton: {
-      backgroundColor: "#0000",
+      backgroundColor: '#0000',
       padding: 2,
-      display: "flex",
+      display: 'flex',
     },
     masterVolumeSliderSection: {
       width: 221,
       minWidth: 175,
-      borderRight: "1px solid var(--border1)",
-      padding: "4px 10px",
+      borderRight: '1px solid var(--border1)',
+      padding: '4px 10px',
     },
     masterVolumeMeter: {
       height: 5,
-      border: "1px solid var(--border12)",
-      backgroundColor: "var(--bg9)",
+      border: '1px solid var(--border12)',
+      backgroundColor: 'var(--bg9)',
       flexShrink: 0,
-      transform: "translate(-1px, 0)",
-      width: "calc(100% + 1px)",
+      transform: 'translate(-1px, 0)',
+      width: 'calc(100% + 1px)',
     },
     snapGridSizeDropdown: {
       container: {
         height: 28,
         width: 130,
-        border: "1px solid var(--border6)",
-        padding: "2px 4px",
+        border: '1px solid var(--border6)',
+        padding: '2px 4px',
       },
-      nextIcon: { color: "var(--fg1)" },
-      prevIcon: { color: "var(--fg1)" },
-      select: { color: "var(--fg1)" },
+      nextIcon: { color: 'var(--fg1)' },
+      prevIcon: { color: 'var(--fg1)' },
+      select: { color: 'var(--fg1)' },
     },
     actionButtons: {
-      display: "flex",
-      alignItems: "center",
-      marginLeft: "auto",
+      display: 'flex',
+      alignItems: 'center',
+      marginLeft: 'auto',
       marginRight: 12,
     },
     settingsDialog: {
       width: 600,
-      maxWidth: "90vw",
+      maxWidth: '90vw',
     },
     tabPanel: {
       padding: 16,
@@ -464,7 +461,7 @@ export default function Header() {
     },
     pluginsDialog: {
       width: 700,
-      maxWidth: "90vw",
+      maxWidth: '90vw',
     },
     audioMenu: {
       minWidth: 240,
@@ -518,31 +515,31 @@ export default function Header() {
       <div className="d-flex" style={style.headerContainer}>
         <div
           className="d-flex align-items-center p-2"
-          style={{ height: "100%" }}
+          style={{ height: '100%' }}
         >
           <IconButton className="btn-1 mx-1 hover-1">
-            <Undo style={{ fontSize: 14, color: "var(--border6)" }} />
+            <Undo style={{ fontSize: 14, color: 'var(--border6)' }} />
           </IconButton>
           <IconButton className="btn-1 mx-1 hover-1">
-            <Redo style={{ fontSize: 14, color: "var(--border6)" }} />
+            <Redo style={{ fontSize: 14, color: 'var(--border6)' }} />
           </IconButton>
           <Metronome />
         </div>
         <div
           className="d-flex flex-column align-items-center justify-content-center"
           style={{
-            height: "100%",
-            padding: "0 3px",
-            borderInline: "1px solid var(--border1)",
+            height: '100%',
+            padding: '0 3px',
+            borderInline: '1px solid var(--border1)',
           }}
         >
           <NumberInput
-            buttons={{ icon: "arrow" }}
+            buttons={{ icon: 'arrow' }}
             classes={{
-              container: "show-on-hover",
-              incr: "hidden hover-2",
-              decr: "hidden hover-2",
-              input: "font-bold hover-2",
+              container: 'show-on-hover',
+              incr: 'hidden hover-2',
+              decr: 'hidden hover-2',
+              input: 'font-bold hover-2',
             }}
             integersOnly
             layout="alt"
@@ -557,14 +554,12 @@ export default function Header() {
             style={style.timeSignatureBeats}
             value={timelineSettings.timeSignature.beats}
           />
-          <div
-            style={{ width: 20, borderBottom: "1px solid var(--fg1)" }}
-          ></div>
+          <div style={{ width: 20, borderBottom: '1px solid var(--fg1)' }} />
           <SelectSpinBox
             classes={{
-              container: "show-on-hover hover-2",
-              next: "hidden hover-2",
-              prev: "hidden hover-2",
+              container: 'show-on-hover hover-2',
+              next: 'hidden hover-2',
+              prev: 'hidden hover-2',
             }}
             disableSelect
             layout="alt"
@@ -587,9 +582,9 @@ export default function Header() {
             <NumberInput
               buttons={{ show: !tempo.isAutomated }}
               classes={{
-                container: "show-on-hover",
-                incr: "hidden hover-2",
-                decr: "hidden hover-2",
+                container: 'show-on-hover',
+                incr: 'hidden hover-2',
+                decr: 'hidden hover-2',
               }}
               disabled={tempo.isAutomated}
               holdIncrementSpeed={50}
@@ -610,10 +605,10 @@ export default function Header() {
           </div>
           {!tempo.isAutomated && (
             <IconButton
-              className={`btn-1 p-0 ${stretchAudio ? "no-borders" : "hover-1"}`}
+              className={`btn-1 p-0 ${stretchAudio ? 'no-borders' : 'hover-1'}`}
               onClick={() => setStretchAudio(!stretchAudio)}
               style={{
-                backgroundColor: stretchAudio ? "var(--color1)" : "#0000",
+                backgroundColor: stretchAudio ? 'var(--color1)' : '#0000',
                 marginLeft: 4,
               }}
               title="Toggle Stretch Audio To Preserve Clip Widths [P]"
@@ -621,7 +616,7 @@ export default function Header() {
               <StretchAudio
                 size={14}
                 style={{
-                  color: stretchAudio ? "var(--bg6)" : "var(--border6)",
+                  color: stretchAudio ? 'var(--bg6)' : 'var(--border6)',
                 }}
               />
             </IconButton>
@@ -657,7 +652,7 @@ export default function Header() {
             className="d-flex"
             style={{
               ...style.playbackControlRow,
-              borderBottom: "1px solid var(--border1)",
+              borderBottom: '1px solid var(--border1)',
             }}
           >
             <button
@@ -668,7 +663,7 @@ export default function Header() {
               <PlayArrow
                 style={{
                   fontSize: 17,
-                  color: isPlaying ? "var(--color1)" : "var(--fg1)",
+                  color: isPlaying ? 'var(--color1)' : 'var(--fg1)',
                 }}
               />
             </button>
@@ -677,7 +672,7 @@ export default function Header() {
               onClick={stop}
               style={style.playbackControlButton}
             >
-              <Stop style={{ fontSize: 17, color: "var(--fg1)" }} />
+              <Stop style={{ fontSize: 17, color: 'var(--fg1)' }} />
             </button>
             <button
               className="hover-2"
@@ -687,7 +682,7 @@ export default function Header() {
               <FiberManualRecord
                 style={{
                   fontSize: 17,
-                  color: isRecording ? "var(--color1)" : "var(--fg1)",
+                  color: isRecording ? 'var(--color1)' : 'var(--fg1)',
                 }}
               />
             </button>
@@ -699,7 +694,7 @@ export default function Header() {
               <Loop
                 style={{
                   fontSize: 17,
-                  color: isLooping ? "var(--color1)" : "var(--fg1)",
+                  color: isLooping ? 'var(--color1)' : 'var(--fg1)',
                 }}
               />
             </button>
@@ -710,7 +705,7 @@ export default function Header() {
               onClick={skipToStart}
               style={style.playbackControlButton}
             >
-              <SkipPrevious style={{ fontSize: 17, color: "var(--fg1)" }} />
+              <SkipPrevious style={{ fontSize: 17, color: 'var(--fg1)' }} />
             </button>
             <HoldActionButton
               className="hover-2"
@@ -718,7 +713,7 @@ export default function Header() {
               onHoldAction={fastRewind}
               style={style.playbackControlButton}
             >
-              <FastRewind style={{ fontSize: 17, color: "var(--fg1)" }} />
+              <FastRewind style={{ fontSize: 17, color: 'var(--fg1)' }} />
             </HoldActionButton>
             <HoldActionButton
               className="hover-2"
@@ -726,29 +721,29 @@ export default function Header() {
               onHoldAction={fastForward}
               style={style.playbackControlButton}
             >
-              <FastForward style={{ fontSize: 17, color: "var(--fg1)" }} />
+              <FastForward style={{ fontSize: 17, color: 'var(--fg1)' }} />
             </HoldActionButton>
             <button
               className="hover-2"
               onClick={skipToEnd}
               style={style.playbackControlButton}
             >
-              <SkipNext style={{ fontSize: 17, color: "var(--fg1)" }} />
+              <SkipNext style={{ fontSize: 17, color: 'var(--fg1)' }} />
             </button>
           </div>
         </div>
         <div className="h-100" style={style.masterVolumeSliderSection}>
           <TrackVolumeSlider
             labelProps={{
-              placement: { horizontal: "center", vertical: "bottom" },
+              placement: { horizontal: 'center', vertical: 'bottom' },
             }}
-            style={{ padding: "8px 0", marginBottom: 5 }}
+            style={{ padding: '8px 0', marginBottom: 5 }}
             track={masterTrack}
           />
           <Meter
             color={getVolumeGradient(false)}
             marks={[
-              { value: 75, style: { backgroundColor: "var(--border12)" } },
+              { value: 75, style: { backgroundColor: 'var(--border12)' } },
             ]}
             percent={volumeToNormalized(masterTrack.volume) * 100}
             style={{ ...style.masterVolumeMeter, marginBottom: 2 }}
@@ -756,7 +751,7 @@ export default function Header() {
           <Meter
             color={getVolumeGradient(false)}
             marks={[
-              { value: 75, style: { backgroundColor: "var(--border12)" } },
+              { value: 75, style: { backgroundColor: 'var(--border12)' } },
             ]}
             percent={volumeToNormalized(masterTrack.volume) * 100}
             style={{ ...style.masterVolumeMeter, margin: 0 }}
@@ -770,7 +765,7 @@ export default function Header() {
             title="Audio I/O Settings"
           >
             <AudiotrackOutlined
-              style={{ fontSize: 18, color: "var(--border6)" }}
+              style={{ fontSize: 18, color: 'var(--border6)' }}
             />
           </IconButton>
 
@@ -780,7 +775,7 @@ export default function Header() {
             onClick={handleTogglePlugins}
             title="Manage Plugins"
           >
-            <Extension style={{ fontSize: 18, color: "var(--border6)" }} />
+            <Extension style={{ fontSize: 18, color: 'var(--border6)' }} />
           </IconButton>
 
           {/* Chat Button */}
@@ -793,7 +788,7 @@ export default function Header() {
               <Chat
                 style={{
                   fontSize: 18,
-                  color: chatOpen ? "var(--color1)" : "var(--border6)",
+                  color: chatOpen ? 'var(--color1)' : 'var(--border6)',
                 }}
               />
             </Badge>
@@ -805,42 +800,42 @@ export default function Header() {
             onClick={handleOpenSettings}
             title="Settings"
           >
-            <Settings style={{ fontSize: 18, color: "var(--border6)" }} />
+            <Settings style={{ fontSize: 18, color: 'var(--border6)' }} />
           </IconButton>
         </div>
         <div
           className="d-flex align-items-center"
-          style={{ height: "100%", marginLeft: 12 }}
+          style={{ height: '100%', marginLeft: 12 }}
         >
           <SelectSpinBox
-            classes={{ container: "hover-2", next: "hover-2", prev: "hover-2" }}
+            classes={{ container: 'hover-2', next: 'hover-2', prev: 'hover-2' }}
             icon={
               <FaMagnet
-                style={{ fontSize: 10, marginTop: 1, color: "var(--fg1)" }}
+                style={{ fontSize: 10, marginTop: 1, color: 'var(--fg1)' }}
               />
             }
             onChange={(val: SnapGridSizeOption) => setSnapGridSizeOption(val)}
             options={[
-              { label: "None", value: SnapGridSizeOption.None },
-              { label: "Auto", value: SnapGridSizeOption.Auto },
+              { label: 'None', value: SnapGridSizeOption.None },
+              { label: 'Auto', value: SnapGridSizeOption.Auto },
               {
-                label: "1/128 Beat",
+                label: '1/128 Beat',
                 value: SnapGridSizeOption.HundredTwentyEighthBeat,
               },
-              { label: "1/64 Beat", value: SnapGridSizeOption.SixtyFourthBeat },
+              { label: '1/64 Beat', value: SnapGridSizeOption.SixtyFourthBeat },
               {
-                label: "1/32 Beat",
+                label: '1/32 Beat',
                 value: SnapGridSizeOption.ThirtySecondBeat,
               },
-              { label: "1/16 Beat", value: SnapGridSizeOption.SixteenthBeat },
-              { label: "1/8 Beat", value: SnapGridSizeOption.EighthBeat },
-              { label: "1/4 Beat", value: SnapGridSizeOption.QuarterBeat },
-              { label: "1/2 Beat", value: SnapGridSizeOption.HalfBeat },
-              { label: "Beat", value: SnapGridSizeOption.Beat },
-              { label: "Measure", value: SnapGridSizeOption.Measure },
-              { label: "2 Measures", value: SnapGridSizeOption.TwoMeasures },
-              { label: "4 Measures", value: SnapGridSizeOption.FourMeasures },
-              { label: "8 Measures", value: SnapGridSizeOption.EightMeasures },
+              { label: '1/16 Beat', value: SnapGridSizeOption.SixteenthBeat },
+              { label: '1/8 Beat', value: SnapGridSizeOption.EighthBeat },
+              { label: '1/4 Beat', value: SnapGridSizeOption.QuarterBeat },
+              { label: '1/2 Beat', value: SnapGridSizeOption.HalfBeat },
+              { label: 'Beat', value: SnapGridSizeOption.Beat },
+              { label: 'Measure', value: SnapGridSizeOption.Measure },
+              { label: '2 Measures', value: SnapGridSizeOption.TwoMeasures },
+              { label: '4 Measures', value: SnapGridSizeOption.FourMeasures },
+              { label: '8 Measures', value: SnapGridSizeOption.EightMeasures },
             ]}
             style={style.snapGridSizeDropdown}
             value={snapGridSizeOption}
@@ -857,21 +852,21 @@ export default function Header() {
           <h4>Chat</h4>
           <div
             style={{
-              height: "400px",
-              overflow: "auto",
-              border: "1px solid var(--border1)",
-              padding: "8px",
-              marginBottom: "8px",
+              height: '400px',
+              overflow: 'auto',
+              border: '1px solid var(--border1)',
+              padding: '8px',
+              marginBottom: '8px',
             }}
           >
             {/* Chat messages would go here */}
-            <div style={{ margin: "8px 0", textAlign: "left" }}>
+            <div style={{ margin: '8px 0', textAlign: 'left' }}>
               <strong>System:</strong> Welcome to the chat!
             </div>
-            <div style={{ margin: "8px 0", textAlign: "right" }}>
+            <div style={{ margin: '8px 0', textAlign: 'right' }}>
               <strong>You:</strong> How do I add a plugin?
             </div>
-            <div style={{ margin: "8px 0", textAlign: "left" }}>
+            <div style={{ margin: '8px 0', textAlign: 'left' }}>
               <strong>System:</strong> You can add plugins through the plugins
               manager. Click on the puzzle piece icon in the toolbar.
             </div>
@@ -880,9 +875,9 @@ export default function Header() {
             type="text"
             placeholder="Type a message..."
             style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid var(--border1)",
+              width: '100%',
+              padding: '8px',
+              border: '1px solid var(--border1)',
             }}
           />
         </div>
@@ -917,11 +912,11 @@ export default function Header() {
         PaperProps={{ style: style.audioMenu }}
       >
         <MenuItem>
-          <div style={{ width: "100%" }}>
+          <div style={{ width: '100%' }}>
             <div>
               <strong>Input Device</strong>
             </div>
-            <select style={{ width: "100%", marginTop: 8 }}>
+            <select style={{ width: '100%', marginTop: 8 }}>
               <option>Default Input</option>
               <option>Built-in Microphone</option>
               <option>Audio Interface Input 1-2</option>
@@ -929,11 +924,11 @@ export default function Header() {
           </div>
         </MenuItem>
         <MenuItem>
-          <div style={{ width: "100%" }}>
+          <div style={{ width: '100%' }}>
             <div>
               <strong>Output Device</strong>
             </div>
-            <select style={{ width: "100%", marginTop: 8 }}>
+            <select style={{ width: '100%', marginTop: 8 }}>
               <option>Default Output</option>
               <option>Built-in Speakers</option>
               <option>Audio Interface Output 1-2</option>
@@ -941,11 +936,11 @@ export default function Header() {
           </div>
         </MenuItem>
         <MenuItem>
-          <div style={{ width: "100%" }}>
+          <div style={{ width: '100%' }}>
             <div>
               <strong>Buffer Size</strong>
             </div>
-            <select style={{ width: "100%", marginTop: 8 }}>
+            <select style={{ width: '100%', marginTop: 8 }}>
               <option>128 samples</option>
               <option>256 samples</option>
               <option selected>512 samples</option>
@@ -954,11 +949,11 @@ export default function Header() {
           </div>
         </MenuItem>
         <MenuItem>
-          <div style={{ width: "100%" }}>
+          <div style={{ width: '100%' }}>
             <div>
               <strong>Sample Rate</strong>
             </div>
-            <select style={{ width: "100%", marginTop: 8 }}>
+            <select style={{ width: '100%', marginTop: 8 }}>
               <option>44.1 kHz</option>
               <option selected>48 kHz</option>
               <option>96 kHz</option>

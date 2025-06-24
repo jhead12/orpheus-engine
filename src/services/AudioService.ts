@@ -55,10 +55,11 @@ export class AudioService {
    */
   private initializeAudioContext(): void {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       this.masterGainNode = this.audioContext.createGain();
       this.masterGainNode.connect(this.audioContext.destination);
-      
+
       console.log('AudioContext initialized:', {
         sampleRate: this.audioContext.sampleRate,
         state: this.audioContext.state,
@@ -78,13 +79,13 @@ export class AudioService {
 
     try {
       console.log(`Loading audio file: ${file.name}`);
-      
+
       // Read file as ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
-      
+
       // Decode audio data
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      
+
       // Create AudioFile object
       const audioFile: AudioFile = {
         id: this.generateId(),
@@ -100,11 +101,13 @@ export class AudioService {
 
       // Store in memory
       this.loadedFiles.set(audioFile.id, audioFile);
-      
+
       // Emit event
       this.emit('audio:loaded', { audioFile });
-      
-      console.log(`Audio file loaded: ${audioFile.name} (${audioFile.duration.toFixed(2)}s)`);
+
+      console.log(
+        `Audio file loaded: ${audioFile.name} (${audioFile.duration.toFixed(2)}s)`,
+      );
       return audioFile;
     } catch (error) {
       console.error('Failed to load audio file:', error);
@@ -115,23 +118,26 @@ export class AudioService {
   /**
    * Load audio file from URL
    */
-  public async loadAudioFromUrl(url: string, name?: string): Promise<AudioFile> {
+  public async loadAudioFromUrl(
+    url: string,
+    name?: string,
+  ): Promise<AudioFile> {
     if (!this.audioContext) {
       throw new Error('AudioContext not initialized');
     }
 
     try {
       console.log(`Loading audio from URL: ${url}`);
-      
+
       // Fetch audio data
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Failed to fetch audio: ${response.statusText}`);
       }
-      
+
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      
+
       const audioFile: AudioFile = {
         id: this.generateId(),
         name: name || url.split('/').pop() || 'Unknown',
@@ -143,7 +149,7 @@ export class AudioService {
 
       this.loadedFiles.set(audioFile.id, audioFile);
       this.emit('audio:loaded', { audioFile });
-      
+
       return audioFile;
     } catch (error) {
       console.error('Failed to load audio from URL:', error);
@@ -154,7 +160,10 @@ export class AudioService {
   /**
    * Create audio clip from loaded file
    */
-  public createClip(audioFileId: string, options: Partial<AudioClip> = {}): AudioClip {
+  public createClip(
+    audioFileId: string,
+    options: Partial<AudioClip> = {},
+  ): AudioClip {
     const audioFile = this.loadedFiles.get(audioFileId);
     if (!audioFile) {
       throw new Error(`Audio file not found: ${audioFileId}`);
@@ -174,7 +183,7 @@ export class AudioService {
 
     this.activeClips.set(clip.id, clip);
     this.emit('clip:created', { clip });
-    
+
     return clip;
   }
 
@@ -184,7 +193,7 @@ export class AudioService {
   public async playClip(clipId: string): Promise<void> {
     const clip = this.activeClips.get(clipId);
     const audioFile = clip ? this.loadedFiles.get(clip.audioFileId) : null;
-    
+
     if (!clip || !audioFile || !this.audioContext || !this.masterGainNode) {
       throw new Error('Invalid clip or audio context');
     }
@@ -198,26 +207,28 @@ export class AudioService {
       // Create buffer source
       const source = this.audioContext.createBufferSource();
       const gainNode = this.audioContext.createGain();
-      
+
       source.buffer = audioFile.buffer;
       gainNode.gain.value = clip.muted ? 0 : clip.volume;
-      
+
       // Connect nodes
       source.connect(gainNode);
       gainNode.connect(this.masterGainNode);
-      
+
       // Play the clip section
       const startOffset = clip.startTime;
       const duration = clip.endTime - clip.startTime;
-      
+
       source.start(0, startOffset, duration);
-      
-      this.emit('clip:playing', { 
-        clip, 
-        audioData: audioFile.buffer.getChannelData(0) // First channel for analysis
+
+      this.emit('clip:playing', {
+        clip,
+        audioData: audioFile.buffer.getChannelData(0), // First channel for analysis
       });
-      
-      console.log(`Playing clip: ${audioFile.name} (${startOffset.toFixed(2)}s - ${clip.endTime.toFixed(2)}s)`);
+
+      console.log(
+        `Playing clip: ${audioFile.name} (${startOffset.toFixed(2)}s - ${clip.endTime.toFixed(2)}s)`,
+      );
     } catch (error) {
       console.error('Failed to play clip:', error);
       throw error;
@@ -239,12 +250,12 @@ export class AudioService {
 
       this.isPlaying = true;
       this.emit('playback:started');
-      
+
       // Sort clips by position
       const clips = Array.from(this.activeClips.values())
-        .filter(clip => !clip.muted)
+        .filter((clip) => !clip.muted)
         .sort((a, b) => a.position - b.position);
-      
+
       // Play clips at their scheduled times
       for (const clip of clips) {
         const audioFile = this.loadedFiles.get(clip.audioFileId);
@@ -254,7 +265,7 @@ export class AudioService {
           }, clip.position * 1000);
         }
       }
-      
+
       console.log(`Playing timeline with ${clips.length} clips`);
     } catch (error) {
       console.error('Failed to play timeline:', error);
@@ -352,7 +363,7 @@ export class AudioService {
     for (let i = 0; i < audioFile.buffer.numberOfChannels; i++) {
       channelData.push(audioFile.buffer.getChannelData(i));
     }
-    
+
     return channelData;
   }
 
@@ -376,11 +387,14 @@ export class AudioService {
   public emit(event: string, data?: any): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
-      listeners.forEach(callback => {
+      listeners.forEach((callback) => {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in audio service event listener for ${event}:`, error);
+          console.error(
+            `Error in audio service event listener for ${event}:`,
+            error,
+          );
         }
       });
     }
@@ -412,7 +426,7 @@ export class AudioService {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'audio_' + Math.random().toString(36).substr(2, 9);
+    return `audio_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
@@ -423,11 +437,11 @@ export class AudioService {
       this.audioContext.close();
       this.audioContext = null;
     }
-    
+
     this.loadedFiles.clear();
     this.activeClips.clear();
     this.eventListeners.clear();
-    
+
     console.log('AudioService disposed');
   }
 }

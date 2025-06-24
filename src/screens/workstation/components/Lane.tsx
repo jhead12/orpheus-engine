@@ -6,34 +6,34 @@ import React, {
   useRef,
   useState,
   forwardRef,
-} from "react";
-import { WorkstationContext } from "@orpheus/contexts";
-import { ClipboardContext } from "@orpheus/contexts/ClipboardContext";
-import { ClipboardItemType } from "@orpheus/types/clipboard";
+} from 'react';
+import { WorkstationContext } from '@orpheus/contexts';
+import { ClipboardContext } from '@orpheus/contexts/ClipboardContext';
+import { ClipboardItemType } from '@orpheus/types/clipboard';
 import {
   AutomationLane,
   Clip,
   Track,
   TrackType,
   TimelinePosition,
-} from "@orpheus/types/core";
-import { WorkstationAudioInputFile } from "@orpheus/types/audio";
-import { ContextMenuType } from "@orpheus/types/context-menu";
+} from '@orpheus/types/core';
+import { WorkstationAudioInputFile } from '@orpheus/types/audio';
+import { ContextMenuType } from '@orpheus/types/context-menu';
 import {
   BASE_HEIGHT,
   getLaneColor,
   removeAllClipOverlap,
   timelineEditorWindowScrollThresholds,
-} from "@orpheus/utils/utils";
+} from '@orpheus/utils/utils';
 import {
   AudioClipComponent,
   AutomationLaneComponent,
   ClipComponent,
   RegionComponent,
-} from "./index";
-import { openContextMenu } from "@orpheus/services/electron/utils";
-import { TRACK_FILE_UPLOAD } from "@orpheus/services/electron/channels";
-import { getCSSVarValue, normalizeHex } from "@orpheus/utils/general";
+} from './index';
+import { openContextMenu } from '@orpheus/services/electron/utils';
+import { TRACK_FILE_UPLOAD } from '@orpheus/services/electron/channels';
+import { getCSSVarValue, normalizeHex } from '@orpheus/utils/general';
 
 // Export the props interface to make it available for consumers
 export interface LaneComponentProps {
@@ -76,7 +76,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
   // Synchronize forwarded ref with internal ref
   useEffect(() => {
     if (!ref) return;
-    if (typeof ref === "function") {
+    if (typeof ref === 'function') {
       ref(internalRef.current);
     } else {
       (ref as React.MutableRefObject<HTMLDivElement | null>).current =
@@ -85,7 +85,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
   }, [ref]);
 
   const isDragTarget = useMemo(() => {
-    if (track.id === "placeholder")
+    if (track.id === 'placeholder')
       return !!dragDataTarget && !dragDataTarget.track;
     return dragDataTarget?.track?.id === track.id;
   }, [dragDataTarget]);
@@ -97,7 +97,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
 
   useEffect(() => {
     const timelineEditorWindow = document.getElementById(
-      "timeline-editor-window"
+      'timeline-editor-window',
     )!;
 
     function handleDragOver(e: DragEvent) {
@@ -120,34 +120,34 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
             : margin;
           const newDragIndicatorMargin = Math.max(
             margin,
-            timelineEditorWindow.scrollLeft
+            timelineEditorWindow.scrollLeft,
           );
 
           setDragIndicatorMargin(newDragIndicatorMargin);
           adjustNumMeasures(
-            TimelinePosition.fromMargin(newDragIndicatorMargin)
+            TimelinePosition.fromMargin(newDragIndicatorMargin),
           );
         }
       }
     }
 
     if (isDragTarget) {
-      document.addEventListener("dragover", handleDragOver);
+      document.addEventListener('dragover', handleDragOver);
     } else {
       prevMargin.current = null;
       setDragIndicatorMargin(-5);
     }
 
-    return () => document.removeEventListener("dragover", handleDragOver);
+    return () => document.removeEventListener('dragover', handleDragOver);
   }, [isDragTarget]);
 
   function changeLane(clip: Clip, newTrack: Track) {
     const newTracks = tracks.slice();
     const trackIdx = newTracks.findIndex((track) =>
-      track.clips.find((c: Clip) => c.id === clip.id)
+      track.clips.find((c: Clip) => c.id === clip.id),
     );
     const newTrackIdx = newTracks.findIndex(
-      (track) => track.id === newTrack.id
+      (track) => track.id === newTrack.id,
     );
 
     if (trackIdx > -1 && newTrackIdx > -1) {
@@ -212,7 +212,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
             pasteClip(pos.snap(snapGridSize), track);
             break;
         }
-      }
+      },
     );
   }
 
@@ -231,7 +231,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
             setTrackRegion(null);
             break;
         }
-      }
+      },
     );
   }
 
@@ -250,44 +250,44 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
 
   const visibleLanes = track.automationLanes?.filter((lane) => lane.show) || [];
   const automationColor: string = isMaster
-    ? normalizeHex(getCSSVarValue("--border6"))
-    : track.color ?? "#808080";
+    ? normalizeHex(getCSSVarValue('--border6'))
+    : (track.color ?? '#808080');
   const addExtraHeight = !isMaster && height < 80 && track.automation;
   const laneHeight = Math.max(height, addExtraHeight ? 76 : 0);
   const showRegion = trackRegion && trackRegion.trackId === track.id;
 
   const styles = {
     innerContainer: {
-      width: "100%",
+      width: '100%',
       height: laneHeight,
-      cursor: isMaster || track.type === TrackType.Audio ? "default" : "text",
-      backgroundColor: "var(--bg3)",
-      borderBottom: "1px solid var(--border1)",
-      pointerEvents: isMaster ? "none" : "auto",
+      cursor: isMaster || track.type === TrackType.Audio ? 'default' : 'text',
+      backgroundColor: 'var(--bg3)',
+      borderBottom: '1px solid var(--border1)',
+      pointerEvents: isMaster ? 'none' : 'auto',
     },
     regionStyle: {
-      backgroundColor: "var(--bg7)",
+      backgroundColor: 'var(--bg7)',
       zIndex: 14,
-      border: "1px solid #0002",
-      borderWidth: "0 1px",
-      cursor: "text",
+      border: '1px solid #0002',
+      borderWidth: '0 1px',
+      cursor: 'text',
     },
     automationLaneStyle: (lane: AutomationLane) => {
       const lastVisibleLane =
         lane.id === visibleLanes[visibleLanes.length - 1].id;
 
       return {
-        backgroundColor: "var(--bg4)",
+        backgroundColor: 'var(--bg4)',
         borderBottom: `1px solid ${
-          lastVisibleLane ? "var(--border1)" : "var(--border2)"
+          lastVisibleLane ? 'var(--border1)' : 'var(--border2)'
         }`,
       };
     },
     dragIndicator: {
-      position: "absolute",
-      backgroundColor: "var(--color1)",
+      position: 'absolute',
+      backgroundColor: 'var(--color1)',
       width: 3,
-      height: "100%",
+      height: '100%',
       top: 0,
       left: dragIndicatorMargin - 1.5,
       zIndex: 16,
@@ -297,7 +297,7 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
   if (showMaster || !isMaster) {
     return (
       <div
-        className={"lane position-relative " + className}
+        className={`lane position-relative ${className}`}
         data-track={track.id}
         onMouseDown={() => setSelectedTrackId(track.id)}
         ref={internalRef}
@@ -357,8 +357,8 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
                       getLaneColor(
                         track.automationLanes || [],
                         idx,
-                        automationColor
-                      ) || "var(--border6)"
+                        automationColor,
+                      ) || 'var(--border6)'
                     }
                     key={lane.id}
                     lane={lane}
@@ -379,6 +379,6 @@ const Lane = forwardRef<HTMLDivElement, LaneComponentProps>((props, ref) => {
 });
 
 // Add displayName to help with debugging
-Lane.displayName = "Lane";
+Lane.displayName = 'Lane';
 
 export default memo(Lane);

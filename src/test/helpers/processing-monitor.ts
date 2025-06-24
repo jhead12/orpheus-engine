@@ -37,7 +37,7 @@ class ProcessingMonitor {
       renderFrameThreshold: 16.67, // 60fps threshold
       cpuThreshold: 80, // 80% CPU usage
       memoryThreshold: 100 * 1024 * 1024, // 100MB memory usage
-      ...options
+      ...options,
     };
 
     this.setupAudioMonitoring();
@@ -48,21 +48,28 @@ class ProcessingMonitor {
   /**
    * Register a new processing operation
    */
-  startProcessing(id: string, type: ProcessingState['type'], operation: string, estimatedDuration?: number): void {
+  startProcessing(
+    id: string,
+    type: ProcessingState['type'],
+    operation: string,
+    estimatedDuration?: number,
+  ): void {
     console.log(`🔄 Starting ${type} processing: ${operation} (${id})`);
-    
+
     this.activeProcesses.set(id, {
       isProcessing: true,
       type,
       operation,
       startTime: performance.now(),
-      estimatedDuration
+      estimatedDuration,
     });
 
     // Emit custom event for listeners
-    window.dispatchEvent(new CustomEvent('processing:start', {
-      detail: { id, type, operation }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('processing:start', {
+        detail: { id, type, operation },
+      }),
+    );
   }
 
   /**
@@ -72,14 +79,23 @@ class ProcessingMonitor {
     const process = this.activeProcesses.get(id);
     if (process) {
       const duration = performance.now() - process.startTime;
-      console.log(`✅ Finished ${process.type} processing: ${process.operation} (${duration.toFixed(2)}ms)`);
-      
+      console.log(
+        `✅ Finished ${process.type} processing: ${process.operation} (${duration.toFixed(2)}ms)`,
+      );
+
       this.activeProcesses.delete(id);
-      
+
       // Emit custom event for listeners
-      window.dispatchEvent(new CustomEvent('processing:complete', {
-        detail: { id, type: process.type, operation: process.operation, duration }
-      }));
+      window.dispatchEvent(
+        new CustomEvent('processing:complete', {
+          detail: {
+            id,
+            type: process.type,
+            operation: process.operation,
+            duration,
+          },
+        }),
+      );
     }
   }
 
@@ -103,16 +119,24 @@ class ProcessingMonitor {
   async waitForProcessingComplete(customTimeout?: number): Promise<void> {
     const timeout = customTimeout || this.options.maxWaitTime!;
     const startTime = performance.now();
-    
-    console.log(`⏳ Waiting for processing to complete (timeout: ${timeout}ms)...`);
+
+    console.log(
+      `⏳ Waiting for processing to complete (timeout: ${timeout}ms)...`,
+    );
 
     return new Promise((resolve, reject) => {
       const checkComplete = () => {
         const elapsed = performance.now() - startTime;
-        
+
         if (elapsed > timeout) {
-          const activeOps = this.getActiveProcesses().map(p => `${p.type}:${p.operation}`);
-          reject(new Error(`Processing timeout after ${timeout}ms. Active: ${activeOps.join(', ')}`));
+          const activeOps = this.getActiveProcesses().map(
+            (p) => `${p.type}:${p.operation}`,
+          );
+          reject(
+            new Error(
+              `Processing timeout after ${timeout}ms. Active: ${activeOps.join(', ')}`,
+            ),
+          );
           return;
         }
 
@@ -147,14 +171,25 @@ class ProcessingMonitor {
   private setupAudioMonitoring(): void {
     try {
       // Check if AudioContext is available (browser environment)
-      if (typeof AudioContext !== 'undefined' || typeof (window as any).webkitAudioContext !== 'undefined') {
-        this.audioContext = new (AudioContext || (window as any).webkitAudioContext)();
-        
+      if (
+        typeof AudioContext !== 'undefined' ||
+        typeof (window as any).webkitAudioContext !== 'undefined'
+      ) {
+        this.audioContext = new (AudioContext ||
+          (window as any).webkitAudioContext)();
+
         // Monitor audio context state changes
         this.audioContext.addEventListener('statechange', () => {
           if (this.audioContext?.state === 'running') {
-            this.startProcessing('audio-context', 'audio', 'Audio context running');
-          } else if (this.audioContext?.state === 'suspended' || this.audioContext?.state === 'closed') {
+            this.startProcessing(
+              'audio-context',
+              'audio',
+              'Audio context running',
+            );
+          } else if (
+            this.audioContext?.state === 'suspended' ||
+            this.audioContext?.state === 'closed'
+          ) {
             this.finishProcessing('audio-context');
           }
         });
@@ -172,7 +207,7 @@ class ProcessingMonitor {
       if (typeof PerformanceObserver !== 'undefined') {
         this.performanceObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          
+
           entries.forEach((entry) => {
             // Monitor long tasks that might indicate heavy processing
             if (entry.entryType === 'longtask' && entry.duration > 50) {
@@ -180,27 +215,32 @@ class ProcessingMonitor {
                 `longtask-${entry.startTime}`,
                 'computation',
                 `Long task: ${entry.duration.toFixed(2)}ms`,
-                entry.duration
+                entry.duration,
               );
-              
+
               // Auto-finish after the task duration
               setTimeout(() => {
                 this.finishProcessing(`longtask-${entry.startTime}`);
               }, entry.duration);
             }
-            
+
             // Monitor navigation and resource loading
-            if (entry.entryType === 'navigation' || entry.entryType === 'resource') {
+            if (
+              entry.entryType === 'navigation' ||
+              entry.entryType === 'resource'
+            ) {
               if (entry.duration > 100) {
                 this.startProcessing(
                   `${entry.entryType}-${entry.startTime}`,
                   'file',
                   `${entry.entryType}: ${entry.name || 'unknown'}`,
-                  entry.duration
+                  entry.duration,
                 );
-                
+
                 setTimeout(() => {
-                  this.finishProcessing(`${entry.entryType}-${entry.startTime}`);
+                  this.finishProcessing(
+                    `${entry.entryType}-${entry.startTime}`,
+                  );
                 }, 10);
               }
             }
@@ -213,7 +253,7 @@ class ProcessingMonitor {
         } catch (e) {
           console.warn('longtask observation not supported');
         }
-        
+
         try {
           this.performanceObserver.observe({ entryTypes: ['navigation'] });
         } catch (e) {
@@ -231,28 +271,28 @@ class ProcessingMonitor {
   private setupRenderMonitoring(): void {
     const monitorFrame = () => {
       const now = performance.now();
-      
+
       if (this.lastRenderTime > 0) {
         const frameDuration = now - this.lastRenderTime;
-        
+
         // If frame takes longer than threshold, consider it heavy rendering
         if (frameDuration > this.options.renderFrameThreshold!) {
           this.startProcessing(
             `render-frame-${now}`,
             'rendering',
             `Heavy render frame: ${frameDuration.toFixed(2)}ms`,
-            frameDuration
+            frameDuration,
           );
-          
+
           setTimeout(() => {
             this.finishProcessing(`render-frame-${now}`);
           }, 10);
         }
       }
-      
+
       this.lastRenderTime = now;
       this.renderFrameCount++;
-      
+
       this.frameRequestId = requestAnimationFrame(monitorFrame);
     };
 
@@ -266,7 +306,7 @@ class ProcessingMonitor {
    */
   private isAudioStable(): boolean {
     if (!this.audioContext) return true;
-    
+
     try {
       // Check audio context state
       if (this.audioContext.state === 'running') {
@@ -274,11 +314,11 @@ class ProcessingMonitor {
         const _currentTime = this.audioContext.currentTime;
         const baseLatency = this.audioContext.baseLatency || 0;
         const outputLatency = (this.audioContext as any).outputLatency || 0;
-        
+
         // If latency is building up, audio is still processing
-        return (baseLatency + outputLatency) < this.options.audioBufferThreshold!;
+        return baseLatency + outputLatency < this.options.audioBufferThreshold!;
       }
-      
+
       // AudioContext states: 'running', 'suspended', 'closed'
       // If not running, then audio processing is stable
       return this.audioContext.state !== 'running';
@@ -294,10 +334,10 @@ class ProcessingMonitor {
     // Check if there are pending RAF callbacks or heavy frames
     const recentFrames = 10;
     const hasHeavyFrames = this.renderFrameCount < recentFrames;
-    
+
     // Also check for pending DOM mutations
     const hasPendingMutations = document.readyState !== 'complete';
-    
+
     return !hasHeavyFrames && !hasPendingMutations;
   }
 
@@ -307,8 +347,10 @@ class ProcessingMonitor {
   private isCpuStable(): boolean {
     // This is a simplified check - in a real implementation,
     // you might use Web Workers or other methods to monitor CPU
-    return this.cpuUsageHistory.length === 0 || 
-           this.cpuUsageHistory.every(usage => usage < this.options.cpuThreshold!);
+    return (
+      this.cpuUsageHistory.length === 0 ||
+      this.cpuUsageHistory.every((usage) => usage < this.options.cpuThreshold!)
+    );
   }
 
   /**
@@ -321,9 +363,9 @@ class ProcessingMonitor {
           this.startProcessing(
             `dom-mutation-${Date.now()}`,
             'dom',
-            'DOM mutation detected'
+            'DOM mutation detected',
           );
-          
+
           // Auto-finish after a short delay
           setTimeout(() => {
             this.finishProcessing(`dom-mutation-${Date.now()}`);
@@ -336,7 +378,7 @@ class ProcessingMonitor {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeOldValue: true
+      attributeOldValue: true,
     });
 
     return () => observer.disconnect();
@@ -345,10 +387,13 @@ class ProcessingMonitor {
   /**
    * Wait for element to be stable (no changes for a period)
    */
-  async waitForElementStable(element: HTMLElement, stabilityDuration = 500): Promise<void> {
+  async waitForElementStable(
+    element: HTMLElement,
+    stabilityDuration = 500,
+  ): Promise<void> {
     return new Promise((resolve) => {
       let lastChangeTime = performance.now();
-      
+
       const observer = new MutationObserver(() => {
         lastChangeTime = performance.now();
       });
@@ -356,12 +401,12 @@ class ProcessingMonitor {
       observer.observe(element, {
         childList: true,
         subtree: true,
-        attributes: true
+        attributes: true,
       });
 
       const checkStability = () => {
         const timeSinceLastChange = performance.now() - lastChangeTime;
-        
+
         if (timeSinceLastChange >= stabilityDuration) {
           observer.disconnect();
           resolve();
@@ -381,15 +426,15 @@ class ProcessingMonitor {
     if (this.performanceObserver) {
       this.performanceObserver.disconnect();
     }
-    
+
     if (this.frameRequestId) {
       cancelAnimationFrame(this.frameRequestId);
     }
-    
+
     if (this.audioContext && this.audioContext.state !== 'closed') {
       this.audioContext.close();
     }
-    
+
     this.activeProcesses.clear();
   }
 }
@@ -400,7 +445,9 @@ let globalMonitor: ProcessingMonitor | null = null;
 /**
  * Get or create the global processing monitor
  */
-export function getProcessingMonitor(options?: ProcessingMonitorOptions): ProcessingMonitor {
+export function getProcessingMonitor(
+  options?: ProcessingMonitorOptions,
+): ProcessingMonitor {
   if (!globalMonitor) {
     globalMonitor = new ProcessingMonitor(options);
   }
@@ -410,7 +457,9 @@ export function getProcessingMonitor(options?: ProcessingMonitorOptions): Proces
 /**
  * Wait for all processing to complete
  */
-export async function waitForProcessingComplete(timeout?: number): Promise<void> {
+export async function waitForProcessingComplete(
+  timeout?: number,
+): Promise<void> {
   const monitor = getProcessingMonitor();
   return monitor.waitForProcessingComplete(timeout);
 }
@@ -418,7 +467,10 @@ export async function waitForProcessingComplete(timeout?: number): Promise<void>
 /**
  * Wait for element to be stable
  */
-export async function waitForElementStable(element: HTMLElement, duration?: number): Promise<void> {
+export async function waitForElementStable(
+  element: HTMLElement,
+  duration?: number,
+): Promise<void> {
   const monitor = getProcessingMonitor();
   return monitor.waitForElementStable(element, duration);
 }
@@ -426,34 +478,37 @@ export async function waitForElementStable(element: HTMLElement, duration?: numb
 /**
  * Higher-level helper for visual tests with audio components
  */
-export async function waitForAudioComponentReady(element: HTMLElement, options?: {
-  timeout?: number;
-  stabilityDuration?: number;
-  includeAudioProcessing?: boolean;
-}): Promise<void> {
+export async function waitForAudioComponentReady(
+  element: HTMLElement,
+  options?: {
+    timeout?: number;
+    stabilityDuration?: number;
+    includeAudioProcessing?: boolean;
+  },
+): Promise<void> {
   const {
     timeout = 15000,
     stabilityDuration = 1000,
-    includeAudioProcessing = true
+    includeAudioProcessing = true,
   } = options || {};
 
   const monitor = getProcessingMonitor();
-  
+
   console.log('🎵 Waiting for audio component to be ready...');
-  
+
   // Wait for initial processing to complete
   if (includeAudioProcessing) {
     await monitor.waitForProcessingComplete(timeout);
   }
-  
+
   // Wait for DOM to stabilize
   await monitor.waitForElementStable(element, stabilityDuration);
-  
+
   // Additional wait for audio-specific processing
   if (includeAudioProcessing) {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
-  
+
   console.log('✅ Audio component ready for testing');
 }
 

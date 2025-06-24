@@ -14,13 +14,13 @@ describe('HoldActionButton', () => {
   it('renders correctly', () => {
     const onHoldAction = vi.fn();
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
@@ -31,37 +31,37 @@ describe('HoldActionButton', () => {
   it('calls onHoldAction immediately on mouse down by default', () => {
     const onHoldAction = vi.fn();
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     expect(onHoldAction).toHaveBeenCalledTimes(1);
   });
 
   it('respects holdActionOnMouseDown=false', () => {
     const onHoldAction = vi.fn();
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         holdActionOnMouseDown={false}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     expect(onHoldAction).not.toHaveBeenCalled();
   });
 
@@ -69,41 +69,41 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
     const delay = 500;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         delay={delay}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     // Initial call on mouseDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Reset mock to track only repeat calls
     onHoldAction.mockReset();
-    
+
     // Advance to the end of the delay and run all pending timers
     vi.advanceTimersByTime(delay);
     // First timeout triggers setTriggerHoldAction(true)
-    vi.advanceTimersByTime(0); 
+    vi.advanceTimersByTime(0);
     // Run the effect after state update that calls onHoldAction and sets the next timer
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Advance to the next interval
     vi.advanceTimersByTime(interval);
     // Second timeout triggers setTriggerHoldAction(true) again
     vi.advanceTimersByTime(0);
     // Run the effect after second state update
     expect(onHoldAction).toHaveBeenCalledTimes(2);
-    
+
     // Advance to the third interval
     vi.advanceTimersByTime(interval);
     // Third timeout triggers setTriggerHoldAction(true) again
@@ -116,37 +116,37 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
     const delay = 500;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         delay={delay}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     // Initial call on mouseDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Advance to the end of the delay
     vi.advanceTimersByTime(delay);
-    
+
     // Allow the effect to run after state update
     vi.advanceTimersByTime(0);
     expect(onHoldAction).toHaveBeenCalledTimes(2);
-    
+
     // Release the button
     fireEvent.mouseUp(button);
-    
+
     // Reset mock to check if more calls happen
     onHoldAction.mockReset();
-    
+
     // Advance timers but no more calls should happen
     vi.advanceTimersByTime(interval * 5);
     expect(onHoldAction).not.toHaveBeenCalled();
@@ -156,37 +156,37 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
     const delay = 500;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         delay={delay}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     // Initial call on mouseDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Advance to the end of the delay
     vi.advanceTimersByTime(delay);
-    
+
     // Allow the effect to run after state update
     vi.advanceTimersByTime(0);
     expect(onHoldAction).toHaveBeenCalledTimes(2);
-    
+
     // Mouse leaves the button
     fireEvent.mouseLeave(button);
-    
+
     // Reset mock to check if more calls happen
     onHoldAction.mockReset();
-    
+
     // Advance timers but no more calls should happen
     vi.advanceTimersByTime(interval * 5);
     expect(onHoldAction).not.toHaveBeenCalled();
@@ -194,23 +194,23 @@ describe('HoldActionButton', () => {
 
   it('triggers onHoldAction when Enter key is pressed', () => {
     const onHoldAction = vi.fn();
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
-    
+
     // Focus the button before keyDown (as per the button's code that checks activeElement)
     button.focus();
     fireEvent.keyDown(button, { key: 'Enter' });
-    
+
     expect(onHoldAction).toHaveBeenCalledTimes(1);
   });
 
@@ -218,36 +218,36 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
     const delay = 500;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         delay={delay}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
-    
+
     // Focus the button before keyDown
     button.focus();
     fireEvent.keyDown(button, { key: 'Enter' });
-    
+
     // Initial call on keyDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Reset mock to track only repeat calls
     onHoldAction.mockReset();
-    
+
     // Advance to the end of the delay
     vi.advanceTimersByTime(delay);
     // Allow the effect to run after state update
     vi.advanceTimersByTime(0);
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Advance to the next interval
     vi.advanceTimersByTime(interval);
     // Allow the effect to run after second state update
@@ -259,40 +259,40 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
     const delay = 500;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         delay={delay}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
-    
+
     // Focus the button before keyDown
     button.focus();
     fireEvent.keyDown(button, { key: 'Enter' });
-    
+
     // Initial call on keyDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
-    
+
     // Advance to the end of the delay
     vi.advanceTimersByTime(delay);
-    
+
     // Allow the effect to run after state update
     vi.advanceTimersByTime(0);
     expect(onHoldAction).toHaveBeenCalledTimes(2);
-    
+
     // Release the key
     fireEvent.keyUp(button, { key: 'Enter' });
-    
+
     // Reset mock to check if more calls happen
     onHoldAction.mockReset();
-    
+
     // Advance timers but no more calls should happen
     vi.advanceTimersByTime(interval * 5);
     expect(onHoldAction).not.toHaveBeenCalled();
@@ -302,9 +302,9 @@ describe('HoldActionButton', () => {
     const onHoldAction = vi.fn();
     const className = 'custom-class';
     const style = { color: 'rgb(255, 0, 0)' };
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         onHoldAction={onHoldAction}
         className={className}
@@ -312,7 +312,7 @@ describe('HoldActionButton', () => {
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
@@ -327,9 +327,9 @@ describe('HoldActionButton', () => {
     const onKeyDown = vi.fn();
     const onKeyUp = vi.fn();
     const onMouseLeave = vi.fn();
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={100}
         onHoldAction={onHoldAction}
         onMouseDown={onMouseDown}
@@ -340,23 +340,23 @@ describe('HoldActionButton', () => {
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
-    
+
     fireEvent.mouseDown(button);
     expect(onMouseDown).toHaveBeenCalled();
-    
+
     fireEvent.mouseUp(button);
     expect(onMouseUp).toHaveBeenCalled();
-    
+
     fireEvent.keyDown(button, { key: 'Enter' });
     expect(onKeyDown).toHaveBeenCalled();
-    
+
     fireEvent.keyUp(button, { key: 'Enter' });
     expect(onKeyUp).toHaveBeenCalled();
-    
+
     fireEvent.mouseLeave(button);
     expect(onMouseLeave).toHaveBeenCalled();
   });
@@ -364,32 +364,32 @@ describe('HoldActionButton', () => {
   it('uses default delay of 500ms when not specified', () => {
     const onHoldAction = vi.fn();
     const interval = 100;
-    
+
     render(
-      <HoldActionButton 
+      <HoldActionButton
         interval={interval}
         onHoldAction={onHoldAction}
         data-testid="hold-button"
       >
         Hold Me
-      </HoldActionButton>
+      </HoldActionButton>,
     );
 
     const button = screen.getByTestId('hold-button');
     fireEvent.mouseDown(button);
-    
+
     // Initial call on mouseDown
     expect(onHoldAction).toHaveBeenCalledTimes(1);
     onHoldAction.mockReset();
-    
+
     // Advance timers by 499ms (just under default delay)
     vi.advanceTimersByTime(499);
     expect(onHoldAction).not.toHaveBeenCalled();
-    
+
     // Advance one more ms to reach default delay
     vi.advanceTimersByTime(1);
     // Allow the effect to run after state update
-    vi.advanceTimersByTime(0); 
+    vi.advanceTimersByTime(0);
     expect(onHoldAction).toHaveBeenCalledTimes(1);
   });
 });

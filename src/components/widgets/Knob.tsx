@@ -1,6 +1,6 @@
-import React, { RefObject } from "react";
-import { Tooltip, TooltipProps } from "@mui/material";
-import { clamp } from "../../services/utils/general";
+import React, { RefObject } from 'react';
+import { Tooltip, TooltipProps } from '@mui/material';
+import { clamp } from '../../services/utils/general';
 
 interface MeterStyle {
   bgColor?: string;
@@ -87,7 +87,7 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
       showInput: false,
       active: false,
       wheel: false,
-      text: props.value?.toString() || "0",
+      text: props.value?.toString() || '0',
       anchorEl: null,
     };
   }
@@ -96,7 +96,7 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
     if (prevProps.value !== this.props.value) {
       this.setState({
         value: this.props.value || 0,
-        text: this.props.value?.toString() || "0",
+        text: this.props.value?.toString() || '0',
       });
     }
   }
@@ -107,23 +107,23 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
       const deltaY = clientY - this.state.mousePos.y;
 
       this.setState({ mousePos: { x: clientX, y: clientY } }, () =>
-        this.updateValue(-deltaY * 0.005)
+        this.updateValue(-deltaY * 0.005),
       );
     }
   };
 
   private onMouseUp = (): void => {
     if (this.state.dragging) {
-      document.removeEventListener("mousemove", this.onMouseMove);
-      document.removeEventListener("mouseup", this.onMouseUp);
-      document.body.style.cursor = "";
+      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mouseup', this.onMouseUp);
+      document.body.style.cursor = '';
       this.setState({ dragging: false, active: false });
     }
   };
 
   private onWheel = (e: WheelEvent): void => {
     // Ensure preventDefault exists before calling
-    if (e.preventDefault && typeof e.preventDefault === "function") {
+    if (e.preventDefault && typeof e.preventDefault === 'function') {
       e.preventDefault();
     }
 
@@ -145,9 +145,9 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
   private handleMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (!this.props.disabled && e.button === 0 && !this.state.anchorEl) {
       e.preventDefault();
-      document.addEventListener("mousemove", this.onMouseMove);
-      document.addEventListener("mouseup", this.onMouseUp);
-      document.body.style.cursor = "ns-resize";
+      document.addEventListener('mousemove', this.onMouseMove);
+      document.addEventListener('mouseup', this.onMouseUp);
+      document.body.style.cursor = 'ns-resize';
 
       this.setState({
         dragging: true,
@@ -162,13 +162,13 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
     if (element) {
       // Check if we're in a test environment
       const isTestEnvironment =
-        typeof process !== "undefined" && process.env.NODE_ENV === "test";
+        typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
 
       if (!isTestEnvironment) {
-        element.addEventListener("wheel", this.onWheel, { passive: false });
+        element.addEventListener('wheel', this.onWheel, { passive: false });
       } else {
         // In tests, add a simpler wheel handler
-        element.addEventListener("wheel", this.onWheel);
+        element.addEventListener('wheel', this.onWheel);
       }
     }
   }
@@ -179,10 +179,10 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
     }
     const element = this.ref.current;
     if (element) {
-      element.removeEventListener("wheel", this.onWheel);
+      element.removeEventListener('wheel', this.onWheel);
     }
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mouseup", this.onMouseUp);
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
   }
 
   private updateValue(delta: number): void {
@@ -243,8 +243,8 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
           style={{
             width: sizeWithPadding,
             height: sizeWithPadding,
-            position: "relative",
-            cursor: disabled ? "default" : "pointer",
+            position: 'relative',
+            cursor: disabled ? 'default' : 'pointer',
           }}
           onMouseDown={this.handleMouseDown}
           role="slider"
@@ -256,11 +256,11 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
           <div
             data-testid="knob-rotator"
             style={{
-              position: "absolute",
+              position: 'absolute',
               width: size,
               height: size,
-              top: "50%",
-              left: "50%",
+              top: '50%',
+              left: '50%',
               transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
               ...style?.knob,
             }}
@@ -268,13 +268,13 @@ export default class Knob extends React.Component<KnobProps, KnobState> {
             <div
               data-testid="knob-indicator"
               style={{
-                position: "absolute",
+                position: 'absolute',
                 width: size * 0.25,
                 height: size * 0.25,
                 top: size * 0.25,
-                left: "50%",
-                transform: "translateX(-50%)",
-                backgroundColor: disabled ? "#888" : "#000",
+                left: '50%',
+                transform: 'translateX(-50%)',
+                backgroundColor: disabled ? '#888' : '#000',
                 ...style?.indicator,
               }}
             />

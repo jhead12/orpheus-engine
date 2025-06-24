@@ -30,8 +30,8 @@ export * from './mocks/ReactRouterMock';
 export * from './mixerTestTypes';
 
 // Setup utilities for specific components - import selectively to avoid conflicts
-export { 
-  setupWorkstationMixerTest, 
+export {
+  setupWorkstationMixerTest,
   // Re-exporting only functions, as types are already exported from CoreTypesMock
 } from './workstation-mixer-setup';
 
@@ -39,7 +39,7 @@ export {
 export * from './audio-test-utils';
 
 // Timeline-specific test utilities - import selectively to avoid conflicts
-export { 
+export {
   createMockTimelinePosition,
   createMockTimeSignature,
   createMockTempoMap,
@@ -54,27 +54,28 @@ export * from './visual/visual-test-generator';
 export * from './visual/test-container';
 
 // Visual test helpers
-export { 
+export {
   setupVisualTestContainer,
   cleanupVisualTestContainer,
   expectVisualSnapshot,
 } from '../helpers/visual-test-utils';
 
 // Screenshot utilities
-export { 
-  expectScreenshot,
-} from '../helpers/screenshot';
+export { expectScreenshot } from '../helpers/screenshot';
 
 /**
  * Common test setup function for all workstation components
  */
 export const setupWorkstationTest = () => {
-  const { setupWorkstationTestEnvironment, cleanupWorkstationTest } = require('./workstation-test-utils');
-  
+  const {
+    setupWorkstationTestEnvironment,
+    cleanupWorkstationTest,
+  } = require('./workstation-test-utils');
+
   beforeEach(() => {
     setupWorkstationTestEnvironment();
   });
-  
+
   afterEach(() => {
     cleanupWorkstationTest();
   });
@@ -84,16 +85,16 @@ export const setupWorkstationTest = () => {
  * Quick setup for mixer-specific tests
  */
 export const setupMixerTest = () => {
-  const { 
-    setupWorkstationTestEnvironment, 
-    createMockMixerContext, 
-    createMockWorkstationContext 
+  const {
+    setupWorkstationTestEnvironment,
+    createMockMixerContext,
+    createMockWorkstationContext,
   } = require('./workstation-test-utils');
-  
+
   beforeEach(() => {
     setupWorkstationTestEnvironment();
   });
-  
+
   return {
     getMixerContext: createMockMixerContext,
     getWorkstationContext: createMockWorkstationContext,
@@ -112,15 +113,19 @@ export interface TestEnvironmentProps {
 /**
  * Utility to create a complete test environment with all contexts
  */
-export const createCompleteTestEnvironment = (customProps: TestEnvironmentProps = {}) => {
-  const { 
-    createMockMixerContext, 
-    createMockWorkstationContext 
+export const createCompleteTestEnvironment = (
+  customProps: TestEnvironmentProps = {},
+) => {
+  const {
+    createMockMixerContext,
+    createMockWorkstationContext,
   } = require('./workstation-test-utils');
-  
+
   return {
     mixerContext: createMockMixerContext(customProps.mixer || {}),
-    workstationContext: createMockWorkstationContext(customProps.workstation || {}),
+    workstationContext: createMockWorkstationContext(
+      customProps.workstation || {},
+    ),
     ...customProps,
   };
 };

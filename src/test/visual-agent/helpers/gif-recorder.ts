@@ -5,10 +5,10 @@
  * using Playwright for frame captures and node-html-to-image for GIF generation
  */
 
-import fs from "fs/promises";
-import path from "path";
-import { chromium } from "playwright";
-import nodeHtmlToImage from "node-html-to-image";
+import fs from 'fs/promises';
+import path from 'path';
+import { chromium } from 'playwright';
+import nodeHtmlToImage from 'node-html-to-image';
 
 /**
  * Records a GIF of the component with the given interactions
@@ -22,10 +22,10 @@ export async function recordComponentGif(
   htmlContent: string,
   name: string,
   duration = 2000,
-  fps = 10
+  fps = 10,
 ): Promise<string> {
   // Create GIF directory if it doesn't exist
-  const gifDir = path.join(process.cwd(), "__snapshots__", "gifs");
+  const gifDir = path.join(process.cwd(), '__snapshots__', 'gifs');
   await fs.mkdir(gifDir, { recursive: true });
 
   // Output path for the GIF
@@ -38,7 +38,7 @@ export async function recordComponentGif(
 
   try {
     // Set page content
-    await page.setContent(htmlContent, { waitUntil: "networkidle" });
+    await page.setContent(htmlContent, { waitUntil: 'networkidle' });
 
     // Calculate frames and intervals
     const frameCount = Math.ceil((duration * fps) / 1000);
@@ -54,14 +54,14 @@ export async function recordComponentGif(
       }
 
       // Capture screenshot
-      const screenshot = await page.screenshot({ type: "png" });
+      const screenshot = await page.screenshot({ type: 'png' });
       frames.push(screenshot as Buffer);
     }
 
     // Generate GIF from frames
     await nodeHtmlToImage({
       output: outputPath,
-      type: "gif",
+      type: 'gif',
       quality: 80,
       content: {
         frames,
@@ -88,7 +88,7 @@ export async function recordComponentGif(
  */
 export function createComponentHtml(
   componentHtml: string,
-  styles?: string
+  styles?: string,
 ): string {
   return `
     <!DOCTYPE html>
@@ -102,7 +102,7 @@ export function createComponentHtml(
             background-color: transparent;
           }
           #container {
-            ${styles || ""}
+            ${styles || ''}
           }
         </style>
       </head>

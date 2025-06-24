@@ -15,7 +15,7 @@ const DocsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Use the image service to load all available images
       const loadedImages = await imageService.loadImages();
       setImages(loadedImages);
@@ -48,8 +48,8 @@ const DocsPage: React.FC = () => {
 
   return (
     <div className="docs-page">
-      <ImageViewer 
-        images={images} 
+      <ImageViewer
+        images={images}
         title="Orpheus Engine - Visual Test Documentation"
       />
     </div>

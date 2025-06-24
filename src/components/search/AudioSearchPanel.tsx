@@ -16,15 +16,21 @@ interface SearchResult {
 }
 
 interface AudioSearchPanelProps {
-  onImportAudio?: (filePath: string, startTime?: number, endTime?: number) => void;
+  onImportAudio?: (
+    filePath: string,
+    startTime?: number,
+    endTime?: number
+  ) => void;
   isVisible?: boolean;
 }
 
-const AudioSearchPanel: React.FC<AudioSearchPanelProps> = ({ 
+const AudioSearchPanel: React.FC<AudioSearchPanelProps> = ({
   onImportAudio,
-  isVisible = true
+  isVisible = true,
 }) => {
-  const [selectedResult, setSelectedResult] = useState<SearchResult | null>(null);
+  const [selectedResult, setSelectedResult] = useState<SearchResult | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,19 +38,23 @@ const AudioSearchPanel: React.FC<AudioSearchPanelProps> = ({
     setSelectedResult(result);
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // If we have a file_path in the result, we can use it directly
       if (result.file_path) {
         onImportAudio?.(result.file_path, result.start_time, result.end_time);
         return;
       }
-      
+
       // Otherwise, fetch the segment details to get the file path
       if (result.id) {
         const details = await audioService.getSegmentDetails(result.id);
         if (details && details.file_path) {
-          onImportAudio?.(details.file_path, result.start_time, result.end_time);
+          onImportAudio?.(
+            details.file_path,
+            result.start_time,
+            result.end_time,
+          );
         } else {
           setError('Could not retrieve audio file location');
         }
@@ -62,16 +72,19 @@ const AudioSearchPanel: React.FC<AudioSearchPanelProps> = ({
   return (
     <div className="audio-search-panel">
       <AudioSearch onResultSelect={handleResultSelect} />
-      
+
       {selectedResult && (
         <div className="selected-result">
           <h3>Selected Audio</h3>
           <div className="selected-content">
             <p className="selected-text">{selectedResult.text}</p>
             <p className="selected-time">
-              Time: {formatTime(selectedResult.start_time)} - {formatTime(selectedResult.end_time)}
+              Time: {formatTime(selectedResult.start_time)} -{' '}
+              {formatTime(selectedResult.end_time)}
             </p>
-            {isLoading && <div className="loading-import">Loading audio file...</div>}
+            {isLoading && (
+              <div className="loading-import">Loading audio file...</div>
+            )}
             {error && <div className="error-message">{error}</div>}
           </div>
         </div>

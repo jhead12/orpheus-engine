@@ -1,26 +1,28 @@
-import { describe, it, vi, expect, beforeEach, afterEach } from "vitest";
-import { render, fireEvent, cleanup } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import ClipComponent from "../ClipComponent";
-import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
-import { expectScreenshot } from "@orpheus/test/helpers/screenshot";
+import { describe, it, vi, expect, beforeEach, afterEach } from 'vitest';
+import { render, fireEvent, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import ClipComponent from '../ClipComponent';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { expectScreenshot } from '@orpheus/test/helpers/screenshot';
 
 // Mock the TimelinePosition class
-vi.mock("@orpheus/types/core", () => {
+vi.mock('@orpheus/types/core', () => {
   // Create a mock constructor function
-  const TimelinePositionMock = vi.fn().mockImplementation((bar = 0, beat = 0, tick = 0) => {
-    return {
-      bar,
-      beat,
-      tick,
-      toMargin: vi.fn().mockReturnValue(10),
-      toTicks: vi.fn().mockReturnValue(480),
-      toSeconds: vi.fn().mockReturnValue(1),
-      add: vi.fn().mockImplementation(() => TimelinePositionMock()),
-      subtract: vi.fn().mockImplementation(() => TimelinePositionMock()),
-      clone: vi.fn().mockImplementation(() => TimelinePositionMock()),
-    };
-  });
+  const TimelinePositionMock = vi
+    .fn()
+    .mockImplementation((bar = 0, beat = 0, tick = 0) => {
+      return {
+        bar,
+        beat,
+        tick,
+        toMargin: vi.fn().mockReturnValue(10),
+        toTicks: vi.fn().mockReturnValue(480),
+        toSeconds: vi.fn().mockReturnValue(1),
+        add: vi.fn().mockImplementation(() => TimelinePositionMock()),
+        subtract: vi.fn().mockImplementation(() => TimelinePositionMock()),
+        clone: vi.fn().mockImplementation(() => TimelinePositionMock()),
+      };
+    });
 
   // Add static methods and properties to the constructor
   Object.assign(TimelinePositionMock, {
@@ -33,40 +35,40 @@ vi.mock("@orpheus/types/core", () => {
       tempo: 120,
       timeSignature: { beats: 4, noteValue: 4 },
       snap: true,
-      snapUnit: "beat",
+      snapUnit: 'beat',
       horizontalScale: 1,
-    }
+    },
   });
 
   return {
     TimelinePosition: TimelinePositionMock,
     TrackType: {
-      Audio: "audio",
-      Midi: "midi",
-      Sequencer: "sequencer",
+      Audio: 'audio',
+      Midi: 'midi',
+      Sequencer: 'sequencer',
     },
     AutomationMode: {
-      Read: "read",
-      Write: "write",
-      Touch: "touch",
-      Latch: "latch",
-      Off: "off",
+      Read: 'read',
+      Write: 'write',
+      Touch: 'touch',
+      Latch: 'latch',
+      Off: 'off',
     },
     AutomationLaneEnvelope: {
-      Volume: "volume",
-      Pan: "pan",
-      Send: "send",
-      Filter: "filter",
-      Tempo: "tempo",
-      Effect: "effect",
-    }
+      Volume: 'volume',
+      Pan: 'pan',
+      Send: 'send',
+      Filter: 'filter',
+      Tempo: 'tempo',
+      Effect: 'effect',
+    },
   };
 });
 
 // Import the mocked TimelinePosition
-import { TimelinePosition } from "@orpheus/types/core";
+import { TimelinePosition } from '@orpheus/types/core';
 
-describe("ClipComponent Tests", () => {
+describe('ClipComponent Tests', () => {
   let mockWorkstationContext: any;
   let mockClip: any;
   let mockTrack: any;
@@ -105,9 +107,9 @@ describe("ClipComponent Tests", () => {
     };
 
     mockClip = {
-      id: "clip-1",
-      name: "Test Clip",
-      type: "audio",
+      id: 'clip-1',
+      name: 'Test Clip',
+      type: 'audio',
       start: {
         toMargin: vi.fn(() => 0),
         toTicks: vi.fn(() => 0),
@@ -124,24 +126,24 @@ describe("ClipComponent Tests", () => {
     };
 
     mockTrack = {
-      id: "track-1",
-      name: "Test Track",
-      type: "audio",
-      color: "#ff0000",
+      id: 'track-1',
+      name: 'Test Track',
+      type: 'audio',
+      color: '#ff0000',
       mute: false,
       solo: false,
       armed: false,
       volume: 0,
       pan: 0,
       automation: true,
-      automationMode: "read",
+      automationMode: 'read',
       automationLanes: [
         {
-          id: "lane-1",
-          envelope: "volume",
+          id: 'lane-1',
+          envelope: 'volume',
           enabled: true,
           expanded: false,
-          label: "Volume",
+          label: 'Volume',
           minValue: -60,
           maxValue: 6,
           nodes: [],
@@ -160,15 +162,15 @@ describe("ClipComponent Tests", () => {
     onSetClip = vi.fn();
 
     // Mock DOM elements that ClipComponent expects
-    const mockTimelineElement = document.createElement("div");
-    mockTimelineElement.id = "timeline-editor-window";
+    const mockTimelineElement = document.createElement('div');
+    mockTimelineElement.id = 'timeline-editor-window';
     document.body.appendChild(mockTimelineElement);
 
     // Mock closest method for lane finding
     Element.prototype.closest = vi.fn((selector: string) => {
-      if (selector === ".lane") {
-        const mockLane = document.createElement("div");
-        mockLane.className = "lane";
+      if (selector === '.lane') {
+        const mockLane = document.createElement('div');
+        mockLane.className = 'lane';
         return mockLane;
       }
       return null;
@@ -178,7 +180,7 @@ describe("ClipComponent Tests", () => {
   afterEach(() => {
     cleanup();
     // Clean up mock timeline element
-    const timelineElement = document.getElementById("timeline-editor-window");
+    const timelineElement = document.getElementById('timeline-editor-window');
     if (timelineElement) {
       document.body.removeChild(timelineElement);
     }
@@ -198,39 +200,39 @@ describe("ClipComponent Tests", () => {
     return render(
       <WorkstationContext.Provider value={mockWorkstationContext}>
         <ClipComponent {...props} />
-      </WorkstationContext.Provider>
+      </WorkstationContext.Provider>,
     );
   };
 
-  describe("Rendering", () => {
-    it("renders clip component with basic props", () => {
+  describe('Rendering', () => {
+    it('renders clip component with basic props', () => {
       const { container } = renderClipComponent();
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("renders muted clip with reduced opacity", () => {
+    it('renders muted clip with reduced opacity', () => {
       const mutedClip = { ...mockClip, muted: true };
       renderClipComponent({ clip: mutedClip });
       // Component should render with muted styling
       expect(mockClip.start.toMargin).toHaveBeenCalled();
     });
 
-    it("renders clip with loop end", () => {
+    it('renders clip with loop end', () => {
       renderClipComponent();
       expect(mockClip.loopEnd.toMargin).toHaveBeenCalled();
     });
 
-    it("renders automation lanes when track has them", () => {
+    it('renders automation lanes when track has them', () => {
       const trackWithAutomation = {
         ...mockTrack,
         automationLanes: [
           { ...mockTrack.automationLanes[0], show: true },
           {
-            id: "lane-2",
-            envelope: "pan",
+            id: 'lane-2',
+            envelope: 'pan',
             enabled: true,
             expanded: true,
-            label: "Pan",
+            label: 'Pan',
             show: true,
             minValue: -100,
             maxValue: 100,
@@ -243,11 +245,11 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Selection", () => {
-    it("handles clip selection when clicked", async () => {
+  describe('Selection', () => {
+    it('handles clip selection when clicked', async () => {
       const { container } = renderClipComponent();
       const clipElement =
-        container.querySelector("[data-testid]") ||
+        container.querySelector('[data-testid]') ||
         (container.firstChild as Element);
 
       if (clipElement) {
@@ -258,10 +260,10 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("shows selected state when clip is selected", () => {
+    it('shows selected state when clip is selected', () => {
       const selectedContext = {
         ...mockWorkstationContext,
-        selectedClipId: "clip-1",
+        selectedClipId: 'clip-1',
       };
 
       render(
@@ -273,15 +275,15 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
-      expect(selectedContext.selectedClipId).toBe("clip-1");
+      expect(selectedContext.selectedClipId).toBe('clip-1');
     });
   });
 
-  describe("Context Menu", () => {
-    it("handles right-click context menu", async () => {
+  describe('Context Menu', () => {
+    it('handles right-click context menu', async () => {
       const { container } = renderClipComponent();
       const clipElement = container.firstChild as Element;
 
@@ -293,11 +295,11 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("prevents context menu when input is focused", async () => {
+    it('prevents context menu when input is focused', async () => {
       const { container } = renderClipComponent();
 
       // Create a mock input element that's focused
-      const mockInput = document.createElement("input");
+      const mockInput = document.createElement('input');
       document.body.appendChild(mockInput);
       mockInput.focus();
 
@@ -311,11 +313,11 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Keyboard Interactions", () => {
-    it("handles F2 key for renaming", async () => {
+  describe('Keyboard Interactions', () => {
+    it('handles F2 key for renaming', async () => {
       const selectedContext = {
         ...mockWorkstationContext,
-        selectedClipId: "clip-1",
+        selectedClipId: 'clip-1',
       };
 
       render(
@@ -327,20 +329,20 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
       // Simulate F2 key press
-      fireEvent.keyDown(window, { key: "F2", code: "F2" });
+      fireEvent.keyDown(window, { key: 'F2', code: 'F2' });
 
       // Should enter rename mode
-      expect(selectedContext.selectedClipId).toBe("clip-1");
+      expect(selectedContext.selectedClipId).toBe('clip-1');
     });
 
-    it("handles Delete key for clip deletion", async () => {
+    it('handles Delete key for clip deletion', async () => {
       const selectedContext = {
         ...mockWorkstationContext,
-        selectedClipId: "clip-1",
+        selectedClipId: 'clip-1',
       };
 
       const { container } = render(
@@ -352,7 +354,7 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
       // First click to select the clip
@@ -362,23 +364,23 @@ describe("ClipComponent Tests", () => {
       }
 
       // Then simulate Delete key press
-      await user.keyboard("{Delete}");
+      await user.keyboard('{Delete}');
 
       expect(selectedContext.deleteClip).toHaveBeenCalledWith(mockClip);
     });
 
-    it("handles Escape key during renaming", async () => {
+    it('handles Escape key during renaming', async () => {
       const { container } = renderClipComponent();
 
       // Simulate entering rename mode and then pressing Escape
-      fireEvent.keyDown(window, { key: "Escape", code: "Escape" });
+      fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
 
       expect(container.firstChild).toBeTruthy();
     });
   });
 
-  describe("Renaming", () => {
-    it("handles double-click to start renaming", async () => {
+  describe('Renaming', () => {
+    it('handles double-click to start renaming', async () => {
       const { container } = renderClipComponent();
       const clipElement = container.firstChild as Element;
 
@@ -390,16 +392,16 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("confirms name change on Enter", async () => {
+    it('confirms name change on Enter', async () => {
       const { container } = renderClipComponent();
 
       // Simulate rename mode and Enter key
-      fireEvent.keyDown(window, { key: "Enter", code: "Enter" });
+      fireEvent.keyDown(window, { key: 'Enter', code: 'Enter' });
 
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("updates clip name when renaming", () => {
+    it('updates clip name when renaming', () => {
       renderClipComponent();
 
       // The component should handle name updates
@@ -407,8 +409,8 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Drag and Drop", () => {
-    it("handles drag start", () => {
+  describe('Drag and Drop', () => {
+    it('handles drag start', () => {
       const onDragStart = vi.fn();
       const { container } = renderClipComponent({ onDragStart });
 
@@ -420,7 +422,7 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("handles drag operation", () => {
+    it('handles drag operation', () => {
       const onDrag = vi.fn();
       const { container } = renderClipComponent({ onDrag });
 
@@ -433,7 +435,7 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("handles drag stop and lane change", () => {
+    it('handles drag stop and lane change', () => {
       const onDragStop = vi.fn();
       const { container } = renderClipComponent({ onDragStop });
 
@@ -447,9 +449,9 @@ describe("ClipComponent Tests", () => {
       expect(container.firstChild).toBeTruthy();
     });
 
-    it("validates track types during drag", () => {
-      const audioTrack = { ...mockTrack, type: "audio" };
-      const midiTrack = { ...mockTrack, id: "track-2", type: "midi" };
+    it('validates track types during drag', () => {
+      const audioTrack = { ...mockTrack, type: 'audio' };
+      const midiTrack = { ...mockTrack, id: 'track-2', type: 'midi' };
 
       const contextWithTracks = {
         ...mockWorkstationContext,
@@ -465,7 +467,7 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
       // Drag should validate track compatibility
@@ -473,29 +475,29 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Resizing", () => {
-    it("handles resize start", () => {
+  describe('Resizing', () => {
+    it('handles resize start', () => {
       const onResizeStart = vi.fn();
       renderClipComponent({ onResizeStart });
 
       expect(mockClip.start.toMargin).toHaveBeenCalled();
     });
 
-    it("handles resize operation", () => {
+    it('handles resize operation', () => {
       const onResize = vi.fn();
       renderClipComponent({ onResize });
 
       expect(mockClip.end.toMargin).toHaveBeenCalled();
     });
 
-    it("handles resize stop", () => {
+    it('handles resize stop', () => {
       const onResizeStop = vi.fn();
       renderClipComponent({ onResizeStop });
 
       expect(mockClip.start.toMargin).toHaveBeenCalled();
     });
 
-    it("respects start and end limits during resize", () => {
+    it('respects start and end limits during resize', () => {
       const startMarginSpy = vi.fn(() => 50);
       const endMarginSpy = vi.fn(() => 300);
 
@@ -514,29 +516,29 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Looping", () => {
-    it("handles loop creation", () => {
+  describe('Looping', () => {
+    it('handles loop creation', () => {
       const onLoop = vi.fn();
       renderClipComponent({ onLoop });
 
       expect(mockClip.loopEnd.toMargin).toHaveBeenCalled();
     });
 
-    it("handles loop start", () => {
+    it('handles loop start', () => {
       const onLoopStart = vi.fn();
       renderClipComponent({ onLoopStart });
 
       expect(mockClip.loopEnd.toMargin).toHaveBeenCalled();
     });
 
-    it("handles loop stop", () => {
+    it('handles loop stop', () => {
       const onLoopStop = vi.fn();
       renderClipComponent({ onLoopStop });
 
       expect(mockClip.loopEnd.toMargin).toHaveBeenCalled();
     });
 
-    it("calculates loop repetitions correctly", () => {
+    it('calculates loop repetitions correctly', () => {
       const loopMarginSpy = vi.fn(() => 600);
       const clipWithLoop = {
         ...mockClip,
@@ -548,7 +550,7 @@ describe("ClipComponent Tests", () => {
       expect(loopMarginSpy).toHaveBeenCalled();
     });
 
-    it("handles clip without loop end", () => {
+    it('handles clip without loop end', () => {
       const clipWithoutLoop = {
         ...mockClip,
         loopEnd: undefined,
@@ -560,28 +562,28 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Context Integration", () => {
-    it("calls adjustNumMeasures when needed", () => {
+  describe('Context Integration', () => {
+    it('calls adjustNumMeasures when needed', () => {
       renderClipComponent();
 
       // Component should call adjustNumMeasures during operations
       expect(mockWorkstationContext.adjustNumMeasures).not.toHaveBeenCalled(); // Initially
     });
 
-    it("manages allowMenuAndShortcuts state", () => {
+    it('manages allowMenuAndShortcuts state', () => {
       renderClipComponent();
 
       expect(
-        mockWorkstationContext.setAllowMenuAndShortcuts
+        mockWorkstationContext.setAllowMenuAndShortcuts,
       ).not.toHaveBeenCalled(); // Initially
     });
 
-    it("handles scroll to item functionality", () => {
+    it('handles scroll to item functionality', () => {
       const contextWithScrollToItem = {
         ...mockWorkstationContext,
         scrollToItem: {
-          type: "clip",
-          params: { clipId: "clip-1" },
+          type: 'clip',
+          params: { clipId: 'clip-1' },
         },
       };
 
@@ -594,29 +596,29 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
-      expect(contextWithScrollToItem.scrollToItem.params.clipId).toBe("clip-1");
+      expect(contextWithScrollToItem.scrollToItem.params.clipId).toBe('clip-1');
     });
   });
 
-  describe("Guidelines", () => {
-    it("shows guidelines during drag operations", () => {
+  describe('Guidelines', () => {
+    it('shows guidelines during drag operations', () => {
       renderClipComponent();
 
       // Guidelines should be managed during drag operations
       expect(mockClip.start.toMargin).toHaveBeenCalled();
     });
 
-    it("shows guidelines during resize operations", () => {
+    it('shows guidelines during resize operations', () => {
       renderClipComponent();
 
       // Guidelines should be managed during resize operations
       expect(mockClip.end.toMargin).toHaveBeenCalled();
     });
 
-    it("shows guidelines during loop operations", () => {
+    it('shows guidelines during loop operations', () => {
       renderClipComponent();
 
       // Guidelines should be managed during loop operations
@@ -624,8 +626,8 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Edge Cases", () => {
-    it("handles zero-width clips", () => {
+  describe('Edge Cases', () => {
+    it('handles zero-width clips', () => {
       const startMarginSpy = vi.fn(() => 100);
       const endMarginSpy = vi.fn(() => 100);
 
@@ -641,7 +643,7 @@ describe("ClipComponent Tests", () => {
       expect(endMarginSpy).toHaveBeenCalled();
     });
 
-    it("handles horizontal scale changes", () => {
+    it('handles horizontal scale changes', () => {
       const { rerender } = renderClipComponent();
 
       const newContext = {
@@ -661,13 +663,13 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
       expect(newContext.timelineSettings.horizontalScale).toBe(2);
     });
 
-    it("handles vertical scale changes", () => {
+    it('handles vertical scale changes', () => {
       const newContext = {
         ...mockWorkstationContext,
         verticalScale: 1.5,
@@ -682,15 +684,15 @@ describe("ClipComponent Tests", () => {
             onChangeLane={onChangeLane}
             onSetClip={onSetClip}
           />
-        </WorkstationContext.Provider>
+        </WorkstationContext.Provider>,
       );
 
       expect(newContext.verticalScale).toBe(1.5);
     });
 
-    it("handles missing timeline editor window", () => {
+    it('handles missing timeline editor window', () => {
       // Remove the timeline element
-      const timelineElement = document.getElementById("timeline-editor-window");
+      const timelineElement = document.getElementById('timeline-editor-window');
       if (timelineElement) {
         document.body.removeChild(timelineElement);
       }
@@ -701,20 +703,23 @@ describe("ClipComponent Tests", () => {
     });
   });
 
-  describe("Visual Tests", () => {
-    const isCI = process.env.CI === "true";
-    const isCodespaces = process.env.CODESPACES === "true";
+  describe('Visual Tests', () => {
+    const isCI = process.env.CI === 'true';
+    const isCodespaces = process.env.CODESPACES === 'true';
     const hasDisplay = process.env.DISPLAY !== undefined;
     const shouldSkipVisualTests = isCI || isCodespaces || !hasDisplay;
 
-    it("visual test: renders clip with automation @visual", async () => {
+    it('visual test: renders clip with automation @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment',
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 800px; height: 200px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 800px; height: 200px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
@@ -728,14 +733,14 @@ describe("ClipComponent Tests", () => {
               onSetClip={onSetClip}
             />
           </WorkstationContext.Provider>,
-          { container }
+          { container },
         );
 
         // Wait for audio processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await expectScreenshot(container, "clip-with-automation");
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await expectScreenshot(container, 'clip-with-automation');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);
@@ -743,20 +748,23 @@ describe("ClipComponent Tests", () => {
       }
     });
 
-    it("visual test: renders selected clip @visual", async () => {
+    it('visual test: renders selected clip @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment',
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 800px; height: 200px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 800px; height: 200px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
         const selectedContext = {
           ...mockWorkstationContext,
-          selectedClipId: "clip-1",
+          selectedClipId: 'clip-1',
         };
 
         render(
@@ -769,14 +777,14 @@ describe("ClipComponent Tests", () => {
               onSetClip={onSetClip}
             />
           </WorkstationContext.Provider>,
-          { container }
+          { container },
         );
 
         // Wait for clip selection highlighting
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        await expectScreenshot(container, "clip-selected");
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+        await expectScreenshot(container, 'clip-selected');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);
@@ -784,14 +792,17 @@ describe("ClipComponent Tests", () => {
       }
     });
 
-    it("visual test: renders muted clip @visual", async () => {
+    it('visual test: renders muted clip @visual', async () => {
       if (shouldSkipVisualTests) {
-        console.log("Skipping visual test in CI/Codespaces/headless environment");
+        console.log(
+          'Skipping visual test in CI/Codespaces/headless environment',
+        );
         return;
       }
 
-      const container = document.createElement("div");
-      container.style.cssText = "width: 800px; height: 200px; background: #1e1e1e; position: relative;";
+      const container = document.createElement('div');
+      container.style.cssText =
+        'width: 800px; height: 200px; background: #1e1e1e; position: relative;';
       document.body.appendChild(container);
 
       try {
@@ -807,14 +818,14 @@ describe("ClipComponent Tests", () => {
               onSetClip={onSetClip}
             />
           </WorkstationContext.Provider>,
-          { container }
+          { container },
         );
 
         // Wait for muted styling to apply
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await expectScreenshot(container, "clip-muted");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await expectScreenshot(container, 'clip-muted');
       } catch (error) {
-        console.warn("Visual snapshot test failed:", error);
+        console.warn('Visual snapshot test failed:', error);
       } finally {
         if (container.parentNode) {
           container.parentNode.removeChild(container);

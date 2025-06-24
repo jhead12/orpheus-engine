@@ -1,12 +1,18 @@
-import React, { useContext, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   ClipboardContext,
   ClipboardItemType,
   WorkstationContext,
-} from "@orpheus/contexts";
-import { clamp, inverseLerp, lerp } from "@orpheus/utils/general";
-import { AutomationNodeComponent } from "./index";
-import { v4 } from "uuid";
+} from '@orpheus/contexts';
+import { clamp, inverseLerp, lerp } from '@orpheus/utils/general';
+import { AutomationNodeComponent } from './index';
+import { v4 } from 'uuid';
 import {
   AutomationLane,
   AutomationLaneEnvelope,
@@ -14,9 +20,9 @@ import {
   Track,
   ContextMenuType,
   TimelinePosition,
-} from "@orpheus/types/core";
-import { openContextMenu } from "@orpheus/services/electron/utils";
-import { BASE_HEIGHT } from "@orpheus/services/utils/utils";
+} from '@orpheus/types/core';
+import { openContextMenu } from '@orpheus/services/electron/utils';
+import { BASE_HEIGHT } from '@orpheus/services/utils/utils';
 
 interface IProps {
   color: string;
@@ -59,7 +65,7 @@ export default function AutomationLaneComponent({
       const normalizedValue = inverseLerp(value, lane.minValue, lane.maxValue);
       return height - normalizedValue * height;
     },
-    [lane.minValue, lane.maxValue, verticalScale]
+    [lane.minValue, lane.maxValue, verticalScale],
   );
 
   const yToValue = useCallback(
@@ -68,7 +74,7 @@ export default function AutomationLaneComponent({
       const normalizedValue = clamp(inverseLerp(height, 0, y), 0, 1);
       return lerp(normalizedValue, lane.minValue, lane.maxValue);
     },
-    [lane.minValue, lane.maxValue, verticalScale]
+    [lane.minValue, lane.maxValue, verticalScale],
   );
 
   const nodes = useMemo(() => lane.nodes || [], [lane.nodes]);
@@ -77,23 +83,26 @@ export default function AutomationLaneComponent({
     if (!ref.current || !polylineRef.current) return;
 
     let nodes = lane.nodes || [];
-    let points = "";
+    let points = '';
 
     if (movingNodeIndex.current > -1 && movingNode.current) {
       const idx = nodes.findIndex(
-        (node: AutomationNode) => node.id === movingNode.current!.id
+        (node: AutomationNode) => node.id === movingNode.current!.id,
       );
 
       if (idx > -1) {
         nodes = nodes.slice();
-        movingNodeIndex.current = Math.min(movingNodeIndex.current, nodes.length);
+        movingNodeIndex.current = Math.min(
+          movingNodeIndex.current,
+          nodes.length,
+        );
         nodes.splice(idx, 1);
         nodes.splice(movingNodeIndex.current, 0, movingNode.current);
 
         while (
           movingNodeIndex.current < nodes.length - 1 &&
           movingNode.current.pos.compareTo(
-            nodes[movingNodeIndex.current + 1].pos
+            nodes[movingNodeIndex.current + 1].pos,
           ) > 0
         ) {
           const temp = nodes[movingNodeIndex.current + 1];
@@ -105,7 +114,7 @@ export default function AutomationLaneComponent({
         while (
           movingNodeIndex.current > 0 &&
           movingNode.current.pos.compareTo(
-            nodes[movingNodeIndex.current - 1].pos
+            nodes[movingNodeIndex.current - 1].pos,
           ) < 0
         ) {
           const temp = nodes[movingNodeIndex.current - 1];
@@ -132,14 +141,21 @@ export default function AutomationLaneComponent({
         lane.envelope === AutomationLaneEnvelope.Volume
           ? track.volume.value
           : lane.envelope === AutomationLaneEnvelope.Pan
-          ? track.pan.value
-          : timelineSettings.tempo
+            ? track.pan.value
+            : timelineSettings.tempo,
       );
       points = `0,${y + 4} ${ref.current.clientWidth},${y + 4}`;
     }
 
-    polylineRef.current.setAttribute("points", points);
-  }, [lane.envelope, lane.nodes, timelineSettings.tempo, track.pan.value, track.volume.value, valueToY]);
+    polylineRef.current.setAttribute('points', points);
+  }, [
+    lane.envelope,
+    lane.nodes,
+    timelineSettings.tempo,
+    track.pan.value,
+    track.volume.value,
+    valueToY,
+  ]);
 
   // Draw polyline updates
   useEffect(() => {
@@ -158,7 +174,7 @@ export default function AutomationLaneComponent({
         addNode(track, lane, { id: v4(), pos, value: yToValue(y) });
       }
     },
-    [addNode, lane, snapGridSize, track, yToValue]
+    [addNode, lane, snapGridSize, track, yToValue],
   );
 
   const handleContextMenu = useCallback(
@@ -198,16 +214,27 @@ export default function AutomationLaneComponent({
               pasteNode(pos.snap(snapGridSize), lane);
               break;
           }
-        }
+        },
       );
     },
-    [clipboardItem?.type, lane, pasteNode, playheadPos, setLane, snapGridSize, track]
+    [
+      clipboardItem?.type,
+      lane,
+      pasteNode,
+      playheadPos,
+      setLane,
+      snapGridSize,
+      track,
+    ],
   );
 
   const handleNodeMove = useCallback(
     (node: AutomationNode) => {
-      if (movingNodeIndex.current === -1 || node.id !== movingNode.current?.id) {
-        movingNodeIndex.current = nodes.findIndex(n => n.id === node.id);
+      if (
+        movingNodeIndex.current === -1 ||
+        node.id !== movingNode.current?.id
+      ) {
+        movingNodeIndex.current = nodes.findIndex((n) => n.id === node.id);
       }
 
       movingNode.current = node;
@@ -226,7 +253,7 @@ export default function AutomationLaneComponent({
       ) {
         points.replaceItem(
           points[movingNodeIndex.current + 2],
-          movingNodeIndex.current + 1
+          movingNodeIndex.current + 1,
         );
         points.replaceItem(point, movingNodeIndex.current + 2);
         movingNodeIndex.current++;
@@ -238,7 +265,7 @@ export default function AutomationLaneComponent({
       ) {
         points.replaceItem(
           points[movingNodeIndex.current],
-          movingNodeIndex.current + 1
+          movingNodeIndex.current + 1,
         );
         points.replaceItem(point, movingNodeIndex.current);
         movingNodeIndex.current--;
@@ -247,17 +274,17 @@ export default function AutomationLaneComponent({
       points[0].y = points[1].y;
       points[points.length - 1].y = points[points.length - 2].y;
     },
-    [nodes, valueToY]
+    [nodes, valueToY],
   );
 
   const setNode = useCallback(
     (node: AutomationNode) => {
       const automationLanes = track.automationLanes.slice();
-      const laneIndex = automationLanes.findIndex(l => l.id === lane.id);
+      const laneIndex = automationLanes.findIndex((l) => l.id === lane.id);
 
       if (laneIndex !== -1) {
         const nodes = (lane.nodes || []).slice();
-        const nodeIndex = nodes.findIndex(n => n.id === node.id);
+        const nodeIndex = nodes.findIndex((n) => n.id === node.id);
 
         if (nodeIndex !== -1) {
           if (movingNodeIndex.current > -1 && movingNode.current) {
@@ -276,7 +303,7 @@ export default function AutomationLaneComponent({
         }
       }
     },
-    [lane.id, track, setTrack]
+    [lane.id, track, setTrack],
   );
 
   useEffect(() => {
@@ -309,26 +336,49 @@ export default function AutomationLaneComponent({
         }
         break;
     }
-  }, [nodes, lane.envelope, setTrack, track, timelineSettings, updateTimelineSettings]);
+  }, [
+    nodes,
+    lane.envelope,
+    setTrack,
+    track,
+    timelineSettings,
+    updateTimelineSettings,
+  ]);
 
   // Handle volume, pan and tempo automation
   useEffect(() => {
     if (nodes.length === 1) {
-      if (lane.envelope === AutomationLaneEnvelope.Volume && track.volume.value !== nodes[0].value) {
+      if (
+        lane.envelope === AutomationLaneEnvelope.Volume &&
+        track.volume.value !== nodes[0].value
+      ) {
         setNode({ ...nodes[0], value: track.volume.value });
-      } else if (lane.envelope === AutomationLaneEnvelope.Pan && track.pan.value !== nodes[0].value) {
+      } else if (
+        lane.envelope === AutomationLaneEnvelope.Pan &&
+        track.pan.value !== nodes[0].value
+      ) {
         setNode({ ...nodes[0], value: track.pan.value });
-      } else if (lane.envelope === AutomationLaneEnvelope.Tempo && timelineSettings.tempo !== nodes[0].value) {
+      } else if (
+        lane.envelope === AutomationLaneEnvelope.Tempo &&
+        timelineSettings.tempo !== nodes[0].value
+      ) {
         setNode({ ...nodes[0], value: timelineSettings.tempo });
       }
     }
-  }, [nodes, lane.envelope, track.volume.value, track.pan.value, timelineSettings.tempo, setNode]);
+  }, [
+    nodes,
+    lane.envelope,
+    track.volume.value,
+    track.pan.value,
+    timelineSettings.tempo,
+    setNode,
+  ]);
 
   return (
     <div
       className="automation-lane"
       style={{
-        position: "relative",
+        position: 'relative',
         height: BASE_HEIGHT,
         ...style,
       }}
@@ -339,12 +389,12 @@ export default function AutomationLaneComponent({
       <svg
         className="automation-lane-svg"
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
-          pointerEvents: "none",
-          width: "100%",
-          height: "100%",
+          pointerEvents: 'none',
+          width: '100%',
+          height: '100%',
         }}
       >
         <defs>
@@ -364,10 +414,10 @@ export default function AutomationLaneComponent({
           ref={polylineRef}
           points=""
           style={{
-            fill: "none",
+            fill: 'none',
             stroke: color,
             strokeWidth: 2,
-            pointerEvents: "none",
+            pointerEvents: 'none',
           }}
           markerEnd="url(#arrowhead)"
         />
@@ -375,7 +425,7 @@ export default function AutomationLaneComponent({
 
       <div
         className="automation-lane-content"
-        style={{ position: "relative", height: "100%" }}
+        style={{ position: 'relative', height: '100%' }}
       >
         {nodes.map((node) => (
           <AutomationNodeComponent

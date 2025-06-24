@@ -39,7 +39,7 @@ export const setupGlobalMocks = () => {
   // Mock window.matchMedia
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: vi.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -115,19 +115,20 @@ export const createMockTracks = (count: number = 2): Track[] => [
     pan: { value: -0.2, isAutomated: false } as AutomatableParameter,
     automationMode: AutomationMode.Write,
   }),
-  ...Array.from({ length: Math.max(0, count - 2) }, (_, i) => 
+  ...Array.from({ length: Math.max(0, count - 2) }, (_, i) =>
     createMockTrack({
       id: `track-${i + 3}`,
       name: `Track ${i + 3}`,
-    })
+    }),
   ),
 ];
 
-export const createMasterTrack = (): Track => createMockTrack({
-  id: 'master',
-  name: 'Master',
-  color: '#444444',
-});
+export const createMasterTrack = (): Track =>
+  createMockTrack({
+    id: 'master',
+    name: 'Master',
+    color: '#444444',
+  });
 
 // Common mock contexts
 export const createMockMixerContext = (overrides = {}) => ({
@@ -166,7 +167,7 @@ export const createMockMixerContext = (overrides = {}) => ({
 export const createMockWorkstationContext = (overrides = {}) => {
   const tracks = createMockTracks();
   const masterTrack = createMasterTrack();
-  
+
   return {
     tracks,
     masterTrack,
@@ -225,20 +226,25 @@ export const createTrackWithEffects = (effectCount: number): Track => {
   });
 };
 
-export const createManyTracks = (count: number): Track[] => 
-  Array.from({ length: count }, (_, i) => createMockTrack({
-    id: `track-${i + 1}`,
-    name: `Track ${i + 1}`,
-    color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'][i % 5],
-  }));
+export const createManyTracks = (count: number): Track[] =>
+  Array.from({ length: count }, (_, i) =>
+    createMockTrack({
+      id: `track-${i + 1}`,
+      name: `Track ${i + 1}`,
+      color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'][i % 5],
+    }),
+  );
 
 // Common test helpers
 export const waitForMixerToRender = async () => {
   // Wait for any async operations in mixer
-  await new Promise(resolve => setTimeout(resolve, 50));
+  await new Promise((resolve) => setTimeout(resolve, 50));
 };
 
-export const simulateVolumeChange = async (volumeFader: HTMLElement, value: string) => {
+export const simulateVolumeChange = async (
+  volumeFader: HTMLElement,
+  value: string,
+) => {
   const event = new Event('change', { bubbles: true });
   Object.defineProperty(event, 'target', {
     writable: false,
@@ -248,7 +254,10 @@ export const simulateVolumeChange = async (volumeFader: HTMLElement, value: stri
   await waitForMixerToRender();
 };
 
-export const simulatePanChange = async (panKnob: HTMLElement, value: string) => {
+export const simulatePanChange = async (
+  panKnob: HTMLElement,
+  value: string,
+) => {
   const event = new Event('change', { bubbles: true });
   Object.defineProperty(event, 'target', {
     writable: false,
@@ -260,40 +269,86 @@ export const simulatePanChange = async (panKnob: HTMLElement, value: string) => 
 
 // Mock component factories
 export const createMockWidgets = () => ({
-  Dialog: ({ children, open, title }: any) => 
-    open ? <div data-testid="dialog">{title}{children}</div> : null,
-  HueInput: ({ value, onChange }: any) => 
-    <input data-testid="hue-input" value={value} onChange={(e) => onChange(Number(e.target.value))} />,
-  SelectSpinBox: ({ value, onChange, options }: any) => 
-    <select data-testid="select-spinbox" value={value} onChange={(e) => onChange(e.target.value)}>
-      {options?.map((opt: any) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-    </select>,
-  Knob: ({ value, onChange, title, ...props }: any) => 
-    <input data-testid="knob" type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} title={title} {...props} />,
-  Meter: ({ percent, ...props }: any) => 
-    <div data-testid="meter" aria-valuenow={percent} {...props} />,
+  Dialog: ({ children, open, title }: any) =>
+    open ? (
+      <div data-testid="dialog">
+        {title}
+        {children}
+      </div>
+    ) : null,
+  HueInput: ({ value, onChange }: any) => (
+    <input
+      data-testid="hue-input"
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+    />
+  ),
+  SelectSpinBox: ({ value, onChange, options }: any) => (
+    <select
+      data-testid="select-spinbox"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    >
+      {options?.map((opt: any) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  ),
+  Knob: ({ value, onChange, title, ...props }: any) => (
+    <input
+      data-testid="knob"
+      type="range"
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+      title={title}
+      {...props}
+    />
+  ),
+  Meter: ({ percent, ...props }: any) => (
+    <div data-testid="meter" aria-valuenow={percent} {...props} />
+  ),
   SortableList: ({ children, onSortEnd, onStart, onEnd }: any) => {
     const handleSort = () => {
       if (onSortEnd) onSortEnd();
       if (onEnd) onEnd();
     };
-    return <div data-testid="sortable-list" onMouseDown={onStart} onMouseUp={handleSort}>{children}</div>;
+    return (
+      <div
+        data-testid="sortable-list"
+        onMouseDown={onStart}
+        onMouseUp={handleSort}
+      >
+        {children}
+      </div>
+    );
   },
-  SortableListItem: ({ children, index }: any) => 
-    <div data-testid={`sortable-item-${index}`}>{children}</div>,
+  SortableListItem: ({ children, index }: any) => (
+    <div data-testid={`sortable-item-${index}`}>{children}</div>
+  ),
 });
 
 export const createMockComponentsOld = () => ({
-  FXComponent: ({ track }: any) => 
-    <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>,
-  TrackVolumeSlider: ({ track, ...props }: any) => 
-    <input data-testid={`volume-slider-${track.id}`} type="range" value={track.volume?.value || track.volume || 0} {...props} />,
+  FXComponent: ({ track }: any) => (
+    <div data-testid={`fx-component-${track.id}`}>FX for {track.name}</div>
+  ),
+  TrackVolumeSlider: ({ track, ...props }: any) => (
+    <input
+      data-testid={`volume-slider-${track.id}`}
+      type="range"
+      value={track.volume?.value || track.volume || 0}
+      {...props}
+    />
+  ),
 });
 
 export const createMockUtils = () => ({
   formatPanning: (value: number, _short?: boolean) => {
     if (value === 0) return 'C';
-    return value > 0 ? `R${Math.abs(value * 100)}` : `L${Math.abs(value * 100)}`;
+    return value > 0
+      ? `R${Math.abs(value * 100)}`
+      : `L${Math.abs(value * 100)}`;
   },
   getVolumeGradient: vi.fn(() => '#00ff00'),
   hslToHex: (_h: number, _s: number, _l: number) => '#ff0000',
@@ -304,24 +359,24 @@ export const createMockUtils = () => ({
 export const createBasicRenderingTests = (renderFunction: () => void) => ({
   'should render all track channels': () => {
     renderFunction();
-    
+
     expect(screen.getByTestId('mixer-channel-track-1')).toBeInTheDocument();
     expect(screen.getByTestId('mixer-channel-track-2')).toBeInTheDocument();
   },
-  
+
   'should render master channel': () => {
     renderFunction();
-    
+
     const masterChannel = screen.getByTestId('mixer-master-channel');
     expect(masterChannel).toBeInTheDocument();
   },
-  
+
   'should show track colors': () => {
     renderFunction();
-    
+
     const channel1 = screen.getByTestId('mixer-channel-track-1');
     const channel2 = screen.getByTestId('mixer-channel-track-2');
-    
+
     expect(channel1).toHaveStyle({ borderTop: '2px solid #ff6b6b' });
     expect(channel2).toHaveStyle({ borderTop: '2px solid #4ecdc4' });
   },
@@ -338,7 +393,10 @@ export const assertPanControl = (trackId: string, expectedValue: string) => {
   expect(panKnob).toHaveValue(expectedValue);
 };
 
-export const assertButtonState = (buttonId: string, shouldBeActive: boolean) => {
+export const assertButtonState = (
+  buttonId: string,
+  shouldBeActive: boolean,
+) => {
   const button = screen.getByTestId(buttonId);
   if (shouldBeActive) {
     expect(button).toHaveClass('active');

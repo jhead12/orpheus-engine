@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Track, Effect } from '@orpheus/types/core';
+import { Track, Effect, TrackType, AutomationMode } from '@orpheus/types/core';
 
 interface MeterData {
   left: number;
@@ -24,7 +24,11 @@ export interface MixerContextType {
   setTrackArmed: (trackId: string, armed: boolean) => void;
   addEffect: (trackId: string, effectType: string) => void;
   removeEffect: (trackId: string, effectId: string) => void;
-  updateEffect: (trackId: string, effectId: string, parameters: Record<string, number>) => void;
+  updateEffect: (
+    trackId: string,
+    effectId: string,
+    parameters: Record<string, number>
+  ) => void;
   reorderEffects: (trackId: string, effectId: string, newIndex: number) => void;
   meters: Record<string, MeterData>;
   isVisible: boolean;
@@ -33,9 +37,14 @@ export interface MixerContextType {
   muteAllTracks: () => void;
   unmuteAllTracks: () => void;
   resetAllLevels: () => void;
+  addTrack: (type?: TrackType, name?: string) => string;
+  removeTrack: (trackId: string) => void;
+  duplicateTrack: (trackId: string) => string;
 }
 
-export const MixerContext = createContext<MixerContextType | undefined>(undefined);
+export const MixerContext = createContext<MixerContextType | undefined>(
+  undefined,
+);
 
 export const useMixer = () => {
   const context = useContext(MixerContext);
@@ -56,139 +65,268 @@ export const MixerProvider: React.FC<MixerProviderProps> = ({ children }) => {
   const [masterMute, setMasterMute] = useState(false);
   const [mixerHeight, setMixerHeight] = useState(300);
   const [meters, setMeters] = useState<Record<string, MeterData>>({
-    master: { left: 0, right: 0, peak: 0 }
+    master: { left: 0, right: 0, peak: 0 },
   });
   const [isVisible, setIsVisible] = useState(true);
   const [soloedTracks, setSoloedTracks] = useState<string[]>([]);
 
   const setTrackVolume = (trackId: string, volume: number) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId 
-        ? { 
-            ...track, 
-            volume: { 
-              value: volume, 
-              isAutomated: track.volume.isAutomated 
-            } 
-          } 
-        : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              volume: {
+                value: volume,
+                isAutomated: track.volume.isAutomated,
+              },
+            }
+          : track,
+      ),
+    );
   };
 
   const setTrackPan = (trackId: string, pan: number) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId 
-        ? { 
-            ...track, 
-            pan: { 
-              value: pan, 
-              isAutomated: track.pan.isAutomated 
-            } 
-          } 
-        : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              pan: {
+                value: pan,
+                isAutomated: track.pan.isAutomated,
+              },
+            }
+          : track,
+      ),
+    );
   };
 
   const setTrackMute = (trackId: string, mute: boolean) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, mute } : track
-    ));
+    setTracks(
+      tracks.map((track) => (track.id === trackId ? { ...track, mute } : track)),
+    );
   };
 
   const setTrackSolo = (trackId: string, solo: boolean) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, solo } : track
-    ));
-    setSoloedTracks(prev => 
-      solo 
-        ? [...prev, trackId]
-        : prev.filter(id => id !== trackId)
+    setTracks(
+      tracks.map((track) => (track.id === trackId ? { ...track, solo } : track)),
+    );
+    setSoloedTracks((prev) =>
+      solo ? [...prev, trackId] : prev.filter((id) => id !== trackId),
     );
   };
 
   const setTrackArmed = (trackId: string, armed: boolean) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId ? { ...track, armed } : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId ? { ...track, armed } : track,
+      ),
+    );
   };
 
   const addEffect = (trackId: string, effectType: string) => {
-    setTracks(tracks.map(track => {
-      if (track.id === trackId) {
-        const effect: Effect = {
-          id: `${effectType}-${Date.now()}`,
-          name: effectType.charAt(0).toUpperCase() + effectType.slice(1),
-          type: 'native',
-          enabled: true,
-          parameters: {}
-        };
-        return {
-          ...track,
-          effects: track.effects ? [...track.effects, effect] : [effect]
-        };
-      }
-      return track;
-    }));
+    setTracks(
+      tracks.map((track) => {
+        if (track.id === trackId) {
+          const effect: Effect = {
+            id: `${effectType}-${Date.now()}`,
+            name: effectType.charAt(0).toUpperCase() + effectType.slice(1),
+            type: 'native',
+            enabled: true,
+            parameters: {},
+          };
+          return {
+            ...track,
+            effects: track.effects ? [...track.effects, effect] : [effect],
+          };
+        }
+        return track;
+      }),
+    );
   };
 
   const removeEffect = (trackId: string, effectId: string) => {
-    setTracks(tracks.map(track => 
-      track.id === trackId 
-        ? { 
-            ...track, 
-            effects: track.effects ? track.effects.filter(e => e.id !== effectId) : [] 
-          }
-        : track
-    ));
+    setTracks(
+      tracks.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              effects: track.effects
+                ? track.effects.filter((e) => e.id !== effectId)
+                : [],
+            }
+          : track,
+      ),
+    );
   };
 
-  const updateEffect = (trackId: string, effectId: string, parameters: Record<string, number>) => {
-    setTracks(tracks.map(track => {
-      if (track.id === trackId && track.effects) {
-        return {
-          ...track,
-          effects: track.effects.map(effect =>
-            effect.id === effectId
-              ? { ...effect, parameters: { ...effect.parameters, ...parameters } }
-              : effect
-          )
-        };
-      }
-      return track;
-    }));
-  };
-
-  const reorderEffects = (trackId: string, effectId: string, newIndex: number) => {
-    setTracks(tracks.map(track => {
-      if (track.id === trackId && track.effects) {
-        const effects = [...track.effects];
-        const oldIndex = effects.findIndex(e => e.id === effectId);
-        if (oldIndex !== -1) {
-          const [effect] = effects.splice(oldIndex, 1);
-          effects.splice(newIndex, 0, effect);
-          return { ...track, effects };
+  const updateEffect = (
+    trackId: string,
+    effectId: string,
+    parameters: Record<string, number>,
+  ) => {
+    setTracks(
+      tracks.map((track) => {
+        if (track.id === trackId && track.effects) {
+          return {
+            ...track,
+            effects: track.effects.map((effect) =>
+              effect.id === effectId
+                ? {
+                    ...effect,
+                    parameters: { ...effect.parameters, ...parameters },
+                  }
+                : effect,
+            ),
+          };
         }
-      }
-      return track;
-    }));
+        return track;
+      }),
+    );
+  };
+
+  const reorderEffects = (
+    trackId: string,
+    effectId: string,
+    newIndex: number,
+  ) => {
+    setTracks(
+      tracks.map((track) => {
+        if (track.id === trackId && track.effects) {
+          const effects = [...track.effects];
+          const oldIndex = effects.findIndex((e) => e.id === effectId);
+          if (oldIndex !== -1) {
+            const [effect] = effects.splice(oldIndex, 1);
+            effects.splice(newIndex, 0, effect);
+            return { ...track, effects };
+          }
+        }
+        return track;
+      }),
+    );
   };
 
   const muteAllTracks = () => {
-    setTracks(tracks.map(track => ({ ...track, mute: true })));
+    setTracks(tracks.map((track) => ({ ...track, mute: true })));
   };
 
   const unmuteAllTracks = () => {
-    setTracks(tracks.map(track => ({ ...track, mute: false })));
+    setTracks(tracks.map((track) => ({ ...track, mute: false })));
   };
 
   const resetAllLevels = () => {
-    setMeters(prev => {
+    setMeters((prev) => {
       const newMeters = { ...prev };
-      Object.keys(newMeters).forEach(key => {
+      Object.keys(newMeters).forEach((key) => {
         newMeters[key] = { left: 0, right: 0, peak: 0 };
       });
       return newMeters;
     });
+  };
+
+  const addTrack = (
+    type: TrackType = TrackType.Audio,
+    name?: string,
+  ): string => {
+    const trackTypeStr = type === TrackType.Midi ? 'MIDI' : 'Audio';
+    const trackNumber = tracks.filter((t) => t.type === type).length + 1;
+    const trackName = name || `${trackTypeStr} Track ${trackNumber}`;
+
+    const newTrack: Track = {
+      id: `track-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: trackName,
+      type,
+      color: `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, '0')}`,
+      mute: false,
+      solo: false,
+      armed: false,
+      volume: {
+        value: 1,
+        isAutomated: false,
+      },
+      pan: {
+        value: 0,
+        isAutomated: false,
+      },
+      automation: false,
+      automationMode: AutomationMode.Read,
+      automationLanes: [],
+      clips: [],
+      effects: [],
+      fx: {
+        preset: null,
+        selectedEffectIndex: 0,
+        effects: [],
+      },
+      inputs: [
+        {
+          id: 'input-1',
+          name: 'Input 1',
+          active: true,
+        },
+        {
+          id: 'input-2',
+          name: 'Input 2',
+          active: false,
+        },
+      ],
+      outputs: [
+        {
+          id: 'output-main',
+          name: 'Main Out',
+          active: true,
+        },
+      ],
+    };
+
+    setTracks((prev) => [...prev, newTrack]);
+
+    // Initialize meters for the new track
+    setMeters((prev) => ({
+      ...prev,
+      [newTrack.id]: { left: 0, right: 0, peak: 0 },
+    }));
+
+    return newTrack.id;
+  };
+
+  const removeTrack = (trackId: string) => {
+    setTracks((prev) => prev.filter((track) => track.id !== trackId));
+    setMeters((prev) => {
+      const newMeters = { ...prev };
+      delete newMeters[trackId];
+      return newMeters;
+    });
+    setSoloedTracks((prev) => prev.filter((id) => id !== trackId));
+  };
+
+  const duplicateTrack = (trackId: string): string => {
+    const originalTrack = tracks.find((track) => track.id === trackId);
+    if (!originalTrack) {
+      throw new Error(`Track with id ${trackId} not found`);
+    }
+
+    const duplicatedTrack: Track = {
+      ...originalTrack,
+      id: `track-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: `${originalTrack.name} (Copy)`,
+      clips: [], // Start with empty clips for the duplicated track
+      solo: false, // Ensure duplicated track doesn't inherit solo state
+      armed: false, // Ensure duplicated track starts unarmed
+    };
+
+    setTracks((prev) => [...prev, duplicatedTrack]);
+
+    // Initialize meters for the duplicated track
+    setMeters((prev) => ({
+      ...prev,
+      [duplicatedTrack.id]: { left: 0, right: 0, peak: 0 },
+    }));
+
+    return duplicatedTrack.id;
   };
 
   const value = {
@@ -216,13 +354,14 @@ export const MixerProvider: React.FC<MixerProviderProps> = ({ children }) => {
     soloedTracks,
     muteAllTracks,
     unmuteAllTracks,
-    resetAllLevels
+    resetAllLevels,
+    addTrack,
+    removeTrack,
+    duplicateTrack,
   };
 
   return (
-    <MixerContext.Provider value={value}>
-      {children}
-    </MixerContext.Provider>
+    <MixerContext.Provider value={value}>{children}</MixerContext.Provider>
   );
 };
 

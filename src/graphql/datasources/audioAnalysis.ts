@@ -1,4 +1,4 @@
-import { AudioAnalysisResults } from "../../types/audio";
+import { AudioAnalysisResults } from '../../types/audio';
 
 export class AudioAnalysisAPI {
   async analyze(audioBuffer: AudioBuffer): Promise<AudioAnalysisResults> {
@@ -21,7 +21,7 @@ export class AudioAnalysisAPI {
     const sampleRate = audioBuffer.sampleRate;
     const frequencies = Array.from(
       { length: analyzer.frequencyBinCount },
-      (_, i) => (i * sampleRate) / fftSize
+      (_, i) => (i * sampleRate) / fftSize,
     );
 
     return {

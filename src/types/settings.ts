@@ -2,16 +2,16 @@
 
 // Preference Types
 export interface Preferences {
-  theme: "light" | "dark" | "system";
+  theme: 'light' | 'dark' | 'system';
   color:
-    | "rose"
-    | "violet"
-    | "azure"
-    | "aqua"
-    | "olive"
-    | "citrus"
-    | "crimson"
-    | "mono";
+    | 'rose'
+    | 'violet'
+    | 'azure'
+    | 'aqua'
+    | 'olive'
+    | 'citrus'
+    | 'crimson'
+    | 'mono';
   audio: AudioPreferences;
   midi: MIDIPreferences;
   interface: InterfacePreferences;
@@ -36,7 +36,7 @@ export interface MIDIPreferences {
 }
 
 export interface InterfacePreferences {
-  timeDisplayFormat: "measures" | "time" | "frames";
+  timeDisplayFormat: 'measures' | 'time' | 'frames';
   showMasterTrack: boolean;
   showAutomationLanes: boolean;
   snapToGrid: boolean;
@@ -60,11 +60,11 @@ export interface PluginPreferences {
 
 // Audio Analysis Types
 export enum AudioAnalysisType {
-  Waveform = "waveform",
-  Spectrum = "spectrum",
-  Spectrogram = "spectrogram",
-  MFCC = "mfcc",
-  ChromaFeatures = "chroma",
+  Waveform = 'waveform',
+  Spectrum = 'spectrum',
+  Spectrogram = 'spectrogram',
+  MFCC = 'mfcc',
+  ChromaFeatures = 'chroma',
 }
 
 export interface AnalysisResults {

@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { 
-  Box, 
-  Tab, 
-  Tabs, 
-  Typography, 
-  Button, 
-  Dialog, 
+import {
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+  Button,
+  Dialog,
   DialogActions,
-  DialogContent, 
-  DialogTitle 
+  DialogContent,
+  DialogTitle,
 } from '@mui/material';
 import { SettingsContext } from '../../services/settings';
 import GeneralSettings from './tabs/GeneralSettings.js';
@@ -46,12 +46,12 @@ interface SettingsPanelProps {
   initialTab?: number;
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ 
+const SettingsPanel: React.FC<SettingsPanelProps> = ({
   open,
   onClose,
-  initialTab = 0
+  initialTab = 0,
 }) => {
-  const { resetSettings } = useContext(SettingsContext)!;
+  const { resetSettings = () => {} } = useContext(SettingsContext) || {};
   const [tabValue, setTabValue] = useState(initialTab);
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
@@ -82,7 +82,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
         aria-labelledby="settings-dialog-title"
       >
         <DialogTitle id="settings-dialog-title">Settings</DialogTitle>
-        
+
         <Tabs
           value={tabValue}
           onChange={handleChangeTab}
@@ -90,35 +90,55 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
           variant="scrollable"
           scrollButtons="auto"
         >
-          <Tab label="General" id="settings-tab-0" aria-controls="settings-tabpanel-0" />
-          <Tab label="Audio" id="settings-tab-1" aria-controls="settings-tabpanel-1" />
-          <Tab label="MIDI" id="settings-tab-2" aria-controls="settings-tabpanel-2" />
-          <Tab label="Interface" id="settings-tab-3" aria-controls="settings-tabpanel-3" />
-          <Tab label="Plugins" id="settings-tab-4" aria-controls="settings-tabpanel-4" />
+          <Tab
+            label="General"
+            id="settings-tab-0"
+            aria-controls="settings-tabpanel-0"
+          />
+          <Tab
+            label="Audio"
+            id="settings-tab-1"
+            aria-controls="settings-tabpanel-1"
+          />
+          <Tab
+            label="MIDI"
+            id="settings-tab-2"
+            aria-controls="settings-tabpanel-2"
+          />
+          <Tab
+            label="Interface"
+            id="settings-tab-3"
+            aria-controls="settings-tabpanel-3"
+          />
+          <Tab
+            label="Plugins"
+            id="settings-tab-4"
+            aria-controls="settings-tabpanel-4"
+          />
         </Tabs>
-        
+
         <DialogContent dividers>
           <TabPanel value={tabValue} index={0}>
             <GeneralSettings />
           </TabPanel>
-          
+
           <TabPanel value={tabValue} index={1}>
             <AudioSettings />
           </TabPanel>
-          
+
           <TabPanel value={tabValue} index={2}>
             <MIDISettings />
           </TabPanel>
-          
+
           <TabPanel value={tabValue} index={3}>
             <InterfaceSettings />
           </TabPanel>
-          
+
           <TabPanel value={tabValue} index={4}>
             <PluginSettings />
           </TabPanel>
         </DialogContent>
-        
+
         <DialogActions>
           <Button onClick={handleReset} color="error">
             Reset All Settings
@@ -128,7 +148,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <Dialog
         open={confirmResetOpen}
         onClose={handleCancelReset}
@@ -137,7 +157,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
         <DialogTitle id="reset-dialog-title">Reset Settings</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to reset all settings to their default values? This action cannot be undone.
+            Are you sure you want to reset all settings to their default values?
+            This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>

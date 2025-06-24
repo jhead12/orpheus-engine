@@ -1,6 +1,6 @@
-import { expect } from "vitest";
-import { chromium } from "playwright";
-import { toMatchImageSnapshot } from "jest-image-snapshot";
+import { expect } from 'vitest';
+import { chromium } from 'playwright';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -17,7 +17,7 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
   const allStyles = new Set<string>();
 
   // 1. Styled-components styles
-  document.querySelectorAll("style[data-styled]").forEach((style) => {
+  document.querySelectorAll('style[data-styled]').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -29,13 +29,13 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
           allStyles.add(rule.cssText);
         });
       } catch (e) {
-        console.warn("Could not access stylesheet rules");
+        console.warn('Could not access stylesheet rules');
       }
     }
   });
 
   // 3. Inline styles and other style tags
-  document.querySelectorAll("style:not([data-styled])").forEach((style) => {
+  document.querySelectorAll('style:not([data-styled])').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -68,7 +68,7 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
           }
 
           /* Component styles */
-          ${Array.from(allStyles).join("\n")}
+          ${Array.from(allStyles).join('\n')}
         </style>
       </head>
       <body>
@@ -83,7 +83,7 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
   await page.setContent(html);
 
   // Wait for fonts to load
-  await page.waitForLoadState("domcontentloaded");
+  await page.waitForLoadState('domcontentloaded');
   await page.evaluate(() => document.fonts.ready);
 
   // Wait for styles to be applied and any dynamic content
@@ -92,7 +92,7 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
   // Wait for the side panel element to be visible and any transitions to complete
   await page.waitForSelector('[data-testid="side-panel"]', {
     timeout: 5000,
-    state: "visible",
+    state: 'visible',
   });
 
   // Additional wait for any CSS transitions to complete
@@ -108,7 +108,7 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
       }
 
       // Wait for any ongoing transitions
-      element.addEventListener("transitionend", () => resolve(null), {
+      element.addEventListener('transitionend', () => resolve(null), {
         once: true,
       });
       // Fallback if no transition is running
@@ -118,9 +118,9 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
 
   // Take the screenshot with consistent settings
   const screenshot = await page.screenshot({
-    type: "png",
-    animations: "disabled",
-    scale: "css",
+    type: 'png',
+    animations: 'disabled',
+    scale: 'css',
     timeout: 5000,
   });
 
@@ -131,13 +131,13 @@ export async function takeScreenshot(element: HTMLElement, _name: string) {
 export async function expectScreenshot(element: HTMLElement, name: string) {
   const screenshot = await takeScreenshot(element, name);
   expect(screenshot).toMatchImageSnapshot({
-    customSnapshotsDir: "__snapshots__/screenshots",
-    customDiffDir: "__snapshots__/diffs",
+    customSnapshotsDir: '__snapshots__/screenshots',
+    customDiffDir: '__snapshots__/diffs',
     customSnapshotIdentifier: name,
     failureThreshold: 0.02, // Allow 2% difference for more stability
-    failureThresholdType: "percent",
+    failureThresholdType: 'percent',
     blur: 0.5, // Apply slight blur to reduce impact of anti-aliasing differences
-    comparisonMethod: "ssim", // Use structural similarity comparison
+    comparisonMethod: 'ssim', // Use structural similarity comparison
     allowSizeMismatch: true, // Allow slight size mismatches
   });
 }

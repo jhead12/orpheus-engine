@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# Pre-commit hook for Orpheus Engine
+# This script runs before each commit to ensure code quality
+
+echo "🚀 Orpheus Engine - Pre-commit checks"
+echo "======================================"
+
+# Allow skipping checks with environment variable
+if [ "$SKIP_QUALITY_CHECKS" = "1" ]; then
+    echo "⚠️ Quality checks skipped due to SKIP_QUALITY_CHECKS=1"
+    exit 0
+fi
+
+# Check for SKIP_QUALITY_CHECKS=1 in the root .env file
+if [ -f "../../.env" ] && grep -q "SKIP_QUALITY_CHECKS=1" "../../.env"; then
+    echo "⚠️ Quality checks skipped due to SKIP_QUALITY_CHECKS=1 in .env file"
+    exit 0
+fi
+
+# Check if we're in the right directory
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: Not in a Node.js project directory"
+    exit 1
+fi
+
+# Get list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$')
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "ℹ️ No JavaScript/TypeScript files staged for commit"
+    exit 0
+fi
+
+echo "📁 Staged files:"
+echo "$STAGED_FILES"
+echo ""
+
+# Run Prettier on staged files
+echo "🎨 Running Prettier..."
+echo "$STAGED_FILES" | xargs npx prettier --write
+if [ $? -ne 0 ]; then
+    echo "❌ Prettier failed"
+    exit 1
+fi
+
+# Run ESLint on staged files
+echo "🔧 Running ESLint..."
+echo "$STAGED_FILES" | xargs npx eslint --fix
+if [ $? -ne 0 ]; then
+    echo "❌ ESLint failed - please fix the errors above"
+    exit 1
+fi
+
+# Run TypeScript check
+echo "🔍 Running TypeScript check..."
+npm run typecheck
+if [ $? -ne 0 ]; then
+    echo "❌ TypeScript check failed"
+    exit 1
+fi
+
+# Add back any files that were formatted
+git add $STAGED_FILES
+
+echo "✅ Pre-commit checks passed!"
+echo "🎉 Ready to commit!"
+
+exit 0

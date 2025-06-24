@@ -1,13 +1,13 @@
-import { render, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
-import Scrollbar from "../Scrollbar";
+import { render, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
+import Scrollbar from '../Scrollbar';
 
-describe("Scrollbar", () => {
+describe('Scrollbar', () => {
   let targetEl: HTMLDivElement;
 
   beforeEach(() => {
     // Create target element with specific dimensions for testing
-    targetEl = document.createElement("div");
+    targetEl = document.createElement('div');
     Object.defineProperties(targetEl, {
       scrollWidth: { value: 1000, configurable: true },
       clientWidth: { value: 500, configurable: true },
@@ -24,29 +24,31 @@ describe("Scrollbar", () => {
     vi.clearAllMocks();
   });
 
-  it("renders without crashing", () => {
+  it('renders without crashing', () => {
     const { container } = render(<Scrollbar axis="y" targetEl={targetEl} />);
-    const scrollbar = container.querySelector(".scrollbar");
+    const scrollbar = container.querySelector('.scrollbar');
     expect(scrollbar).toBeInTheDocument();
   });
 
-  it("handles vertical scrolling", async () => {
+  it('handles vertical scrolling', async () => {
     const { container } = render(
-      <Scrollbar axis="y" targetEl={targetEl} style={{ height: "100px" }} />
+      <Scrollbar axis="y" targetEl={targetEl} style={{ height: '100px' }} />,
     );
 
-    const thumb = container.querySelector(".scrollbar-thumb") as HTMLElement;
+    const thumb = container.querySelector('.scrollbar-thumb') as HTMLElement;
     expect(thumb).toBeTruthy();
 
     // Set up initial position and mock scrollTo method
-    targetEl.scrollTo = vi.fn((options: ScrollToOptions | number, y?: number) => {
-      if (typeof options === "object" && options.top !== undefined) {
-        targetEl.scrollTop = options.top;
-      } else if (typeof options === "number" && y !== undefined) {
-        targetEl.scrollLeft = options;
-        targetEl.scrollTop = y;
-      }
-    }) as any;
+    targetEl.scrollTo = vi.fn(
+      (options: ScrollToOptions | number, y?: number) => {
+        if (typeof options === 'object' && options.top !== undefined) {
+          targetEl.scrollTop = options.top;
+        } else if (typeof options === 'number' && y !== undefined) {
+          targetEl.scrollLeft = options;
+          targetEl.scrollTop = y;
+        }
+      },
+    ) as any;
 
     // Initial mouse position
     fireEvent.mouseDown(thumb, {
@@ -72,23 +74,25 @@ describe("Scrollbar", () => {
     fireEvent.mouseUp(document);
   });
 
-  it("handles horizontal scrolling", async () => {
+  it('handles horizontal scrolling', async () => {
     const { container } = render(
-      <Scrollbar axis="x" targetEl={targetEl} style={{ width: "100px" }} />
+      <Scrollbar axis="x" targetEl={targetEl} style={{ width: '100px' }} />,
     );
 
-    const thumb = container.querySelector(".scrollbar-thumb") as HTMLElement;
+    const thumb = container.querySelector('.scrollbar-thumb') as HTMLElement;
     expect(thumb).toBeTruthy();
 
     // Set up initial position and mock scrollTo method
-    targetEl.scrollTo = vi.fn((options: ScrollToOptions | number, y?: number) => {
-      if (typeof options === "object" && options.left !== undefined) {
-        targetEl.scrollLeft = options.left;
-      } else if (typeof options === "number" && y !== undefined) {
-        targetEl.scrollLeft = options;
-        targetEl.scrollTop = y;
-      }
-    }) as any;
+    targetEl.scrollTo = vi.fn(
+      (options: ScrollToOptions | number, y?: number) => {
+        if (typeof options === 'object' && options.left !== undefined) {
+          targetEl.scrollLeft = options.left;
+        } else if (typeof options === 'number' && y !== undefined) {
+          targetEl.scrollLeft = options;
+          targetEl.scrollTop = y;
+        }
+      },
+    ) as any;
 
     // Initial mouse position
     fireEvent.mouseDown(thumb, {
@@ -114,10 +118,10 @@ describe("Scrollbar", () => {
     fireEvent.mouseUp(document);
   });
 
-  it("updates thumb position on target scroll", async () => {
+  it('updates thumb position on target scroll', async () => {
     const { container } = render(<Scrollbar axis="y" targetEl={targetEl} />);
 
-    const thumb = container.querySelector(".scrollbar-thumb") as HTMLDivElement;
+    const thumb = container.querySelector('.scrollbar-thumb') as HTMLDivElement;
     expect(thumb).toBeTruthy();
 
     // Wait for initial render and position calculation
@@ -150,29 +154,29 @@ describe("Scrollbar", () => {
     expect(Math.abs(actualMove - expectedThumbMove)).toBeLessThan(5); // Allow 5px tolerance
   });
 
-  it("applies custom styles", () => {
+  it('applies custom styles', () => {
     render(
       <Scrollbar
         axis="y"
         targetEl={targetEl}
-        style={{ backgroundColor: "red" }}
-        thumbStyle={{ backgroundColor: "blue" }}
-      />
+        style={{ backgroundColor: 'red' }}
+        thumbStyle={{ backgroundColor: 'blue' }}
+      />,
     );
 
     // Get scrollbar element
-    const scrollbar = document.querySelector(".scrollbar") as HTMLDivElement;
-    if (!scrollbar) throw new Error("Scrollbar element not found");
+    const scrollbar = document.querySelector('.scrollbar') as HTMLDivElement;
+    if (!scrollbar) throw new Error('Scrollbar element not found');
 
     // Get thumb element
-    const thumb = scrollbar.querySelector(".scrollbar-thumb") as HTMLDivElement;
-    if (!thumb) throw new Error("Thumb element not found");
+    const thumb = scrollbar.querySelector('.scrollbar-thumb') as HTMLDivElement;
+    if (!thumb) throw new Error('Thumb element not found');
 
     // Use getComputedStyle since colors are converted to RGB format
     const scrollbarStyle = window.getComputedStyle(scrollbar);
     const thumbStyle = window.getComputedStyle(thumb);
 
-    expect(scrollbarStyle.backgroundColor).toBe("rgb(255, 0, 0)");
-    expect(thumbStyle.backgroundColor).toBe("rgb(0, 0, 255)");
+    expect(scrollbarStyle.backgroundColor).toBe('rgb(255, 0, 0)');
+    expect(thumbStyle.backgroundColor).toBe('rgb(0, 0, 255)');
   });
 });

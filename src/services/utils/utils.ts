@@ -3,8 +3,8 @@ import {
   TimelinePosition,
   AutomationLane,
   AutomationLaneEnvelope,
-} from "../../types/core";
-import { sliceClip as sliceClipFn } from "./clipUtils";
+} from '../../types/core';
+import { sliceClip as sliceClipFn } from './clipUtils';
 
 // Re-export sliceClip from clipUtils
 export const sliceClip = sliceClipFn;
@@ -25,13 +25,13 @@ export interface TimelineEditorWindowScrollThresholds {
 // Audio file validation utilities
 export const isValidAudioTrackFileFormat = (type: string): boolean => {
   const audioFormats = [
-    "audio/wav",
-    "audio/mp3",
-    "audio/ogg",
-    "audio/m4ta",
-    "audio/flac",
-    "audio/aac",
-    "audio/webm",
+    'audio/wav',
+    'audio/mp3',
+    'audio/ogg',
+    'audio/m4ta',
+    'audio/flac',
+    'audio/aac',
+    'audio/webm',
   ];
   return audioFormats.includes(type);
 };
@@ -47,7 +47,7 @@ export const timelineEditorWindowScrollThresholds: TimelineEditorWindowScrollThr
 
 // Track file format validation
 export const isValidTrackFileFormat = (type: string): boolean => {
-  return isValidAudioTrackFileFormat(type) || type === "audio/midi";
+  return isValidAudioTrackFileFormat(type) || type === 'audio/midi';
 };
 
 // Volume utility functions
@@ -66,24 +66,29 @@ export const normalizedToVolume = (normalized: number): number => {
 };
 
 export const formatVolume = (volume: number): string => {
-  if (volume <= -60) return "-∞ dB";
+  if (volume <= -60) return '-∞ dB';
   return `${volume.toFixed(1)} dB`;
 };
 
-export const formatPanning = (panning: number, shortFormat?: boolean): string => {
-  if (panning === 0) return "C";
+export const formatPanning = (
+  panning: number,
+  shortFormat?: boolean,
+): string => {
+  if (panning === 0) return 'C';
   const percentage = Math.abs(panning * 100);
-  const formattedPercentage = shortFormat ? percentage.toFixed(0) : percentage.toFixed(1);
+  const formattedPercentage = shortFormat
+    ? percentage.toFixed(0)
+    : percentage.toFixed(1);
   if (panning < 0) return `L${formattedPercentage}`;
   return `R${formattedPercentage}`;
 };
 
 export const getVolumeGradient = (volume: number): string => {
   const normalized = volumeToNormalized(volume);
-  if (normalized < 0.1) return "linear-gradient(to right, #ff4444, #ff6666)";
-  if (normalized < 0.5) return "linear-gradient(to right, #ffaa44, #ffcc66)";
-  if (normalized < 0.8) return "linear-gradient(to right, #44ff44, #66ff66)";
-  return "linear-gradient(to right, #44ff44, #88ff44)";
+  if (normalized < 0.1) return 'linear-gradient(to right, #ff4444, #ff6666)';
+  if (normalized < 0.5) return 'linear-gradient(to right, #ffaa44, #ffcc66)';
+  if (normalized < 0.8) return 'linear-gradient(to right, #44ff44, #66ff66)';
+  return 'linear-gradient(to right, #44ff44, #88ff44)';
 };
 
 export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
@@ -100,7 +105,7 @@ export const clipAtPos = (position: TimelinePosition, clip: Clip): Clip => {
 export const scrollToAndAlign = (
   element: HTMLElement,
   scrollOptions: { top?: number; left?: number },
-  align: { top?: number; left?: number }
+  align: { top?: number; left?: number },
 ) => {
   const { top, left } = scrollOptions;
   const { clientHeight, clientWidth, scrollHeight, scrollWidth } = element;
@@ -120,7 +125,7 @@ export const scrollToAndAlign = (
 
 export const waitForScrollWheelStop = (
   element: HTMLElement,
-  callback: () => void
+  callback: () => void,
 ) => {
   let timeout: NodeJS.Timeout;
 
@@ -129,9 +134,9 @@ export const waitForScrollWheelStop = (
     timeout = setTimeout(callback, 150);
   };
 
-  element.addEventListener("scroll", handleScroll, { passive: true });
+  element.addEventListener('scroll', handleScroll, { passive: true });
 
-  return () => element.removeEventListener("scroll", handleScroll);
+  return () => element.removeEventListener('scroll', handleScroll);
 };
 
 export const removeAllClipOverlap = (clips: Clip[], newClip?: Clip): Clip[] => {
@@ -157,16 +162,16 @@ export const removeAllClipOverlap = (clips: Clip[], newClip?: Clip): Clip[] => {
 export const getLaneColor = (
   lanes: AutomationLane[],
   idx: number,
-  defaultColor: string
+  defaultColor: string,
 ): string => {
   if (!lanes || !lanes.length) return defaultColor;
   const visibleLanes = lanes.filter((lane) => lane.show);
-  return idx >= 0 && idx < visibleLanes.length ? defaultColor : "transparent";
+  return idx >= 0 && idx < visibleLanes.length ? defaultColor : 'transparent';
 };
 
 export const automatedValueAtPos = (
   position: TimelinePosition,
-  automationLane: AutomationLane
+  automationLane: AutomationLane,
 ): number => {
   if (
     !automationLane ||
@@ -188,7 +193,7 @@ export const automatedValueAtPos = (
 
   const positionTicks = position.toTicks();
   const nodes = automationLane.nodes.sort(
-    (a, b) => a.pos.toTicks() - b.pos.toTicks()
+    (a, b) => a.pos.toTicks() - b.pos.toTicks(),
   );
 
   // Find the nodes surrounding this position

@@ -16,7 +16,7 @@ const mockFn = () => () => {};
 // Basic audio utilities
 export function createAudioContext() {
   // Add test environment check
-  if (process.env.NODE_ENV === "test" || !globalThis.AudioContext) {
+  if (process.env.NODE_ENV === 'test' || !globalThis.AudioContext) {
     return new (class MockAudioContext {
       destination = {};
       sampleRate = 44100;
@@ -49,7 +49,7 @@ export const audioContext = createAudioContext();
 // Ensure audioContext is available for operations that require it
 export const getAudioContext = () => {
   if (!audioContext) {
-    throw new Error("AudioContext is not available in this environment");
+    throw new Error('AudioContext is not available in this environment');
   }
   return audioContext;
 };
@@ -61,7 +61,7 @@ export const getAudioContext = () => {
  * @returns Formatted panning string
  */
 export const formatPanning = (panning: number, detailed?: boolean): string => {
-  if (panning === 0) return "C";
+  if (panning === 0) return 'C';
   if (detailed) {
     if (panning < 0) return `L ${Math.abs(Math.round(panning * 100))}%`;
     return `R ${Math.round(panning * 100)}%`;
@@ -72,7 +72,7 @@ export const formatPanning = (panning: number, detailed?: boolean): string => {
 };
 
 export const audioBufferToBuffer = async (
-  audioBuffer: AudioBuffer
+  audioBuffer: AudioBuffer,
 ): Promise<Buffer> => {
   const numberOfChannels = audioBuffer.numberOfChannels;
   const length = audioBuffer.length;
@@ -80,10 +80,10 @@ export const audioBufferToBuffer = async (
   const buffer = Buffer.alloc(44 + length * numberOfChannels * 2);
 
   // Write WAV header
-  buffer.write("RIFF", 0);
+  buffer.write('RIFF', 0);
   buffer.writeUInt32LE(36 + length * numberOfChannels * 2, 4);
-  buffer.write("WAVE", 8);
-  buffer.write("fmt ", 12);
+  buffer.write('WAVE', 8);
+  buffer.write('fmt ', 12);
   buffer.writeUInt32LE(16, 16);
   buffer.writeUInt16LE(1, 20);
   buffer.writeUInt16LE(numberOfChannels, 22);
@@ -91,7 +91,7 @@ export const audioBufferToBuffer = async (
   buffer.writeUInt32LE(sampleRate * numberOfChannels * 2, 28);
   buffer.writeUInt16LE(numberOfChannels * 2, 32);
   buffer.writeUInt16LE(16, 34);
-  buffer.write("data", 36);
+  buffer.write('data', 36);
   buffer.writeUInt32LE(length * numberOfChannels * 2, 40);
 
   // Write audio data
@@ -100,7 +100,7 @@ export const audioBufferToBuffer = async (
     for (let channel = 0; channel < numberOfChannels; channel++) {
       const sample = Math.max(
         -1,
-        Math.min(1, audioBuffer.getChannelData(channel)[i])
+        Math.min(1, audioBuffer.getChannelData(channel)[i]),
       );
       const value = Math.floor(sample < 0 ? sample * 0x8000 : sample * 0x7fff);
       buffer.writeInt16LE(value, offset);
@@ -112,7 +112,7 @@ export const audioBufferToBuffer = async (
 };
 
 export const reverseAudio = async (
-  audioBuffer: AudioBuffer
+  audioBuffer: AudioBuffer,
 ): Promise<AudioBuffer> => {
   const numberOfChannels = audioBuffer.numberOfChannels;
   const length = audioBuffer.length;
@@ -122,7 +122,7 @@ export const reverseAudio = async (
   const reversedBuffer = context.createBuffer(
     numberOfChannels,
     length,
-    sampleRate
+    sampleRate,
   );
 
   for (let channel = 0; channel < numberOfChannels; channel++) {
@@ -154,7 +154,7 @@ export const analyzeAudio = async (audioBuffer: AudioBuffer): Promise<any> => {
 };
 
 export const normalizeAudio = async (
-  audioBuffer: AudioBuffer
+  audioBuffer: AudioBuffer,
 ): Promise<AudioBuffer> => {
   const numberOfChannels = audioBuffer.numberOfChannels;
   const length = audioBuffer.length;
@@ -164,7 +164,7 @@ export const normalizeAudio = async (
   const normalizedBuffer = context.createBuffer(
     numberOfChannels,
     length,
-    sampleRate
+    sampleRate,
   );
 
   for (let channel = 0; channel < numberOfChannels; channel++) {
@@ -191,7 +191,7 @@ export const normalizeAudio = async (
 
 export const generateWaveform = (
   audioBuffer: AudioBuffer,
-  width: number = 800
+  width: number = 800,
 ): number[] => {
   const channelData = audioBuffer.getChannelData(0); // Use first channel
   const blockSize = Math.floor(channelData.length / width);

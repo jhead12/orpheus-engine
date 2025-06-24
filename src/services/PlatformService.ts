@@ -31,7 +31,11 @@ export class PlatformService {
    */
   static isElectron(): boolean {
     // Check for process.versions.electron
-    if (typeof process !== 'undefined' && process.versions && process.versions.electron) {
+    if (
+      typeof process !== 'undefined' &&
+      process.versions &&
+      process.versions.electron
+    ) {
       return true;
     }
 
@@ -53,10 +57,12 @@ export class PlatformService {
    */
   static isBrowser(): boolean {
     if (this.isElectron()) return false;
-    
-    return typeof window !== 'undefined' && 
-           typeof navigator !== 'undefined' && 
-           !this.isPython();
+
+    return (
+      typeof window !== 'undefined' &&
+      typeof navigator !== 'undefined' &&
+      !this.isPython()
+    );
   }
 
   /**
@@ -64,14 +70,20 @@ export class PlatformService {
    */
   static isPython(): boolean {
     // Check for process.versions.python
-    if (typeof process !== 'undefined' && process.versions && process.versions.python) {
+    if (
+      typeof process !== 'undefined' &&
+      process.versions &&
+      process.versions.python
+    ) {
       return true;
     }
 
     // Check for Python environment variable
-    if (typeof process !== 'undefined' && 
-        process.env && 
-        process.env.PYTHON_BACKEND === 'true') {
+    if (
+      typeof process !== 'undefined' &&
+      process.env &&
+      process.env.PYTHON_BACKEND === 'true'
+    ) {
       return true;
     }
 
@@ -99,7 +111,12 @@ export class PlatformService {
   /**
    * Get browser type if running in browser
    */
-  static getBrowserType(): 'chrome' | 'firefox' | 'safari' | 'edge' | 'unknown' {
+  static getBrowserType():
+    | 'chrome'
+    | 'firefox'
+    | 'safari'
+    | 'edge'
+    | 'unknown' {
     if (!this.isBrowser() || typeof navigator === 'undefined') {
       return 'unknown';
     }
@@ -172,7 +189,10 @@ export class PlatformService {
     }
 
     // Check for File System Access API
-    if (typeof globalThis !== 'undefined' && 'showOpenFilePicker' in globalThis) {
+    if (
+      typeof globalThis !== 'undefined' &&
+      'showOpenFilePicker' in globalThis
+    ) {
       return true;
     }
 
@@ -184,8 +204,10 @@ export class PlatformService {
    * Check if Web Audio API is supported
    */
   static hasWebAudioSupport(): boolean {
-    return typeof AudioContext !== 'undefined' || 
-           typeof (globalThis as any).webkitAudioContext !== 'undefined';
+    return (
+      typeof AudioContext !== 'undefined' ||
+      typeof (globalThis as any).webkitAudioContext !== 'undefined'
+    );
   }
 
   /**
@@ -211,10 +233,13 @@ export class PlatformService {
    */
   static isMobile(): boolean {
     if (typeof navigator === 'undefined') return false;
-    
+
     const userAgent = navigator.userAgent.toLowerCase();
-    return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent) &&
-           !/ipad/i.test(userAgent); // Exclude tablets
+    return (
+      /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+        userAgent,
+      ) && !/ipad/i.test(userAgent)
+    ); // Exclude tablets
   }
 
   /**
@@ -222,7 +247,7 @@ export class PlatformService {
    */
   static isTablet(): boolean {
     if (typeof navigator === 'undefined') return false;
-    
+
     const userAgent = navigator.userAgent.toLowerCase();
     return /ipad|android.*tablet|kindle|playbook|silk/i.test(userAgent);
   }
@@ -238,8 +263,11 @@ export class PlatformService {
    * Get detailed platform information
    */
   static getPlatformDetails(): PlatformDetails {
-    const platform = this.isElectron() ? 'electron' : 
-                    this.isPython() ? 'python' : 'browser';
+    const platform = this.isElectron()
+      ? 'electron'
+      : this.isPython()
+        ? 'python'
+        : 'browser';
 
     return {
       platform,
@@ -258,7 +286,7 @@ export class PlatformService {
     if (typeof navigator === 'undefined') return undefined;
 
     const userAgent = navigator.userAgent;
-    
+
     if (userAgent.includes('Windows')) return 'Windows';
     if (userAgent.includes('Mac OS')) return 'macOS';
     if (userAgent.includes('Linux')) return 'Linux';
@@ -272,9 +300,10 @@ export class PlatformService {
    * Get environment configuration
    */
   static getEnvironmentConfig(): EnvironmentConfig {
-    const isDevelopment = typeof process !== 'undefined' && 
-                         process.env && 
-                         process.env.NODE_ENV === 'development';
+    const isDevelopment =
+      typeof process !== 'undefined' &&
+      process.env &&
+      process.env.NODE_ENV === 'development';
 
     return {
       isDevelopment,

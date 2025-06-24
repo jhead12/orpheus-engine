@@ -1,13 +1,15 @@
 # Visual Testing Agent
 
-This directory contains tools and utilities for automating visual regression tests for the OEW application.
+This directory contains tools and utilities for automating visual regression
+tests for the OEW application.
 
 ## Overview
 
 The Visual Testing Agent provides:
 
 1. **Test Generation** - Automated creation of visual tests for components
-2. **GIF Recording** - Ability to generate animated GIFs of component interactions
+2. **GIF Recording** - Ability to generate animated GIFs of component
+   interactions
 3. **CLI Interface** - Commands for running and managing visual tests
 
 ## Getting Started

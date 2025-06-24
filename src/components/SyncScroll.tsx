@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-} from "react";
+} from 'react';
 
 interface ScrollSyncContextType {
   registerPane: (pane: HTMLElement) => void;
@@ -24,7 +24,7 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
     if (e.target instanceof HTMLElement && !scrollingRef.current) {
       const element = e.target;
       const otherPanes = Array.from(panesRef.current).filter(
-        (p) => p !== element
+        (p) => p !== element,
       );
 
       scrollingRef.current = true;
@@ -60,10 +60,10 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
     return new ResizeObserver((entries: ResizeObserverEntry[]) => {
       for (const entry of entries) {
         const pane = Array.from(panesRef.current).find((p) =>
-          p.contains(entry.target)
+          p.contains(entry.target),
         );
         if (pane && !scrollingRef.current) {
-          const event = new Event("scroll");
+          const event = new Event('scroll');
           pane.dispatchEvent(event);
         }
       }
@@ -84,7 +84,7 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
         });
       }
     },
-    [observer, onScrollPane]
+    [observer, onScrollPane],
   );
 
   const unregisterPane = useCallback(
@@ -101,7 +101,7 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
         });
       }
     },
-    [observer]
+    [observer],
   );
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export function SyncScroll({ children }: React.PropsWithChildren) {
       registerPane,
       unregisterPane,
     }),
-    [registerPane, unregisterPane]
+    [registerPane, unregisterPane],
   );
 
   return (

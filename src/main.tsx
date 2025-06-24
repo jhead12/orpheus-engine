@@ -12,13 +12,13 @@ console.log('Root element found:', rootElement);
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   console.log('React root created, attempting to render...');
-  
+
   root.render(
     <React.StrictMode>
       <App />
-    </React.StrictMode>
+    </React.StrictMode>,
   );
-  
+
   console.log('React render called');
 } else {
   console.error('Root element not found!');

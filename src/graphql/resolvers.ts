@@ -1,10 +1,10 @@
-import { GraphQLScalarType } from "graphql";
-import { audioContext } from "@orpheus/services/utils/audio";
-import { TimelinePosition } from "@orpheus/types/core";
+import { GraphQLScalarType } from 'graphql';
+import { audioContext } from '@orpheus/services/utils/audio';
+import { TimelinePosition } from '@orpheus/types/core';
 
 const AudioBufferScalar = new GraphQLScalarType({
-  name: "AudioBuffer",
-  description: "AudioBuffer custom scalar type",
+  name: 'AudioBuffer',
+  description: 'AudioBuffer custom scalar type',
   serialize(value: unknown) {
     const audioBuffer = value as AudioBuffer;
     // Convert AudioBuffer to a format that can be sent over the wire
@@ -25,7 +25,7 @@ const AudioBufferScalar = new GraphQLScalarType({
     const buffer = audioContext.createBuffer(
       value.numberOfChannels,
       value.length,
-      value.sampleRate
+      value.sampleRate,
     );
     value.channels.forEach((channel: Float32Array, i: number) => {
       buffer.copyToChannel(Float32Array.from(channel), i);
@@ -35,8 +35,8 @@ const AudioBufferScalar = new GraphQLScalarType({
 });
 
 const TimelinePositionScalar = new GraphQLScalarType({
-  name: "TimelinePosition",
-  description: "TimelinePosition custom scalar type",
+  name: 'TimelinePosition',
+  description: 'TimelinePosition custom scalar type',
   serialize(value: any) {
     return {
       bar: value.bar,
@@ -66,21 +66,21 @@ export const resolvers = {
     clips: async (
       _: any,
       { trackId }: { trackId: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.clips.getByTrackId(trackId);
     },
     automationLane: async (
       _: any,
       { id }: { id: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationLanes.get(id);
     },
     automationLanes: async (
       _: any,
       { trackId }: { trackId: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationLanes.getByTrackId(trackId);
     },
@@ -90,14 +90,14 @@ export const resolvers = {
     effects: async (
       _: any,
       { trackId }: { trackId: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.effects.getByTrackId(trackId);
     },
     fxChainPreset: async (
       _: any,
       { id }: { id: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.fxChainPresets.get(id);
     },
@@ -107,7 +107,7 @@ export const resolvers = {
     audioAnalysis: async (
       _: any,
       { clipId }: { clipId: string },
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       const clip = await dataSources.clips.get(clipId);
       if (!clip.audio?.audioBuffer) {
@@ -131,7 +131,7 @@ export const resolvers = {
     createClip: async (
       _: any,
       { trackId, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.clips.create(trackId, input);
     },
@@ -145,14 +145,14 @@ export const resolvers = {
     createAutomationLane: async (
       _: any,
       { trackId, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationLanes.create(trackId, input);
     },
     updateAutomationLane: async (
       _: any,
       { id, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationLanes.update(id, input);
     },
@@ -163,14 +163,14 @@ export const resolvers = {
     addAutomationNode: async (
       _: any,
       { laneId, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationNodes.create(laneId, input);
     },
     updateAutomationNode: async (
       _: any,
       { id, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.automationNodes.update(id, input);
     },
@@ -181,7 +181,7 @@ export const resolvers = {
     addEffect: async (
       _: any,
       { trackId, input }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.effects.create(trackId, input);
     },
@@ -195,14 +195,14 @@ export const resolvers = {
     createFXChainPreset: async (
       _: any,
       { name, effects }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.fxChainPresets.create({ name, effects });
     },
     updateFXChainPreset: async (
       _: any,
       { id, name, effects }: any,
-      { dataSources }: any
+      { dataSources }: any,
     ) => {
       return dataSources.fxChainPresets.update(id, { name, effects });
     },

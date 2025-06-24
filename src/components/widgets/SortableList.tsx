@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 // Define WindowAutoScrollThresholds here to avoid import issues
 export interface WindowAutoScrollThresholds {
@@ -37,7 +37,7 @@ interface SortableListProps {
     thresholds: WindowAutoScrollThresholds;
   };
   cancel?: string;
-  direction?: "horizontal" | "vertical";
+  direction?: 'horizontal' | 'vertical';
   onSortUpdate: (data: SortData) => void;
   onStart?: (event: React.MouseEvent, data: SortData) => void;
   onEnd: (event: MouseEvent, data: SortData) => void;
@@ -69,10 +69,10 @@ export const SortableList: React.FC<SortableListProps> = ({
       }
 
       // Find closest sortable item
-      const item = (e.target as HTMLElement).closest("[data-index]");
+      const item = (e.target as HTMLElement).closest('[data-index]');
       if (!item) return;
 
-      const sourceIndex = parseInt((item as HTMLElement).dataset.index || "-1");
+      const sourceIndex = parseInt((item as HTMLElement).dataset.index || '-1');
       if (sourceIndex === -1) return;
 
       // Set up initial drag state
@@ -94,11 +94,11 @@ export const SortableList: React.FC<SortableListProps> = ({
       if (!mouseDownRef.current || !dragItemRef.current) return;
 
       // Calculate position and determine edge index
-      const currentIndex = parseInt(dragItemRef.current.dataset.index || "-1");
+      const currentIndex = parseInt(dragItemRef.current.dataset.index || '-1');
       const y = e.clientY;
 
       // Find items and calculate positions
-      const items = Array.from(listElement.querySelectorAll("[data-index]"));
+      const items = Array.from(listElement.querySelectorAll('[data-index]'));
       const destIndex = items.findIndex((item) => {
         const rect = item.getBoundingClientRect();
         const midpoint = rect.top + rect.height / 2;
@@ -110,7 +110,7 @@ export const SortableList: React.FC<SortableListProps> = ({
       // Call onSortUpdate with the updated edge index
       onSortUpdate({
         sourceIndex: currentIndex,
-        edgeIndex: edgeIndex,
+        edgeIndex,
       });
     };
 
@@ -118,10 +118,10 @@ export const SortableList: React.FC<SortableListProps> = ({
     const handleMouseUp = (e: MouseEvent) => {
       if (!mouseDownRef.current || !dragItemRef.current) return;
 
-      const sourceIndex = parseInt(dragItemRef.current.dataset.index || "-1");
+      const sourceIndex = parseInt(dragItemRef.current.dataset.index || '-1');
 
       // Calculate destination index
-      const items = Array.from(listElement.querySelectorAll("[data-index]"));
+      const items = Array.from(listElement.querySelectorAll('[data-index]'));
       const y = e.clientY;
 
       const destIndex = items.findIndex((item) => {
@@ -152,14 +152,14 @@ export const SortableList: React.FC<SortableListProps> = ({
       if (autoScroll) {
         // using the thresholds from props
         const thresholds = autoScroll.thresholds;
-        console.log("Setting up auto-scroll with thresholds", thresholds);
+        console.log('Setting up auto-scroll with thresholds', thresholds);
       }
     };
 
     // Set up event listeners
-    listElement.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    listElement.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
 
     // Initialize auto-scroll if available
     if (autoScroll) {
@@ -168,9 +168,9 @@ export const SortableList: React.FC<SortableListProps> = ({
 
     // Clean up event listeners
     return () => {
-      listElement.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      listElement.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [autoScroll, cancel, onEnd, onSortUpdate, onStart]);
 

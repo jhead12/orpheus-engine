@@ -1,6 +1,6 @@
 /**
  * AudioSearch Component
- * 
+ *
  * A searchable interface for audio content that integrates with the backend
  * audio search API. It allows users to search through audio content using natural
  * language and displays the results with confidence scores and timestamps.
@@ -18,16 +18,17 @@ interface AudioSearchProps {
 
 /**
  * AudioSearch Component
- * 
+ *
  * Provides a user interface for searching audio content and displaying results
  * with confidence scores and timestamps.
  */
 const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
   // State for the search query input
   const [queryInput, setQueryInput] = useState('');
-  
+
   // Pull in shared audio search state from context
-  const { results, isSearching, error, search, selectResult } = useAudioSearch();
+  const { results, isSearching, error, search, selectResult } =
+    useAudioSearch();
 
   /**
    * Initiate a search when the user submits the query
@@ -81,8 +82,8 @@ const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
             className="search-input"
             aria-label="Search audio content"
           />
-          <button 
-            onClick={handleSearch} 
+          <button
+            onClick={handleSearch}
             disabled={isSearching || !queryInput.trim()}
             className="search-button"
             aria-label="Submit search"
@@ -91,15 +92,19 @@ const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
           </button>
         </div>
       </div>
-      
+
       <div className="audio-search-results">
-        {error && <div className="error-message" role="alert">{error}</div>}
-        
+        {error && (
+          <div className="error-message" role="alert">
+            {error}
+          </div>
+        )}
+
         {results.length > 0 ? (
           <ul className="results-list" role="listbox">
             {results.map((result: SearchResult, index: number) => (
-              <li 
-                key={result.id || index} 
+              <li
+                key={result.id || index}
                 className="result-item"
                 onClick={() => handleResultClick(result)}
                 role="option"
@@ -108,7 +113,8 @@ const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
                 <div className="result-text">{result.text}</div>
                 <div className="result-meta">
                   <span className="time-range">
-                    {formatTime(result.start_time)} - {formatTime(result.end_time)}
+                    {formatTime(result.start_time)} -{' '}
+                    {formatTime(result.end_time)}
                   </span>
                   <span className="confidence">
                     Match: {Math.round(result.confidence * 100)}%
@@ -120,8 +126,12 @@ const AudioSearch: React.FC<AudioSearchProps> = ({ onResultSelect }) => {
         ) : (
           !isSearching && <p className="no-results">No results found</p>
         )}
-        
-        {isSearching && <div className="loading" role="status">Searching audio content...</div>}
+
+        {isSearching && (
+          <div className="loading" role="status">
+            Searching audio content...
+          </div>
+        )}
       </div>
     </div>
   );

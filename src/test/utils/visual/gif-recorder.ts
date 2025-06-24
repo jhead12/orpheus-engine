@@ -10,13 +10,13 @@ export async function recordGif(
     quality?: number;
     width?: number;
     height?: number;
-  } = {}
+  } = {},
 ): Promise<void> {
   const {
     fps = 30,
     quality = 10,
     width = element.clientWidth,
-    height = element.clientHeight
+    height = element.clientHeight,
   } = options;
 
   // Create output directory if it doesn't exist
@@ -30,7 +30,7 @@ export async function recordGif(
 
   while (Date.now() - startTime < duration) {
     frames.push(await takeScreenshot(element));
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
 
   // Create GIF from frames

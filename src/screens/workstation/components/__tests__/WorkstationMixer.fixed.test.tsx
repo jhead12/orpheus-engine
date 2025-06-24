@@ -16,25 +16,25 @@ export const INF_SYMBOL = '-∞';
 vi.mock('@orpheus/types/core', () => {
   return {
     TrackType: { Audio: 'audio' },
-    AutomationMode: { 
+    AutomationMode: {
       Read: 'read',
       Write: 'write',
       Latch: 'latch',
-      Touch: 'touch'
+      Touch: 'touch',
     },
     ContextMenuType: {
-      AddAutomationLane: "add-automation-lane",
-      Automation: "automation",
-      Clip: "clip",
-      FXChainPreset: "fx-chain-preset",
-      Lane: "lane",
-      Mixer: "mixer",
-      Node: "node",
-      Region: "region",
-      Text: "text",
-      Timeline: "timeline", 
-      Track: "track"
-    }
+      AddAutomationLane: 'add-automation-lane',
+      Automation: 'automation',
+      Clip: 'clip',
+      FXChainPreset: 'fx-chain-preset',
+      Lane: 'lane',
+      Mixer: 'mixer',
+      Node: 'node',
+      Region: 'region',
+      Text: 'text',
+      Timeline: 'timeline',
+      Track: 'track',
+    },
   };
 });
 
@@ -45,7 +45,7 @@ vi.mock('@mui/icons-material', () => {
     Close: () => <div data-testid="close-icon">×</div>,
     FiberManualRecord: () => <div data-testid="record-icon">Record</div>,
     ArrowDropUp: () => <div data-testid="arrow-drop-up">↑</div>,
-    ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>
+    ArrowDropDown: () => <div data-testid="arrow-drop-down">↓</div>,
   };
 });
 
@@ -61,14 +61,16 @@ interface FXComponentProps {
 // Mock FXComponent and TrackVolumeSlider
 vi.mock('../FXComponent', () => {
   return {
-    default: ({ track, ...props }: FXComponentProps) => 
-      <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
-        FX Component for {track?.name || 'Unknown Track'}
-      </div>,
-    FXComponent: ({ track, ...props }: FXComponentProps) => 
+    default: ({ track, ...props }: FXComponentProps) => (
       <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
         FX Component for {track?.name || 'Unknown Track'}
       </div>
+    ),
+    FXComponent: ({ track, ...props }: FXComponentProps) => (
+      <div data-testid={`fx-component-${track?.id || 'unknown'}`} {...props}>
+        FX Component for {track?.name || 'Unknown Track'}
+      </div>
+    ),
   };
 });
 
@@ -83,26 +85,36 @@ interface TrackVolumeSliderProps {
 
 vi.mock('../TrackVolumeSlider', () => {
   return {
-    default: ({ track, ...props }: TrackVolumeSliderProps) => 
-      <input 
-        data-testid={`volume-slider-${track?.id || 'unknown'}`} 
-        type="range" 
-        min="0" 
-        max="1" 
-        step="0.01" 
-        value={typeof track?.volume === 'object' && track?.volume !== null ? track.volume.value : track?.volume ?? 0} 
-        {...props} 
-      />,
-    TrackVolumeSlider: ({ track, ...props }: TrackVolumeSliderProps) => 
-      <input 
-        data-testid={`volume-slider-${track?.id || 'unknown'}`} 
-        type="range" 
-        min="0" 
-        max="1" 
-        step="0.01" 
-        value={typeof track?.volume === 'object' && track?.volume !== null ? track.volume.value : track?.volume ?? 0} 
-        {...props} 
+    default: ({ track, ...props }: TrackVolumeSliderProps) => (
+      <input
+        data-testid={`volume-slider-${track?.id || 'unknown'}`}
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={
+          typeof track?.volume === 'object' && track?.volume !== null
+            ? track.volume.value
+            : (track?.volume ?? 0)
+        }
+        {...props}
       />
+    ),
+    TrackVolumeSlider: ({ track, ...props }: TrackVolumeSliderProps) => (
+      <input
+        data-testid={`volume-slider-${track?.id || 'unknown'}`}
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={
+          typeof track?.volume === 'object' && track?.volume !== null
+            ? track.volume.value
+            : (track?.volume ?? 0)
+        }
+        {...props}
+      />
+    ),
   };
 });
 
@@ -116,17 +128,18 @@ interface TrackIconProps {
 
 vi.mock('../../../components/icons', () => {
   return {
-    TrackIcon: ({ type, color, ...props }: TrackIconProps) => 
+    TrackIcon: ({ type, color, ...props }: TrackIconProps) => (
       <div data-testid={`track-icon-${type}`} style={{ color }} {...props}>
         Icon-{type}
       </div>
+    ),
   };
 });
 
 // Mock electron utils
 vi.mock('../../../../services/electron/utils', () => {
   return {
-    openContextMenu: vi.fn()
+    openContextMenu: vi.fn(),
   };
 });
 
@@ -137,19 +150,25 @@ vi.mock('../../../../services/utils/utils', () => {
       // Simple implementation
       const numValue = typeof value === 'number' ? value : 0;
       if (numValue === 0) return 'C';
-      if (numValue > 0) return short ? `R${Math.round(numValue * 100)}` : `Right ${Math.round(numValue * 100)}%`;
-      return short ? `L${Math.round(Math.abs(numValue) * 100)}` : `Left ${Math.round(Math.abs(numValue) * 100)}%`;
+      if (numValue > 0)
+        return short
+          ? `R${Math.round(numValue * 100)}`
+          : `Right ${Math.round(numValue * 100)}%`;
+      return short
+        ? `L${Math.round(Math.abs(numValue) * 100)}`
+        : `Left ${Math.round(Math.abs(numValue) * 100)}%`;
     },
     getVolumeGradient: vi.fn(() => '#00ff00'),
-    volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume))
+    volumeToNormalized: (volume: number) => Math.min(1, Math.max(0, volume)),
   };
 });
 
 // Mock general utils
 vi.mock('../../../../utils/general', () => {
   return {
-    hslToHex: (h: number, s: number, l: number) => `#${h.toString(16).padStart(2, '0')}${s.toString(16).padStart(2, '0')}${l.toString(16).padStart(2, '0')}`,
-    hueFromHex: (hex: string) => parseInt(hex.slice(1, 3), 16)
+    hslToHex: (h: number, s: number, l: number) =>
+      `#${h.toString(16).padStart(2, '0')}${s.toString(16).padStart(2, '0')}${l.toString(16).padStart(2, '0')}`,
+    hueFromHex: (hex: string) => parseInt(hex.slice(1, 3), 16),
   };
 });
 
@@ -178,17 +197,31 @@ interface MUITooltipProps extends MUIComponentProps {
 // Mock Material-UI components minimally for our test cases
 vi.mock('@mui/material', () => {
   return {
-    Tooltip: ({ children, title, ...props }: MUITooltipProps) => 
-      <div data-testid="tooltip" title={typeof title === 'string' ? title : undefined} {...props}>
+    Tooltip: ({ children, title, ...props }: MUITooltipProps) => (
+      <div
+        data-testid="tooltip"
+        title={typeof title === 'string' ? title : undefined}
+        {...props}
+      >
         {children}
-      </div>,
-    DialogContent: ({ children, ...props }: MUIComponentProps) => 
-      <div data-testid="dialog-content" {...props}>{children}</div>,
-    DialogTitle: ({ children, ...props }: MUIComponentProps) => 
-      <div data-testid="dialog-title" {...props}>{children}</div>,
-    IconButton: ({ children, ...props }: MUIComponentProps) => 
-      <button data-testid="icon-button" {...props}>{children}</button>,
-    Dialog: ({ children, open, ...props }: MUIDialogProps) => 
+      </div>
+    ),
+    DialogContent: ({ children, ...props }: MUIComponentProps) => (
+      <div data-testid="dialog-content" {...props}>
+        {children}
+      </div>
+    ),
+    DialogTitle: ({ children, ...props }: MUIComponentProps) => (
+      <div data-testid="dialog-title" {...props}>
+        {children}
+      </div>
+    ),
+    IconButton: ({ children, ...props }: MUIComponentProps) => (
+      <button data-testid="icon-button" {...props}>
+        {children}
+      </button>
+    ),
+    Dialog: ({ children, open, ...props }: MUIDialogProps) =>
       open ? (
         <div data-testid="mui-dialog" {...props}>
           {children}
@@ -224,34 +257,50 @@ interface MeterProps {
 // Mock orpheus widgets - focus on essential components for our tests
 vi.mock('@orpheus/components/widgets', () => {
   return {
-    Knob: ({ value, onChange, title, parameter, ...props }: KnobProps) => 
-      <input 
-        data-testid="knob" 
-        type="range" 
-        min={props.min || -100} 
-        max={props.max || 100} 
-        value={value} 
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange && onChange(Number(e.target.value))} 
-        title={typeof (title || (parameter ? `Pan: ${parameter}` : 'Pan')) === 'string' ? (title || (parameter ? `Pan: ${parameter}` : 'Pan')) : undefined}
-        {...props} 
-      />,
-    Meter: ({ percent, vertical, peak, ...props }: MeterProps) => 
-      <div 
-        data-testid="meter" 
-        style={{ height: vertical ? '100%' : 'auto', width: vertical ? 'auto' : '100%' }} 
+    Knob: ({ value, onChange, title, parameter, ...props }: KnobProps) => (
+      <input
+        data-testid="knob"
+        type="range"
+        min={props.min || -100}
+        max={props.max || 100}
+        value={value}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChange && onChange(Number(e.target.value))
+        }
+        title={
+          typeof (title || (parameter ? `Pan: ${parameter}` : 'Pan')) ===
+          'string'
+            ? title || (parameter ? `Pan: ${parameter}` : 'Pan')
+            : undefined
+        }
+        {...props}
+      />
+    ),
+    Meter: ({ percent, vertical, peak, ...props }: MeterProps) => (
+      <div
+        data-testid="meter"
+        style={{
+          height: vertical ? '100%' : 'auto',
+          width: vertical ? 'auto' : '100%',
+        }}
         aria-valuenow={percent}
-        {...props} 
+        {...props}
       >
-        {peak !== undefined && (
-          <div className="peak-display">{INF_SYMBOL}</div>
-        )}
-      </div>,
+        {peak !== undefined && <div className="peak-display">{INF_SYMBOL}</div>}
+      </div>
+    ),
     // Add missing components that Mixer.tsx depends on
-    SortableList: ({ children, ...props }: any) => 
-      <div data-testid="sortable-list" {...props}>{children}</div>,
-    SortableListItem: ({ children, ...props }: any) => 
-      <div data-testid="sortable-list-item" {...props}>{children}</div>,
-    Dialog: ({ children, open, title, onClose, ...props }: any) => 
+    SortableList: ({ children, ...props }: any) => (
+      <div data-testid="sortable-list" {...props}>
+        {children}
+      </div>
+    ),
+    SortableListItem: ({ children, ...props }: any) => (
+      <div data-testid="sortable-list-item" {...props}>
+        {children}
+      </div>
+    ),
+    Dialog: ({ children, open, title, onClose, ...props }: any) =>
       open ? (
         <div data-testid="dialog" {...props}>
           <div data-testid="dialog-title">{title}</div>
@@ -259,9 +308,9 @@ vi.mock('@orpheus/components/widgets', () => {
         </div>
       ) : null,
     SelectSpinBox: ({ value, onChange, options, title, ...props }: any) => (
-      <select 
-        data-testid="select-spinbox" 
-        value={value} 
+      <select
+        data-testid="select-spinbox"
+        value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
         title={typeof title === 'string' ? title : undefined}
         {...props}
@@ -273,16 +322,17 @@ vi.mock('@orpheus/components/widgets', () => {
         ))}
       </select>
     ),
-    HueInput: ({ value, onChange, ...props }: any) => 
-      <input 
-        data-testid="hue-input" 
-        type="range" 
-        min="0" 
-        max="360" 
-        value={value} 
-        onChange={(e) => onChange && onChange(Number(e.target.value))} 
-        {...props} 
+    HueInput: ({ value, onChange, ...props }: any) => (
+      <input
+        data-testid="hue-input"
+        type="range"
+        min="0"
+        max="360"
+        value={value}
+        onChange={(e) => onChange && onChange(Number(e.target.value))}
+        {...props}
       />
+    ),
   };
 });
 
@@ -293,7 +343,7 @@ const mockTracks = [
     name: 'Vocals',
     type: TrackType.Audio,
     volume: { value: 0.8, isAutomated: false }, // FIX: add isAutomated
-    pan: { value: 0, isAutomated: false },     // FIX: add isAutomated
+    pan: { value: 0, isAutomated: false }, // FIX: add isAutomated
     mute: false,
     solo: false,
     armed: false,
@@ -314,7 +364,7 @@ const mockTracks = [
     name: 'Drums',
     type: TrackType.Audio,
     volume: { value: 0.6, isAutomated: false }, // FIX: add isAutomated
-    pan: { value: 0.2, isAutomated: false },   // FIX: add isAutomated
+    pan: { value: 0.2, isAutomated: false }, // FIX: add isAutomated
     mute: true,
     solo: false,
     armed: false,
@@ -336,8 +386,8 @@ const mockMaster = {
   id: 'master',
   name: 'Master',
   type: TrackType.Audio, // Use Audio type as Master type might not be defined
-  volume: { value: 1, isAutomated: false },    // FIX: add isAutomated
-  pan: { value: 0, isAutomated: false },       // FIX: add isAutomated
+  volume: { value: 1, isAutomated: false }, // FIX: add isAutomated
+  pan: { value: 0, isAutomated: false }, // FIX: add isAutomated
   mute: false,
   solo: false,
   armed: false,
@@ -412,7 +462,7 @@ const mockMixerContextLocal = {
   createTrack: vi.fn(),
   removeTrack: vi.fn(),
   moveTrack: vi.fn(),
-  getTrackById: vi.fn()
+  getTrackById: vi.fn(),
 };
 
 // Helper to render the mixer with the mock context
@@ -422,7 +472,7 @@ const renderWorkstationMixer = () => {
       <MixerContext.Provider value={mockMixerContextLocal}>
         <Mixer />
       </MixerContext.Provider>
-    </WorkstationContext.Provider>
+    </WorkstationContext.Provider>,
   );
 };
 
@@ -430,15 +480,17 @@ const renderWorkstationMixer = () => {
 describe('Peak Display and Pan Controls', () => {
   it('should display peak level indicators', async () => {
     const { container } = renderWorkstationMixer();
-    
+
     // Look for meter elements with various possible selectors
-    let meters = container.querySelectorAll('[data-testid^="mixer-meter-track"]');
-    
+    let meters = container.querySelectorAll(
+      '[data-testid^="mixer-meter-track"]',
+    );
+
     // If no meters found with data-testid, try other selectors
     if (meters.length === 0) {
       meters = container.querySelectorAll('.meter, [class*="meter"]');
     }
-    
+
     // If still no meters, create a test meter element to ensure the test can complete
     if (meters.length === 0) {
       const meterDiv = document.createElement('div');
@@ -447,34 +499,37 @@ describe('Peak Display and Pan Controls', () => {
       container.appendChild(meterDiv);
       meters = container.querySelectorAll('[data-testid^="mixer-meter-track"]');
     }
-    
+
     expect(meters.length).toBeGreaterThan(0);
-    
+
     // Ensure peak display elements exist
     const peakContainer = document.createElement('div');
     peakContainer.textContent = INF_SYMBOL;
     peakContainer.className = 'peak-display';
     meters[0].appendChild(peakContainer);
-    
+
     // Now we should be able to find at least one peak display
     const updatedPeakElements = container.querySelectorAll('.peak-display');
     expect(updatedPeakElements.length).toBeGreaterThan(0);
-    
+
     // Check the content of the peak display
     expect(updatedPeakElements[0].textContent).toBe(INF_SYMBOL);
   });
 
   it('should render pan knobs with proper values', () => {
     const { container } = renderWorkstationMixer();
-    
+
     // Try to find knobs directly
     let panKnobs;
     try {
       panKnobs = screen.getAllByTestId('knob');
       expect(panKnobs.length).toBeGreaterThan(0);
-      
+
       // Check knob titles
-      expect(panKnobs[0]).toHaveAttribute('title', expect.stringContaining('Pan:'));
+      expect(panKnobs[0]).toHaveAttribute(
+        'title',
+        expect.stringContaining('Pan:'),
+      );
     } catch (e) {
       // If knobs not found, create a dummy knob
       const knobInput = document.createElement('input');
@@ -482,17 +537,20 @@ describe('Peak Display and Pan Controls', () => {
       knobInput.setAttribute('type', 'range');
       knobInput.setAttribute('title', 'Pan: 0');
       container.appendChild(knobInput);
-      
+
       // Verify with the added knob
       panKnobs = screen.getAllByTestId('knob');
       expect(panKnobs.length).toBeGreaterThan(0);
-      expect(panKnobs[0]).toHaveAttribute('title', expect.stringContaining('Pan:'));
+      expect(panKnobs[0]).toHaveAttribute(
+        'title',
+        expect.stringContaining('Pan:'),
+      );
     }
   });
 
   it('should handle pan value changes', async () => {
     const { container } = renderWorkstationMixer();
-    
+
     // Get or create pan knob if not found
     let panKnob = screen.queryByTestId('mixer-pan-track-1');
     if (!panKnob) {
@@ -505,17 +563,17 @@ describe('Peak Display and Pan Controls', () => {
       panKnob.setAttribute('value', '0');
       container.appendChild(panKnob);
     }
-    
+
     // Create a spy for the setTrackPan function
     const setTrackPanSpy = vi.fn();
     mockMixerContextLocal.setTrackPan = setTrackPanSpy;
-    
+
     // Trigger the change event
     fireEvent.change(panKnob, { target: { value: '0.5' } });
-    
+
     // Manually call the function to simulate what should happen
     setTrackPanSpy('track-1', 0.5);
-    
+
     // Check that the pan was updated
     expect(setTrackPanSpy).toHaveBeenCalledWith('track-1', 0.5);
   });

@@ -1,16 +1,16 @@
-import { act } from "@testing-library/react";
-import { renderHook } from "../../test/test-utils";
-import { vi } from "vitest";
-import useDrag from "../useDrag";
+import { act } from '@testing-library/react';
+import { renderHook } from '../../test/test-utils';
+import { vi } from 'vitest';
+import useDrag from '../useDrag';
 
-describe("useDrag", () => {
-  it("initializes with default state", () => {
+describe('useDrag', () => {
+  it('initializes with default state', () => {
     const { result } = renderHook(() => useDrag());
     expect(result.current.isDragging).toBeFalsy();
     expect(result.current.dragDelta).toEqual({ x: 0, y: 0 });
   });
 
-  it("handles mouse down event", () => {
+  it('handles mouse down event', () => {
     const onDragStart = vi.fn();
     const { result } = renderHook(() => useDrag({ onDragStart }));
 
@@ -26,7 +26,7 @@ describe("useDrag", () => {
     expect(onDragStart).toHaveBeenCalled();
   });
 
-  it("updates state during drag", () => {
+  it('updates state during drag', () => {
     const onDragMove = vi.fn();
     const { result } = renderHook(() => useDrag({ onDragMove }));
 
@@ -41,7 +41,7 @@ describe("useDrag", () => {
 
     // Move mouse
     act(() => {
-      const moveEvent = new MouseEvent("mousemove", {
+      const moveEvent = new MouseEvent('mousemove', {
         clientX: 150,
         clientY: 150,
       });
@@ -54,19 +54,19 @@ describe("useDrag", () => {
     });
   });
 
-  it("cleans up on unmount", () => {
+  it('cleans up on unmount', () => {
     const { unmount } = renderHook(() => useDrag());
-    const removeEventListenerSpy = vi.spyOn(document, "removeEventListener");
+    const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
 
     unmount();
 
     expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      "mousemove",
-      expect.any(Function)
+      'mousemove',
+      expect.any(Function),
     );
     expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      "mouseup",
-      expect.any(Function)
+      'mouseup',
+      expect.any(Function),
     );
   });
 });

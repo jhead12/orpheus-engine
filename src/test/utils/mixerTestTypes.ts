@@ -10,7 +10,7 @@ export interface SelectSpinBoxProps {
   title?: string;
   label?: string;
   value?: string | number;
-  options?: Array<{value: string | number, label: string}>;
+  options?: Array<{ value: string | number; label: string }>;
   'data-testid'?: string;
   onChange?: (value: string | number) => void;
   [key: string]: any;

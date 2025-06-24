@@ -1,10 +1,12 @@
 # Visual Testing Guide for OEW
 
-This document provides a comprehensive guide to working with the Visual Testing Agent for the OEW application.
+This document provides a comprehensive guide to working with the Visual Testing
+Agent for the OEW application.
 
 ## Overview
 
-The Visual Testing Agent is a tool that helps automate the creation and execution of visual regression tests for UI components. It supports:
+The Visual Testing Agent is a tool that helps automate the creation and
+execution of visual regression tests for UI components. It supports:
 
 1. Static screenshot testing
 2. Animated GIF recording for interactive components
@@ -80,11 +82,11 @@ src/
 Create a file in `src/test/visual-agent/configs/YourComponentConfig.ts`:
 
 ```typescript
-import { VisualTestConfig } from "../types";
+import { VisualTestConfig } from '../types';
 
 export const YourComponentConfig: VisualTestConfig = {
-  componentName: "YourComponent",
-  importPath: "../../path/to/YourComponent",
+  componentName: 'YourComponent',
+  importPath: '../../path/to/YourComponent',
   props: {
     // Base props for all test cases
     value: 50,
@@ -92,24 +94,24 @@ export const YourComponentConfig: VisualTestConfig = {
   },
   states: [
     {
-      name: "default",
+      name: 'default',
       props: {}, // Uses base props
     },
     {
-      name: "active",
+      name: 'active',
       props: { active: true }, // Overrides or adds to base props
     },
     {
-      name: "interactive",
+      name: 'interactive',
       interactions: [
         {
-          type: "click",
-          target: "button",
+          type: 'click',
+          target: 'button',
           delay: 300,
         },
         {
-          type: "mousemove",
-          target: "slider",
+          type: 'mousemove',
+          target: 'slider',
           value: { clientX: 200, clientY: 150 },
           delay: 500,
         },
@@ -134,9 +136,9 @@ export const YourComponentConfig: VisualTestConfig = {
 Use the `@visual` tag for static screenshots:
 
 ```typescript
-it("visual test: renders component @visual", async () => {
+it('visual test: renders component @visual', async () => {
   // Test code
-  await expectScreenshot(container, "component-state");
+  await expectScreenshot(container, 'component-state');
 });
 ```
 
@@ -145,23 +147,27 @@ it("visual test: renders component @visual", async () => {
 Use the `@visual-gif` tag for animated GIFs:
 
 ```typescript
-it("visual test: animates component @visual-gif", async () => {
+it('visual test: animates component @visual-gif', async () => {
   // Test with interactions
-  await recordGif(container, "component-animation", 2000);
+  await recordGif(container, 'component-animation', 2000);
 });
 ```
 
 ## Best Practices
 
-1. **Test Different States**: Test components in their various states (default, active, disabled, etc.)
+1. **Test Different States**: Test components in their various states (default,
+   active, disabled, etc.)
 
-2. **Use Descriptive Names**: Name your test cases clearly to understand what's being tested
+2. **Use Descriptive Names**: Name your test cases clearly to understand what's
+   being tested
 
 3. **Isolate Components**: Test components in isolation when possible
 
-4. **Minimize Animation Duration**: Keep GIF recordings short to avoid large files
+4. **Minimize Animation Duration**: Keep GIF recordings short to avoid large
+   files
 
-5. **Standardize Container Styles**: Use consistent container styles for similar components
+5. **Standardize Container Styles**: Use consistent container styles for similar
+   components
 
 ## Troubleshooting
 

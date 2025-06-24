@@ -7,9 +7,9 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { createPortal, flushSync } from "react-dom";
-import { Popover } from "@mui/material";
+} from 'react';
+import { createPortal, flushSync } from 'react-dom';
+import { Popover } from '@mui/material';
 import { WorkstationContext } from '@orpheus/contexts';
 import {
   AutomationLane,
@@ -18,11 +18,11 @@ import {
   ContextMenuType,
   TimelinePosition,
 } from '@orpheus/types/core';
-import { clamp } from "@orpheus/utils/general";
-import { Tooltip } from "@orpheus/widgets";
-import DNR, { DNRData } from "../../../components/DNR";
+import { clamp } from '@orpheus/utils/general';
+import { Tooltip } from '@orpheus/widgets';
+import DNR, { DNRData } from '../../../components/DNR';
 import { openContextMenu } from '@orpheus/services/electron/utils';
-import useClickAway from "@orpheus/services/hooks/useClickAway";
+import useClickAway from '@orpheus/services/hooks/useClickAway';
 
 interface IProps {
   color: string;
@@ -116,11 +116,11 @@ export default function AutomationNodeComponent(props: IProps) {
   useLayoutEffect(() => {
     if (!coordsUnset.current) {
       if (
-        scrollToItem?.type === "node" &&
+        scrollToItem?.type === 'node' &&
         scrollToItem.params?.nodeId === node.id
       ) {
         const timelineEditorWindow = document.getElementById(
-          "timeline-editor-window"
+          'timeline-editor-window',
         )!;
 
         waitForScrollWheelStop(timelineEditorWindow, () => {
@@ -137,7 +137,7 @@ export default function AutomationNodeComponent(props: IProps) {
               scrollToAndAlign(
                 timelineEditorWindow,
                 { left: pos },
-                { left: 0.8 }
+                { left: 0.8 },
               );
             } else if (rect.right < timelineEditorWindowRect.left) {
               const pos =
@@ -147,7 +147,7 @@ export default function AutomationNodeComponent(props: IProps) {
               scrollToAndAlign(
                 timelineEditorWindow,
                 { left: pos },
-                { left: 0.2 }
+                { left: 0.2 },
               );
             }
 
@@ -159,7 +159,7 @@ export default function AutomationNodeComponent(props: IProps) {
               scrollToAndAlign(
                 timelineEditorWindow,
                 { top: pos },
-                { top: 0.8 }
+                { top: 0.8 },
               );
             } else if (rect.bottom < timelineEditorWindowRect.top + 33) {
               const pos =
@@ -170,7 +170,7 @@ export default function AutomationNodeComponent(props: IProps) {
               scrollToAndAlign(
                 timelineEditorWindow,
                 { top: pos },
-                { top: 0.2 }
+                { top: 0.2 },
               );
             }
           }
@@ -187,7 +187,7 @@ export default function AutomationNodeComponent(props: IProps) {
 
     if (!Number.isNaN(inputValue)) {
       const value = Number(
-        clamp(inputValue, lane.minValue, lane.maxValue).toFixed(2)
+        clamp(inputValue, lane.minValue, lane.maxValue).toFixed(2),
       );
       onSetNode({ ...node, value });
     }
@@ -278,11 +278,11 @@ export default function AutomationNodeComponent(props: IProps) {
         resize={false}
         snapGridSize={{ x: snapWidth }}
         style={{
-          backgroundColor: selected ? "#fff" : color,
-          border: "1px solid var(--border8)",
-          borderRadius: "50%",
+          backgroundColor: selected ? '#fff' : color,
+          border: '1px solid var(--border8)',
+          borderRadius: '50%',
           zIndex: selected ? 12 : 11,
-          transform: "translate(-2px, 0)",
+          transform: 'translate(-2px, 0)',
         }}
       >
         <Tooltip
@@ -302,12 +302,12 @@ export default function AutomationNodeComponent(props: IProps) {
       </DNR>
       <Popover
         anchorEl={anchorEl}
-        anchorOrigin={{ horizontal: "right", vertical: "center" }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'center' }}
         onContextMenu={(e) => e.stopPropagation()}
         onClose={confirm}
         open={!!anchorEl}
         slotProps={{ paper: { style: { borderRadius: 0 } } }}
-        transformOrigin={{ horizontal: "left", vertical: "center" }}
+        transformOrigin={{ horizontal: 'left', vertical: 'center' }}
         transitionDuration={0}
       >
         <form
@@ -333,8 +333,8 @@ export default function AutomationNodeComponent(props: IProps) {
       {isDragging &&
         createPortal(
           <div className="guideline" style={{ left: coords.startX - 1 }} />,
-          document.getElementById("timeline-editor-window")!
-            .firstElementChild as HTMLElement
+          document.getElementById('timeline-editor-window')!
+            .firstElementChild as HTMLElement,
         )}
     </>
   );

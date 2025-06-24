@@ -1,4 +1,4 @@
-import { startApolloServer } from "../graphql/server";
+import { startApolloServer } from '../graphql/server';
 
 // ...other imports...
 
@@ -10,7 +10,7 @@ async function startApp() {
 
     // Start your existing application...
   } catch (error) {
-    console.error("Failed to start application:", error);
+    console.error('Failed to start application:', error);
   }
 }
 

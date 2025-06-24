@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer } from 'electron';
 
 // Handle test environment
 const getIpcRenderer = (): any => {
@@ -41,14 +41,14 @@ export interface PythonAnalysisResult {
 }
 
 export async function invokePythonAnalysis(
-  params: PythonAnalysisParams
+  params: PythonAnalysisParams,
 ): Promise<PythonAnalysisResult> {
   try {
     const renderer = getIpcRenderer();
-    const result = await renderer.invoke("audio:analyze", params);
+    const result = await renderer.invoke('audio:analyze', params);
     return result as PythonAnalysisResult;
   } catch (error) {
-    console.error("Python analysis failed:", error);
+    console.error('Python analysis failed:', error);
     throw error;
   }
 }

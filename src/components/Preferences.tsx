@@ -1,5 +1,5 @@
-import React, { CSSProperties, useEffect, useState } from "react";
-import { Settings } from "@mui/icons-material";
+import React, { CSSProperties, useEffect, useState } from 'react';
+import { Settings } from '@mui/icons-material';
 import {
   DialogActions,
   DialogContent,
@@ -8,11 +8,11 @@ import {
   RadioGroup,
   RadioProps as MuiRadioProps,
   Snackbar,
-} from "@mui/material";
-import { Preferences as PreferencesType } from "../types/settings";
-import { usePreferences } from "../contexts/PreferencesContext";
-import { Dialog } from "./widgets";
-import styled from "styled-components";
+} from '@mui/material';
+import { Preferences as PreferencesType } from '../types/settings';
+import { usePreferences } from '../contexts/PreferencesContext';
+import { Dialog } from './widgets';
+import styled from 'styled-components';
 
 const PreferencesRow = styled.div`
   display: flex;
@@ -47,9 +47,9 @@ const Radio = ({ className, label, radioProps, style, value }: RadioProps) => (
           {...radioProps}
           className={`remove-spacing me-1 ${radioProps?.className}`}
           sx={{
-            color: "var(--border6)",
-            "& .MuiSvgIcon-root": { fontSize: 16 },
-            "&.Mui-checked": { color: "var(--color1)" },
+            color: 'var(--border6)',
+            '& .MuiSvgIcon-root': { fontSize: 16 },
+            '&.Mui-checked': { color: 'var(--color1)' },
             ...radioProps?.sx,
           }}
           value={value}
@@ -59,7 +59,7 @@ const Radio = ({ className, label, radioProps, style, value }: RadioProps) => (
       slotProps={{
         typography: {
           fontSize: 14,
-          color: "var(--border6)",
+          color: 'var(--border6)',
           fontFamily: "'Manrope', 'Roboto', sans-serif",
         },
       }}
@@ -68,14 +68,14 @@ const Radio = ({ className, label, radioProps, style, value }: RadioProps) => (
 );
 
 const tabs = [
-  "Appearance",
-  "Audio",
-  "General",
-  "Media",
-  "MIDI",
-  "Project",
-  "Recording",
-  "VST & Plug-ins",
+  'Appearance',
+  'Audio',
+  'General',
+  'Media',
+  'MIDI',
+  'Project',
+  'Recording',
+  'VST & Plug-ins',
 ];
 
 export default function Preferences() {
@@ -105,7 +105,7 @@ export default function Preferences() {
   function changeTheme(e: React.ChangeEvent<HTMLInputElement>) {
     updatePreferences({
       ...preferences,
-      theme: e.target.value as PreferencesType["theme"],
+      theme: e.target.value as PreferencesType['theme'],
     });
   }
 
@@ -119,41 +119,39 @@ export default function Preferences() {
     <>
       <Dialog
         onClose={(_, reason) => {
-          if (reason !== "backdropClick") cancel();
+          if (reason !== 'backdropClick') cancel();
         }}
         open={showPreferences}
-        style={{ width: 700, height: 660, maxWidth: "95%" }}
+        style={{ width: 700, height: 660, maxWidth: '95%' }}
         title="Preferences"
       >
         <form
           onSubmit={handleSubmit}
-          style={{ flex: 1, display: "flex", flexDirection: "column" }}
+          style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
         >
-          <DialogContent className="p-0" style={{ width: "100%", flex: 1 }}>
-            <div style={{ width: "100%", height: "100%", display: "flex" }}>
+          <DialogContent className="p-0" style={{ width: '100%', flex: 1 }}>
+            <div style={{ width: '100%', height: '100%', display: 'flex' }}>
               <ul
                 className="p-0"
                 style={{
                   flex: 1,
-                  borderRight: "1px solid var(--border1)",
-                  height: "100%",
-                  listStyle: "none",
+                  borderRight: '1px solid var(--border1)',
+                  height: '100%',
+                  listStyle: 'none',
                 }}
               >
                 {tabs.map((tab, idx) => (
                   <li
-                    className={
-                      "w-100 py-2 px-3 " + (tabIdx !== idx ? "hover-2" : "")
-                    }
+                    className={`w-100 py-2 px-3 ${tabIdx !== idx ? 'hover-2' : ''}`}
                     key={idx}
                     onClick={() => setTabIdx(idx)}
                     style={{
                       fontSize: 14,
-                      cursor: "pointer",
-                      transition: "0.25s ease-in-out background-color",
-                      backgroundColor: tabIdx === idx ? "var(--color1)" : "",
-                      color: tabIdx === idx ? "var(--bg8)" : "var(--fg1)",
-                      fontWeight: tabIdx === idx ? "bold" : "",
+                      cursor: 'pointer',
+                      transition: '0.25s ease-in-out background-color',
+                      backgroundColor: tabIdx === idx ? 'var(--color1)' : '',
+                      color: tabIdx === idx ? 'var(--bg8)' : 'var(--fg1)',
+                      fontWeight: tabIdx === idx ? 'bold' : '',
                     }}
                   >
                     {tab}
@@ -168,8 +166,8 @@ export default function Preferences() {
                         className="m-0 mb-3 pb-1"
                         style={{
                           fontSize: 15,
-                          color: "var(--border6)",
-                          borderBottom: "1px solid var(--border6)",
+                          color: 'var(--border6)',
+                          borderBottom: '1px solid var(--border6)',
                         }}
                       >
                         Theming and Colors
@@ -224,7 +222,7 @@ export default function Preferences() {
               </div>
             </div>
           </DialogContent>
-          <DialogActions style={{ borderTop: "1px solid var(--border1)" }}>
+          <DialogActions style={{ borderTop: '1px solid var(--border1)' }}>
             <button
               className="p-1 px-2 btn-2 hover-1 m-0 me-2"
               onClick={cancel}
@@ -239,33 +237,33 @@ export default function Preferences() {
             >
               Apply
             </button>
-            <button className="m-0 btn-3" style={{ padding: "5px 8px" }}>
+            <button className="m-0 btn-3" style={{ padding: '5px 8px' }}>
               OK
             </button>
           </DialogActions>
         </form>
       </Dialog>
       <Snackbar
-        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
         autoHideDuration={3000}
         open={saved}
         onClose={() => setSaved(false)}
-        style={{ bottom: 28, boxShadow: "none" }}
+        style={{ bottom: 28, boxShadow: 'none' }}
       >
-        <div style={{ backgroundColor: "var(--bg8)" }}>
+        <div style={{ backgroundColor: 'var(--bg8)' }}>
           <div
             className="d-flex justify-content-center align-items-center"
-            style={{ border: "1px solid var(--color1)", padding: "8px 12px" }}
+            style={{ border: '1px solid var(--color1)', padding: '8px 12px' }}
           >
             <Settings
-              style={{ color: "var(--color1)", marginRight: 6, fontSize: 16 }}
+              style={{ color: 'var(--color1)', marginRight: 6, fontSize: 16 }}
             />
             <p
               className="m-0"
               style={{
                 fontSize: 15,
-                color: "var(--color1)",
-                fontWeight: "bold",
+                color: 'var(--color1)',
+                fontWeight: 'bold',
               }}
             >
               Changes saved

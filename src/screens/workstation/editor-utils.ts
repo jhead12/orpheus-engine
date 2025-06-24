@@ -1,4 +1,4 @@
-import { ContextMenuType } from "../../types/context-menu";
+import { ContextMenuType } from '../../types/context-menu';
 
 // Define SortData interface
 export interface SortData {
@@ -27,7 +27,7 @@ export interface ContextMenuParams {
 export function openContextMenu(
   _type: ContextMenuType | string,
   data: Record<string, unknown> = {},
-  callback: (params: ContextMenuParams) => void
+  callback: (params: ContextMenuParams) => void,
 ): void {
   // Implementation would display context menu and call the callback with action
   setTimeout(() => {
@@ -38,21 +38,21 @@ export function openContextMenu(
 /**
  * Creates a debounced version of a function that delays invoking it until after
  * `wait` milliseconds have elapsed since the last invocation.
- * 
+ *
  * @param func The function to debounce
  * @param wait The number of milliseconds to delay
  * @returns A debounced version of the function with an additional `cancel` method
  */
 export function debounce<Args extends unknown[], R>(
   func: (...args: Args) => R,
-  wait: number
+  wait: number,
 ): {
   (...args: Args): void;
   cancel: () => void;
 } {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  const debouncedFunction = function(this: unknown, ...args: Args) {
+  const debouncedFunction = function (this: unknown, ...args: Args) {
     // Use arrow function to preserve 'this' context instead of using an alias
     if (timeout !== null) {
       clearTimeout(timeout);
@@ -63,7 +63,7 @@ export function debounce<Args extends unknown[], R>(
     }, wait);
   };
 
-  debouncedFunction.cancel = function() {
+  debouncedFunction.cancel = function () {
     if (timeout !== null) {
       clearTimeout(timeout);
       timeout = null;

@@ -6,16 +6,16 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { Popover, PopoverProps } from "@mui/material";
+} from 'react';
+import { MdKeyboardArrowDown } from 'react-icons/md';
+import { Popover, PopoverProps } from '@mui/material';
 import {
   ArrowDropDown,
   ArrowDropUp,
   ArrowLeft,
   ArrowRight,
-} from "@mui/icons-material";
-import useClickAway from "../../hooks/useClickAway";
+} from '@mui/icons-material';
+import useClickAway from '../../hooks/useClickAway';
 
 interface SelectSpinBoxElements<T extends string | CSSProperties> {
   buttonsContainer?: T;
@@ -36,7 +36,7 @@ interface IProps<T extends string | number = string | number> {
   disableSelect?: boolean;
   hideButtons?: boolean;
   icon?: JSX.Element;
-  layout?: "alt" | undefined;
+  layout?: 'alt' | undefined;
   onChange: (value: T) => void;
   options: { label: string; value: T }[];
   optionsPopover?: Partial<PopoverProps>;
@@ -47,7 +47,7 @@ interface IProps<T extends string | number = string | number> {
 }
 
 export default function SelectSpinBox<
-  T extends string | number = string | number
+  T extends string | number = string | number,
 >(props: IProps<T>) {
   const {
     classes,
@@ -76,7 +76,7 @@ export default function SelectSpinBox<
   useEffect(() => {
     if (anchorEl && listRef.current) {
       const listItems = Array.from(
-        listRef.current.getElementsByTagName("li")
+        listRef.current.getElementsByTagName('li'),
       ) as HTMLLIElement[];
       if (selectedIdx > -1) listItems[selectedIdx].focus();
     }
@@ -84,54 +84,54 @@ export default function SelectSpinBox<
 
   function getSpinButtons() {
     return ref.current
-      ? Array.from(ref.current.getElementsByTagName("button"))
+      ? Array.from(ref.current.getElementsByTagName('button'))
       : [];
   }
 
   const handleClickAway = useCallback((e: MouseEvent | TouchEvent) => {
     const elements = document.elementsFromPoint(
       (e as MouseEvent).clientX,
-      (e as MouseEvent).clientY
+      (e as MouseEvent).clientY,
     );
     const preventClickAwayAction =
       ref.current &&
       elements.includes(ref.current) &&
       elements.every(
         (element) =>
-          !getSpinButtons().some((button) => button.contains(element))
+          !getSpinButtons().some((button) => button.contains(element)),
       );
 
     if (!preventClickAwayAction) setAnchorEl(null);
   }, []);
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       if (
         !disableSelect &&
         !anchorEl &&
         document.activeElement === e.currentTarget
       )
         setAnchorEl(ref.current);
-    } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
 
       if (anchorEl && listRef.current) {
         const listItems = Array.from(
-          listRef.current.getElementsByTagName("li")
+          listRef.current.getElementsByTagName('li'),
         ) as HTMLLIElement[];
         const idx = listItems.findIndex((li) => li === document.activeElement);
 
         if (idx > -1) {
-          if (e.key === "ArrowUp")
+          if (e.key === 'ArrowUp')
             listItems[idx === 0 ? listItems.length - 1 : idx - 1].focus();
           else listItems[(idx + 1) % listItems.length].focus();
         }
       } else if (
         !getSpinButtons().some((button) =>
-          button.contains(document.activeElement)
+          button.contains(document.activeElement),
         )
       ) {
-        if (e.key === (layout === "alt" ? "ArrowDown" : "ArrowUp")) prev();
+        if (e.key === (layout === 'alt' ? 'ArrowDown' : 'ArrowUp')) prev();
         else next();
       }
     }
@@ -160,56 +160,56 @@ export default function SelectSpinBox<
 
   const style = {
     container: {
-      display: "flex",
-      alignItems: "center",
+      display: 'flex',
+      alignItems: 'center',
       padding: 4,
       ...props.style?.container,
     },
     select: {
       flex: 1,
-      height: "100%",
-      backgroundColor: "#0000",
+      height: '100%',
+      backgroundColor: '#0000',
       fontSize: 14,
       opacity: 1,
-      cursor: disableSelect ? "default" : "pointer",
+      cursor: disableSelect ? 'default' : 'pointer',
       lineHeight: 1,
-      border: "none",
+      border: 'none',
       ...props.style?.select,
     },
     buttonsContainer: {
-      flexDirection: "column",
-      height: "100%",
+      flexDirection: 'column',
+      height: '100%',
       width: 12,
       ...props.style?.buttonsContainer,
     },
     spinButton: (disabled: boolean) =>
       ({
-        position: "relative",
-        backgroundColor: "#0000",
-        pointerEvents: disabled ? "none" : "auto",
+        position: 'relative',
+        backgroundColor: '#0000',
+        pointerEvents: disabled ? 'none' : 'auto',
         opacity: disabled ? 0.2 : 1,
-      } as const),
-    prevIcon: { fontSize: 22, color: "#000", ...props.style?.prevIcon },
-    nextIcon: { fontSize: 22, color: "#000", ...props.style?.nextIcon },
+      }) as const,
+    prevIcon: { fontSize: 22, color: '#000', ...props.style?.prevIcon },
+    nextIcon: { fontSize: 22, color: '#000', ...props.style?.nextIcon },
     optionsPopover: {
       width: anchorEl?.offsetWidth,
-      border: "1px solid var(--border6)",
+      border: '1px solid var(--border6)',
       borderRadius: 0,
-      transform: "translate(0, -1px)",
-      backgroundColor: "var(--bg2)",
-      pointerEvents: "auto",
+      transform: 'translate(0, -1px)',
+      backgroundColor: 'var(--bg2)',
+      pointerEvents: 'auto',
       padding: 4,
-      overflow: "auto",
+      overflow: 'auto',
       ...props.style?.optionsList,
     },
     option: (option: { label: string; value: string | number }) => ({
-      backgroundColor: option.value === value ? "var(--color1)" : "",
-      color: option.value === value ? "var(--bg8)" : "var(--border6)",
-      fontWeight: option.value === value ? "bold" : "normal",
+      backgroundColor: option.value === value ? 'var(--color1)' : '',
+      color: option.value === value ? 'var(--bg8)' : 'var(--border6)',
+      fontWeight: option.value === value ? 'bold' : 'normal',
       fontSize: 14,
       lineHeight: 1,
       padding: 4,
-      whiteSpace: "nowrap",
+      whiteSpace: 'nowrap',
       ...props.style?.option,
     }),
   } as const;
@@ -223,19 +223,19 @@ export default function SelectSpinBox<
       tabIndex={0}
       title={title}
     >
-      {layout === "alt" && !hideButtons && (
+      {layout === 'alt' && !hideButtons && (
         <button
           className={`p-0 center-flex ${classes?.prev}`}
           onClick={prev}
           style={{
-            height: "100%",
+            height: '100%',
             ...style.spinButton(selectedIdx === 0 || empty),
             ...props.style?.prev,
           }}
           tabIndex={selectedIdx === 0 || empty ? -1 : 0}
         >
           <ArrowLeft
-            className={"center-absolute " + classes?.prevIcon}
+            className={`center-absolute ${classes?.prevIcon}`}
             style={style.prevIcon}
           />
         </button>
@@ -244,7 +244,7 @@ export default function SelectSpinBox<
         <div
           className={`p-1 d-flex justify-content-center align-items-center ${classes?.iconContainer}`}
           style={{
-            height: "100%",
+            height: '100%',
             marginRight: 4,
             ...props.style?.iconContainer,
           }}
@@ -266,7 +266,7 @@ export default function SelectSpinBox<
         )}
         {showArrow && <MdKeyboardArrowDown />}
       </div>
-      {layout !== "alt" && !hideButtons && (
+      {layout !== 'alt' && !hideButtons && (
         <div
           className={`d-flex p-0 ${classes?.buttonsContainer}`}
           style={style.buttonsContainer}
@@ -275,14 +275,14 @@ export default function SelectSpinBox<
             className={`p-0 center-flex overflow-hidden ${classes?.prev}`}
             onClick={prev}
             style={{
-              height: "50%",
+              height: '50%',
               ...style.spinButton(selectedIdx === 0 || empty),
               ...props.style?.prev,
             }}
             tabIndex={selectedIdx === 0 || empty ? -1 : 0}
           >
             <ArrowDropUp
-              className={"center-absolute " + classes?.prevIcon}
+              className={`center-absolute ${classes?.prevIcon}`}
               style={style.prevIcon}
             />
           </button>
@@ -290,73 +290,73 @@ export default function SelectSpinBox<
             className={`p-0 center-flex overflow-hidden ${classes?.next}`}
             onClick={next}
             style={{
-              height: "50%",
+              height: '50%',
               ...style.spinButton(lastSelected || empty),
               ...props.style?.next,
             }}
             tabIndex={lastSelected || empty ? -1 : 0}
           >
             <ArrowDropDown
-              className={"center-absolute " + classes?.nextIcon}
+              className={`center-absolute ${classes?.nextIcon}`}
               style={style.nextIcon}
             />
           </button>
         </div>
       )}
-      {layout === "alt" && !hideButtons && (
+      {layout === 'alt' && !hideButtons && (
         <button
           className={`p-0 center-flex ${classes?.next}`}
           onClick={next}
           style={{
-            height: "100%",
+            height: '100%',
             ...style.spinButton(lastSelected || empty),
             ...props.style?.next,
           }}
           tabIndex={lastSelected || empty ? -1 : 0}
         >
           <ArrowRight
-            className={"center-absolute " + classes?.nextIcon}
+            className={`center-absolute ${classes?.nextIcon}`}
             style={style.nextIcon}
           />
         </button>
       )}
       {React.createElement(Popover, {
-        anchorOrigin: { horizontal: "left", vertical: "bottom" },
-        className: "stop-reorder " + classes?.optionsList,
+        anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+        className: `stop-reorder ${classes?.optionsList}`,
         onClose: (_, reason) => {
-          if (reason === "escapeKeyDown") setAnchorEl(null);
+          if (reason === 'escapeKeyDown') setAnchorEl(null);
         },
         slotProps: {
           paper: {
-            className: "scrollbar",
+            className: 'scrollbar',
             ref: listRef,
             style: style.optionsPopover,
           },
         },
         transitionDuration: 0,
         ...optionsPopover,
-        anchorEl: anchorEl,
+        anchorEl,
         open: !!anchorEl,
-        children: React.createElement("ul", {
+        children: React.createElement('ul', {
           style: {
-            listStyleType: "none",
+            listStyleType: 'none',
             margin: 0,
             padding: 0,
-            width: "fit-content",
-            minWidth: "100%",
+            width: 'fit-content',
+            minWidth: '100%',
           },
           children: options.map((option, idx) =>
-            React.createElement("li", {
-              className: "hover-3 " + classes?.option,
+            React.createElement('li', {
+              className: `hover-3 ${classes?.option}`,
               key: idx,
               onClick: () => selectOption(option),
               onKeyDown: (e: React.KeyboardEvent) => {
-                if (e.key === "Enter") selectOption(option);
+                if (e.key === 'Enter') selectOption(option);
               },
               style: style.option(option),
               tabIndex: 0,
               children: option.label,
-            })
+            }),
           ),
         }),
       })}

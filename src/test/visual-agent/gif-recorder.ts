@@ -1,7 +1,7 @@
-import { chromium } from "playwright";
-import { promises as fs } from "fs";
-import path from "path";
-import nodeHtmlToImage from "node-html-to-image";
+import { chromium } from 'playwright';
+import { promises as fs } from 'fs';
+import path from 'path';
+import nodeHtmlToImage from 'node-html-to-image';
 
 /**
  * Records a GIF of the element's state changes
@@ -14,12 +14,12 @@ export async function recordGif(
   element: HTMLElement,
   name: string,
   duration = 2000,
-  fps = 10
+  fps = 10,
 ): Promise<void> {
   console.log(`Recording GIF for ${name}...`);
 
   // Create directory if it doesn't exist
-  const gifDir = path.join(process.cwd(), "__snapshots__", "gifs");
+  const gifDir = path.join(process.cwd(), '__snapshots__', 'gifs');
   await fs.mkdir(gifDir, { recursive: true });
 
   // Calculate number of frames to capture
@@ -38,7 +38,7 @@ export async function recordGif(
   const allStyles = new Set<string>();
 
   // 1. Styled-components styles
-  document.querySelectorAll("style[data-styled]").forEach((style) => {
+  document.querySelectorAll('style[data-styled]').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -50,13 +50,13 @@ export async function recordGif(
           allStyles.add(rule.cssText);
         });
       } catch (e) {
-        console.warn("Could not access stylesheet rules");
+        console.warn('Could not access stylesheet rules');
       }
     }
   });
 
   // 3. Inline styles and other style tags
-  document.querySelectorAll("style:not([data-styled])").forEach((style) => {
+  document.querySelectorAll('style:not([data-styled])').forEach((style) => {
     if (style.textContent) allStyles.add(style.textContent);
   });
 
@@ -89,7 +89,7 @@ export async function recordGif(
           }
 
           /* Component styles */
-          ${Array.from(allStyles).join("\n")}
+          ${Array.from(allStyles).join('\n')}
         </style>
       </head>
       <body>
@@ -110,13 +110,13 @@ export async function recordGif(
     // Capture frame
     const framePath = path.join(
       gifDir,
-      `${name}-frame-${i.toString().padStart(3, "0")}.png`
+      `${name}-frame-${i.toString().padStart(3, '0')}.png`,
     );
     await page.screenshot({
       path: framePath,
-      type: "png",
-      animations: "disabled",
-      scale: "css",
+      type: 'png',
+      animations: 'disabled',
+      scale: 'css',
     });
     framePaths.push(framePath);
 
@@ -147,10 +147,10 @@ export async function recordGif(
     // Use node-html-to-image to create a GIF
     await nodeHtmlToImage({
       output: outputPath,
-      type: "gif",
-      html: "<html><body></body></html>", // Dummy HTML
+      type: 'gif',
+      html: '<html><body></body></html>', // Dummy HTML
       puppeteerArgs: {
-        args: ["--no-sandbox"],
+        args: ['--no-sandbox'],
       },
       // @ts-expect-error - Type definition is missing this option
       animations: [
@@ -168,7 +168,7 @@ export async function recordGif(
       await fs.unlink(framePath);
     }
   } catch (error) {
-    console.error("Error creating GIF:", error);
+    console.error('Error creating GIF:', error);
     throw error;
   }
 }

@@ -1,4 +1,4 @@
-import { SnapGridSizeOption } from "../../types/audio";
+import { SnapGridSizeOption } from '../../types/audio';
 
 export function getGridSizeFromOption(option: SnapGridSizeOption): number {
   switch (option) {

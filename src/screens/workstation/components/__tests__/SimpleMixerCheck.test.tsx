@@ -11,9 +11,9 @@ describe('Simple Mixer Test', () => {
     render(
       <WorkstationContext.Provider value={{} as any}>
         <MockMixer />
-      </WorkstationContext.Provider>
+      </WorkstationContext.Provider>,
     );
-    
+
     expect(screen.getByTestId('mock-mixer')).toBeInTheDocument();
   });
 });

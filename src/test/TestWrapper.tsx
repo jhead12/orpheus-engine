@@ -1,10 +1,10 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { ReactElement } from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ReactElement } from 'react';
 
 // Create a minimal theme for testing
 const testTheme = createTheme({
   palette: {
-    mode: "light",
+    mode: 'light',
   },
 });
 

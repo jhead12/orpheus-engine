@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useState } from "react";
-import { Clip } from "@orpheus/types/core";
+import React, { createContext, useContext, useState } from 'react';
+import { Clip } from '@orpheus/types/core';
 import {
   invokePythonAnalysis,
   PythonAnalysisResult,
-} from "../services/pythonBridge";
+} from '../services/pythonBridge';
 
 type AIFeatureAnalysis = PythonAnalysisResult;
 
 interface ArrangementSuggestion {
-  type: "arrangement";
+  type: 'arrangement';
   description: string;
   clipOrder: string[];
 }
@@ -19,7 +19,7 @@ interface AIContextType {
     clipIds: string[]
   ) => Promise<{ suggestions: ArrangementSuggestion[] }>;
   analyzeAudioWithDeepLearning?: (clip: Clip) => Promise<{
-    features: NonNullable<PythonAnalysisResult["features"]>;
+    features: NonNullable<PythonAnalysisResult['features']>;
   }>;
 }
 
@@ -29,8 +29,8 @@ const defaultAIContext: AIContextType = {
     loudness_lufs: 0,
     peak_db: 0,
     rms_db: 0,
-    waveform_image: "",
-    spectrogram_image: "",
+    waveform_image: '',
+    spectrogram_image: '',
     time_signature: null,
     features: {
       mfcc: [],
@@ -46,7 +46,7 @@ export const AIContext = createContext<AIContextType>(defaultAIContext);
 export const useAI = () => {
   const context = useContext(AIContext);
   if (!context) {
-    throw new Error("useAI must be used within an AIProvider");
+    throw new Error('useAI must be used within an AIProvider');
   }
   return context;
 };
@@ -57,7 +57,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({
   const [analysisCache] = useState<Map<string, AIFeatureAnalysis>>(new Map());
 
   const analyzeAudioFeatures = async (
-    clip: Clip
+    clip: Clip,
   ): Promise<AIFeatureAnalysis> => {
     if (analysisCache.has(clip.id)) {
       return analysisCache.get(clip.id)!;
@@ -68,7 +68,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({
         // Convert AudioBuffer to Float32Array by getting the first channel data
         const audioData = clip.audio.buffer.getChannelData(0);
         const results = await invokePythonAnalysis({
-          command: "analyze_audio",
+          command: 'analyze_audio',
           audioData,
           parameters: {
             resolution: 1024,
@@ -79,7 +79,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({
         return results;
       }
     } catch (error) {
-      console.error("AI analysis failed:", error);
+      console.error('AI analysis failed:', error);
     }
 
     return {
@@ -87,27 +87,27 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({
       loudness_lufs: 0,
       peak_db: 0,
       rms_db: 0,
-      waveform_image: "",
-      spectrogram_image: "",
+      waveform_image: '',
+      spectrogram_image: '',
       time_signature: null,
     };
   };
 
   const suggestArrangement = async (
-    clipIds: string[]
+    clipIds: string[],
   ): Promise<{ suggestions: ArrangementSuggestion[] }> => {
     try {
       return {
         suggestions: [
           {
-            type: "arrangement" as const,
-            description: "Consider placing clips in this order for better flow",
+            type: 'arrangement' as const,
+            description: 'Consider placing clips in this order for better flow',
             clipOrder: [...clipIds],
           },
         ],
       };
     } catch (error) {
-      console.error("AI arrangement suggestion failed:", error);
+      console.error('AI arrangement suggestion failed:', error);
       return { suggestions: [] };
     }
   };

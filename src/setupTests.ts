@@ -1,6 +1,6 @@
-import "@testing-library/jest-dom";
-import { vi, expect, beforeEach, beforeAll, afterAll } from "vitest";
-import { toMatchImageSnapshot } from "jest-image-snapshot";
+import '@testing-library/jest-dom';
+import { vi, expect, beforeEach, beforeAll, afterAll } from 'vitest';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 // Unused import removed: import type { Mock } from "vitest";
 
 // Add jest-image-snapshot matcher
@@ -31,7 +31,7 @@ class MockDOMMatrix {
     const values = transform
       ? transform
           .match(/matrix\((.*)\)/)![1]
-          .split(",")
+          .split(',')
           .map(Number)
       : [1, 0, 0, 1, 0, 0];
     this.m41 = values[4] || 0;
@@ -51,7 +51,7 @@ class MockAudioContext {
   createBuffer(
     channels: number,
     length: number,
-    sampleRate: number
+    sampleRate: number,
   ): AudioBuffer {
     return new MockAudioBuffer({
       numberOfChannels: channels,
@@ -88,7 +88,7 @@ class MockAudioBuffer implements AudioBuffer {
 
   getChannelData(channel: number): Float32Array {
     if (channel >= this.numberOfChannels) {
-      throw new Error("Invalid channel index");
+      throw new Error('Invalid channel index');
     }
     return this._channels[channel];
   }
@@ -96,7 +96,7 @@ class MockAudioBuffer implements AudioBuffer {
   copyToChannel(
     source: Float32Array,
     channelNumber: number,
-    startInChannel = 0
+    startInChannel = 0,
   ): void {
     const target = this._channels[channelNumber];
     target.set(source, startInChannel);
@@ -105,7 +105,7 @@ class MockAudioBuffer implements AudioBuffer {
   copyFromChannel(
     destination: Float32Array,
     channelNumber: number,
-    startInChannel = 0
+    startInChannel = 0,
   ): void {
     const source = this._channels[channelNumber];
     const length = Math.min(destination.length, this.length - startInChannel);
@@ -154,15 +154,15 @@ const mockCanvasContext = {
   rect: vi.fn(),
   clip: vi.fn(),
   // Add common canvas context properties
-  fillStyle: "#000000",
-  strokeStyle: "#000000",
+  fillStyle: '#000000',
+  strokeStyle: '#000000',
   lineWidth: 1,
-  font: "10px sans-serif",
+  font: '10px sans-serif',
 };
 
 // Mock HTMLCanvasElement.getContext
 HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
-  if (contextType === "2d") {
+  if (contextType === '2d') {
     return mockCanvasContext;
   }
   return null;
@@ -184,22 +184,22 @@ global.window = Object.assign(global.window || {}, {
 
 // Also make it available as window.require for older electron patterns
 global.window.require = vi.fn((module) => {
-  if (module === "electron") {
+  if (module === 'electron') {
     return { ipcRenderer: mockIpcRenderer };
   }
   return {};
 });
 
 // Mock react-router-dom
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
     useNavigate: vi.fn(() => vi.fn()),
     useLocation: vi.fn(() => ({
-      pathname: "/",
-      search: "",
-      hash: "",
+      pathname: '/',
+      search: '',
+      hash: '',
       state: null,
     })),
     useParams: vi.fn(() => ({})),
@@ -207,12 +207,12 @@ vi.mock("react-router-dom", async () => {
     BrowserRouter: ({ children }: { children: React.ReactNode }) => children,
     MemoryRouter: ({ children }: { children: React.ReactNode }) => children,
     Link: ({ children, to, ...props }: any) => {
-      const React = require("react");
-      return React.createElement("a", { href: to, ...props }, children);
+      const React = require('react');
+      return React.createElement('a', { href: to, ...props }, children);
     },
     NavLink: ({ children, to, ...props }: any) => {
-      const React = require("react");
-      return React.createElement("a", { href: to, ...props }, children);
+      const React = require('react');
+      return React.createElement('a', { href: to, ...props }, children);
     },
   };
 });
@@ -257,7 +257,7 @@ const createMockTimelineStatics = () => ({
     return createMockTimeline(1, 0, 0);
   }),
   start: createMockTimeline(0, 0, 0),
-  toDisplayString: vi.fn().mockImplementation(() => "0:00:00"),
+  toDisplayString: vi.fn().mockImplementation(() => '0:00:00'),
   fromTicks: vi.fn().mockImplementation(() => createMockTimeline(0, 0, 0)),
   fromSpan: vi.fn().mockReturnValue(createMockTimeline(0, 0, 0)),
   fromSixteenths: vi.fn().mockReturnValue(createMockTimeline(0, 0, 0)),
@@ -274,7 +274,7 @@ const createMockTimelineStatics = () => ({
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
+    snapUnit: 'beat',
     horizontalScale: 1,
   },
 });
@@ -285,24 +285,24 @@ const createMockModule = () => ({
     vi.fn().mockImplementation((bar = 0, beat = 0, tick = 0) => {
       return createMockTimeline(bar, beat, tick);
     }),
-    createMockTimelineStatics()
+    createMockTimelineStatics(),
   ),
-  TrackType: { Audio: "audio", Midi: "midi", Sequencer: "sequencer" },
+  TrackType: { Audio: 'audio', Midi: 'midi', Sequencer: 'sequencer' },
   AutomationMode: {
-    Off: "off",
-    Read: "read",
-    Write: "write",
-    Touch: "touch",
-    Latch: "latch",
-    Trim: "trim",
+    Off: 'off',
+    Read: 'read',
+    Write: 'write',
+    Touch: 'touch',
+    Latch: 'latch',
+    Trim: 'trim',
   },
   AutomationLaneEnvelope: {
-    Volume: "volume",
-    Pan: "pan",
-    Send: "send",
-    Filter: "filter",
-    Tempo: "tempo",
-    Effect: "effect",
+    Volume: 'volume',
+    Pan: 'pan',
+    Send: 'send',
+    Filter: 'filter',
+    Tempo: 'tempo',
+    Effect: 'effect',
   },
 });
 
@@ -312,7 +312,7 @@ class MockCanvas {
   height = 600;
 
   getContext(contextType: string) {
-    if (contextType === "2d") {
+    if (contextType === '2d') {
       return {
         // Drawing methods
         clearRect: vi.fn(),
@@ -333,12 +333,12 @@ class MockCanvas {
         measureText: vi.fn().mockReturnValue({ width: 50 }),
 
         // Style properties
-        fillStyle: "#000000",
-        strokeStyle: "#000000",
+        fillStyle: '#000000',
+        strokeStyle: '#000000',
         lineWidth: 1,
-        font: "10px sans-serif",
-        textAlign: "start",
-        textBaseline: "alphabetic",
+        font: '10px sans-serif',
+        textAlign: 'start',
+        textBaseline: 'alphabetic',
 
         // Path methods
         clip: vi.fn(),
@@ -369,17 +369,17 @@ class MockCanvas {
 
         // Shadow properties
         shadowBlur: 0,
-        shadowColor: "rgba(0, 0, 0, 0)",
+        shadowColor: 'rgba(0, 0, 0, 0)',
         shadowOffsetX: 0,
         shadowOffsetY: 0,
 
         // Compositing
         globalAlpha: 1.0,
-        globalCompositeOperation: "source-over",
+        globalCompositeOperation: 'source-over',
 
         // Line styles
-        lineCap: "butt",
-        lineJoin: "miter",
+        lineCap: 'butt',
+        lineJoin: 'miter',
         miterLimit: 10,
         setLineDash: vi.fn(),
         getLineDash: vi.fn().mockReturnValue([]),
@@ -389,7 +389,7 @@ class MockCanvas {
     return null;
   }
 
-  toDataURL = vi.fn().mockReturnValue("data:image/png;base64,");
+  toDataURL = vi.fn().mockReturnValue('data:image/png;base64,');
   toBlob = vi.fn();
 }
 
@@ -398,12 +398,15 @@ global.HTMLCanvasElement = MockCanvas as any;
 
 // Mock canvas creation
 const originalCreateElement = document.createElement;
-document.createElement = function(tagName: string) {
-  if (tagName === "canvas") {
-    const canvas = originalCreateElement.call(document, tagName) as HTMLCanvasElement;
+document.createElement = function (tagName: string) {
+  if (tagName === 'canvas') {
+    const canvas = originalCreateElement.call(
+      document,
+      tagName,
+    ) as HTMLCanvasElement;
     // Override getContext to return our mock
     canvas.getContext = vi.fn((contextType: string) => {
-      if (contextType === "2d") {
+      if (contextType === '2d') {
         return mockCanvasContext;
       }
       return null;
@@ -413,17 +416,17 @@ document.createElement = function(tagName: string) {
   return originalCreateElement.call(document, tagName);
 } as any;
 
-vi.mock("@orpheus/types/core", () => createMockModule());
+vi.mock('@orpheus/types/core', () => createMockModule());
 
 // Also mock the relative path import used by Timeline component
-vi.mock("../../../types/core", () => createMockModule());
+vi.mock('../../../types/core', () => createMockModule());
 
 // Console error handling
 const SUPPRESSED_ERRORS = [
-  "Warning:",
-  "Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]",
-  "The above error occurred in the <TestComponent> component",
-  "Consider adding an error boundary",
+  'Warning:',
+  'Error: Uncaught [Error: useWorkstation must be used within a WorkstationProvider]',
+  'The above error occurred in the <TestComponent> component',
+  'Consider adding an error boundary',
 ];
 
 const originalConsoleError = console.error;
@@ -434,7 +437,7 @@ beforeAll(() => {
   console.error = (...args: Parameters<typeof console.error>) => {
     const firstArg = args[0];
     if (
-      typeof firstArg === "string" &&
+      typeof firstArg === 'string' &&
       SUPPRESSED_ERRORS.some((err) => firstArg.includes(err))
     ) {
       return;
@@ -445,7 +448,7 @@ beforeAll(() => {
   // Mock console.warn
   console.warn = (...args: Parameters<typeof console.warn>) => {
     const firstArg = args[0];
-    if (typeof firstArg === "string" && firstArg.includes("Warning:")) {
+    if (typeof firstArg === 'string' && firstArg.includes('Warning:')) {
       return;
     }
     originalConsoleWarn.apply(console, args);

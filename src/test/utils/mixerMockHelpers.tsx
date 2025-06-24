@@ -9,9 +9,11 @@ import {
 import { WorkstationContextType } from '../../contexts/WorkstationContext';
 
 // Create reusable mock for AutomatableParameter
-export const createAutomatableParam = (initialValue = 0): AutomatableParameter => ({
+export const createAutomatableParam = (
+  initialValue = 0,
+): AutomatableParameter => ({
   value: initialValue,
-  isAutomated: false
+  isAutomated: false,
 });
 
 // Create mock tracks with proper parameter types
@@ -35,12 +37,12 @@ export const mockTracks: Track[] = [
       preset: null,
       effects: [],
       selectedEffectIndex: 0,
-    }
+    },
   },
   {
     id: 'track-2',
     name: 'Guitar',
-    type: TrackType.Audio, 
+    type: TrackType.Audio,
     color: '#4ecdc4',
     mute: true,
     solo: false,
@@ -56,8 +58,8 @@ export const mockTracks: Track[] = [
       preset: null,
       effects: [],
       selectedEffectIndex: 0,
-    }
-  }
+    },
+  },
 ];
 
 export const mockMasterTrack: Track = {
@@ -79,7 +81,7 @@ export const mockMasterTrack: Track = {
     preset: null,
     effects: [],
     selectedEffectIndex: 0,
-  }
+  },
 };
 
 // Create the mock workstation context with all required properties
@@ -97,12 +99,12 @@ export const mockWorkstationContext: WorkstationContextType = {
   setSelectedTrackId: vi.fn(),
   setSelectedClipId: vi.fn(),
   snapGridSize: new TimelinePosition(1, 0, 0),
-  snapGridSizeOption: "bar",
+  snapGridSizeOption: 'bar',
   stretchAudio: false,
-  showMaster: true, 
+  showMaster: true,
   showTimeRuler: true,
   scrollToItem: null,
-  songRegion: null, 
+  songRegion: null,
   trackRegion: null,
   setTracks: vi.fn(),
   deleteTrack: vi.fn(),

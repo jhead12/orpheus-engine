@@ -20,18 +20,19 @@ class PlatformManager {
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       return {
         type: 'electron',
-        electronAPI: (window as any).electronAPI
+        electronAPI: (window as any).electronAPI,
       };
     }
 
     // Check for Python backend environment variable
-    const pythonBackendUrl = import.meta.env.VITE_PYTHON_BACKEND_URL || 'http://localhost:5001';
-    
+    const pythonBackendUrl =
+      import.meta.env.VITE_PYTHON_BACKEND_URL || 'http://localhost:5001';
+
     // Default to web with potential Python backend
     return {
       type: 'web',
       apiEndpoint: import.meta.env.VITE_API_ENDPOINT || 'http://localhost:5173',
-      pythonBackendUrl
+      pythonBackendUrl,
     };
   }
 

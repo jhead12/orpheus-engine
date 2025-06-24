@@ -381,7 +381,9 @@
   gap: 0.5rem;
 }
 
-.load-button, .stop-button, .play-button {
+.load-button,
+.stop-button,
+.play-button {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 6px;
@@ -424,7 +426,8 @@
   color: white;
 }
 
-.audio-files-list, .plugins-list {
+.audio-files-list,
+.plugins-list {
   background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1rem;
@@ -545,18 +548,18 @@
   .demo-content {
     grid-template-columns: 1fr;
   }
-  
+
   .demo-header {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
   }
-  
+
   .status-indicators {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .section-header {
     flex-direction: column;
     gap: 0.5rem;

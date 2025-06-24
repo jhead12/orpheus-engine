@@ -1,99 +1,100 @@
-import { VisualTestConfig } from "../types";
+import { VisualTestConfig } from '../types';
 
 /**
  * Test configuration for the AudioAnalysisPanel component
  */
 export const AudioAnalysisPanelConfig: VisualTestConfig = {
-  componentName: "AudioAnalysisPanel",
-  importPath: "../../screens/workstation/components/AudioAnalysisPanel",
+  componentName: 'AudioAnalysisPanel',
+  importPath: '../../screens/workstation/components/AudioAnalysisPanel',
   props: {
     audioFile: {
-      id: "test-audio",
-      name: "Test Audio.wav",
-      path: "/path/to/test.wav",
+      id: 'test-audio',
+      name: 'Test Audio.wav',
+      path: '/path/to/test.wav',
       duration: 240,
       sampleRate: 44100,
-      channels: 2
+      channels: 2,
     },
     analysisData: {
       waveform: new Array(1000).fill(0).map(() => Math.random() * 2 - 1),
       spectral: {
-        frequencies: new Array(512).fill(0).map((_, i) => i * 44100 / 1024),
-        magnitudes: new Array(512).fill(0).map(() => Math.random() * -60)
+        frequencies: new Array(512).fill(0).map((_, i) => (i * 44100) / 1024),
+        magnitudes: new Array(512).fill(0).map(() => Math.random() * -60),
       },
       peaks: [
         { time: 12.5, magnitude: -3.2 },
         { time: 45.8, magnitude: -2.1 },
-        { time: 89.2, magnitude: -4.5 }
-      ]
+        { time: 89.2, magnitude: -4.5 },
+      ],
     },
     onAnalysisUpdate: () => {},
-    onRegionSelect: () => {}
+    onRegionSelect: () => {},
   },
   states: [
     {
-      name: "waveform-view",
-      props: {}
+      name: 'waveform-view',
+      props: {},
     },
     {
-      name: "spectral-view",
+      name: 'spectral-view',
       props: {
-        viewMode: "spectral"
-      }
+        viewMode: 'spectral',
+      },
     },
     {
-      name: "peak-analysis",
+      name: 'peak-analysis',
       props: {
-        viewMode: "peaks",
-        showPeaks: true
-      }
+        viewMode: 'peaks',
+        showPeaks: true,
+      },
     },
     {
-      name: "stereo-analysis",
+      name: 'stereo-analysis',
       props: {
-        viewMode: "stereo",
+        viewMode: 'stereo',
         audioFile: {
-          id: "stereo-audio",
-          name: "Stereo Track.wav",
-          channels: 2
-        }
-      }
+          id: 'stereo-audio',
+          name: 'Stereo Track.wav',
+          channels: 2,
+        },
+      },
     },
     {
-      name: "real-time-analysis",
+      name: 'real-time-analysis',
       captureGif: true,
       interactions: [
         {
-          type: "click",
+          type: 'click',
           target: "[data-testid='analysis-play-button']",
-          delay: 500
-        }
-      ]
+          delay: 500,
+        },
+      ],
     },
     {
-      name: "region-selection",
+      name: 'region-selection',
       captureGif: true,
       interactions: [
         {
-          type: "mousedown",
+          type: 'mousedown',
           target: "[data-testid='waveform-display']",
           value: { clientX: 100, clientY: 150 },
-          delay: 300
+          delay: 300,
         },
         {
-          type: "mousemove",
+          type: 'mousemove',
           target: "[data-testid='waveform-display']",
           value: { clientX: 300, clientY: 150 },
-          delay: 800
+          delay: 800,
         },
         {
-          type: "mouseup",
+          type: 'mouseup',
           target: "[data-testid='waveform-display']",
-          delay: 1200
-        }
-      ]
-    }
+          delay: 1200,
+        },
+      ],
+    },
   ],
-  containerStyle: "width: 800px; height: 500px; background: #1e1e1e; padding: 20px;",
-  animationDuration: 3000
+  containerStyle:
+    'width: 800px; height: 500px; background: #1e1e1e; padding: 20px;',
+  animationDuration: 3000,
 };

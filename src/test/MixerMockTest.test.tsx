@@ -4,13 +4,40 @@ import { render, screen } from '@testing-library/react';
 // Simple mock context
 const mockContext = {
   tracks: [
-    { id: 'track-1', name: 'Vocals', type: 'Audio', volume: 0.8, pan: 0, mute: false, solo: false, armed: false },
-    { id: 'track-2', name: 'Guitar', type: 'Audio', volume: 0.7, pan: 0.2, mute: false, solo: false, armed: false }
+    {
+      id: 'track-1',
+      name: 'Vocals',
+      type: 'Audio',
+      volume: 0.8,
+      pan: 0,
+      mute: false,
+      solo: false,
+      armed: false,
+    },
+    {
+      id: 'track-2',
+      name: 'Guitar',
+      type: 'Audio',
+      volume: 0.7,
+      pan: 0.2,
+      mute: false,
+      solo: false,
+      armed: false,
+    },
   ],
-  masterTrack: { id: 'master', name: 'Master', type: 'Audio', volume: 0.8, pan: 0, mute: false },
+  masterTrack: {
+    id: 'master',
+    name: 'Master',
+    type: 'Audio',
+    volume: 0.8,
+    pan: 0,
+    mute: false,
+  },
   selectedTrackId: 'track-1',
   setSelectedTrackId: vi.fn(),
-  getTrackCurrentValue: vi.fn().mockReturnValue({ value: 0, isAutomated: false }),
+  getTrackCurrentValue: vi
+    .fn()
+    .mockReturnValue({ value: 0, isAutomated: false }),
   setTrack: vi.fn(),
 };
 
@@ -21,9 +48,9 @@ const TestComponent = ({ context }: { context: any }) => (
       {context.masterTrack.name} - {context.masterTrack.volume}
     </div>
     {context.tracks.map((track: any) => (
-      <div 
+      <div
         key={track.id}
-        data-testid={`mixer-channel-${track.id}`} 
+        data-testid={`mixer-channel-${track.id}`}
         className="mixer-track"
       >
         <input value={track.name} data-testid={`track-name-${track.id}`} />
@@ -48,7 +75,9 @@ const findTrackElementsByName = (container: any, name: string): any[] => {
 };
 
 const ensureKnobs = (container: any): number => {
-  const knobs = container.querySelectorAll('[data-testid*="mixer-pan"], [title*="Pan:"]');
+  const knobs = container.querySelectorAll(
+    '[data-testid*="mixer-pan"], [title*="Pan:"]',
+  );
   return knobs.length;
 };
 

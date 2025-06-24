@@ -1,12 +1,12 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react";
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { PreferencesContext, WorkstationContext } from '@orpheus/contexts';
 import { TimelinePosition } from '@orpheus/types/core';
 import { SnapGridSizeOption } from '@orpheus/types/audio';
+import { formatDuration, measureSeconds } from '@orpheus/utils/general';
 import {
-  formatDuration,
-  measureSeconds,
-} from '@orpheus/utils/general';
-import { BASE_BEAT_WIDTH, GRID_MIN_INTERVAL_WIDTH } from '../../../constants/timeline';
+  BASE_BEAT_WIDTH,
+  GRID_MIN_INTERVAL_WIDTH,
+} from '../../../constants/timeline';
 const TIME_MIN_INTERVAL_WIDTH = 68;
 const POS_MIN_INTERVAL_WIDTH = 34;
 const POS_MIN_SUBBEAT_INTERVAL_WIDTH = 68;
@@ -40,7 +40,7 @@ export default function TimelineRulerGrid() {
   } = useContext(WorkstationContext)!;
 
   const [devicePixelRatio, setDevicePixelRatio] = useState(
-    window.devicePixelRatio
+    window.devicePixelRatio,
   );
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
@@ -59,7 +59,7 @@ export default function TimelineRulerGrid() {
         });
     }
 
-    windowRef.current = document.getElementById("timeline-editor-window")!;
+    windowRef.current = document.getElementById('timeline-editor-window')!;
 
     const resizeObserver = new ResizeObserver(handleWindowResize);
     resizeObserver.observe(windowRef.current);
@@ -73,20 +73,20 @@ export default function TimelineRulerGrid() {
     }
 
     const query = matchMedia(`(resolution: ${devicePixelRatio}dppx)`);
-    query.addEventListener("change", updateDevicePixelRatio);
+    query.addEventListener('change', updateDevicePixelRatio);
 
-    return () => query.removeEventListener("change", updateDevicePixelRatio);
+    return () => query.removeEventListener('change', updateDevicePixelRatio);
   }, [devicePixelRatio]);
 
   useLayoutEffect(() => {
-    let ctx = timelineRef.current?.getContext("2d");
+    let ctx = timelineRef.current?.getContext('2d');
 
     if (ctx) {
       ctx.resetTransform();
       ctx.scale(devicePixelRatio, devicePixelRatio);
     }
 
-    ctx = gridRef.current?.getContext("2d");
+    ctx = gridRef.current?.getContext('2d');
 
     if (ctx) {
       ctx.resetTransform();
@@ -98,13 +98,13 @@ export default function TimelineRulerGrid() {
     function drawGrid() {
       const majorColor = window
         .getComputedStyle(document.body)
-        .getPropertyValue("--border9");
+        .getPropertyValue('--border9');
       const minorColor = window
         .getComputedStyle(document.body)
-        .getPropertyValue("--border10");
+        .getPropertyValue('--border10');
 
       const canvas = gridRef.current;
-      const ctx = canvas?.getContext("2d");
+      const ctx = canvas?.getContext('2d');
 
       if (canvas && ctx && windowRef.current) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -181,23 +181,23 @@ export default function TimelineRulerGrid() {
     function drawRuler() {
       const textColor1 = window
         .getComputedStyle(document.body)
-        .getPropertyValue("--border7");
+        .getPropertyValue('--border7');
       const textColor2 = window
         .getComputedStyle(document.body)
-        .getPropertyValue("--border6");
+        .getPropertyValue('--border6');
       const intervalMarkColor = window
         .getComputedStyle(document.body)
-        .getPropertyValue("--border4");
+        .getPropertyValue('--border4');
 
       const canvas = timelineRef.current;
-      const ctx = canvas?.getContext("2d");
+      const ctx = canvas?.getContext('2d');
 
       if (canvas && ctx && windowRef.current) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (showTimeRuler) {
           const secondWidth = TimelinePosition.fromSpan(
-            TimelinePosition.durationToSpan(1)
+            TimelinePosition.durationToSpan(1),
           ).toMargin();
           let majorSecondInterval =
             2 ** Math.ceil(Math.log2(TIME_MIN_INTERVAL_WIDTH / secondWidth));
@@ -217,7 +217,7 @@ export default function TimelineRulerGrid() {
 
           const intervalWidth = secondWidth * minorSecondInterval;
           let interval = Math.floor(
-            windowRef.current.scrollLeft / intervalWidth
+            windowRef.current.scrollLeft / intervalWidth,
           );
 
           while (true) {
@@ -244,7 +244,7 @@ export default function TimelineRulerGrid() {
               ctx.fillText(
                 text,
                 isSecond ? x + 3 : x - 1,
-                isSecond ? 14.5 : 15
+                isSecond ? 14.5 : 15,
               );
             }
 
@@ -284,14 +284,14 @@ export default function TimelineRulerGrid() {
             minorBeatInterval =
               2 **
               (Math.ceil(
-                Math.log2(POS_MIN_SUBBEAT_INTERVAL_WIDTH / beatWidth)
+                Math.log2(POS_MIN_SUBBEAT_INTERVAL_WIDTH / beatWidth),
               ) -
                 1);
           }
 
           const intervalWidth = beatWidth * minorBeatInterval;
           let interval = Math.floor(
-            windowRef.current.scrollLeft / intervalWidth
+            windowRef.current.scrollLeft / intervalWidth,
           );
 
           while (true) {
@@ -325,7 +325,7 @@ export default function TimelineRulerGrid() {
 
             if (major) {
               const pos = TimelinePosition.fromSpan(
-                TimelinePosition.fractionToSpan(beats * 1000)
+                TimelinePosition.fractionToSpan(beats * 1000),
               );
               const text = (
                 majorBeatInterval < timeSignature.beats ? pos : pos.measure
@@ -346,11 +346,11 @@ export default function TimelineRulerGrid() {
     }
 
     if (windowRef.current)
-      windowRef.current.addEventListener("scroll", drawRuler);
+      windowRef.current.addEventListener('scroll', drawRuler);
 
     drawRuler();
 
-    return () => windowRef.current?.removeEventListener("scroll", drawRuler);
+    return () => windowRef.current?.removeEventListener('scroll', drawRuler);
   }, [
     timelineSettings,
     snapGridSizeOption,
@@ -365,14 +365,14 @@ export default function TimelineRulerGrid() {
   return (
     <div
       className="position-absolute pe-none"
-      style={{ top: 12, width: "fit-content" }}
+      style={{ top: 12, width: 'fit-content' }}
     >
       <canvas
         className="position-relative d-block"
         height={20 * devicePixelRatio}
         ref={timelineRef}
         style={{
-          borderBottom: "1px solid var(--border1)",
+          borderBottom: '1px solid var(--border1)',
           zIndex: 18,
           width,
           height: 21,
@@ -385,7 +385,7 @@ export default function TimelineRulerGrid() {
         ref={gridRef}
         style={{
           zIndex: 11,
-          mixBlendMode: "var(--mix-blend-mode)" as any,
+          mixBlendMode: 'var(--mix-blend-mode)' as any,
           width,
           height,
         }}

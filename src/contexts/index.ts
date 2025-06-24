@@ -1,29 +1,29 @@
 export {
   WorkstationContext,
   type WorkstationContextType,
-} from "./WorkstationContext";
-export { AnalysisContext } from "./AnalysisContext";
-export type { AnalysisContextType } from "./types";
+} from './WorkstationContext';
+export { AnalysisContext } from './AnalysisContext';
+export type { AnalysisContextType } from './types';
 export {
   ClipboardContext,
   ClipboardProvider,
   useClipboard,
   type ClipboardContextType,
   type ClipboardItem,
-} from "./ClipboardContext";
+} from './ClipboardContext';
 export {
   MixerContext,
   MixerProvider,
   useMixer,
   type MixerContextType,
-} from "./MixerContext";
+} from './MixerContext';
 export {
   PreferencesContext,
   usePreferences,
   PreferencesProvider,
-} from "./PreferencesContext";
-export { ClipboardItemType } from "../types/clipboard";
-export { useWorkstation } from "./useWorkstation";
+} from './PreferencesContext';
+export { ClipboardItemType } from '../types/clipboard';
+export { useWorkstation } from './useWorkstation';
 
 // Audio search exports (placeholder)
 export interface SearchResult {

@@ -8,7 +8,7 @@ const mockUsePreferences = vi.fn();
 
 // Mock the module
 vi.mock('../../contexts/PreferencesContext', () => ({
-  usePreferences: () => mockUsePreferences()
+  usePreferences: () => mockUsePreferences(),
 }));
 
 describe('Preferences Component', () => {
@@ -19,7 +19,7 @@ describe('Preferences Component', () => {
     midi: {},
     interface: {},
     recording: {},
-    plugins: {}
+    plugins: {},
   };
 
   const mockSetShowPreferences = vi.fn();
@@ -28,7 +28,7 @@ describe('Preferences Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Setup default mock implementation for each test
     mockUsePreferences.mockReturnValue({
       preferences: mockPreferences,
@@ -36,7 +36,7 @@ describe('Preferences Component', () => {
       showPreferences: true,
       setShowPreferences: mockSetShowPreferences,
       updatePreferences: mockUpdatePreferences,
-      savePreferences: mockSavePreferences
+      savePreferences: mockSavePreferences,
     });
   });
 
@@ -55,7 +55,7 @@ describe('Preferences Component', () => {
       updatePreferences: mockUpdatePreferences,
       savePreferences: mockSavePreferences,
     });
-    
+
     render(<Preferences />);
     expect(screen.queryByText('Preferences')).not.toBeInTheDocument();
   });
@@ -74,11 +74,11 @@ describe('Preferences Component', () => {
 
   it('calls both savePreferences and setShowPreferences when OK button is clicked', () => {
     render(<Preferences />);
-    
+
     // Click the OK button directly instead of submitting the form
     const okButton = screen.getByText('OK');
     fireEvent.click(okButton);
-    
+
     expect(mockSavePreferences).toHaveBeenCalled();
     expect(mockSetShowPreferences).toHaveBeenCalledWith(false);
   });
@@ -93,16 +93,16 @@ describe('Preferences Component', () => {
 
   it('updates theme preference when a theme option is selected', () => {
     render(<Preferences />);
-    
+
     // Assuming the radio buttons have value attributes matching the theme names
     const lightThemeOption = screen.getByLabelText('Light');
-    
+
     fireEvent.click(lightThemeOption);
-    
+
     expect(mockUpdatePreferences).toHaveBeenCalledWith(
       expect.objectContaining({
-        theme: 'light'
-      })
+        theme: 'light',
+      }),
     );
   });
 
@@ -115,11 +115,11 @@ describe('Preferences Component', () => {
       updatePreferences: mockUpdatePreferences,
       savePreferences: mockSavePreferences,
     });
-    
+
     const { rerender } = render(<Preferences />);
-    
+
     fireEvent.click(screen.getByText('Apply'));
-    
+
     // Update the component with the saved state
     mockUsePreferences.mockReturnValue({
       preferences: mockPreferences,
@@ -129,9 +129,9 @@ describe('Preferences Component', () => {
       updatePreferences: mockUpdatePreferences,
       savePreferences: mockSavePreferences,
     });
-    
+
     rerender(<Preferences />);
-    
+
     expect(screen.getByText('Changes saved')).toBeInTheDocument();
   });
 });

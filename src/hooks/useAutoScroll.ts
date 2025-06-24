@@ -17,16 +17,16 @@ interface AutoScrollOptions {
  */
 export function useAutoScroll(
   containerRef: RefObject<HTMLElement>,
-  options: AutoScrollOptions = {}
+  options: AutoScrollOptions = {},
 ) {
   const {
     thresholds = {
       top: 20,
       right: 20,
       bottom: 20,
-      left: 20
+      left: 20,
     },
-    speed = 5
+    speed = 5,
   } = options;
 
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
@@ -56,13 +56,20 @@ export function useAutoScroll(
           if (isNearTop && container.scrollTop > 0) {
             container.scrollBy(0, -speed);
           }
-          if (isNearBottom && container.scrollTop < container.scrollHeight - container.clientHeight) {
+          if (
+            isNearBottom &&
+            container.scrollTop <
+              container.scrollHeight - container.clientHeight
+          ) {
             container.scrollBy(0, speed);
           }
           if (isNearLeft && container.scrollLeft > 0) {
             container.scrollBy(-speed, 0);
           }
-          if (isNearRight && container.scrollLeft < container.scrollWidth - container.clientWidth) {
+          if (
+            isNearRight &&
+            container.scrollLeft < container.scrollWidth - container.clientWidth
+          ) {
             container.scrollBy(speed, 0);
           }
         }, 16); // ~60fps
@@ -77,7 +84,14 @@ export function useAutoScroll(
         clearInterval(intervalRef.current);
       }
     };
-  }, [containerRef, speed, thresholds.top, thresholds.right, thresholds.bottom, thresholds.left]);
+  }, [
+    containerRef,
+    speed,
+    thresholds.top,
+    thresholds.right,
+    thresholds.bottom,
+    thresholds.left,
+  ]);
 }
 
 export default useAutoScroll;

@@ -33,7 +33,7 @@ export function getCSSVarValue(varName: string): string {
  */
 export function normalizeHex(hex: string): string {
   // Remove # if present
-  hex = hex.replace("#", "");
+  hex = hex.replace('#', '');
 
   // Convert 3-digit hex to 6-digit
   if (hex.length === 3) {
@@ -41,7 +41,7 @@ export function normalizeHex(hex: string): string {
   }
 
   // Add # back
-  return "#" + hex;
+  return `#${hex}`;
 }
 
 /**
@@ -128,10 +128,10 @@ export function hslToHex(h: number, s: number, l: number): string {
   // Convert to hex
   const toHex = (n: number) => {
     const hex = Math.round((n + m) * 255).toString(16);
-    return hex.length === 1 ? "0" + hex : hex;
+    return hex.length === 1 ? `0${hex}` : hex;
   };
 
-  return "#" + toHex(r) + toHex(g) + toHex(b);
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
 /**
@@ -145,19 +145,19 @@ export function hslToHex(h: number, s: number, l: number): string {
 export function waitForScrollWheelStop(
   element: HTMLElement,
   callback: () => void,
-  timeout: number = 150
+  timeout: number = 150,
 ): void {
   let timeoutId: NodeJS.Timeout;
 
   const handleScroll = () => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
-      element.removeEventListener("scroll", handleScroll);
+      element.removeEventListener('scroll', handleScroll);
       callback();
     }, timeout);
   };
 
-  element.addEventListener("scroll", handleScroll);
+  element.addEventListener('scroll', handleScroll);
 }
 
 /**
@@ -166,7 +166,7 @@ export function waitForScrollWheelStop(
 export function scrollToAndAlign(
   element: HTMLElement,
   position: { left?: number; top?: number },
-  align: { left?: number; top?: number } = { left: 0, top: 0 }
+  align: { left?: number; top?: number } = { left: 0, top: 0 },
 ): void {
   if (position.left !== undefined) {
     element.scrollLeft =
@@ -184,7 +184,7 @@ export function scrollToAndAlign(
  * Checks if the Cmd (macOS) or Ctrl (other platforms) key is pressed
  */
 export function cmdOrCtrl(e: KeyboardEvent | React.KeyboardEvent): boolean {
-  return navigator.platform.toLowerCase().includes("mac")
+  return navigator.platform.toLowerCase().includes('mac')
     ? e.metaKey
     : e.ctrlKey;
 }
@@ -205,13 +205,13 @@ export const shadeColor = (color: string, percent: number) => {
   B = B < 255 ? B : 255;
 
   const RR =
-    R.toString(16).length === 1 ? "0" + R.toString(16) : R.toString(16);
+    R.toString(16).length === 1 ? `0${R.toString(16)}` : R.toString(16);
   const GG =
-    G.toString(16).length === 1 ? "0" + G.toString(16) : G.toString(16);
+    G.toString(16).length === 1 ? `0${G.toString(16)}` : G.toString(16);
   const BB =
-    B.toString(16).length === 1 ? "0" + B.toString(16) : B.toString(16);
+    B.toString(16).length === 1 ? `0${B.toString(16)}` : B.toString(16);
 
-  return "#" + RR + GG + BB;
+  return `#${RR}${GG}${BB}`;
 };
 
 /**
@@ -222,7 +222,7 @@ export const shadeColor = (color: string, percent: number) => {
  */
 export function getScrollParent(
   node: HTMLElement | null,
-  includeHidden = false
+  includeHidden = false,
 ): HTMLElement | null {
   if (!node) {
     return null;
@@ -253,9 +253,10 @@ export function getScrollParent(
  */
 export function getScrollParentWithDirection(
   element: HTMLElement,
-  direction: "vertical" | "horizontal" = "vertical"
+  direction: 'vertical' | 'horizontal' = 'vertical',
 ): HTMLElement | null {
-  const overflowProperty = direction === "horizontal" ? "overflowX" : "overflowY";
+  const overflowProperty =
+    direction === 'horizontal' ? 'overflowX' : 'overflowY';
 
   const isScrollable = (style: CSSStyleDeclaration) => {
     const overflow = style[overflowProperty as keyof CSSStyleDeclaration];
@@ -284,9 +285,9 @@ export function getScrollParentWithDirection(
 export function formatDuration(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
-  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds
     .toString()
-    .padStart(2, "0")}`;
+    .padStart(2, '0')}`;
 }
 
 /**
@@ -295,7 +296,7 @@ export function formatDuration(seconds: number): string {
  * @returns Duration in seconds
  */
 export function parseDuration(durationStr: string): number {
-  const [minutes, seconds] = durationStr.split(":").map(Number);
+  const [minutes, seconds] = durationStr.split(':').map(Number);
   return minutes * 60 + seconds;
 }
 
@@ -309,7 +310,7 @@ export function parseDuration(durationStr: string): number {
 export function measureSeconds(
   measures: number,
   beatsPerMeasure = 4,
-  bpm = 120
+  bpm = 120,
 ): number {
   const beatsPerSecond = bpm / 60;
   const secondsPerMeasure = beatsPerMeasure / beatsPerSecond;

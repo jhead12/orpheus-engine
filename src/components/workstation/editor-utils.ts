@@ -1,4 +1,4 @@
-import { clamp } from "../../services/utils/general";
+import { clamp } from '../../services/utils/general';
 
 declare global {
   interface Window {
@@ -24,7 +24,7 @@ type DebouncedFunction<T extends (...args: unknown[]) => unknown> = T & {
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
+  wait: number,
 ): DebouncedFunction<T> {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -56,9 +56,9 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function openContextMenu(
   type: string,
   params: Record<string, unknown> = {},
-  callback: (actionParams: ContextMenuParams) => void
+  callback: (actionParams: ContextMenuParams) => void,
 ): void {
-  window.electron.ipcRenderer.send("show-context-menu", {
+  window.electron.ipcRenderer.send('show-context-menu', {
     type,
     ...params,
     callback,
@@ -69,16 +69,16 @@ export function openContextMenu(
  * Returns true if the current platform is macOS
  */
 export function isMacOS(): boolean {
-  return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 }
 
 /**
  * Checks if a keyboard event should trigger a context menu
  */
 export function shouldOpenContextMenu(
-  e: KeyboardEvent | React.KeyboardEvent
+  e: KeyboardEvent | React.KeyboardEvent,
 ): boolean {
-  return cmdOrCtrl(e) && e.key === " ";
+  return cmdOrCtrl(e) && e.key === ' ';
 }
 
 /**

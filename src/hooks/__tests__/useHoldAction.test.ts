@@ -1,7 +1,7 @@
-import { renderHook, act } from "@testing-library/react";
-import useHoldAction from "../useHoldAction";
+import { renderHook, act } from '@testing-library/react';
+import useHoldAction from '../useHoldAction';
 
-describe("useHoldAction", () => {
+describe('useHoldAction', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -11,13 +11,13 @@ describe("useHoldAction", () => {
     jest.clearAllMocks();
   });
 
-  it("triggers callback on hold", () => {
+  it('triggers callback on hold', () => {
     const mockCallback = jest.fn();
     const { result } = renderHook(() =>
       useHoldAction({
         onHoldAction: mockCallback,
-        delay: 100
-      })
+        delay: 100,
+      }),
     );
 
     act(() => {
@@ -30,15 +30,15 @@ describe("useHoldAction", () => {
     expect(mockCallback).toHaveBeenCalled();
   });
 
-  it("calls callback repeatedly at specified intervals during hold", () => {
+  it('calls callback repeatedly at specified intervals during hold', () => {
     const mockCallback = jest.fn();
     const { result } = renderHook(() =>
       useHoldAction({
         onHoldAction: mockCallback,
         delay: 100,
         interval: 50,
-        holdActionOnMouseDown: false // Important - disable initial call
-      })
+        holdActionOnMouseDown: false, // Important - disable initial call
+      }),
     );
 
     // Start the hold action
@@ -63,14 +63,14 @@ describe("useHoldAction", () => {
     expect(mockCallback).toHaveBeenCalledTimes(3);
   });
 
-  it("triggers callback immediately when holdActionOnMouseDown is true", () => {
+  it('triggers callback immediately when holdActionOnMouseDown is true', () => {
     const mockCallback = jest.fn();
     const { result } = renderHook(() =>
       useHoldAction({
         onHoldAction: mockCallback,
         delay: 100,
-        holdActionOnMouseDown: true
-      })
+        holdActionOnMouseDown: true,
+      }),
     );
 
     act(() => {
@@ -81,15 +81,15 @@ describe("useHoldAction", () => {
     expect(mockCallback).toHaveBeenCalledTimes(1);
   });
 
-  it("stops calling the callback after endHold is called", () => {
+  it('stops calling the callback after endHold is called', () => {
     const mockCallback = jest.fn();
     const { result } = renderHook(() =>
       useHoldAction({
         onHoldAction: mockCallback,
         delay: 100,
         interval: 50,
-        holdActionOnMouseDown: false
-      })
+        holdActionOnMouseDown: false,
+      }),
     );
 
     act(() => {
@@ -110,19 +110,19 @@ describe("useHoldAction", () => {
     expect(mockCallback).toHaveBeenCalledTimes(1); // Still only one call
   });
 
-  it("checks interval timing with timestamps", () => {
+  it('checks interval timing with timestamps', () => {
     // Create a spy on Date.now to track call timing
     const mockCallback = jest.fn();
     let currentTime = 0;
     jest.spyOn(Date, 'now').mockImplementation(() => currentTime);
-    
+
     const { result } = renderHook(() =>
       useHoldAction({
         onHoldAction: mockCallback,
         delay: 100,
         interval: 50,
-        holdActionOnMouseDown: false
-      })
+        holdActionOnMouseDown: false,
+      }),
     );
 
     act(() => {
@@ -133,7 +133,7 @@ describe("useHoldAction", () => {
     currentTime += 100;
     jest.advanceTimersByTime(100);
     expect(mockCallback).toHaveBeenCalledTimes(1);
-    
+
     // Advance to one interval
     currentTime += 50;
     jest.advanceTimersByTime(50);

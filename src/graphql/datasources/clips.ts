@@ -1,6 +1,6 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
-import { Clip, TrackType, TimelinePosition } from "../../types/core";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
+import { Clip, TrackType, TimelinePosition } from '../../types/core';
 
 interface ClipInput {
   name: string;
@@ -23,7 +23,7 @@ export class ClipAPI {
   }
 
   private async batchLoadClips(
-    ids: readonly string[]
+    ids: readonly string[],
   ): Promise<(Clip | null)[]> {
     return ids.map((id) => this.clips.get(id) || null);
   }
@@ -35,7 +35,7 @@ export class ClipAPI {
   async getByTrackId(trackId: string): Promise<Clip[]> {
     const clipIds = this.trackClips.get(trackId) || new Set();
     const clips = await Promise.all(
-      Array.from(clipIds).map((id) => this.get(id))
+      Array.from(clipIds).map((id) => this.get(id)),
     );
     return clips.filter((clip): clip is Clip => clip !== null);
   }
@@ -65,7 +65,7 @@ export class ClipAPI {
   async update(id: string, input: Partial<ClipInput>): Promise<Clip> {
     const existingClip = await this.get(id);
     if (!existingClip) {
-      throw new Error("Clip not found");
+      throw new Error('Clip not found');
     }
 
     const updatedClip: Clip = {

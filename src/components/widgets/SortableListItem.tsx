@@ -7,8 +7,16 @@ interface SortableListItemProps {
   key?: string | number;
 }
 
-const SortableListItem: FC<SortableListItemProps> = ({ children, className, index }) => {
-  return <div className={`sortable-item ${className || ''}`} data-index={index}>{children}</div>;
+const SortableListItem: FC<SortableListItemProps> = ({
+  children,
+  className,
+  index,
+}) => {
+  return (
+    <div className={`sortable-item ${className || ''}`} data-index={index}>
+      {children}
+    </div>
+  );
 };
 
 export default SortableListItem;

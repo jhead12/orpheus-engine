@@ -1,16 +1,22 @@
-import {v4 as uuidv4} from 'uuid';
-import { TimelinePosition, AutomationLaneEnvelope, Track, TrackType, AutomationMode } from "./services/types/types";
+import { v4 as uuidv4 } from 'uuid';
+import {
+  TimelinePosition,
+  AutomationLaneEnvelope,
+  Track,
+  TrackType,
+  AutomationMode,
+} from './services/types/types';
 
-const data : Track[] = [
+const data: Track[] = [
   {
-    id: uuidv4(), 
-    name: "Track 1", 
+    id: uuidv4(),
+    name: 'Track 1',
     type: TrackType.Midi,
-    color: "#84a3ff",
+    color: '#84a3ff',
     fx: {
       preset: null,
       effects: [],
-      selectedEffectIndex: 0
+      selectedEffectIndex: 0,
     },
     clips: [
       {
@@ -21,8 +27,8 @@ const data : Track[] = [
         endLimit: new TimelinePosition(4, 2, 0),
         loopEnd: new TimelinePosition(3, 2, 900),
         muted: false,
-        name: "my_clip",
-        type: TrackType.Midi
+        name: 'my_clip',
+        type: TrackType.Midi,
       },
       {
         id: uuidv4(),
@@ -32,9 +38,9 @@ const data : Track[] = [
         endLimit: undefined,
         loopEnd: new TimelinePosition(5, 2, 500),
         muted: false,
-        name: "my_clip",
-        type: TrackType.Midi
-      }
+        name: 'my_clip',
+        type: TrackType.Midi,
+      },
     ],
     mute: false,
     solo: false,
@@ -49,57 +55,57 @@ const data : Track[] = [
         enabled: true,
         expanded: true,
         id: uuidv4(),
-        label: "Volume",
+        label: 'Volume',
         minValue: -Infinity,
         maxValue: 6,
         nodes: [
           {
             id: uuidv4(),
             pos: new TimelinePosition(1, 2, 0),
-            value: -37
+            value: -37,
           },
           {
             id: uuidv4(),
             pos: new TimelinePosition(2, 2, 0),
-            value: -Infinity
+            value: -Infinity,
           },
           {
             id: uuidv4(),
             pos: new TimelinePosition(3, 4, 500),
-            value: 6
+            value: 6,
           },
           {
             id: uuidv4(),
             pos: new TimelinePosition(5, 1, 0),
-            value: -57
-          }
+            value: -57,
+          },
         ],
-        show: false
+        show: false,
       },
       {
         enabled: true,
         envelope: AutomationLaneEnvelope.Pan,
         expanded: true,
         id: uuidv4(),
-        label: "Pan",
+        label: 'Pan',
         minValue: -100,
         maxValue: 100,
         nodes: [
           {
             id: uuidv4(),
             pos: new TimelinePosition(1, 1, 0),
-            value: 0
+            value: 0,
           },
           {
             id: uuidv4(),
             pos: new TimelinePosition(3, 1, 0),
-            value: -37
-          }
+            value: -37,
+          },
         ],
-        show: false
-      }
-    ]
-  }
-]
+        show: false,
+      },
+    ],
+  },
+];
 
 export default data;

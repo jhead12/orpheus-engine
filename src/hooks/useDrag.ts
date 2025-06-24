@@ -19,44 +19,58 @@ interface UseDragOptions {
 export function useDrag(options: UseDragOptions = {}) {
   const [dragState, setDragState] = useState<DragState | null>(null);
 
-  const handleMouseDown = useCallback((e: MouseEvent) => {
-    if (e.button === 0) { // Only handle left mouse button
-      setDragState({
-        isDragging: true,
-        startCoords: { x: e.clientX, y: e.clientY },
-        currentCoords: { x: e.clientX, y: e.clientY }
-      });
-      options.onDragStart?.(e);
-    }
-  }, [options.onDragStart]);
+  const handleMouseDown = useCallback(
+    (e: MouseEvent) => {
+      if (e.button === 0) {
+        // Only handle left mouse button
+        setDragState({
+          isDragging: true,
+          startCoords: { x: e.clientX, y: e.clientY },
+          currentCoords: { x: e.clientX, y: e.clientY },
+        });
+        options.onDragStart?.(e);
+      }
+    },
+    [options.onDragStart],
+  );
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (dragState?.isDragging) {
-      const delta = {
-        x: e.clientX - dragState.startCoords.x,
-        y: e.clientY - dragState.startCoords.y
-      };
-      
-      setDragState(prev => prev ? {
-        ...prev,
-        currentCoords: { x: e.clientX, y: e.clientY }
-      } : null);
-      
-      options.onDragMove?.(e, delta);
-    }
-  }, [dragState, options.onDragMove]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (dragState?.isDragging) {
+        const delta = {
+          x: e.clientX - dragState.startCoords.x,
+          y: e.clientY - dragState.startCoords.y,
+        };
 
-  const handleMouseUp = useCallback((e: MouseEvent) => {
-    if (dragState?.isDragging) {
-      const delta = {
-        x: e.clientX - dragState.startCoords.x,
-        y: e.clientY - dragState.startCoords.y
-      };
-      
-      options.onDragEnd?.(e, delta);
-      setDragState(null);
-    }
-  }, [dragState, options.onDragEnd]);
+        setDragState((prev) =>
+          prev
+            ? {
+                ...prev,
+                currentCoords: { x: e.clientX, y: e.clientY },
+              }
+            : null,
+        );
+
+        options.onDragMove?.(e, delta);
+      }
+    },
+    [dragState, options.onDragMove],
+  );
+
+  const handleMouseUp = useCallback(
+    (e: MouseEvent) => {
+      if (dragState?.isDragging) {
+        const delta = {
+          x: e.clientX - dragState.startCoords.x,
+          y: e.clientY - dragState.startCoords.y,
+        };
+
+        options.onDragEnd?.(e, delta);
+        setDragState(null);
+      }
+    },
+    [dragState, options.onDragEnd],
+  );
 
   // Set up event listeners
   useEffect(() => {
@@ -72,10 +86,12 @@ export function useDrag(options: UseDragOptions = {}) {
   return {
     handleMouseDown,
     isDragging: dragState?.isDragging || false,
-    dragDelta: dragState ? {
-      x: dragState.currentCoords.x - dragState.startCoords.x,
-      y: dragState.currentCoords.y - dragState.startCoords.y
-    } : { x: 0, y: 0 }
+    dragDelta: dragState
+      ? {
+          x: dragState.currentCoords.x - dragState.startCoords.x,
+          y: dragState.currentCoords.y - dragState.startCoords.y,
+        }
+      : { x: 0, y: 0 },
   };
 }
 

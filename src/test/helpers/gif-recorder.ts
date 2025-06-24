@@ -5,7 +5,7 @@
 import {
   recordComponentGif,
   createComponentHtml,
-} from "../visual-agent/helpers/gif-recorder";
+} from '../visual-agent/helpers/gif-recorder';
 
 /**
  * Records a GIF of an element with animation
@@ -19,7 +19,7 @@ export async function recordGif(
   element: HTMLElement,
   name: string,
   duration = 2000,
-  fps = 10
+  fps = 10,
 ): Promise<string> {
   const elementHtml = element.outerHTML;
   const computedStyle = getComputedStyle(element);

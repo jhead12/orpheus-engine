@@ -27,24 +27,24 @@ const DocsNavigation: React.FC<DocsNavigationProps> = ({ show = true }) => {
 
   return (
     <div className="docs-navigation">
-      <button 
+      <button
         className={`docs-nav-button ${isExpanded ? 'expanded' : ''}`}
         onClick={() => setIsExpanded(!isExpanded)}
         title={isOnDocs ? 'Back to DAW' : 'View Documentation'}
       >
         {isOnDocs ? '🎵' : '📚'}
       </button>
-      
+
       {isExpanded && (
         <div className="docs-nav-menu">
-          <button 
+          <button
             className={`nav-option ${isOnMain ? 'active' : ''}`}
             onClick={handleNavigation}
             disabled={isOnMain}
           >
             🎵 DAW Workstation
           </button>
-          <button 
+          <button
             className={`nav-option ${isOnDocs ? 'active' : ''}`}
             onClick={handleNavigation}
             disabled={isOnDocs}

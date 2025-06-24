@@ -1,9 +1,9 @@
-import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useMCPAnalysis } from "../useMCPAnalysis";
-import { AudioAnalysisType } from "../../types/audio";
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { useMCPAnalysis } from '../useMCPAnalysis';
+import { AudioAnalysisType } from '../../types/audio';
 
-describe("useMCPAnalysis", () => {
+describe('useMCPAnalysis', () => {
   let mockAudioBuffer: AudioBuffer;
 
   beforeEach(() => {
@@ -18,14 +18,14 @@ describe("useMCPAnalysis", () => {
   });
 
   // CREATE test - verifies initial analysis with new audio buffer
-  it("should create new analysis results when provided with audio buffer", async () => {
+  it('should create new analysis results when provided with audio buffer', async () => {
     const options = {
       type: AudioAnalysisType.Spectral,
       resolution: 1024,
     };
 
     const { result } = renderHook(() =>
-      useMCPAnalysis(mockAudioBuffer, options)
+      useMCPAnalysis(mockAudioBuffer, options),
     );
 
     // Wait for the analysis to complete
@@ -38,12 +38,12 @@ describe("useMCPAnalysis", () => {
     expect(result.current.error).toBeNull();
     expect(result.current.results?.spectralData).toBeDefined();
     expect(result.current.results?.waveformData).toHaveLength(
-      mockAudioBuffer.length
+      mockAudioBuffer.length,
     );
   });
 
   // READ test - verifies null state handling
-  it("should handle null audio buffer correctly", () => {
+  it('should handle null audio buffer correctly', () => {
     const options = {
       type: AudioAnalysisType.Spectral,
       resolution: 1024,
@@ -57,7 +57,7 @@ describe("useMCPAnalysis", () => {
   });
 
   // UPDATE test - verifies analysis update with new options
-  it("should update analysis when options change", async () => {
+  it('should update analysis when options change', async () => {
     const initialOptions = {
       type: AudioAnalysisType.Spectral,
       resolution: 1024,
@@ -98,7 +98,7 @@ describe("useMCPAnalysis", () => {
   });
 
   // DELETE test - verifies cleanup when component unmounts
-  it("should clean up results when audio buffer is removed", async () => {
+  it('should clean up results when audio buffer is removed', async () => {
     const options = {
       type: AudioAnalysisType.Spectral,
       resolution: 1024,
@@ -133,11 +133,11 @@ describe("useMCPAnalysis", () => {
   });
 
   // Error handling test
-  it("should handle analysis errors correctly", async () => {
+  it('should handle analysis errors correctly', async () => {
     const errorBuffer = {
       ...mockAudioBuffer,
       getChannelData: vi.fn().mockImplementation(() => {
-        throw new Error("Failed to get channel data");
+        throw new Error('Failed to get channel data');
       }),
     } as unknown as AudioBuffer;
 
@@ -152,20 +152,20 @@ describe("useMCPAnalysis", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(result.current.error).toBe("Analysis failed");
+    expect(result.current.error).toBe('Analysis failed');
     expect(result.current.results).toBeNull();
     expect(result.current.isLoading).toBe(false);
   });
 
   // Feature-specific tests
-  it("should include features in analysis results", async () => {
+  it('should include features in analysis results', async () => {
     const options = {
       type: AudioAnalysisType.Features,
       resolution: 1024,
     };
 
     const { result } = renderHook(() =>
-      useMCPAnalysis(mockAudioBuffer, options)
+      useMCPAnalysis(mockAudioBuffer, options),
     );
 
     await act(async () => {
@@ -179,7 +179,7 @@ describe("useMCPAnalysis", () => {
     expect(result.current.results?.features?.chromagram).toBeDefined();
   });
 
-  it("should respect window size parameter", async () => {
+  it('should respect window size parameter', async () => {
     const options = {
       type: AudioAnalysisType.Spectral,
       resolution: 1024,
@@ -187,7 +187,7 @@ describe("useMCPAnalysis", () => {
     };
 
     const { result } = renderHook(() =>
-      useMCPAnalysis(mockAudioBuffer, options)
+      useMCPAnalysis(mockAudioBuffer, options),
     );
 
     await act(async () => {
@@ -199,14 +199,14 @@ describe("useMCPAnalysis", () => {
     expect(result.current.error).toBeNull();
   });
 
-  it("should handle waveform analysis type", async () => {
+  it('should handle waveform analysis type', async () => {
     const options = {
       type: AudioAnalysisType.Waveform,
       resolution: 1024,
     };
 
     const { result } = renderHook(() =>
-      useMCPAnalysis(mockAudioBuffer, options)
+      useMCPAnalysis(mockAudioBuffer, options),
     );
 
     await act(async () => {
@@ -216,7 +216,7 @@ describe("useMCPAnalysis", () => {
     expect(result.current.results).not.toBeNull();
     expect(result.current.results?.waveformData).toBeDefined();
     expect(result.current.results?.waveformData).toHaveLength(
-      mockAudioBuffer.length
+      mockAudioBuffer.length,
     );
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();

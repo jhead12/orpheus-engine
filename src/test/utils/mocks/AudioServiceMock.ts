@@ -28,23 +28,23 @@ export interface MockAnalyserNode extends MockAudioNode {
 export class MockAudioContext {
   public destination: MockAudioNode = {
     connect: vi.fn(),
-    disconnect: vi.fn()
+    disconnect: vi.fn(),
   };
-  
+
   public sampleRate: number = 44100;
   public currentTime: number = 0;
   public state: AudioContextState = 'running';
-  
+
   constructor() {}
-  
+
   public createGain(): MockGainNode {
     return {
       gain: { value: 1 },
       connect: vi.fn().mockReturnThis(),
-      disconnect: vi.fn()
+      disconnect: vi.fn(),
     };
   }
-  
+
   public createAnalyser(): MockAnalyserNode {
     return {
       fftSize: 2048,
@@ -64,10 +64,10 @@ export class MockAudioContext {
         }
       }),
       connect: vi.fn().mockReturnThis(),
-      disconnect: vi.fn()
+      disconnect: vi.fn(),
     };
   }
-  
+
   public createOscillator() {
     return {
       frequency: { value: 440 },
@@ -75,10 +75,10 @@ export class MockAudioContext {
       connect: vi.fn().mockReturnThis(),
       disconnect: vi.fn(),
       start: vi.fn(),
-      stop: vi.fn()
+      stop: vi.fn(),
     };
   }
-  
+
   public createBufferSource() {
     return {
       buffer: null,
@@ -86,20 +86,20 @@ export class MockAudioContext {
       connect: vi.fn().mockReturnThis(),
       disconnect: vi.fn(),
       start: vi.fn(),
-      stop: vi.fn()
+      stop: vi.fn(),
     };
   }
-  
+
   public resume() {
     this.state = 'running';
     return Promise.resolve();
   }
-  
+
   public suspend() {
     this.state = 'suspended';
     return Promise.resolve();
   }
-  
+
   public close() {
     this.state = 'closed';
     return Promise.resolve();
@@ -112,14 +112,16 @@ export class MockAudioContext {
  */
 export function setupGlobalAudioContextMock(): void {
   const mockAudioContextFactory = () => new MockAudioContext();
-  
+
   if (typeof window !== 'undefined') {
     // @ts-ignore: Mock implementation
     window.AudioContext = vi.fn().mockImplementation(mockAudioContextFactory);
     // @ts-ignore: Mock implementation
-    window.webkitAudioContext = vi.fn().mockImplementation(mockAudioContextFactory);
+    window.webkitAudioContext = vi
+      .fn()
+      .mockImplementation(mockAudioContextFactory);
   }
-  
+
   global.AudioContext = vi.fn().mockImplementation(mockAudioContextFactory);
   global.webkitAudioContext = global.AudioContext;
 }
@@ -128,7 +130,7 @@ export class AudioServiceMock {
   private static instance: AudioServiceMock;
   private isInitialized = false;
   private context: MockAudioContext;
-  
+
   private constructor() {
     this.context = new MockAudioContext();
   }
@@ -160,7 +162,7 @@ export class AudioServiceMock {
       disconnect: vi.fn(),
       getMeteringLevel: vi.fn().mockReturnValue(0.5),
       getPeakLevel: vi.fn().mockReturnValue(0.8),
-      reset: vi.fn()
+      reset: vi.fn(),
     };
   }
 
@@ -170,7 +172,7 @@ export class AudioServiceMock {
       disconnect: vi.fn(),
       getFrequencyData: vi.fn().mockReturnValue(new Uint8Array(128).fill(50)),
       getWaveformData: vi.fn().mockReturnValue(new Uint8Array(128).fill(128)),
-      isActive: vi.fn().mockReturnValue(true)
+      isActive: vi.fn().mockReturnValue(true),
     };
   }
 }

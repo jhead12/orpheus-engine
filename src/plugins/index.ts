@@ -35,23 +35,22 @@ export class PluginSystem {
     }
 
     console.log('Initializing Orpheus Engine Plugin System...');
-    
+
     try {
       // Initialize the registry
       await this.registry.initialize();
-      
+
       // Register built-in plugins
       await this.registerBuiltInPlugins();
-      
+
       // Set up event listeners
       this.setupEventListeners();
-      
+
       this.initialized = true;
       console.log('Plugin system initialized successfully');
-      
+
       // Emit initialization event
       this.registry.emit('system:initialized');
-      
     } catch (error) {
       console.error('Failed to initialize plugin system:', error);
       throw error;
@@ -66,7 +65,7 @@ export class PluginSystem {
       // Register Audio Analysis Plugin
       const audioAnalysisPlugin = new AudioAnalysisPlugin();
       await this.registry.registerPlugin(audioAnalysisPlugin);
-      
+
       console.log('Built-in plugins registered successfully');
     } catch (error) {
       console.error('Failed to register built-in plugins:', error);
@@ -127,7 +126,7 @@ export class PluginSystem {
     if (!this.initialized) {
       throw new Error('Plugin system not initialized');
     }
-    
+
     await this.registry.activatePlugin(pluginId);
   }
 
@@ -138,7 +137,7 @@ export class PluginSystem {
     if (!this.initialized) {
       throw new Error('Plugin system not initialized');
     }
-    
+
     await this.registry.deactivatePlugin(pluginId);
   }
 
@@ -172,11 +171,11 @@ export class PluginSystem {
     }
 
     console.log('Shutting down plugin system...');
-    
+
     try {
       await this.registry.shutdown();
       this.initialized = false;
-      
+
       console.log('Plugin system shutdown complete');
     } catch (error) {
       console.error('Error during plugin system shutdown:', error);
@@ -239,8 +238,10 @@ export class PluginSystem {
     if (!pluginItems) return;
 
     const plugins = this.registry.getAllPlugins();
-    
-    pluginItems.innerHTML = plugins.map(plugin => `
+
+    pluginItems.innerHTML = plugins
+      .map(
+        (plugin) => `
       <div class="plugin-item" data-plugin-id="${plugin.manifest.id}">
         <div class="plugin-column">
           <div class="plugin-name">${plugin.manifest.name}</div>
@@ -251,15 +252,18 @@ export class PluginSystem {
         </div>
         <div class="plugin-column">
           <div class="plugin-actions">
-            ${plugin.status === 'active' 
-              ? `<button onclick="pluginSystem.deactivatePlugin('${plugin.manifest.id}')">Deactivate</button>`
-              : `<button onclick="pluginSystem.activatePlugin('${plugin.manifest.id}')">Activate</button>`
+            ${
+              plugin.status === 'active'
+                ? `<button onclick="pluginSystem.deactivatePlugin('${plugin.manifest.id}')">Deactivate</button>`
+                : `<button onclick="pluginSystem.activatePlugin('${plugin.manifest.id}')">Activate</button>`
             }
             <button onclick="pluginSystem.showPluginDetails('${plugin.manifest.id}')">Details</button>
           </div>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
   }
 
   /**
@@ -292,10 +296,14 @@ export class PluginSystem {
           .join('')}
       </ul>
       
-      ${plugin.error ? `
+      ${
+        plugin.error
+          ? `
         <h4>Error</h4>
         <pre class="plugin-error">${plugin.error.message}</pre>
-      ` : ''}
+      `
+          : ''
+      }
     `;
   }
 
@@ -305,7 +313,9 @@ export class PluginSystem {
   private showLoadPluginDialog(): void {
     // This would open a file dialog or plugin marketplace
     console.log('Load plugin dialog - to be implemented');
-    alert('Plugin loading from external sources will be implemented in future versions');
+    alert(
+      'Plugin loading from external sources will be implemented in future versions',
+    );
   }
 }
 

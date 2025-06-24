@@ -1,5 +1,5 @@
-import React, { HTMLProps } from "react";
-import useHoldAction from "../hooks/useHoldAction";
+import React, { HTMLProps } from 'react';
+import useHoldAction from '../hooks/useHoldAction';
 
 interface Props extends HTMLProps<HTMLDivElement> {
   delay?: number;
@@ -9,22 +9,30 @@ interface Props extends HTMLProps<HTMLDivElement> {
 }
 
 export default function HoldActionButton(props: Props) {
-  const { delay = 500, holdActionOnMouseDown = true, interval, onHoldAction, ...rest } = props;
+  const {
+    delay = 500,
+    holdActionOnMouseDown = true,
+    interval,
+    onHoldAction,
+    ...rest
+  } = props;
 
-  const [eventType, setEventType] = React.useState<"mousedown" | "keydown" | "none">("none");
-  
+  const [eventType, setEventType] = React.useState<
+    'mousedown' | 'keydown' | 'none'
+  >('none');
+
   const { startHold, endHold } = useHoldAction({
     onHoldAction,
     delay,
     interval,
-    holdActionOnMouseDown
+    holdActionOnMouseDown,
   });
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     rest.onKeyDown?.(e);
 
-    if (document.activeElement === e.target && e.key === "Enter") {
-      setEventType("keydown");
+    if (document.activeElement === e.target && e.key === 'Enter') {
+      setEventType('keydown');
       startHold();
     }
   }
@@ -32,8 +40,12 @@ export default function HoldActionButton(props: Props) {
   function handleKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     rest.onKeyUp?.(e);
 
-    if (document.activeElement === e.target && e.key === "Enter" && eventType === "keydown") {
-      setEventType("none");
+    if (
+      document.activeElement === e.target &&
+      e.key === 'Enter' &&
+      eventType === 'keydown'
+    ) {
+      setEventType('none');
       endHold();
     }
   }
@@ -41,23 +53,23 @@ export default function HoldActionButton(props: Props) {
   function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
     if (e.button === 0) {
       rest.onMouseDown?.(e);
-      setEventType("mousedown");
+      setEventType('mousedown');
       startHold();
     }
   }
 
   function handleMouseUp(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.button === 0 && eventType === "mousedown") {
+    if (e.button === 0 && eventType === 'mousedown') {
       rest.onMouseUp?.(e);
-      setEventType("none");
+      setEventType('none');
       endHold();
     }
   }
 
   function handleMouseLeave(e: React.MouseEvent<HTMLDivElement>) {
     rest.onMouseLeave?.(e);
-    if (eventType === "mousedown") {
-      setEventType("none");
+    if (eventType === 'mousedown') {
+      setEventType('none');
       endHold();
     }
   }
@@ -72,7 +84,7 @@ export default function HoldActionButton(props: Props) {
       onMouseDown={handleMouseDown}
       onMouseLeave={handleMouseLeave}
       onMouseUp={handleMouseUp}
-      style={{ display: "inline-flex", ...rest.style }}
+      style={{ display: 'inline-flex', ...rest.style }}
     />
   );
 }

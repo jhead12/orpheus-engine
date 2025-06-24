@@ -1,18 +1,20 @@
-import { render as rtlRender, RenderOptions, renderHook as rtlRenderHook, RenderHookOptions, RenderHookResult } from '@testing-library/react';
+import {
+  render as rtlRender,
+  RenderOptions,
+  renderHook as rtlRenderHook,
+  RenderHookOptions,
+  RenderHookResult,
+} from '@testing-library/react';
 import { ReactElement, ReactNode } from 'react';
 import { ReactProvider } from './ReactProvider';
 
 // Custom render function that wraps component in ReactProvider
 function renderWithProvider(
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<RenderOptions, 'wrapper'>,
 ) {
   return rtlRender(ui, {
-    wrapper: ({ children }) => (
-      <ReactProvider>
-        {children}
-      </ReactProvider>
-    ),
+    wrapper: ({ children }) => <ReactProvider>{children}</ReactProvider>,
     ...options,
   });
 }
@@ -20,14 +22,10 @@ function renderWithProvider(
 // Custom renderHook function that wraps hook in ReactProvider
 function renderHookWithProvider<TResult, TProps>(
   callback: (props: TProps) => TResult,
-  options?: Omit<RenderHookOptions<TProps>, 'wrapper'>
+  options?: Omit<RenderHookOptions<TProps>, 'wrapper'>,
 ): RenderHookResult<TResult, TProps> {
   return rtlRenderHook(callback, {
-    wrapper: ({ children }) => (
-      <ReactProvider>
-        {children}
-      </ReactProvider>
-    ),
+    wrapper: ({ children }) => <ReactProvider>{children}</ReactProvider>,
     ...options,
   });
 }

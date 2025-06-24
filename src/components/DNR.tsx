@@ -1,4 +1,4 @@
-import React, { Component, createRef, CSSProperties, forwardRef } from "react";
+import React, { Component, createRef, CSSProperties, forwardRef } from 'react';
 
 export interface Coords {
   startX: number;
@@ -22,7 +22,7 @@ export interface DNRProps {
   children?: React.ReactNode;
   coords: Coords;
   drag?: boolean;
-  dragAxis?: "x" | "y" | "both";
+  dragAxis?: 'x' | 'y' | 'both';
   maxHeight?: number;
   maxWidth?: number;
   minHeight?: number;
@@ -42,18 +42,28 @@ export interface DNRProps {
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   onWheel?: (e: React.WheelEvent<HTMLDivElement>) => void;
-  onResize?: (data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
-  onResizeStart?: (e: React.MouseEvent<HTMLDivElement>, data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
-  onResizeStop?: (e: MouseEvent, data: DNRData & { edge: { x: "left" | "right"; y: "top" | "bottom" } }) => void;
+  onResize?: (
+    data: DNRData & { edge: { x: 'left' | 'right'; y: 'top' | 'bottom' } }
+  ) => void;
+  onResizeStart?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    data: DNRData & { edge: { x: 'left' | 'right'; y: 'top' | 'bottom' } }
+  ) => void;
+  onResizeStop?: (
+    e: MouseEvent,
+    data: DNRData & { edge: { x: 'left' | 'right'; y: 'top' | 'bottom' } }
+  ) => void;
   position?: { x: number; y: number };
-  resize?: boolean | {
-    top?: boolean;
-    right?: boolean;
-    bottom?: boolean;
-    left?: boolean;
-    bottomRight?: boolean;
-  };
-  resizeAxis?: "x" | "y" | "both";
+  resize?:
+    | boolean
+    | {
+        top?: boolean;
+        right?: boolean;
+        bottom?: boolean;
+        left?: boolean;
+        bottomRight?: boolean;
+      };
+  resizeAxis?: 'x' | 'y' | 'both';
   resizeHandles?: {
     left?: { style?: React.CSSProperties };
     right?: { style?: React.CSSProperties };
@@ -77,9 +87,9 @@ class DNRBase extends Component<DNRProps, DNRState> {
   static defaultProps = {
     allowAnyClick: false,
     drag: true,
-    dragAxis: "both",
+    dragAxis: 'both',
     resize: true,
-    resizeAxis: "both",
+    resizeAxis: 'both',
     scale: 1,
   };
 
@@ -104,7 +114,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
 
   private applyBoundsConstraints(
     x: number,
-    y: number
+    y: number,
   ): { x: number; y: number } {
     const { bounds } = this.props;
     if (!bounds) return { x, y };
@@ -114,7 +124,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
 
     const { width, height } = container.getBoundingClientRect();
     const currentTransform = new DOMMatrix(
-      window.getComputedStyle(container).transform
+      window.getComputedStyle(container).transform,
     );
     const currentX = currentTransform.m41;
     const currentY = currentTransform.m42;
@@ -140,7 +150,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
 
   private applySizeConstraints(
     width: number,
-    height: number
+    height: number,
   ): { width: number; height: number } {
     const { minWidth, maxWidth, minHeight, maxHeight } = this.props;
 
@@ -179,7 +189,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
 
     const { width, height } = container.getBoundingClientRect();
     const isResizeHandle = (e.target as HTMLElement).classList.contains(
-      "dnr-resize-handle"
+      'dnr-resize-handle',
     );
 
     if ((resize && isResizeHandle) || drag) {
@@ -195,14 +205,14 @@ class DNRBase extends Component<DNRProps, DNRState> {
           resizing: isResizeHandle,
         },
         () => {
-          document.addEventListener("mousemove", this.handleMouseMove);
-          document.addEventListener("mouseup", this.handleMouseUp);
+          document.addEventListener('mousemove', this.handleMouseMove);
+          document.addEventListener('mouseup', this.handleMouseUp);
 
           if (!isResizeHandle && onDragStart) {
             const data = this.createDNRData(e.clientX, e.clientY);
             onDragStart(e, data);
           }
-        }
+        },
       );
     }
   };
@@ -245,8 +255,8 @@ class DNRBase extends Component<DNRProps, DNRState> {
         const resizeData = {
           ...this.createDNRData(e.clientX, e.clientY),
           edge: {
-            x: "right" as const,
-            y: "bottom" as const,
+            x: 'right' as const,
+            y: 'bottom' as const,
           },
         };
         onResize(resizeData);
@@ -278,14 +288,14 @@ class DNRBase extends Component<DNRProps, DNRState> {
   };
 
   private removeListeners() {
-    document.removeEventListener("mousemove", this.handleMouseMove);
-    document.removeEventListener("mouseup", this.handleMouseUp);
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   private getDragPosition(
     deltaX: number,
     deltaY: number,
-    axis?: "x" | "y" | "both"
+    axis?: 'x' | 'y' | 'both',
   ): { x: number; y: number } {
     const container = this.containerRef.current;
     if (!container) return { x: 0, y: 0 };
@@ -296,7 +306,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
     let currentX = 0;
     let currentY = 0;
 
-    if (transform && transform !== "none") {
+    if (transform && transform !== 'none') {
       try {
         const matrix = new DOMMatrix(transform);
         currentX = matrix.m41;
@@ -304,10 +314,10 @@ class DNRBase extends Component<DNRProps, DNRState> {
       } catch {
         // Safe fallback for matrix parsing
         const matches = transform.match(
-          /matrix\(([-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+)\)/
+          /matrix\(([-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+,\s*[-\d.]+)\)/,
         );
         if (matches && matches[1]) {
-          const values = matches[1].split(",").map((v) => parseFloat(v.trim()));
+          const values = matches[1].split(',').map((v) => parseFloat(v.trim()));
           currentX = values[4] || 0;
           currentY = values[5] || 0;
         }
@@ -317,10 +327,10 @@ class DNRBase extends Component<DNRProps, DNRState> {
     let x = currentX;
     let y = currentY;
 
-    if (axis === "both" || axis === "x") {
+    if (axis === 'both' || axis === 'x') {
       x += deltaX;
     }
-    if (axis === "both" || axis === "y") {
+    if (axis === 'both' || axis === 'y') {
       y += deltaY;
     }
 
@@ -330,17 +340,17 @@ class DNRBase extends Component<DNRProps, DNRState> {
   private getResizeSize(
     deltaX: number,
     deltaY: number,
-    axis?: "x" | "y" | "both"
+    axis?: 'x' | 'y' | 'both',
   ): { width: number; height: number } {
     const { startWidth, startHeight } = this.state;
 
     let width = startWidth;
     let height = startHeight;
 
-    if (axis === "both" || axis === "x") {
+    if (axis === 'both' || axis === 'x') {
       width += deltaX;
     }
-    if (axis === "both" || axis === "y") {
+    if (axis === 'both' || axis === 'y') {
       height += deltaY;
     }
 
@@ -350,7 +360,7 @@ class DNRBase extends Component<DNRProps, DNRState> {
   private createDNRData(clientX: number, clientY: number): DNRData {
     const container = this.containerRef.current;
     if (!container) {
-      throw new Error("Container ref not set");
+      throw new Error('Container ref not set');
     }
 
     const { left, top, width, height } = container.getBoundingClientRect();
@@ -418,16 +428,16 @@ class DNRBase extends Component<DNRProps, DNRState> {
       ...rest
     } = this.props;
 
-    const finalClassName = `dnr-container ${className || ""}`;
+    const finalClassName = `dnr-container ${className || ''}`;
     const finalTransform = position
       ? `translate(${position.x}px, ${position.y}px)`
       : coords
-      ? `translate(${coords.startX}px, ${coords.startY}px)`
-      : undefined;
+        ? `translate(${coords.startX}px, ${coords.startY}px)`
+        : undefined;
 
     const finalStyle = {
-      position: "absolute" as const,
-      userSelect: "none" as const,
+      position: 'absolute' as const,
+      userSelect: 'none' as const,
       transform: finalTransform,
       width: coords ? `${coords.endX - coords.startX}px` : undefined,
       height: coords ? `${coords.endY - coords.startY}px` : undefined,
@@ -447,13 +457,13 @@ class DNRBase extends Component<DNRProps, DNRState> {
           className="dnr-resize-handle"
           data-testid="resize-handle"
           style={{
-            position: "absolute",
-            right: "-5px",
-            bottom: "-5px",
-            width: "10px",
-            height: "10px",
-            cursor: "nwse-resize",
-            backgroundColor: "transparent",
+            position: 'absolute',
+            right: '-5px',
+            bottom: '-5px',
+            width: '10px',
+            height: '10px',
+            cursor: 'nwse-resize',
+            backgroundColor: 'transparent',
           }}
         />
       </div>
@@ -469,6 +479,6 @@ const DNR = forwardRef<HTMLDivElement, DNRProps>((props, ref) => {
   );
 });
 
-DNR.displayName = "DNR";
+DNR.displayName = 'DNR';
 
 export default DNR;

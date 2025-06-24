@@ -1,5 +1,5 @@
-import { 
-  TimelinePosition, 
+import {
+  TimelinePosition,
   TrackType as CoreTrackType,
   AutomationMode as CoreAutomationMode,
   AutomationLaneEnvelope as CoreAutomationLaneEnvelope,
@@ -8,17 +8,14 @@ import {
   AutomationNode as CoreAutomationNode,
   Clip as CoreClip,
   Effect as CoreEffect,
-  FXChainPreset as CoreFXChainPreset
-} from "../../types/core";
-import { AudioAnalysisType } from "../../types/audio";
+  FXChainPreset as CoreFXChainPreset,
+} from '../../types/core';
+import { AudioAnalysisType } from '../../types/audio';
 
 // Re-export from core types
-export { 
-  TimelinePosition,
-  AudioAnalysisType
-};
+export { TimelinePosition, AudioAnalysisType };
 
-// Use core enums 
+// Use core enums
 export { CoreTrackType as TrackType };
 export { CoreAutomationMode as AutomationMode };
 export { CoreAutomationLaneEnvelope as AutomationLaneEnvelope };
@@ -40,18 +37,16 @@ export interface BaseClipComponentProps {
 }
 
 export enum ContextMenuType {
-  Clip = "clip",
-  Region = "region",
-  Track = "track",
-  Lane = "lane",
-  Node = "node",
-  Text = "text",
-  FXChainPreset = "fxChainPreset",
-  AddAutomationLane = "addAutomationLane",
-  Automation = "automation",
+  Clip = 'clip',
+  Region = 'region',
+  Track = 'track',
+  Lane = 'lane',
+  Node = 'node',
+  Text = 'text',
+  FXChainPreset = 'fxChainPreset',
+  AddAutomationLane = 'addAutomationLane',
+  Automation = 'automation',
 }
-
-
 
 // Audio search exports (placeholder)
 export interface SearchResult {

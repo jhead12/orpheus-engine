@@ -1,25 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import React from "react";
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import type { Clip } from "@orpheus/types/core";
-import { WorkstationContext } from "@orpheus/contexts/WorkstationContext";
-import { ClipboardContext } from "@orpheus/contexts/ClipboardContext";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import React from 'react';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import type { Clip } from '@orpheus/types/core';
+import { WorkstationContext } from '@orpheus/contexts/WorkstationContext';
+import { ClipboardContext } from '@orpheus/contexts/ClipboardContext';
 
 // Import the actual enums from types
-import { TrackType, AutomationMode } from "@orpheus/types/core";
+import { TrackType, AutomationMode } from '@orpheus/types/core';
 
 // Mock the required contexts
-vi.mock("@orpheus/contexts/WorkstationContext", () => ({
+vi.mock('@orpheus/contexts/WorkstationContext', () => ({
   WorkstationContext: React.createContext({}),
 }));
 
-vi.mock("@orpheus/contexts/ClipboardContext", () => ({
+vi.mock('@orpheus/contexts/ClipboardContext', () => ({
   ClipboardContext: React.createContext({}),
 }));
 
 // Mock TimelinePosition
-vi.mock("@orpheus/types/timeline", () => ({
+vi.mock('@orpheus/types/timeline', () => ({
   TimelinePosition: vi.fn().mockImplementation(() => ({
     ticks: 0,
     toMargin: () => 0,
@@ -29,7 +29,7 @@ vi.mock("@orpheus/types/timeline", () => ({
 }));
 
 // Mock electron utils
-vi.mock("@orpheus/services/electron/utils", () => ({
+vi.mock('@orpheus/services/electron/utils', () => ({
   electronAPI: {
     ipcRenderer: {
       invoke: vi.fn(),
@@ -39,15 +39,15 @@ vi.mock("@orpheus/services/electron/utils", () => ({
 }));
 
 // Mock utility functions
-vi.mock("@orpheus/utils/utils", () => ({
+vi.mock('@orpheus/utils/utils', () => ({
   BASE_HEIGHT: 100,
-  getLaneColor: vi.fn().mockReturnValue("#000000"),
+  getLaneColor: vi.fn().mockReturnValue('#000000'),
   removeAllClipOverlap: (clips: Clip[]) => clips,
   timelineEditorWindowScrollThresholds: {
     top: { slow: 25, medium: 50, fast: 100 },
     right: { slow: 50, medium: 100, fast: 200 },
     bottom: { slow: 25, medium: 50, fast: 100 },
-    left: { slow: 50, medium: 100, fast: 200 }
+    left: { slow: 50, medium: 100, fast: 200 },
   },
   volumeToNormalized: vi.fn(),
   normalizedToVolume: vi.fn(),
@@ -60,8 +60,8 @@ vi.mock("@orpheus/utils/utils", () => ({
 }));
 
 // Mock CSS variable utils
-vi.mock("@orpheus/utils/general", () => ({
-  getCSSVarValue: () => "#000000",
+vi.mock('@orpheus/utils/general', () => ({
+  getCSSVarValue: () => '#000000',
   normalizeHex: (hex: string) => hex,
 }));
 
@@ -104,56 +104,60 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
 Object.defineProperty(window, 'electronAPI', {
   value: {
     ipcRenderer: {
-      invoke: vi.fn().mockResolvedValue([])
-    }
+      invoke: vi.fn().mockResolvedValue([]),
+    },
   },
-  writable: true
+  writable: true,
 });
 
 // Mock component imports from the index file
-vi.mock("@orpheus/screens/workstation/components/index", () => ({
+vi.mock('@orpheus/screens/workstation/components/index', () => ({
   AudioClipComponent: vi.fn(() => <div data-testid="audio-clip" />),
   AutomationLaneComponent: vi.fn(() => <div data-testid="automation-lane" />),
   ClipComponent: vi.fn(() => <div data-testid="clip" />),
-  RegionComponent: vi.fn(() => <div data-testid="region" />)
+  RegionComponent: vi.fn(() => <div data-testid="region" />),
 }));
 
 // Mock electron channels
-vi.mock("@orpheus/services/electron/channels", () => ({
-  TRACK_FILE_UPLOAD: 'track-file-upload'
+vi.mock('@orpheus/services/electron/channels', () => ({
+  TRACK_FILE_UPLOAD: 'track-file-upload',
 }));
 
-describe("Lane Component Import and Type Tests", () => {
+describe('Lane Component Import and Type Tests', () => {
   let Lane: any;
-  
+
   beforeEach(async () => {
     vi.clearAllMocks();
-    const LaneModule = await import("@orpheus/screens/workstation/components/Lane");
+    const LaneModule = await import(
+      '@orpheus/screens/workstation/components/Lane'
+    );
     Lane = LaneModule.default;
   });
 
-  it("should be able to import Lane component", () => {
+  it('should be able to import Lane component', () => {
     expect(Lane).toBeDefined();
-    expect(typeof Lane === "function" || typeof Lane === "object").toBe(true);
-    
+    expect(typeof Lane === 'function' || typeof Lane === 'object').toBe(true);
+
     // Check if it has React component markers
     const component = Lane as any;
     expect(
-      component.$$typeof || 
-      component.type || 
-      component.render || 
-      component.displayName
+      component.$$typeof ||
+        component.type ||
+        component.render ||
+        component.displayName,
     ).toBeDefined();
   });
 
-  it("should export LaneComponentProps interface", async () => {
-    const LaneModule = await import("@orpheus/screens/workstation/components/Lane");
+  it('should export LaneComponentProps interface', async () => {
+    const LaneModule = await import(
+      '@orpheus/screens/workstation/components/Lane'
+    );
     // TypeScript interfaces don't exist at runtime, but we can test that the module structure is correct
     expect(LaneModule.default).toBeDefined();
     expect(typeof LaneModule.default).toBe('object'); // forwardRef returns an object
   });
 
-  describe("Lane Component with Different Track Types", () => {
+  describe('Lane Component with Different Track Types', () => {
     const mockTimelinePosition: any = {
       bar: 0,
       beat: 0,
@@ -219,7 +223,7 @@ describe("Lane Component Import and Type Tests", () => {
         tempo: 120,
         timeSignature: { beats: 4, noteValue: 4 },
         snap: true,
-        snapUnit: "sixteenth" as const,
+        snapUnit: 'sixteenth' as const,
         horizontalScale: 1,
         beatWidth: 80,
       },
@@ -326,7 +330,9 @@ describe("Lane Component Import and Type Tests", () => {
       setLane: vi.fn(),
     };
 
-    const createMockTrack = (type: typeof TrackType[keyof typeof TrackType]): any => ({
+    const createMockTrack = (
+      type: (typeof TrackType)[keyof typeof TrackType],
+    ): any => ({
       id: `track-${type.toLowerCase()}`,
       name: `Test ${type} Track`,
       type,
@@ -349,30 +355,34 @@ describe("Lane Component Import and Type Tests", () => {
 
     const renderLaneWithContext = (track: any, additionalProps = {}) => {
       return render(
-        React.createElement(WorkstationContext.Provider, { value: mockWorkstationContext },
-          React.createElement(ClipboardContext.Provider, { value: mockClipboardContext },
+        React.createElement(
+          WorkstationContext.Provider,
+          { value: mockWorkstationContext },
+          React.createElement(
+            ClipboardContext.Provider,
+            { value: mockClipboardContext },
             React.createElement(Lane, {
               dragDataTarget: null,
               track,
               onClipContextMenu: vi.fn(),
-              ...additionalProps
-            })
-          )
-        )
+              ...additionalProps,
+            }),
+          ),
+        ),
       );
     };
 
-    it("should render Audio track lane", () => {
+    it('should render Audio track lane', () => {
       const audioTrack = createMockTrack(TrackType.Audio);
       expect(() => renderLaneWithContext(audioTrack)).not.toThrow();
     });
 
-    it("should render MIDI track lane", () => {
+    it('should render MIDI track lane', () => {
       const midiTrack = createMockTrack(TrackType.Midi);
       expect(() => renderLaneWithContext(midiTrack)).not.toThrow();
     });
 
-    it("should handle Audio track with clips", () => {
+    it('should handle Audio track with clips', () => {
       const audioTrack = createMockTrack(TrackType.Audio);
       audioTrack.clips = [
         {
@@ -382,14 +392,14 @@ describe("Lane Component Import and Type Tests", () => {
           end: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: audioTrack.id,
-          type: TrackType.Audio
-        }
+          type: TrackType.Audio,
+        },
       ];
-      
+
       expect(() => renderLaneWithContext(audioTrack)).not.toThrow();
     });
 
-    it("should handle MIDI track with clips", () => {
+    it('should handle MIDI track with clips', () => {
       const midiTrack = createMockTrack(TrackType.Midi);
       midiTrack.clips = [
         {
@@ -399,14 +409,14 @@ describe("Lane Component Import and Type Tests", () => {
           end: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: midiTrack.id,
-          type: TrackType.Midi
-        }
+          type: TrackType.Midi,
+        },
       ];
-      
+
       expect(() => renderLaneWithContext(midiTrack)).not.toThrow();
     });
 
-    it("should handle track with automation lanes", () => {
+    it('should handle track with automation lanes', () => {
       const trackWithAutomation = createMockTrack(TrackType.Audio);
       trackWithAutomation.automation = true;
       trackWithAutomation.automationLanes = [
@@ -414,35 +424,35 @@ describe("Lane Component Import and Type Tests", () => {
           id: 'volume-automation',
           parameter: 'volume',
           points: [],
-          show: true
-        }
+          show: true,
+        },
       ];
-      
+
       expect(() => renderLaneWithContext(trackWithAutomation)).not.toThrow();
     });
 
-    it("should handle muted track", () => {
+    it('should handle muted track', () => {
       const mutedTrack = createMockTrack(TrackType.Audio);
       mutedTrack.mute = true;
-      
+
       expect(() => renderLaneWithContext(mutedTrack)).not.toThrow();
     });
 
-    it("should handle soloed track", () => {
+    it('should handle soloed track', () => {
       const soloedTrack = createMockTrack(TrackType.Midi);
       soloedTrack.solo = true;
-      
+
       expect(() => renderLaneWithContext(soloedTrack)).not.toThrow();
     });
 
-    it("should handle armed track", () => {
+    it('should handle armed track', () => {
       const armedTrack = createMockTrack(TrackType.Audio);
       armedTrack.armed = true;
-      
+
       expect(() => renderLaneWithContext(armedTrack)).not.toThrow();
     });
 
-    it("should handle track with different automation modes", () => {
+    it('should handle track with different automation modes', () => {
       const trackWithRead = createMockTrack(TrackType.Audio);
       trackWithRead.automationMode = AutomationMode.Read;
       expect(() => renderLaneWithContext(trackWithRead)).not.toThrow();
@@ -456,55 +466,77 @@ describe("Lane Component Import and Type Tests", () => {
       expect(() => renderLaneWithContext(trackWithOff)).not.toThrow();
     });
 
-    it("should handle drag data target", () => {
+    it('should handle drag data target', () => {
       const track = createMockTrack(TrackType.Audio);
       const dragDataTarget = { track, incompatible: false };
-      
-      expect(() => renderLaneWithContext(track, { dragDataTarget })).not.toThrow();
+
+      expect(() =>
+        renderLaneWithContext(track, { dragDataTarget }),
+      ).not.toThrow();
     });
 
-    it("should handle incompatible drag data target", () => {
+    it('should handle incompatible drag data target', () => {
       const track = createMockTrack(TrackType.Audio);
       const dragDataTarget = { track, incompatible: true };
-      
-      expect(() => renderLaneWithContext(track, { dragDataTarget })).not.toThrow();
+
+      expect(() =>
+        renderLaneWithContext(track, { dragDataTarget }),
+      ).not.toThrow();
     });
 
-    it("should handle custom styling", () => {
+    it('should handle custom styling', () => {
       const track = createMockTrack(TrackType.Midi);
       const customStyle = { backgroundColor: 'red', height: '120px' };
-      
-      expect(() => renderLaneWithContext(track, { style: customStyle })).not.toThrow();
+
+      expect(() =>
+        renderLaneWithContext(track, { style: customStyle }),
+      ).not.toThrow();
     });
 
-    it("should handle custom className", () => {
+    it('should handle custom className', () => {
       const track = createMockTrack(TrackType.Audio);
-      
-      expect(() => renderLaneWithContext(track, { className: 'custom-lane-class' })).not.toThrow();
+
+      expect(() =>
+        renderLaneWithContext(track, { className: 'custom-lane-class' }),
+      ).not.toThrow();
     });
 
-    it("should handle context menu callback", () => {
+    it('should handle context menu callback', () => {
       const track = createMockTrack(TrackType.Audio);
       const onClipContextMenu = vi.fn();
-      
-      expect(() => renderLaneWithContext(track, { onClipContextMenu })).not.toThrow();
+
+      expect(() =>
+        renderLaneWithContext(track, { onClipContextMenu }),
+      ).not.toThrow();
     });
 
-    it("should handle track with effects", () => {
+    it('should handle track with effects', () => {
       const trackWithEffects = createMockTrack(TrackType.Audio);
       trackWithEffects.fx = {
         preset: null,
         effects: [
-          { id: 'reverb-1', name: 'Reverb', enabled: true, type: 'reverb', parameters: {} },
-          { id: 'eq-1', name: 'EQ', enabled: false, type: 'eq', parameters: {} }
+          {
+            id: 'reverb-1',
+            name: 'Reverb',
+            enabled: true,
+            type: 'reverb',
+            parameters: {},
+          },
+          {
+            id: 'eq-1',
+            name: 'EQ',
+            enabled: false,
+            type: 'eq',
+            parameters: {},
+          },
         ],
         selectedEffectIndex: 0,
       };
-      
+
       expect(() => renderLaneWithContext(trackWithEffects)).not.toThrow();
     });
 
-    it("should handle multiple clips of different types", () => {
+    it('should handle multiple clips of different types', () => {
       const track = createMockTrack(TrackType.Audio);
       track.clips = [
         {
@@ -514,7 +546,7 @@ describe("Lane Component Import and Type Tests", () => {
           end: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: track.id,
-          type: TrackType.Audio
+          type: TrackType.Audio,
         },
         {
           id: 'clip-2',
@@ -523,10 +555,10 @@ describe("Lane Component Import and Type Tests", () => {
           end: mockTimelinePosition,
           duration: mockTimelinePosition,
           trackId: track.id,
-          type: TrackType.Audio
-        }
+          type: TrackType.Audio,
+        },
       ];
-      
+
       expect(() => renderLaneWithContext(track)).not.toThrow();
     });
   });

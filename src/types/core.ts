@@ -11,7 +11,7 @@ export interface TimelineSettings {
   tempo: number; // BPM (beats per minute)
   timeSignature: { beats: number; noteValue: number }; // Time signature for the project
   snap: boolean; // Whether grid snapping is enabled
-  snapUnit: "beat" | "bar" | "sixteenth"; // Grid resolution for snapping
+  snapUnit: 'beat' | 'bar' | 'sixteenth'; // Grid resolution for snapping
   horizontalScale: number; // Zoom level for timeline display
   beatWidth?: number; // Optional: width of a beat in pixels
 }
@@ -23,27 +23,27 @@ export interface Region {
 
 // Track Types
 export enum TrackType {
-  Audio = "audio", // Audio tracks for recorded/imported audio
-  Midi = "midi", // MIDI tracks for note data
-  Sequencer = "sequencer", // Sequencer tracks for step sequencing
+  Audio = 'audio', // Audio tracks for recorded/imported audio
+  Midi = 'midi', // MIDI tracks for note data
+  Sequencer = 'sequencer', // Sequencer tracks for step sequencing
 }
 
 export enum AutomationMode {
-  Read = "read",
-  Write = "write",
-  Touch = "touch",
-  Latch = "latch",
-  Trim = "trim",
-  Off = "off",
+  Read = 'read',
+  Write = 'write',
+  Touch = 'touch',
+  Latch = 'latch',
+  Trim = 'trim',
+  Off = 'off',
 }
 
 export enum AutomationLaneEnvelope {
-  Volume = "volume",
-  Pan = "pan",
-  Send = "send",
-  Filter = "filter",
-  Tempo = "tempo",
-  Effect = "effect",
+  Volume = 'volume',
+  Pan = 'pan',
+  Send = 'send',
+  Filter = 'filter',
+  Tempo = 'tempo',
+  Effect = 'effect',
 }
 
 export interface AutomatableParameter {
@@ -89,7 +89,7 @@ export class TimelinePosition {
     tempo: 120,
     timeSignature: { beats: 4, noteValue: 4 },
     snap: true,
-    snapUnit: "beat",
+    snapUnit: 'beat',
     horizontalScale: 1,
   };
 
@@ -99,7 +99,7 @@ export class TimelinePosition {
   constructor(
     public bar: number = 0,
     public beat: number = 0,
-    public tick: number = 0
+    public tick: number = 0,
   ) {}
 
   // Legacy property for compatibility
@@ -149,7 +149,12 @@ export class TimelinePosition {
   /**
    * Subtract time from this position
    */
-  subtract(bars: number, beats: number, ticks: number, normalize: boolean = true): TimelinePosition {
+  subtract(
+    bars: number,
+    beats: number,
+    ticks: number,
+    normalize: boolean = true,
+  ): TimelinePosition {
     let resultBar = this.bar - bars;
     let resultBeat = this.beat - beats;
     let resultTick = this.tick - ticks;
@@ -234,7 +239,7 @@ export class TimelinePosition {
    */
   snap(
     gridSize: number | TimelinePosition,
-    direction: "floor" | "ceil" | "round" = "round"
+    direction: 'floor' | 'ceil' | 'round' = 'round',
   ): TimelinePosition {
     // Handle gridSize as TimelinePosition or number
     const gridSizeValue =
@@ -249,13 +254,13 @@ export class TimelinePosition {
 
     let snappedTicks: number;
     switch (direction) {
-      case "floor":
+      case 'floor':
         snappedTicks = Math.floor(totalTicks / gridTicks) * gridTicks;
         break;
-      case "ceil":
+      case 'ceil':
         snappedTicks = Math.ceil(totalTicks / gridTicks) * gridTicks;
         break;
-      case "round":
+      case 'round':
       default:
         snappedTicks = Math.round(totalTicks / gridTicks) * gridTicks;
     }
@@ -268,7 +273,7 @@ export class TimelinePosition {
    */
   translate(
     delta: { measures: number; beats: number; fraction: number; sign: number },
-    applySnap?: boolean
+    applySnap?: boolean,
   ): TimelinePosition {
     // Convert current position to total ticks
     let totalTicks = this.toTicks();
@@ -305,8 +310,8 @@ export class TimelinePosition {
   /**
    * Convert position to a human-readable time string
    */
-  toTimeString(format: "time" | "bars" = "time"): string {
-    if (format === "time") {
+  toTimeString(format: 'time' | 'bars' = 'time'): string {
+    if (format === 'time') {
       const seconds = this.toSeconds();
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = (seconds % 60).toFixed(2);
@@ -364,7 +369,7 @@ export class TimelinePosition {
 
   static fromSeconds(
     seconds: number,
-    tempo: number = TimelinePosition.defaultSettings.tempo
+    tempo: number = TimelinePosition.defaultSettings.tempo,
   ): TimelinePosition {
     const ticksPerSecond = (tempo * 480) / 60;
     const totalTicks = Math.round(seconds * ticksPerSecond);
@@ -418,7 +423,7 @@ export class TimelinePosition {
 
   static toSeconds(
     position: TimelinePosition,
-    tempo: number = TimelinePosition.defaultSettings.tempo
+    tempo: number = TimelinePosition.defaultSettings.tempo,
   ): number {
     return position.toSeconds(tempo);
   }
@@ -426,7 +431,7 @@ export class TimelinePosition {
   static addSeconds(
     position: TimelinePosition,
     seconds: number,
-    tempo: number = TimelinePosition.defaultSettings.tempo
+    tempo: number = TimelinePosition.defaultSettings.tempo,
   ): TimelinePosition {
     const additionalTicks = Math.round((seconds * (tempo * 480)) / 60);
     return TimelinePosition.fromTicks(position.toTicks() + additionalTicks);
@@ -435,7 +440,7 @@ export class TimelinePosition {
   // Add missing static methods
   static parseFromString(str: string): TimelinePosition {
     // Parse format "bar:beat:tick" or similar
-    const parts = str.split(":").map(Number);
+    const parts = str.split(':').map(Number);
     if (parts.length >= 3) {
       return new TimelinePosition(parts[0] || 0, parts[1] || 0, parts[2] || 0);
     }
@@ -458,19 +463,23 @@ export class TimelinePosition {
   /**
    * Convert duration in seconds to span (bars, beats, fraction)
    */
-  static durationToSpan(durationInSeconds: number): { measures: number; beats: number; fraction: number } {
+  static durationToSpan(durationInSeconds: number): {
+    measures: number;
+    beats: number;
+    fraction: number;
+  } {
     const tempo = TimelinePosition.timelineSettings.tempo;
     const ticksPerSecond = (tempo * 480) / 60;
     const totalTicks = Math.round(durationInSeconds * ticksPerSecond);
-    
+
     const measures = Math.floor(totalTicks / (4 * 480));
     let remainingTicks = totalTicks % (4 * 480);
-    
+
     const beats = Math.floor(remainingTicks / 480);
     remainingTicks = remainingTicks % 480;
-    
+
     const fraction = Math.floor(remainingTicks / 120); // Convert to sixteenths
-    
+
     return { measures, beats, fraction };
   }
 }
@@ -517,7 +526,7 @@ export interface BaseEffect {
   id: string;
   name: string;
   enabled: boolean;
-  type: "native" | "juce" | "python";
+  type: 'native' | 'juce' | 'python';
 }
 
 export interface Effect extends BaseEffect {
@@ -532,14 +541,14 @@ export interface FXChainPreset {
 
 // Context Menu Types
 export enum ContextMenuType {
-  AddAutomationLane = "add-automation-lane",
-  Automation = "automation",
-  Clip = "clip",
-  FXChainPreset = "fx-chain-preset",
-  Lane = "lane",
-  Node = "node",
-  Region = "region",
-  Text = "text",
-  Timeline = "timeline",
-  Track = "track",
+  AddAutomationLane = 'add-automation-lane',
+  Automation = 'automation',
+  Clip = 'clip',
+  FXChainPreset = 'fx-chain-preset',
+  Lane = 'lane',
+  Node = 'node',
+  Region = 'region',
+  Text = 'text',
+  Timeline = 'timeline',
+  Track = 'track',
 }

@@ -28,10 +28,10 @@
   --fg2: #c29b00;
   --fg3: #000;
   --mix-blend-mode: normal;
-  --opacity1: 0.3
+  --opacity1: 0.3;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg1: #111;
   --bg2: #111;
   --bg3: #181818;
@@ -52,8 +52,8 @@
   --border6: #bbb;
   --border7: #fff;
   --border8: var(--bg4);
-  --border9: #555555b9; 
-  --border10: #55555548; 
+  --border9: #555555b9;
+  --border10: #55555548;
   --border11: #fff7;
   --border12: #222;
   --border13: #000;

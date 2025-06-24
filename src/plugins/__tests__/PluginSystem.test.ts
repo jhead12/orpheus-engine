@@ -30,7 +30,7 @@ vi.mock('@orpheus/services/AudioService', () => {
       sampleRate: 44100,
     }),
   };
-  
+
   return {
     audioService: audioServiceMock,
     AudioService: {
@@ -48,7 +48,8 @@ vi.mock('../examples/AudioAnalysisPlugin', () => {
           id: 'orpheus.audio.analysis',
           name: 'Audio Analysis Plugin',
           version: '1.0.0',
-          description: 'Provides AI-powered audio analysis using Python backend',
+          description:
+            'Provides AI-powered audio analysis using Python backend',
           author: 'Orpheus Engine Team',
           category: 'analysis',
           engineVersion: '1.0.10',
@@ -66,7 +67,9 @@ vi.mock('../examples/AudioAnalysisPlugin', () => {
         destroy: vi.fn().mockResolvedValue(undefined),
         isActive: true,
         isHealthy: vi.fn().mockReturnValue(true),
-        processAudio: vi.fn().mockImplementation((audioData) => Promise.resolve(audioData)),
+        processAudio: vi
+          .fn()
+          .mockImplementation((audioData) => Promise.resolve(audioData)),
         createUI: vi.fn().mockImplementation(() => {
           const element = document.createElement('div');
           element.className = 'audio-analysis-plugin';
@@ -78,10 +81,12 @@ vi.mock('../examples/AudioAnalysisPlugin', () => {
           element.appendChild(display);
           return element;
         }),
-        getConfiguration: vi.fn().mockReturnValue({ threshold: 0.5, sensitivity: 0.8 }),
+        getConfiguration: vi
+          .fn()
+          .mockReturnValue({ threshold: 0.5, sensitivity: 0.8 }),
         setConfiguration: vi.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -94,9 +99,9 @@ vi.mock('..', () => {
       version: '1.0.0',
       category: 'analysis',
     },
-    status: 'loaded'
+    status: 'loaded',
   };
-  
+
   return {
     pluginSystem: {
       initialize: vi.fn().mockResolvedValue(undefined),
@@ -104,8 +109,10 @@ vi.mock('..', () => {
       getAvailablePlugins: vi.fn().mockReturnValue([mockPluginInstance]),
       getActivePlugins: vi.fn().mockImplementation(() => {
         // This will be modified by the activate/deactivate test
-        if (vi.mocked(pluginSystem.activatePlugin).mock.calls.length > 0 && 
-            vi.mocked(pluginSystem.deactivatePlugin).mock.calls.length === 0) {
+        if (
+          vi.mocked(pluginSystem.activatePlugin).mock.calls.length > 0 &&
+          vi.mocked(pluginSystem.deactivatePlugin).mock.calls.length === 0
+        ) {
           return [mockPluginInstance];
         }
         return [];
@@ -124,7 +131,7 @@ vi.mock('..', () => {
       activatePlugin: vi.fn().mockResolvedValue(undefined),
       deactivatePlugin: vi.fn().mockResolvedValue(undefined),
       registerBuiltInPlugins: vi.fn().mockResolvedValue(undefined),
-    }
+    },
   };
 });
 
@@ -138,7 +145,7 @@ vi.mock('@orpheus/services/PythonBackendService', () => {
       uptime: 3600,
       features: ['audio_analysis'],
       gpu_available: true,
-      python_version: '3.9'
+      python_version: '3.9',
     }),
     analyzeAudio: vi.fn().mockImplementation(() => {
       return Promise.resolve({
@@ -147,27 +154,27 @@ vi.mock('@orpheus/services/PythonBackendService', () => {
           frequency: {
             fundamental: 440,
             harmonics: [880, 1320],
-            spectrum: [0.1, 0.2, 0.3]
+            spectrum: [0.1, 0.2, 0.3],
           },
           tempo: {
             bpm: 120,
             confidence: 0.95,
-            beats: [0.5, 1.0, 1.5]
+            beats: [0.5, 1.0, 1.5],
           },
           key: {
             note: 'A',
             mode: 'major',
-            confidence: 0.85
-          }
+            confidence: 0.85,
+          },
         },
-        processing_time: 123
+        processing_time: 123,
       });
     }),
-    isConnected: true
+    isConnected: true,
   };
-  
+
   return {
-    pythonBackend: pythonBackendMock
+    pythonBackend: pythonBackendMock,
   };
 });
 
@@ -182,7 +189,7 @@ vi.mock('../core/PlatformDetector', () => {
       clipboard: true,
       notifications: true,
       systemTray: true,
-      nativeMenus: true
+      nativeMenus: true,
     },
     validatePluginCompatibility: vi.fn().mockImplementation((manifest) => {
       // Logic to properly handle the compatibility check as per the test case
@@ -206,17 +213,17 @@ vi.mock('../core/PlatformDetector', () => {
         clipboard: true,
         notifications: true,
         systemTray: true,
-        nativeMenus: true
+        nativeMenus: true,
       },
       backend_url: 'http://localhost:5001',
-      file_access: 'native'
-    })
+      file_access: 'native',
+    }),
   };
-  
+
   return {
     PlatformDetector: {
-      getInstance: vi.fn().mockReturnValue(mockInstance)
-    }
+      getInstance: vi.fn().mockReturnValue(mockInstance),
+    },
   };
 });
 
@@ -227,7 +234,7 @@ describe('Plugin System', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     vi.clearAllMocks();
-    
+
     // Get the mocked instances
     registry = PluginRegistry.getInstance();
     platformDetector = PlatformDetector.getInstance();
@@ -274,10 +281,13 @@ describe('Plugin System', () => {
         },
       };
 
-      expect(platformDetector.validatePluginCompatibility(compatibleManifest)).toBe(true);
-      
+      expect(
+        platformDetector.validatePluginCompatibility(compatibleManifest),
+      ).toBe(true);
+
       // This test depends on the actual platform, so we'll check both cases
-      const isCompatible = platformDetector.validatePluginCompatibility(incompatibleManifest);
+      const isCompatible =
+        platformDetector.validatePluginCompatibility(incompatibleManifest);
       if (platformDetector.platform === 'electron') {
         expect(isCompatible).toBe(true);
       } else {
@@ -295,7 +305,7 @@ describe('Plugin System', () => {
     it('should register a plugin', async () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
-      
+
       expect(registry.isPluginRegistered(plugin.manifest.id)).toBe(true);
       const registeredPlugin = registry.getPlugin(plugin.manifest.id);
       expect(registeredPlugin).toBeDefined();
@@ -306,7 +316,7 @@ describe('Plugin System', () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
       await registry.activatePlugin(plugin.manifest.id);
-      
+
       expect(registry.isPluginActive(plugin.manifest.id)).toBe(true);
       const registeredPlugin = registry.getPlugin(plugin.manifest.id);
       expect(registeredPlugin?.status).toBe('active');
@@ -317,7 +327,7 @@ describe('Plugin System', () => {
       await registry.registerPlugin(plugin);
       await registry.activatePlugin(plugin.manifest.id);
       await registry.deactivatePlugin(plugin.manifest.id);
-      
+
       expect(registry.isPluginActive(plugin.manifest.id)).toBe(false);
       const registeredPlugin = registry.getPlugin(plugin.manifest.id);
       expect(registeredPlugin?.status).toBe('inactive');
@@ -327,7 +337,7 @@ describe('Plugin System', () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
       await registry.unregisterPlugin(plugin.manifest.id);
-      
+
       expect(registry.isPluginRegistered(plugin.manifest.id)).toBe(false);
       expect(registry.getPlugin(plugin.manifest.id)).toBeUndefined();
     });
@@ -335,18 +345,18 @@ describe('Plugin System', () => {
     it('should prevent duplicate plugin registration', async () => {
       const plugin1 = new AudioAnalysisPlugin();
       const plugin2 = new AudioAnalysisPlugin();
-      
+
       await registry.registerPlugin(plugin1);
-      
+
       await expect(registry.registerPlugin(plugin2)).rejects.toThrow(
-        /already registered/
+        /already registered/,
       );
     });
 
     it('should get plugins by category', async () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
-      
+
       const analysisPlugins = registry.getPluginsByCategory('analysis');
       expect(analysisPlugins).toHaveLength(1);
       expect(analysisPlugins[0].manifest.id).toBe(plugin.manifest.id);
@@ -355,9 +365,9 @@ describe('Plugin System', () => {
     it('should get active plugins', async () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
-      
+
       expect(registry.getActivePlugins()).toHaveLength(0);
-      
+
       await registry.activatePlugin(plugin.manifest.id);
       expect(registry.getActivePlugins()).toHaveLength(1);
     });
@@ -366,7 +376,7 @@ describe('Plugin System', () => {
   describe('AudioAnalysisPlugin', () => {
     it('should have correct manifest', () => {
       const plugin = new AudioAnalysisPlugin();
-      
+
       expect(plugin.manifest.id).toBe('orpheus.audio.analysis');
       expect(plugin.manifest.category).toBe('analysis');
       expect(plugin.manifest.capabilities.audio).toBe(true);
@@ -377,7 +387,7 @@ describe('Plugin System', () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
       await registry.activatePlugin(plugin.manifest.id);
-      
+
       expect(plugin.isHealthy()).toBe(true);
     });
 
@@ -385,17 +395,17 @@ describe('Plugin System', () => {
       const plugin = new AudioAnalysisPlugin();
       await registry.registerPlugin(plugin);
       await registry.activatePlugin(plugin.manifest.id);
-      
+
       const mockAudioData = [new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5])];
       const result = await plugin.processAudio(mockAudioData);
-      
+
       expect(result).toEqual(mockAudioData); // Should return original data (non-destructive)
     });
 
     it('should create UI component', () => {
       const plugin = new AudioAnalysisPlugin();
       const ui = plugin.createUI();
-      
+
       expect(ui).toBeInstanceOf(HTMLElement);
       expect(ui.className).toBe('audio-analysis-plugin');
       expect(ui.querySelector('.plugin-header')).toBeTruthy();
@@ -405,31 +415,33 @@ describe('Plugin System', () => {
     it('should handle configuration', () => {
       const plugin = new AudioAnalysisPlugin();
       const config = { threshold: 0.5, sensitivity: 0.8 };
-      
+
       plugin.setConfiguration(config);
-      expect(plugin.getConfiguration()).toEqual(expect.objectContaining(config));
+      expect(plugin.getConfiguration()).toEqual(
+        expect.objectContaining(config),
+      );
     });
   });
 
   describe('PluginSystem Integration', () => {
     it('should initialize and register built-in plugins', async () => {
       await pluginSystem.initialize();
-      
+
       expect(pluginSystem.isInitialized()).toBe(true);
-      
+
       const availablePlugins = pluginSystem.getAvailablePlugins();
       expect(availablePlugins.length).toBeGreaterThan(0);
-      
+
       // Check if audio analysis plugin is registered
       const audioAnalysisPlugin = availablePlugins.find(
-        p => p.manifest.id === 'orpheus.audio.analysis'
+        (p) => p.manifest.id === 'orpheus.audio.analysis',
       );
       expect(audioAnalysisPlugin).toBeDefined();
     });
 
     it('should create plugin manager UI', async () => {
       await pluginSystem.initialize();
-      
+
       const ui = pluginSystem.createPluginManagerUI();
       expect(ui).toBeInstanceOf(HTMLElement);
       expect(ui.className).toBe('plugin-manager');
@@ -439,16 +451,16 @@ describe('Plugin System', () => {
 
     it('should handle plugin activation/deactivation', async () => {
       await pluginSystem.initialize();
-      
+
       const pluginId = 'orpheus.audio.analysis';
-      
+
       // Plugin should be initially inactive
       expect(pluginSystem.getActivePlugins()).toHaveLength(0);
-      
+
       // Activate plugin
       await pluginSystem.activatePlugin(pluginId);
       expect(pluginSystem.getActivePlugins()).toHaveLength(1);
-      
+
       // Deactivate plugin
       await pluginSystem.deactivatePlugin(pluginId);
       expect(pluginSystem.getActivePlugins()).toHaveLength(0);
@@ -485,16 +497,16 @@ describe('Plugin System Events', () => {
 
   it('should fire events during plugin lifecycle', async () => {
     const plugin = new AudioAnalysisPlugin();
-    
+
     await registry.registerPlugin(plugin);
     expect(eventsFired).toContain('registered');
-    
+
     await registry.activatePlugin(plugin.manifest.id);
     expect(eventsFired).toContain('activated');
-    
+
     await registry.deactivatePlugin(plugin.manifest.id);
     expect(eventsFired).toContain('deactivated');
-    
+
     await registry.unregisterPlugin(plugin.manifest.id);
     expect(eventsFired).toContain('unregistered');
   });

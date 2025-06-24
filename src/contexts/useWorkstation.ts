@@ -1,5 +1,8 @@
-import { useContext } from "react";
-import { WorkstationContext, WorkstationContextType } from "./WorkstationContext";
+import { useContext } from 'react';
+import {
+  WorkstationContext,
+  WorkstationContextType,
+} from './WorkstationContext';
 
 /**
  * Custom hook to use the WorkstationContext
@@ -7,10 +10,10 @@ import { WorkstationContext, WorkstationContextType } from "./WorkstationContext
  */
 export function useWorkstation(): WorkstationContextType {
   const context = useContext(WorkstationContext);
-  
+
   if (!context) {
-    throw new Error("useWorkstation must be used within a WorkstationProvider");
+    throw new Error('useWorkstation must be used within a WorkstationProvider');
   }
-  
+
   return context;
 }

@@ -59,23 +59,23 @@ export class PlatformDetector {
       if ((window as any).electronAPI || (window as any).electron) {
         return 'electron';
       }
-      
+
       // Check for Node.js integration (older Electron apps)
       if ((window as any).require && (window as any).process) {
         return 'electron';
       }
-      
+
       // Check user agent for Electron
       if (navigator.userAgent.toLowerCase().includes('electron')) {
         return 'electron';
       }
     }
-    
+
     // Check Node.js environment (SSR or pure Node)
     if (typeof process !== 'undefined' && process.versions?.electron) {
       return 'electron';
     }
-    
+
     return 'browser';
   }
 
@@ -112,7 +112,10 @@ export class PlatformDetector {
   }
 
   private checkWebAudioAPI(): boolean {
-    return typeof AudioContext !== 'undefined' || typeof (window as any).webkitAudioContext !== 'undefined';
+    return (
+      typeof AudioContext !== 'undefined' ||
+      typeof (window as any).webkitAudioContext !== 'undefined'
+    );
   }
 
   private checkPythonBackendAvailability(): boolean {
@@ -130,8 +133,10 @@ export class PlatformDetector {
   }
 
   private checkFileSystemAPI(): boolean {
-    return typeof (window as any).showDirectoryPicker !== 'undefined' ||
-           typeof (window as any).showOpenFilePicker !== 'undefined';
+    return (
+      typeof (window as any).showDirectoryPicker !== 'undefined' ||
+      typeof (window as any).showOpenFilePicker !== 'undefined'
+    );
   }
 
   /**
@@ -147,7 +152,8 @@ export class PlatformDetector {
       config.backend_url = 'http://localhost:5001';
       config.file_access = 'native';
     } else {
-      config.backend_url = process.env.VITE_BACKEND_URL || 'http://localhost:5001';
+      config.backend_url =
+        process.env.VITE_BACKEND_URL || 'http://localhost:5001';
       config.file_access = 'web_api';
     }
 
@@ -157,16 +163,27 @@ export class PlatformDetector {
   /**
    * Validate plugin compatibility with current platform
    */
-  public validatePluginCompatibility(manifest: { platform: string; capabilities: any }): boolean {
+  public validatePluginCompatibility(manifest: {
+    platform: string;
+    capabilities: any;
+  }): boolean {
     // Check platform compatibility
-    if (manifest.platform !== 'universal' && manifest.platform !== this._platform) {
+    if (
+      manifest.platform !== 'universal' &&
+      manifest.platform !== this._platform
+    ) {
       return false;
     }
 
     // Check required capabilities
     if (manifest.capabilities) {
-      for (const [capability, required] of Object.entries(manifest.capabilities)) {
-        if (required && !this._capabilities[capability as keyof PlatformCapabilities]) {
+      for (const [capability, required] of Object.entries(
+        manifest.capabilities,
+      )) {
+        if (
+          required &&
+          !this._capabilities[capability as keyof PlatformCapabilities]
+        ) {
           return false;
         }
       }

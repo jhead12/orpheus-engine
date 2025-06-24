@@ -1,7 +1,7 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Mock core types including TimelinePosition
-vi.mock("@orpheus/types/core", () => {
+vi.mock('@orpheus/types/core', () => {
   const mockTimeline = {
     ticks: 0,
     bar: 0,
@@ -43,28 +43,28 @@ vi.mock("@orpheus/types/core", () => {
       tempo: 120,
       timeSignature: { beats: 4, noteValue: 4 },
       snap: true,
-      snapUnit: "beat",
+      snapUnit: 'beat',
       horizontalScale: 1,
     },
   });
 
   return {
-    TrackType: { Audio: "audio", Midi: "midi", Sequencer: "sequencer" },
+    TrackType: { Audio: 'audio', Midi: 'midi', Sequencer: 'sequencer' },
     AutomationMode: {
-      Off: "off",
-      Read: "read",
-      Write: "write",
-      Touch: "touch",
-      Latch: "latch",
-      Trim: "trim",
+      Off: 'off',
+      Read: 'read',
+      Write: 'write',
+      Touch: 'touch',
+      Latch: 'latch',
+      Trim: 'trim',
     },
     AutomationLaneEnvelope: {
-      Volume: "volume",
-      Pan: "pan",
-      Send: "send",
-      Filter: "filter",
-      Tempo: "tempo",
-      Effect: "effect",
+      Volume: 'volume',
+      Pan: 'pan',
+      Send: 'send',
+      Filter: 'filter',
+      Tempo: 'tempo',
+      Effect: 'effect',
     },
     TimelinePosition: MockTimelinePosition,
   };

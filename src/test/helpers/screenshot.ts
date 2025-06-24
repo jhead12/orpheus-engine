@@ -2,10 +2,10 @@
  * Screenshot test helper for visual regression testing
  */
 
-import path from "path";
-import fs from "fs/promises";
-import { expect } from "vitest";
-import { toMatchImageSnapshot } from "jest-image-snapshot";
+import path from 'path';
+import fs from 'fs/promises';
+import { expect } from 'vitest';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 
 // Extend expect with image snapshot matcher
 expect.extend({ toMatchImageSnapshot });
@@ -20,17 +20,17 @@ expect.extend({ toMatchImageSnapshot });
 export async function expectScreenshot(
   element: HTMLElement,
   name: string,
-  threshold = 0.01
+  threshold = 0.01,
 ): Promise<void> {
   const screenshot = await takeScreenshot(element);
   expect(screenshot).toMatchImageSnapshot({
-    customSnapshotsDir: "__snapshots__/screenshots",
-    customDiffDir: "__snapshots__/diffs",
+    customSnapshotsDir: '__snapshots__/screenshots',
+    customDiffDir: '__snapshots__/diffs',
     customSnapshotIdentifier: `${name}.png`,
     failureThreshold: threshold,
-    failureThresholdType: "percent",
+    failureThresholdType: 'percent',
     storeReceivedOnFailure: true,
-    comparisonMethod: "ssim",
+    comparisonMethod: 'ssim',
   });
 }
 
@@ -43,10 +43,10 @@ export async function recordGif(
   element: HTMLElement,
   name: string,
   // duration is kept but unused in this fallback implementation
-  _duration = 2000
+  _duration = 2000,
 ): Promise<string> {
   console.warn(
-    "Default recordGif used - this is just a placeholder. Use the implementation from visual-agent/helpers/gif-recorder.ts"
+    'Default recordGif used - this is just a placeholder. Use the implementation from visual-agent/helpers/gif-recorder.ts',
   );
 
   // For now, just take a static screenshot
@@ -55,9 +55,9 @@ export async function recordGif(
   // Create an empty GIF file as a placeholder
   const outputPath = path.join(
     process.cwd(),
-    "__snapshots__",
-    "gifs",
-    `${name}.gif`
+    '__snapshots__',
+    'gifs',
+    `${name}.gif`,
   );
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
@@ -69,19 +69,17 @@ export async function recordGif(
  * @param element The element to screenshot
  * @returns Promise<Buffer> Screenshot data
  */
-async function takeScreenshot(
-  element: HTMLElement
-): Promise<Buffer> {
+async function takeScreenshot(element: HTMLElement): Promise<Buffer> {
   // Allow visual tests in all environments - use xvfb-run when available
   console.log('Taking screenshot in environment:', {
     CI: process.env.CI,
     CODESPACES: process.env.GITHUB_CODESPACES,
     DISPLAY: process.env.DISPLAY,
-    hasXvfb: process.env.XVFB_RUN_AVAILABLE || 'unknown'
+    hasXvfb: process.env.XVFB_RUN_AVAILABLE || 'unknown',
   });
 
   try {
-    const htmlToImage = (await import("node-html-to-image")).default;
+    const htmlToImage = (await import('node-html-to-image')).default;
 
     const html = element.outerHTML;
     const css = Array.from(document.styleSheets)
@@ -89,12 +87,12 @@ async function takeScreenshot(
         try {
           return Array.from(sheet.cssRules)
             .map((rule) => rule.cssText)
-            .join("\n");
+            .join('\n');
         } catch (e) {
-          return "";
+          return '';
         }
       })
-      .join("\n");
+      .join('\n');
 
     // Use correct API for node-html-to-image v4.0.0
     const fullHtml = `
@@ -112,7 +110,10 @@ async function takeScreenshot(
     // More aggressive timeout settings
     const timeout = 10000; // Increased to 10 seconds for complex browser launches
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Screenshot timeout after ${timeout}ms`)), timeout);
+      setTimeout(
+        () => reject(new Error(`Screenshot timeout after ${timeout}ms`)),
+        timeout,
+      );
     });
 
     // Enhanced puppeteer configuration for headless environments with xvfb support
@@ -143,22 +144,22 @@ async function takeScreenshot(
       '--disable-hang-monitor',
       '--disable-prompt-on-repost',
       '--disable-client-side-phishing-detection',
-      '--safebrowsing-disable-auto-update'
+      '--safebrowsing-disable-auto-update',
     ];
 
     // Add virtual display args for environments without X11
     if (!process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) {
       puppeteerArgs.push(
-        '--use-gl=swiftshader', 
+        '--use-gl=swiftshader',
         '--disable-software-rasterizer',
-        '--disable-gpu-sandbox'
+        '--disable-gpu-sandbox',
       );
     }
 
     const screenshotPromise = htmlToImage({
       html: fullHtml,
       transparent: true,
-      type: "png",
+      type: 'png',
       puppeteerArgs: {
         args: puppeteerArgs,
         timeout: timeout - 1000, // Leave more buffer for our timeout
@@ -172,6 +173,9 @@ async function takeScreenshot(
   } catch (error) {
     console.warn('Screenshot failed, returning placeholder:', error);
     // Return placeholder on error - a minimal 1x1 transparent PNG
-    return Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=', 'base64');
+    return Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=',
+      'base64',
+    );
   }
 }

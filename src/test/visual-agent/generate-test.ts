@@ -1,13 +1,13 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { VisualTestConfig } from "./types";
+import { promises as fs } from 'fs';
+import path from 'path';
+import { VisualTestConfig } from './types';
 
 /**
  * Generates a test file from a component test configuration
  */
 export async function generateTestFile(
   config: VisualTestConfig,
-  outputDir: string
+  outputDir: string,
 ): Promise<string> {
   const {
     componentName,
@@ -28,14 +28,14 @@ import { describe, it } from 'vitest';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { expectScreenshot } from '../../test/helpers';
 import { ${componentName} } from '${importPath}';
-${captureGif ? "import { recordGif } from '../visual-agent/gif-recorder';" : ""}
-${additionalImports?.join("\n") || ""}
+${captureGif ? "import { recordGif } from '../visual-agent/gif-recorder';" : ''}
+${additionalImports?.join('\n') || ''}
 `;
 
   // Build context provider wrapper if needed
-  let contextWrapper = "";
-  let contextWrapperStart = "";
-  let contextWrapperEnd = "";
+  let contextWrapper = '';
+  let contextWrapperStart = '';
+  let contextWrapperEnd = '';
 
   if (contextProviders && contextProviders.length > 0) {
     contextWrapper = `
@@ -44,19 +44,18 @@ ${additionalImports?.join("\n") || ""}
 `;
 
     contextProviders.forEach((provider, index) => {
-      const indent = "    ".repeat(index + 1);
+      const indent = '    '.repeat(index + 1);
       contextWrapper += `${indent}<${provider.import}${
-        provider.props ? " " + JSON.stringify(provider.props) : ""
+        provider.props ? ` ${JSON.stringify(provider.props)}` : ''
       }>\n`;
-      contextWrapperEnd =
-        `${indent}</${provider.import.split(" ")[0]}>\n` + contextWrapperEnd;
+      contextWrapperEnd = `${indent}</${provider.import.split(' ')[0]}>\n${contextWrapperEnd}`;
     });
 
-    contextWrapper += `${"    ".repeat(
-      contextProviders.length
+    contextWrapper += `${'    '.repeat(
+      contextProviders.length,
     )}  {children}\n${contextWrapperEnd}  );\n`;
-    contextWrapperStart = "<TestWrapper>";
-    contextWrapperEnd = "</TestWrapper>";
+    contextWrapperStart = '<TestWrapper>';
+    contextWrapperEnd = '</TestWrapper>';
   }
 
   // Build test cases
@@ -65,63 +64,63 @@ ${additionalImports?.join("\n") || ""}
       const stateName = state.name;
       const stateProps = state.props
         ? `{ ...baseProps, ...${JSON.stringify(state.props)} }`
-        : "baseProps";
+        : 'baseProps';
       const interactions = state.interactions || [];
 
-      let interactionCode = "";
+      let interactionCode = '';
       if (interactions.length > 0) {
         interactionCode = interactions
           .map((interaction) => {
             const delay = interaction.delay || 100;
-            let code = "";
+            let code = '';
 
             switch (interaction.type) {
-              case "click":
+              case 'click':
                 code = `fireEvent.click(screen.getByTestId('${interaction.target}'));`;
                 break;
-              case "hover":
+              case 'hover':
                 code = `fireEvent.mouseOver(screen.getByTestId('${interaction.target}'));`;
                 break;
-              case "drag":
+              case 'drag':
                 code = `
     // Simulate drag operation
     fireEvent.mouseDown(screen.getByTestId('${interaction.target}'));
     fireEvent.mouseMove(document, ${
       interaction.value
         ? JSON.stringify(interaction.value)
-        : "{ clientX: 100, clientY: 100 }"
+        : '{ clientX: 100, clientY: 100 }'
     });
     await new Promise(resolve => setTimeout(resolve, 500));
     fireEvent.mouseUp(document);`;
                 break;
-              case "input":
+              case 'input':
                 code = `fireEvent.change(screen.getByTestId('${
                   interaction.target
                 }'), { target: { value: ${JSON.stringify(
-                  interaction.value
+                  interaction.value,
                 )} } });`;
                 break;
-              case "mousedown":
+              case 'mousedown':
                 code = `fireEvent.mouseDown(screen.getByTestId('${
                   interaction.target
                 }')${
                   interaction.value
-                    ? ", " + JSON.stringify(interaction.value)
-                    : ""
+                    ? `, ${JSON.stringify(interaction.value)}`
+                    : ''
                 });`;
                 break;
-              case "mouseup":
+              case 'mouseup':
                 code = `fireEvent.mouseUp(document${
                   interaction.value
-                    ? ", " + JSON.stringify(interaction.value)
-                    : ""
+                    ? `, ${JSON.stringify(interaction.value)}`
+                    : ''
                 });`;
                 break;
-              case "mousemove":
+              case 'mousemove':
                 code = `fireEvent.mouseMove(document${
                   interaction.value
-                    ? ", " + JSON.stringify(interaction.value)
-                    : ""
+                    ? `, ${JSON.stringify(interaction.value)}`
+                    : ''
                 });`;
                 break;
             }
@@ -131,18 +130,18 @@ ${additionalImports?.join("\n") || ""}
     ${code}
     await new Promise(resolve => setTimeout(resolve, ${delay}));`;
           })
-          .join("\n");
+          .join('\n');
       }
 
       return `
   it('visual test: renders ${componentName} in ${stateName} state @visual${
-        captureGif ? "-gif" : ""
-      }', async () => {
+    captureGif ? '-gif' : ''
+  }', async () => {
     const container = document.createElement('div');
     container.style.cssText = \`
       ${
         containerStyle ||
-        "width: 500px; height: 300px; background: #1e1e1e; position: relative;"
+        'width: 500px; height: 300px; background: #1e1e1e; position: relative;'
       }
     \`;
     document.body.appendChild(container);
@@ -156,8 +155,8 @@ ${additionalImports?.join("\n") || ""}
       captureGif
         ? `// Record a GIF of any animations or state changes
     await recordGif(container, '${componentName.toLowerCase()}-${stateName}', ${
-            animationDuration || 2000
-          });`
+      animationDuration || 2000
+    });`
         : `// Wait for any animations to complete
     await new Promise(resolve => setTimeout(resolve, 1000));
     await expectScreenshot(container, '${componentName.toLowerCase()}-${stateName}');`
@@ -166,7 +165,7 @@ ${additionalImports?.join("\n") || ""}
     document.body.removeChild(container);
   });`;
     })
-    .join("\n");
+    .join('\n');
 
   // Assemble the full test file
   const testFileContent = `${imports}
@@ -176,6 +175,6 @@ describe('${componentName} Visual Tests', () => {${testCases}
 `;
 
   // Write the file
-  await fs.writeFile(testFilePath, testFileContent, "utf-8");
+  await fs.writeFile(testFilePath, testFileContent, 'utf-8');
   return testFilePath;
 }

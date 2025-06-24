@@ -1,6 +1,6 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
-import { FXChainPreset, Effect } from "../../types/core";
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
+import { FXChainPreset, Effect } from '../../types/core';
 
 interface FXChainPresetInput {
   name: string;
@@ -17,7 +17,7 @@ export class FXChainPresetAPI {
   }
 
   private async batchLoadPresets(
-    ids: readonly string[]
+    ids: readonly string[],
   ): Promise<(FXChainPreset | null)[]> {
     return ids.map((id) => this.presets.get(id) || null);
   }
@@ -44,11 +44,11 @@ export class FXChainPresetAPI {
 
   async update(
     id: string,
-    input: Partial<FXChainPresetInput>
+    input: Partial<FXChainPresetInput>,
   ): Promise<FXChainPreset> {
     const existingPreset = await this.get(id);
     if (!existingPreset) {
-      throw new Error("FX Chain Preset not found");
+      throw new Error('FX Chain Preset not found');
     }
 
     const updatedPreset: FXChainPreset = {

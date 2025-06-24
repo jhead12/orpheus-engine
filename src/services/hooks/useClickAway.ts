@@ -1,8 +1,8 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from 'react';
 
 interface UseClickAwayOptions {
   /** Event to listen for. Defaults to 'mousedown' */
-  event?: "mousedown" | "mouseup" | "click" | "touchstart" | "touchend";
+  event?: 'mousedown' | 'mouseup' | 'click' | 'touchstart' | 'touchend';
   /** Whether to disable the click away handler */
   disabled?: boolean;
 }
@@ -24,9 +24,9 @@ interface UseClickAwayOptions {
  */
 export default function useClickAway<T extends HTMLElement>(
   callback: () => void,
-  options: UseClickAwayOptions = {}
+  options: UseClickAwayOptions = {},
 ): React.RefObject<T> {
-  const { event = "mousedown", disabled = false } = options;
+  const { event = 'mousedown', disabled = false } = options;
   const ref = useRef<T>(null);
 
   // Memoize the handler to prevent unnecessary re-renders
@@ -39,7 +39,7 @@ export default function useClickAway<T extends HTMLElement>(
         callback();
       }
     },
-    [callback, disabled]
+    [callback, disabled],
   );
 
   useEffect(() => {
@@ -58,6 +58,6 @@ export default function useClickAway<T extends HTMLElement>(
 // This function is retained for future use when adding mobile support
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
-  return "touches" in event;
+  return 'touches' in event;
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */

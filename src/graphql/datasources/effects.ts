@@ -1,10 +1,10 @@
-import DataLoader from "dataloader";
-import { v4 as uuidv4 } from "uuid";
-import { Effect } from "@orpheus/types/core"; // Removed unused BaseEffect
+import DataLoader from 'dataloader';
+import { v4 as uuidv4 } from 'uuid';
+import { Effect } from '@orpheus/types/core'; // Removed unused BaseEffect
 
 interface EffectInput {
   name: string;
-  type: "native" | "juce" | "python";
+  type: 'native' | 'juce' | 'python';
   enabled?: boolean;
   parameters?: Record<string, any>;
 }
@@ -21,7 +21,7 @@ export class EffectAPI {
   }
 
   private async batchLoadEffects(
-    ids: readonly string[]
+    ids: readonly string[],
   ): Promise<(Effect | null)[]> {
     return ids.map((id) => this.effects.get(id) || null);
   }
@@ -33,7 +33,7 @@ export class EffectAPI {
   async getByTrackId(trackId: string): Promise<Effect[]> {
     const effectIds = this.trackEffects.get(trackId) || new Set();
     const effects = await Promise.all(
-      Array.from(effectIds).map((id) => this.get(id))
+      Array.from(effectIds).map((id) => this.get(id)),
     );
     return effects.filter((effect): effect is Effect => effect !== null);
   }
@@ -61,7 +61,7 @@ export class EffectAPI {
   async update(id: string, input: Partial<EffectInput>): Promise<Effect> {
     const existingEffect = await this.get(id);
     if (!existingEffect) {
-      throw new Error("Effect not found");
+      throw new Error('Effect not found');
     }
 
     const updatedEffect: Effect = {

@@ -18,8 +18,8 @@ export interface SortData {
 }
 
 export interface Preferences {
-  theme: "light" | "dark" | "system";
-  color: "rose" | "violet" | "azure" | "aqua" | "olive" | "citrus" | "crimson";
+  theme: 'light' | 'dark' | 'system';
+  color: 'rose' | 'violet' | 'azure' | 'aqua' | 'olive' | 'citrus' | 'crimson';
   audioSettings: {
     sampleRate: number;
     bufferSize: number;

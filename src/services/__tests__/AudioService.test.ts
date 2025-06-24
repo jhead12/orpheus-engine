@@ -9,7 +9,7 @@ vi.mock('../PlatformService', () => ({
     isBrowser: vi.fn(),
     isPython: vi.fn(),
     getApiEndpoint: vi.fn(),
-  }
+  },
 }));
 
 // Create a mock for PlatformDetector
@@ -23,8 +23,8 @@ const mockPlatformDetector = {
 // Mock PlatformDetector
 vi.mock('../../plugins/core/PlatformDetector', () => ({
   PlatformDetector: {
-    getInstance: vi.fn().mockReturnValue(mockPlatformDetector)
-  }
+    getInstance: vi.fn().mockReturnValue(mockPlatformDetector),
+  },
 }));
 
 // Mock fetch for API calls
@@ -51,26 +51,28 @@ const mockAudioContext = {
     start: vi.fn(),
     stop: vi.fn(),
   })),
-  decodeAudioData: vi.fn().mockImplementation(async (/* arrayBuffer: ArrayBuffer */) => {
-    // Return a proper AudioBuffer-like object with working getChannelData
-    const mockAudioBuffer = {
-      duration: 1.0,
-      sampleRate: 44100,
-      numberOfChannels: 2,
-      length: 44100,
-      getChannelData(/* channel: number */): Float32Array {
-        // Return proper length audio data for testing
-        const data = new Float32Array(44100);
-        for (let i = 0; i < 44100; i++) {
-          data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
-        }
-        return data;
-      },
-      copyFromChannel: vi.fn(),
-      copyToChannel: vi.fn(),
-    };
-    return Promise.resolve(mockAudioBuffer as AudioBuffer);
-  }),
+  decodeAudioData: vi
+    .fn()
+    .mockImplementation(async (/* arrayBuffer: ArrayBuffer */) => {
+      // Return a proper AudioBuffer-like object with working getChannelData
+      const mockAudioBuffer = {
+        duration: 1.0,
+        sampleRate: 44100,
+        numberOfChannels: 2,
+        length: 44100,
+        getChannelData(/* channel: number */): Float32Array {
+          // Return proper length audio data for testing
+          const data = new Float32Array(44100);
+          for (let i = 0; i < 44100; i++) {
+            data[i] = Math.sin((2 * Math.PI * 440 * i) / 44100) * 0.2;
+          }
+          return data;
+        },
+        copyFromChannel: vi.fn(),
+        copyToChannel: vi.fn(),
+      };
+      return Promise.resolve(mockAudioBuffer as AudioBuffer);
+    }),
   destination: {},
   state: 'running',
   sampleRate: 44100,
@@ -78,7 +80,9 @@ const mockAudioContext = {
 };
 
 // Mock AudioContext constructor - this is the key fix for the "not a constructor" error
-const MockAudioContextConstructor = vi.fn().mockImplementation(() => mockAudioContext);
+const MockAudioContextConstructor = vi
+  .fn()
+  .mockImplementation(() => mockAudioContext);
 
 // Set up global AudioContext mocks
 global.AudioContext = MockAudioContextConstructor;
@@ -89,12 +93,12 @@ global.webkitAudioContext = MockAudioContextConstructor;
 Object.defineProperty(window, 'AudioContext', {
   writable: true,
   configurable: true,
-  value: MockAudioContextConstructor
+  value: MockAudioContextConstructor,
 });
 Object.defineProperty(window, 'webkitAudioContext', {
   writable: true,
   configurable: true,
-  value: MockAudioContextConstructor
+  value: MockAudioContextConstructor,
 });
 
 // Also ensure the constructor is available as a function that can be called with 'new'
@@ -112,7 +116,7 @@ const createMockFile = (name: string, type: string, data?: Uint8Array) => {
 };
 
 // Mock FileReader with proper constructor pattern
-const MockFileReaderConstructor = function(this: any) {
+const MockFileReaderConstructor = function (this: any) {
   this.readAsArrayBuffer = vi.fn();
   this.result = new ArrayBuffer(1024);
   this.onload = null;
@@ -130,7 +134,7 @@ MockFileReaderConstructor.prototype = {};
 Object.defineProperty(global, 'FileReader', {
   writable: true,
   configurable: true,
-  value: MockFileReaderConstructor
+  value: MockFileReaderConstructor,
 });
 
 describe('AudioService', () => {
@@ -140,54 +144,57 @@ describe('AudioService', () => {
   beforeEach(async () => {
     // Reset the singleton instance before each test
     (AudioService as any).instance = null;
-    
+
     // Clear all mocks
     vi.clearAllMocks();
-    
+
     // Create a fresh mock AudioBuffer for each test
-    const createMockAudioBuffer = () => ({
-      duration: 1.0,
-      sampleRate: 44100,
-      numberOfChannels: 2,
-      length: 44100,
-      getChannelData(/* channel: number */): Float32Array {
-        const data = new Float32Array(44100);
-        for (let i = 0; i < 44100; i++) {
-          data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.2;
-        }
-        return data;
-      },
-      copyFromChannel: vi.fn(),
-      copyToChannel: vi.fn(),
-    } as AudioBuffer);
-    
+    const createMockAudioBuffer = () =>
+      ({
+        duration: 1.0,
+        sampleRate: 44100,
+        numberOfChannels: 2,
+        length: 44100,
+        getChannelData(/* channel: number */): Float32Array {
+          const data = new Float32Array(44100);
+          for (let i = 0; i < 44100; i++) {
+            data[i] = Math.sin((2 * Math.PI * 440 * i) / 44100) * 0.2;
+          }
+          return data;
+        },
+        copyFromChannel: vi.fn(),
+        copyToChannel: vi.fn(),
+      }) as AudioBuffer;
+
     // Reset the mock AudioContext for each test
-    mockAudioContext.decodeAudioData = vi.fn().mockResolvedValue(createMockAudioBuffer());
-    
+    mockAudioContext.decodeAudioData = vi
+      .fn()
+      .mockResolvedValue(createMockAudioBuffer());
+
     // Ensure AudioContext constructor is properly mocked on window for each test
     MockAudioContextConstructor.mockClear();
     MockAudioContextConstructor.mockReturnValue(mockAudioContext);
-    
+
     // Re-establish window mocks that might get cleared
     Object.defineProperty(window, 'AudioContext', {
       writable: true,
       configurable: true,
-      value: MockAudioContextConstructor
+      value: MockAudioContextConstructor,
     });
     Object.defineProperty(window, 'webkitAudioContext', {
       writable: true,
       configurable: true,
-      value: MockAudioContextConstructor
+      value: MockAudioContextConstructor,
     });
-    
+
     audioService = AudioService.getInstance();
     // Force initialization to use our mocked AudioContext
     await audioService.initialize();
-    
+
     // Verify that the AudioService is using our mocked AudioContext
     const internalContext = (audioService as any).audioContext;
     expect(internalContext).toBe(mockAudioContext);
-    
+
     mockFile = createMockFile('test.wav', 'audio/wav');
   });
 
@@ -237,9 +244,13 @@ describe('AudioService', () => {
     });
 
     it('should handle audio loading errors', async () => {
-      mockFile.arrayBuffer = vi.fn().mockRejectedValue(new Error('Load failed'));
+      mockFile.arrayBuffer = vi
+        .fn()
+        .mockRejectedValue(new Error('Load failed'));
 
-      await expect(audioService.loadAudioFile(mockFile)).rejects.toThrow('Load failed');
+      await expect(audioService.loadAudioFile(mockFile)).rejects.toThrow(
+        'Load failed',
+      );
     });
 
     it('should validate supported audio formats', () => {
@@ -264,9 +275,9 @@ describe('AudioService', () => {
           peaks: [0.5, 0.7],
           duration: 10.5,
           sampleRate: 44100,
-        })
+        }),
       };
-      
+
       (global as any).electronAPI = mockElectronAPI;
 
       const result = await audioService.analyzeAudio(mockFile);
@@ -274,7 +285,7 @@ describe('AudioService', () => {
       expect(mockElectronAPI.analyzeAudio).toHaveBeenCalledWith({
         filePath: undefined,
         buffer: expect.any(ArrayBuffer),
-        options: { includeWaveform: true, includePeaks: true }
+        options: { includeWaveform: true, includePeaks: true },
       });
       expect(result.waveform).toEqual([0.1, 0.2, 0.3]);
       expect(result.duration).toBe(10.5);
@@ -282,12 +293,16 @@ describe('AudioService', () => {
 
     it('should handle Electron analysis errors gracefully', async () => {
       const mockElectronAPI = {
-        analyzeAudio: vi.fn().mockRejectedValue(new Error('Electron analysis failed'))
+        analyzeAudio: vi
+          .fn()
+          .mockRejectedValue(new Error('Electron analysis failed')),
       };
-      
+
       (global as any).electronAPI = mockElectronAPI;
 
-      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('Electron analysis failed');
+      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'Electron analysis failed',
+      );
     });
   });
 
@@ -296,10 +311,10 @@ describe('AudioService', () => {
       (PlatformService.isElectron as any).mockReturnValue(false);
       (PlatformService.isBrowser as any).mockReturnValue(true);
       (PlatformService.isPython as any).mockReturnValue(false);
-      
+
       // Create a new instance of AudioService for each test
       audioService = new AudioService();
-      
+
       // Mock the getPlatform method to ensure it returns 'browser'
       (audioService as any).getPlatform = vi.fn().mockReturnValue('browser');
     });
@@ -312,12 +327,14 @@ describe('AudioService', () => {
         numberOfChannels: 2,
         length: 441000,
         waveform: new Float32Array(1000),
-        peaks: { positive: [0.8], negative: [-0.7] }
+        peaks: { positive: [0.8], negative: [-0.7] },
       };
 
       // Mock the analyzeAudioBrowser method directly to avoid the internal implementation
       // This bypasses the need to properly mock AudioBuffer.getChannelData
-      (audioService as any).analyzeAudioBrowser = vi.fn().mockResolvedValue(mockAnalysisResult);
+      (audioService as any).analyzeAudioBrowser = vi
+        .fn()
+        .mockResolvedValue(mockAnalysisResult);
 
       // Perform the test
       const result = await audioService.analyzeAudio(mockFile);
@@ -327,19 +344,27 @@ describe('AudioService', () => {
       expect(result.duration).toBe(10.5);
       expect(result.sampleRate).toBe(44100);
       expect(result.waveform).toBeDefined();
-      expect((audioService as any).analyzeAudioBrowser).toHaveBeenCalledWith(mockFile);
+      expect((audioService as any).analyzeAudioBrowser).toHaveBeenCalledWith(
+        mockFile,
+      );
     });
 
     it('should handle Web Audio API errors', async () => {
       // Mock the analyzeAudioBrowser method to throw an error
       // This directly mocks the error we expect to be thrown
-      (audioService as any).analyzeAudioBrowser = vi.fn().mockImplementation(() => {
-        throw new Error('Decode failed');
-      });
-      
+      (audioService as any).analyzeAudioBrowser = vi
+        .fn()
+        .mockImplementation(() => {
+          throw new Error('Decode failed');
+        });
+
       // We're mocking analyzeAudioBrowser directly, so we expect to see the same error
-      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('Decode failed');
-      expect((audioService as any).analyzeAudioBrowser).toHaveBeenCalledWith(mockFile);
+      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'Decode failed',
+      );
+      expect((audioService as any).analyzeAudioBrowser).toHaveBeenCalledWith(
+        mockFile,
+      );
     });
   });
 
@@ -348,7 +373,9 @@ describe('AudioService', () => {
       (PlatformService.isElectron as any).mockReturnValue(false);
       (PlatformService.isBrowser as any).mockReturnValue(false);
       (PlatformService.isPython as any).mockReturnValue(true);
-      (PlatformService.getApiEndpoint as any).mockReturnValue('http://localhost:5001');
+      (PlatformService.getApiEndpoint as any).mockReturnValue(
+        'http://localhost:5001',
+      );
     });
 
     it('should analyze audio using Python backend API', async () => {
@@ -362,9 +389,9 @@ describe('AudioService', () => {
           features: {
             tempo: 120,
             key: 'C',
-            loudness: -12.5
-          }
-        })
+            loudness: -12.5,
+          },
+        }),
       };
 
       (global.fetch as any).mockResolvedValue(mockResponse);
@@ -376,9 +403,9 @@ describe('AudioService', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Content-Type': 'application/json'
-          })
-        })
+            'Content-Type': 'application/json',
+          }),
+        }),
       );
       expect(result.features?.tempo).toBe(120);
       expect(result.features?.key).toBe('C');
@@ -388,31 +415,40 @@ describe('AudioService', () => {
       const mockResponse = {
         ok: false,
         status: 500,
-        statusText: 'Internal Server Error'
+        statusText: 'Internal Server Error',
       };
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('HTTP error! status: 500');
+      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'HTTP error! status: 500',
+      );
     });
 
     it('should handle network errors to Python backend', async () => {
       (global.fetch as any).mockRejectedValue(new Error('Network error'));
 
-      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow('Network error');
+      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'Network error',
+      );
     });
   });
 
   describe('Waveform Generation', () => {
     it('should generate waveform from audio data', () => {
-      const audioData = new Float32Array([0.1, 0.2, -0.1, 0.5, -0.3, 0.8, -0.2, 0.1]);
+      const audioData = new Float32Array([
+        0.1, 0.2, -0.1, 0.5, -0.3, 0.8, -0.2, 0.1,
+      ]);
       const samplesPerPixel = 2;
 
-      const waveform = audioService.generateWaveform(audioData, samplesPerPixel);
+      const waveform = audioService.generateWaveform(
+        audioData,
+        samplesPerPixel,
+      );
 
       expect(waveform).toHaveLength(4); // 8 samples / 2 samplesPerPixel
       expect(waveform[0]).toBeCloseTo(0.15); // Average of 0.1 and 0.2
-      expect(waveform[1]).toBeCloseTo(0.3);  // Average of abs(-0.1) and 0.5
+      expect(waveform[1]).toBeCloseTo(0.3); // Average of abs(-0.1) and 0.5
     });
 
     it('should handle empty audio data', () => {
@@ -461,7 +497,7 @@ describe('AudioService', () => {
       'audio/webm',
       'audio/flac',
       'audio/aac',
-      'audio/m4a'
+      'audio/m4a',
     ];
 
     const unsupportedFormats = [
@@ -469,16 +505,16 @@ describe('AudioService', () => {
       'text/plain',
       'application/json',
       'image/png',
-      'audio/midi'
+      'audio/midi',
     ];
 
-    supportedFormats.forEach(format => {
+    supportedFormats.forEach((format) => {
       it(`should support ${format}`, () => {
         expect(audioService.isAudioFormatSupported(format)).toBe(true);
       });
     });
 
-    unsupportedFormats.forEach(format => {
+    unsupportedFormats.forEach((format) => {
       it(`should not support ${format}`, () => {
         expect(audioService.isAudioFormatSupported(format)).toBe(false);
       });
@@ -490,8 +526,9 @@ describe('AudioService', () => {
       (PlatformService.isElectron as any).mockReturnValue(true);
       delete (global as any).electronAPI;
 
-      await expect(audioService.analyzeAudio(mockFile))
-        .rejects.toThrow('Electron API not available');
+      await expect(audioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'Electron API not available',
+      );
     });
 
     it('should handle missing AudioContext in browser', async () => {
@@ -499,7 +536,7 @@ describe('AudioService', () => {
       (PlatformService.isElectron as any).mockReturnValue(false);
       (PlatformService.isBrowser as any).mockReturnValue(true);
       (PlatformService.isPython as any).mockReturnValue(false);
-      
+
       // Clear all AudioContext references
       delete (global as any).AudioContext;
       delete (global as any).webkitAudioContext;
@@ -510,16 +547,19 @@ describe('AudioService', () => {
       (AudioService as any).instance = null;
       const newAudioService = AudioService.getInstance();
 
-      await expect(newAudioService.analyzeAudio(mockFile))
-        .rejects.toThrow('Web Audio API not supported');
+      await expect(newAudioService.analyzeAudio(mockFile)).rejects.toThrow(
+        'Web Audio API not supported',
+      );
     });
 
     it('should validate file input', async () => {
-      await expect(audioService.analyzeAudio(null as any))
-        .rejects.toThrow('Invalid file input');
-      
-      await expect(audioService.loadAudioFile(null as any))
-        .rejects.toThrow('Invalid file input');
+      await expect(audioService.analyzeAudio(null as any)).rejects.toThrow(
+        'Invalid file input',
+      );
+
+      await expect(audioService.loadAudioFile(null as any)).rejects.toThrow(
+        'Invalid file input',
+      );
     });
   });
 
