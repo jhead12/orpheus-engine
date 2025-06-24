@@ -7,9 +7,6 @@
 // This must be imported before any component imports to prevent hoisting issues
 import { 
   setupWorkstationMixerTest, 
-  TrackType, 
-  AutomationMode, 
-  AutomationLaneEnvelope, 
   ContextMenuType
 } from '../../../../test/utils/workstation-mixer-setup';
 
@@ -19,6 +16,16 @@ setupWorkstationMixerTest();
 // Now it's safe to import testing utilities
 import { vi } from 'vitest';
 
+// Only import real types from core and context at the top
+import {
+  Track,
+  TrackType,
+  AutomationMode,
+  AutomationLaneEnvelope,
+  TimelinePosition,
+} from "../../../../types/core";
+import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
+
 // Mock the types using centralized definitions
 vi.mock('@orpheus/types/core', () => ({
   TrackType,
@@ -26,20 +33,6 @@ vi.mock('@orpheus/types/core', () => ({
   AutomationLaneEnvelope,
   ContextMenuType
 }));
-
-// Only import real types from core and context at the top
-import {
-  Track,
-  TrackType,
-  AutomationMode,
-  AutomationLaneEnvelope,
-  AutomationLane,
-  AutomationNode,
-  TimelinePosition,
-  Clip,
-  Effect,
-} from "../../../../types/core";
-import { WorkstationContextType } from "../../../../contexts/WorkstationContext";
 
 // Base track for tests
 const baseTrack: Track = {
@@ -152,7 +145,7 @@ vi.mock("@orpheus/utils/utils", () => ({
 
 // Mock TimelinePosition with parseFromString method
 vi.mock("@orpheus/types/core", () => {
-  const mockTimelinePosition: MockTimelinePosition = {
+  const mockTimelinePosition: TimelinePosition = {
     ticks: 0,
     bar: 0,
     beat: 0,
