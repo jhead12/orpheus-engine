@@ -17,14 +17,6 @@ setupWorkstationMixerTest();
 // Now it's safe to import testing utilities
 import { describe, it, expect, vi } from 'vitest';
 
-// Define a type for the vitest mock functions
-type MockFunction<T extends (...args: any) => any> = T & {
-  mockReset: () => void;
-  mock: {
-    calls: any[][];
-  };
-};
-
 // Mock SortableList component and other widgets
 vi.mock('@orpheus/widgets', () => ({
   // Destructuring props but ignoring onSortEnd and onKeyDown as they're not used in this mock
@@ -204,7 +196,6 @@ import {
   ensureDialogElements,
   addPeakDisplayToMeter,
   hasChildWithClass,
-  findTrackElementsByName,
   ensureTrackIcons,
   ensureTrackNameInputs,
   ensureTrackNameTextNodes,
@@ -1305,8 +1296,6 @@ describe('Workstation Mixer Component', () => {
         playheadPos: new TimelinePosition(),
         maxPos: new TimelinePosition(),
         numMeasures: 4,
-        fxChainPresets: [],
-        setFXChainPresets: vi.fn(),
         timelineSettings: {
           beatWidth: 50,
           timeSignature: { beats: 4, noteValue: 4 },
@@ -1347,17 +1336,11 @@ describe('Workstation Mixer Component', () => {
         showTimeRuler: true,
         setShowTimeRuler: vi.fn(),
         splitClip: vi.fn(),
-        removeTrack: vi.fn(),
-        updateTrack: vi.fn(),
         duplicateTrack: vi.fn(),
         deleteTrack: vi.fn(),
         getTrackCurrentValue: vi.fn(),
-        play: vi.fn(),
-        pause: vi.fn(),
-        stop: vi.fn(),
         skipToStart: vi.fn(),
         skipToEnd: vi.fn(),
-        metronome: false,
         setMetronome: vi.fn(),
         settings: {
           tempo: 120,
@@ -1391,6 +1374,7 @@ describe('Workstation Mixer Component', () => {
         setSnapGridSizeOption: vi.fn(),
         autoGridSize: 1,
         stretchAudio: false,
+        setSnapGridSizeOption: vi.fn(),
         setStretchAudio: vi.fn(),
         setTimeSignature: vi.fn(),
       };

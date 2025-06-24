@@ -149,7 +149,11 @@ vi.mock('@orpheus/types/core', () => {
     ticks: 0,
     bar: 0,
     beat: 0,
-    tick: 0,
+    sixteenth: 0,
+    measure: 0,
+    fraction: 0,
+    samples: 0,
+    milliseconds: 0,
     toMargin: vi.fn(() => 0),
     fromMargin: vi.fn(() => ({ ticks: 0 })),
     snap: vi.fn(() => ({ ticks: 0 })),
@@ -159,7 +163,7 @@ vi.mock('@orpheus/types/core', () => {
     equals: vi.fn(() => true),
     add: vi.fn(() => mockTimelinePosition),
     compareTo: vi.fn(() => 0),
-  };
+  } as any;
 
   return {
     TimelinePosition: {
@@ -565,7 +569,7 @@ describe('TrackComponent', () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={audioTrack} />
+            <TrackComponent track={audioTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
@@ -616,7 +620,7 @@ describe('TrackComponent', () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={midiTrack} />
+            <TrackComponent track={midiTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
@@ -672,7 +676,7 @@ describe('TrackComponent', () => {
 
         render(
           <WorkstationContext.Provider value={mockWorkstationContext}>
-            <TrackComponent track={automationTrack} />
+            <TrackComponent track={automationTrack as any} />
           </WorkstationContext.Provider>,
           { container }
         );
