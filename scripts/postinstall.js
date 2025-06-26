@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { checkForRecursion, removeLockFile } from './prevent-recursion.js';

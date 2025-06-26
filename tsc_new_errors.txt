@@ -1,0 +1,364 @@
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/build/electron/index.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/electron/index.ts'.
+  The file is in the program because:
+    Matched by include pattern 'electron/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/build/electron/menu.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/electron/menu.ts'.
+  The file is in the program because:
+    Matched by include pattern 'electron/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/DNR.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/DNR.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/HoldActionButton.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/HoldActionButton.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/PaneResize.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/PaneResize.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/Preferences.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/Preferences.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/Scrollbar.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/Scrollbar.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/SyncScroll.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/SyncScroll.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/SyncScrollPane.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/SyncScrollPane.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/WindowAutoScroll.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/WindowAutoScroll.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/auth/SplashScreen.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/auth/SplashScreen.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/DocsNavigation.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/DocsNavigation.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/DocsPage.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/DocsPage.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/ImageViewer.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/docs/ImageViewer.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/Automation.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/Automation.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/Playhead.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/Playhead.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/StretchAudio.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/StretchAudio.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/TrackIcon.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/icons/TrackIcon.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/AudioLibrary.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/AudioLibrary.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/ChannelManager.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/ChannelManager.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/EnhancedTrackControls.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/mixer/EnhancedTrackControls.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/search/AudioSearchPanel.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/search/AudioSearchPanel.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/SettingsManager.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/SettingsManager.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/AudioSettings.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/GeneralSettings.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/GeneralSettings.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/InterfaceSettings.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/InterfaceSettings.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/MIDISettings.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/MIDISettings.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/PluginSettings.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/settings/tabs/PluginSettings.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Dialog.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Dialog.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/HueInput.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/HueInput.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Knob.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Knob.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Meter.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Meter.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/NumberInput.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/NumberInput.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SelectSpinBox.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SelectSpinBox.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Slider.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Slider.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SortableList.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SortableList.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SortableListItem.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/SortableListItem.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Tooltip.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/components/widgets/Tooltip.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/constants/timeline.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/constants/timeline.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/AnalysisContext.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/AnalysisContext.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/ClipboardContext.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/ClipboardContext.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/MixerContext.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/MixerContext.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/PreferencesContext.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/PreferencesContext.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/WorkstationContext.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/WorkstationContext.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/types.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/types.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/useWorkstation.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/contexts/useWorkstation.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/audioAnalysis.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/audioAnalysis.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/automationLanes.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/automationLanes.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/clips.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/clips.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/effects.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/effects.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/fxChainPresets.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/fxChainPresets.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/tracks.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/graphql/datasources/tracks.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useAutoScroll.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useAutoScroll.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useClickAway.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useClickAway.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useDebounce.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useDebounce.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useDrag.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useDrag.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useHoldAction.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useHoldAction.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useResizeObserver.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useResizeObserver.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useSyncScroll.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/hooks/useSyncScroll.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/main/window.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/main/window.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/IPlugin.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/IPlugin.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/PlatformDetector.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/PlatformDetector.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/PluginRegistry.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/core/PluginRegistry.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/examples/AudioAnalysisPlugin.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/plugins/examples/AudioAnalysisPlugin.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/Editor.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/Editor.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/Workstation.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/Workstation.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AudioAnalysisPanel.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AudioAnalysisPanel.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AudioClipComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationLaneTrack.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/AutomationNodeComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/ClipComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/ClipComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/FXComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Header.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Header.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Lane.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Lane.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Metronome.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Metronome.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Mixer.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/RegionComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/RegionComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/SidePanel.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/SidePanel.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TimelineRulerGrid.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TrackComponent.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TrackComponent.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TrackVolumeSlider.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/TrackVolumeSlider.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Waveform.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/Waveform.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/ZoomControls.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/screens/workstation/components/ZoomControls.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/audio/BrowserAudioProvider.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/audio/BrowserAudioProvider.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/browser/BrowserServiceWorkerProvider.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/browser/BrowserServiceWorkerProvider.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/types/types.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/types/types.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/utils/audio.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/utils/audio.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/utils/general.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/services/utils/general.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/test-utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/test-utils.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixer-helper.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixer-helper.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixer-test-utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixer-test-utils.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixerMockHelpers.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixerMockHelpers.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixerTestTypes.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mixerTestTypes.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/AudioServiceMock.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/AudioServiceMock.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/CoreTypesMock.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/CoreTypesMock.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/PythonBackendServiceMock.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/PythonBackendServiceMock.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/ReactRouterMock.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/mocks/ReactRouterMock.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/timeline-test-utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/timeline-test-utils.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/gif-recorder.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/gif-recorder.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/screenshot.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/screenshot.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/string-utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/string-utils.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/test-container.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/test-container.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/types.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/types.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/types/visual-test.types.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/types/visual-test.types.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/visual-test-generator.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/visual/visual-test-generator.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-mixer-setup.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-mixer-setup.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-test-bailout.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-test-bailout.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-test-utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/utils/workstation-test-utils.tsx'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.tsx' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/configs/index.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/configs/index.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/generate-test.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/generate-test.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/helpers/gif-recorder.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/helpers/gif-recorder.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/helpers/template-engine.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/helpers/template-engine.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/types.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/test/visual-agent/types.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/audio.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/audio.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/clipboard.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/clipboard.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/context-menu.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/context-menu.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/core.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/core.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/styles.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/styles.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+error TS6305: Output file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/utils.d.ts' has not been built from source file '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/src/types/utils.ts'.
+  The file is in the program because:
+    Matched by include pattern 'workstation/frontend/OEW-main/src/**/*.ts' in '/Volumes/PRO-BLADE/Github/orpheus-engine/tsconfig.json'
+tsconfig.json(37,5): error TS6306: Referenced project '/Volumes/PRO-BLADE/Github/orpheus-engine/electron/tsconfig.json' must have setting "composite": true.
+tsconfig.json(38,5): error TS6306: Referenced project '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/tsconfig.json' must have setting "composite": true.
+tsconfig.json(38,5): error TS6310: Referenced project '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/frontend/OEW-main/tsconfig.json' may not disable emit.
+tsconfig.json(39,5): error TS6306: Referenced project '/Volumes/PRO-BLADE/Github/orpheus-engine/workstation/backend/tsconfig.json' must have setting "composite": true.

@@ -174,8 +174,8 @@ export function setupDOMEnvironment(): void {
   }
 
   // Mock Web Audio API
-  global.AudioContext = MockAudioContext as any;
-  global.webkitAudioContext = MockAudioContext as any;
+  (global as any).AudioContext = MockAudioContext as any;
+  (global as any).webkitAudioContext = MockAudioContext as any;
   
   // Mock URL.createObjectURL for file handling
   global.URL = global.URL || {};

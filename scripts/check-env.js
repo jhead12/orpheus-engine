@@ -22,12 +22,15 @@ try {
     console.error('Error getting pnpm version:', error.message);
 }
 
+import { readFileSync } from 'fs';
+
 // Check package versions in both locations
 function getPackageVersion(pkgPath, pkg) {
     try {
-        const version = require(path.join(pkgPath, 'node_modules', pkg, 'package.json')).version;
-        return version;
-    } catch (error) {
+        const packagePath = path.join(pkgPath, 'node_modules', pkg, 'package.json');
+        const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
+        return packageJson.version;
+    } catch {
         return 'not found';
     }
 }

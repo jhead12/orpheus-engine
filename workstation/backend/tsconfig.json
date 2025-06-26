@@ -8,8 +8,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "types": ["vitest/globals", "node"]
+    "rootDir": ".", // Root directory is set to the current directory to include both src and tests
+    "types": ["vitest/globals", "node"],
+    "allowJs": true
   },
   "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist"]

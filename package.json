@@ -11,7 +11,7 @@
   "description": "Digital Audio Workstation (DAW) made in React",
   "repository": "git+https://github.com/jhead12/orpheus-engine.git",
   "private": true,
-  "main": "build/electron/main.js",
+  "main": "workstation/frontend/OEW-main/build/electron/main.js",
   "engines": {
     "node": ">=20.11.1",
     "pnpm": ">=10.6.4"
@@ -45,11 +45,14 @@
     "install:monitor": "node scripts/install-monitor-backend.js",
     "postinstall": "node scripts/postinstall.js",
     "setup": "pnpm run fix:permissions && pnpm install && pnpm run install:all && pnpm run setup:electron",
+    "quality:check": "cd workstation/frontend/OEW-main && npm run quality:check",
+    "quality:fix": "cd workstation/frontend/OEW-main && npm run quality:fix",
+    "code:quality": "cd workstation/frontend/OEW-main && npm run code:quality",
     "demo": "node scripts/setup-demo.js",
     "demo:notebook": "cd demo && jupyter notebook OrpheusWebDemo.ipynb",
     "demo:lab": "cd demo && jupyter lab OrpheusWebDemo.ipynb",
     "dev": "cross-env NODE_ENV=development nodemon --exec \"node electron-launch.mjs\"",
-    "dev:vite": "cross-env NODE_ENV=development vite",
+    "dev:vite": "cross-env NODE_ENV=development VITE_HOST=127.0.0.1 vite",
     "dev:local": "cross-env NODE_ENV=development VITE_PORT=3000 vite",
     "dev:prod": "cross-env NODE_ENV=production vite",
     "lint": "eslint \"workstation/frontend/src/**/*.{js,jsx,ts,tsx}\"",
@@ -57,7 +60,7 @@
     "dev:headless": "cross-env NODE_ENV=development ELECTRON_DISABLE_GPU=1 ELECTRON_ENABLE_LOGGING=1 ELECTRON_NO_ATTACH_CONSOLE=1 electron . --disable-gpu --no-sandbox --headless --disable-dev-shm-usage --force-headless",
     "build": "pnpm run test:screenshots && tsc -b && vite build && tsc --project electron/tsconfig.json && electron-builder",
     "preview": "vite preview",
-    "start": "node electron-launch.js",
+    "start": "node electron-launch.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:integration": "vitest run --config vitest.integration.config.ts",
@@ -111,6 +114,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.1",
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
@@ -143,6 +147,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "execa": "^9.6.0",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "gif-encoder-2": "^1.0.5",
     "globals": "^14.0.0",
     "html2canvas": "^1.4.1",
     "jest-image-snapshot": "^6.1.0",
@@ -165,7 +170,7 @@
   },
   "build": {
     "productName": "Orpheus Engine",
-    "appId": "com.creativeplatform.OEW",
+    "appId": "com.matrixblend.OEW",
     "directories": {
       "output": "dist"
     },
@@ -173,7 +178,7 @@
       "build/**/*"
     ],
     "extraMetadata": {
-      "main": "build/electron/main.js"
+      "main": "electron/main.js"
     },
     "extraResources": [
       "src/assets/**/*"

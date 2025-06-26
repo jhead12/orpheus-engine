@@ -8,13 +8,6 @@ const rootVersion = rootPackage.version;
 
 console.log(`Syncing all packages to version ${rootVersion}`);
 
-// Helper to increment patch version
-function incrementPatch(version) {
-  const parts = version.split('.').map(Number);
-  parts[2] += 1;
-  return parts.join('.');
-}
-
 // Define workspaces to sync
 const workspaces = [
     'workstation/frontend',

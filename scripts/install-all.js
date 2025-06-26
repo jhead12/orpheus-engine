@@ -34,7 +34,7 @@ function isPnpmAvailable() {
   try {
     execSync('pnpm --version', { stdio: 'pipe' });
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -44,7 +44,7 @@ function isYarnAvailable() {
   try {
     execSync('yarn --version', { stdio: 'pipe' });
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -104,7 +104,7 @@ async function fixPermissions() {
     
     return allFixed;
   } catch (error) {
-    log('⚠️ Could not run permissions fixer automatically', colors.yellow);
+    log(`⚠️ Could not run permissions fixer automatically: ${error.message}`, colors.yellow);
     log('You may need to fix permissions manually', colors.yellow);
     return false;
   }
@@ -185,11 +185,6 @@ function installPythonDependencies() {
   }
 
   return success;
-}
-
-// Detect if we're running in a recursive postinstall
-function isRunningFromPostinstall() {
-  return process.env.npm_lifecycle_event === 'postinstall';
 }
 
 // Create a lock file to prevent recursive installations
@@ -273,6 +268,10 @@ async function installAll() {
   removeLockFile(lockFile);
   
   return allSuccess;
+  } catch (error) {
+    removeLockFile(lockFile);
+    throw error;
+  }
 }
 
 // Provide a summary of what was installed

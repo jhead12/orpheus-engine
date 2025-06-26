@@ -1,0 +1,60 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./workstation/frontend/OEW-main/src/*"],
+      "@workstation/*": ["./workstation/*"],
+      "@electron/*": ["./electron/*"],
+      "@orpheus/*": ["./workstation/frontend/OEW-main/src/*"],
+      "@orpheus/components/*": ["./workstation/frontend/OEW-main/src/components/*"],
+      "@orpheus/services/*": ["./workstation/frontend/OEW-main/src/services/*"],
+      "@orpheus/screens/*": ["./workstation/frontend/OEW-main/src/screens/*"],
+      "@orpheus/contexts": ["./workstation/frontend/OEW-main/src/contexts/index"],
+      "@orpheus/contexts/*": ["./workstation/frontend/OEW-main/src/contexts/*"],
+      "@orpheus/types/*": ["./workstation/frontend/OEW-main/src/types/*"],
+      "@orpheus/test/*": ["./workstation/frontend/OEW-main/src/test/*"],
+      "@orpheus/utils/*": ["./workstation/frontend/OEW-main/src/services/utils/*"],
+      "@orpheus/widgets": ["./workstation/frontend/OEW-main/src/components/widgets"],
+      "@orpheus/widgets/*": ["./workstation/frontend/OEW-main/src/components/widgets/*"],
+      "@orpheus/workstation/*": ["./workstation/frontend/OEW-main/src/screens/workstation/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "workstation/frontend/OEW-main/src/**/*.ts",
+    "workstation/frontend/OEW-main/src/**/*.tsx",
+    "workstation/frontend/OEW-main/src/**/*.d.ts",
+    "electron/**/*.ts",
+    "workstation/backend/src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/node_modules/*",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/templates/**/*.template.ts"
+  ]
+}

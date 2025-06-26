@@ -8,7 +8,10 @@ export default defineConfig({
   test: {
     name: 'Visual Regression Tests',
     environment: 'jsdom',
-    setupFiles: ['./workstation/frontend/src/test/setup.ts', './workstation/frontend/src/test/visual-setup.ts'],
+    setupFiles: [
+      './workstation/frontend/OEW-main/src/test/setup.ts',
+      './workstation/frontend/OEW-main/src/test/setup-visual.ts'
+    ],
     include: [
       '**/__tests__/**/*.visual.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '**/visual/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

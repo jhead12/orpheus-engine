@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, shell } from "electron";
-import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "../src/services/types/types";
-import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "../src/services/electron/channels";
+import { AutomationLane, AutomationMode, Clip, ContextMenuType, Track, TrackType } from "@orpheus/services/types/types";
+import { CLOSE_CONTEXT_MENU, OPEN_CONTEXT_MENU, SELECT_CONTEXT_MENU_ITEM } from "@orpheus/services/electron/channels";
 
 export default class ContextMenuBuilder {
   mainWindow: BrowserWindow;

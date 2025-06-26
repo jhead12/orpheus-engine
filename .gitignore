@@ -51,6 +51,26 @@ venv/
 .env
 env/
 
+# Machine Learning artifacts
+mlflow/
+mlruns/
+mlflow_runs/
+mlflow_artifacts/
+**/mlruns/
+**/mlflow_runs/
+**/mlflow_artifacts/
+models/
+*.pt
+*.pth
+*.h5
+*.tflite
+*.onnx
+*.ckpt
+*.bin
+tensorboard/
+.ipynb_checkpoints/
+chroma_db/
+
 # AI/ML and data files
 chroma_db/
 model/

@@ -59,21 +59,9 @@ export default defineConfig({
     reporters: ["default", "html"],
     server: {
       deps: {
-        optimizer: {
-          web: {
-            include: ["jest-image-snapshot"],
-          },
-        },
+        inline: ["jest-image-snapshot"],
       },
     },
-    ui: {
-      host: '127.0.0.1',
-      open: false, // Let's not auto-open to avoid permission issues
-    },
-    exclude: ["**/node_modules/**", "**/__snapshots__/**"],
-    testTimeout: 10000, // Increased timeout for visual tests
-    snapshotFormat: {
-      printBasicPrototype: true,
-    },
+    ui: false, // Disable UI to avoid compatibility issues
   },
 });

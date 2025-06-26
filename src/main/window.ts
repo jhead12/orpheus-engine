@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow } from "electron";
 
 class MainWindow {
   private window: BrowserWindow | null = null;
@@ -14,11 +14,10 @@ class MainWindow {
     });
 
     // Handle macOS window state
-    if (process.platform === "darwin") {
-      app.delegate = {
-        applicationSupportsSecureRestorableState: () => true,
-      };
-    }
+    // Note: app.delegate is not available in Electron; use appropriate Electron APIs
+    // if (process.platform === "darwin") {
+    //   // Handle macOS-specific behaviors here if needed
+    // }
 
     // Handle window close
     this.window.on("close", (event) => {

@@ -134,8 +134,8 @@ export class MockAudioContext {
 // Setup Web Audio API mocks
 export const setupAudioMocks = () => {
   // Mock global AudioContext
-  global.AudioContext = MockAudioContext as any;
-  global.webkitAudioContext = MockAudioContext as any;
+  (global as any).AudioContext = MockAudioContext as any;
+  (global as any).webkitAudioContext = MockAudioContext as any;
 
   // Mock window AudioContext
   Object.defineProperty(window, 'AudioContext', {
