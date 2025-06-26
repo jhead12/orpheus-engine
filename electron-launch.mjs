@@ -18,7 +18,7 @@ function waitForVite(port = 5174, timeout = 30000) {
     const startTime = Date.now();
 
     function checkVite() {
-      const req = http.get(`http://localhost:${port}`, (res) => {
+      const req = http.get(`http://127.0.0.1:${port}`, (res) => {
         console.log(`✅ Vite server is ready on port ${port}`);
         resolve();
       });
@@ -46,11 +46,18 @@ function waitForVite(port = 5174, timeout = 30000) {
 // Function to start Vite development server
 function startVite() {
   console.log("🚀 Starting Vite development server...");
-
+  
+  // Set the host explicitly in the environment
+  const env = { ...process.env, VITE_HOST: '127.0.0.1' };
+  
+  // Use the OEW-main directory for running Vite
+  const oewMainPath = path.join(__dirname, 'workstation', 'frontend', 'OEW-main');
+  console.log(`Starting Vite in directory: ${oewMainPath}`);
+  
   const viteProcess = spawn("npm", ["run", "dev:vite"], {
     stdio: "pipe",
-    env: process.env,
-    cwd: process.cwd(),
+    env: env,
+    cwd: oewMainPath,
   });
 
   viteProcess.stdout.on("data", (data) => {
@@ -90,6 +97,9 @@ async function launchElectron() {
 
     // Set security warnings to be disabled
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
+    
+    // Set the Vite dev server URL for the Electron app
+    process.env.VITE_DEV_SERVER_URL = `http://127.0.0.1:5174`;
 
     // Launch Electron with the proper flags
     const electronProcess = spawn("npx", ["electron", "."].concat(args), {

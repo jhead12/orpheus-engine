@@ -108,12 +108,15 @@ def setup_demo_environment():
     
     return demo_dir, mlflow_runs_dir, artifacts_dir
 
-def start_mlflow_server(mlflow_runs_dir, port=5000):
+def start_mlflow_server(mlflow_runs_dir, port=5002):
     """Start MLflow tracking server with HP AI Studio compatibility."""
+    artifacts_dir = Path(mlflow_runs_dir).parent / "artifacts"
+    artifacts_dir.mkdir(exist_ok=True)
+    
     cmd = [
         sys.executable, "-m", "mlflow", "server",
         "--backend-store-uri", f"file://{mlflow_runs_dir}",
-        "--default-artifact-root", f"file://{mlflow_runs_dir}/artifacts",
+        "--default-artifact-root", f"file://{artifacts_dir}",
         "--host", "0.0.0.0",
         "--port", str(port)
     ]
@@ -282,7 +285,7 @@ def create_demo_status_file(demo_dir):
             }
         ],
         "services": {
-            "mlflow_ui": "http://localhost:5000",
+            "mlflow_ui": "http://localhost:5002",
             "tensorboard_ui": "http://localhost:6006", 
             "jupyter_lab": "http://localhost:8888"
         },
@@ -386,7 +389,7 @@ def display_demo_options():
     print("   - Model versioning and evaluation tracking")
     print()
     print("🌐 Access all notebooks at: http://localhost:8888")
-    print("📈 MLflow tracking at: http://localhost:5000")
+    print("📈 MLflow tracking at: http://localhost:5002")
     print("📊 TensorBoard monitoring at: http://localhost:6006")
     print()
     print("🔧 Unified Monitoring Platform:")
@@ -443,7 +446,7 @@ def main():
             time.sleep(3)
             webbrowser.open("http://localhost:8888")
             time.sleep(2)
-            webbrowser.open("http://localhost:5000")
+            webbrowser.open("http://localhost:5002")
         except:
             pass
         

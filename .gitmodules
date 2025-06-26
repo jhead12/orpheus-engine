@@ -1,4 +1,4 @@
 [submodule "workstation/frontend/OEW-main"]
 	path = workstation/frontend/OEW-main
 	url = https://github.com/jhead12/orpheus-engine.git
-	branch = feature/server-agnostic-config
+	branch = feature/server-agnostic-config-clean

@@ -243,19 +243,28 @@ npm run build  # Creates packaged app in dist/
 
 ### Architecture Notes
 
-1. **Frontend**:
+> **🚨 CRITICAL: UI Modularity**  
+> The `workstation/frontend/OEW-main/` directory contains the **primary DAW user interface** and must remain as a separate, modular component. This architectural separation enables independent UI development, enhanced testing capabilities, and future plugin/theme systems. **NEVER delete or merge this folder** - see [`docs/UI_ARCHITECTURE_PRINCIPLES.md`](docs/UI_ARCHITECTURE_PRINCIPLES.md) for detailed guidelines.
+
+1. **UI Architecture**:
+   - **OEW-main**: Primary React-based DAW interface (modular & independent)
+   - **Service Layer**: Clean API bridge between UI and backend services
+   - **Component Isolation**: Reusable UI components with comprehensive testing
+   - **Plugin Ready**: Architecture supports future plugins and themes
+
+2. **Frontend**:
    - Electron for native desktop features
    - React for UI components with hooks and context
    - TypeScript for type safety and better DX
    - Vite for fast development and building
 
-2. **Testing**:
+3. **Testing**:
    - Vitest for unit and integration tests
    - Visual regression testing with screenshots
    - Comprehensive component test coverage
    - Import alias resolution for clean test structure
 
-3. **Development Experience**:
+4. **Development Experience**:
    - Hot module replacement for instant feedback
    - TypeScript integration with zero compilation errors
    - ESLint for code quality and consistency

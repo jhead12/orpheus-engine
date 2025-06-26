@@ -45,7 +45,10 @@ export default defineConfig({
       "workstation/frontend/OEW-main/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
     ],
     globals: true,
-    setupFiles: ["workstation/frontend/OEW-main/src/setupTests.ts"],
+    setupFiles: [
+      "workstation/frontend/OEW-main/src/setupTests.ts",
+      "workstation/frontend/OEW-main/src/test/setup.ts"
+    ],
     coverage: {
       reporter: ["text", "json", "html"],
       reportsDirectory: "./test-results/coverage",
@@ -54,13 +57,11 @@ export default defineConfig({
       html: "./test-results/html/index.html",
     },
     reporters: ["default", "html"],
-    deps: {
-      inline: ["jest-image-snapshot"],
+    server: {
+      deps: {
+        inline: ["jest-image-snapshot"],
+      },
     },
-    exclude: ["**/node_modules/**", "**/__snapshots__/**"],
-    testTimeout: 10000, // Increased timeout for visual tests
-    snapshotFormat: {
-      printBasicPrototype: true,
-    },
+    ui: false, // Disable UI to avoid compatibility issues
   },
 });

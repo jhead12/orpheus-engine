@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, BrowserWindow } from "electron";
 import { mainWindow } from "./window";
 
 app.whenReady().then(() => {

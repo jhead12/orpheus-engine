@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 /**
  * Screenshot test helper for visual regression testing
  */
@@ -177,4 +175,3 @@ async function takeScreenshot(
     return Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=', 'base64');
   }
 }
->>>>>>> feature/server-agnostic-config

@@ -279,7 +279,7 @@ class ProcessingMonitor {
         return (baseLatency + outputLatency) < this.options.audioBufferThreshold!;
       }
       
-      return this.audioContext.state !== 'running';
+      return this.audioContext.state === 'closed' || this.audioContext.state === 'suspended';
     } catch (error) {
       return true; // Assume stable if we can't check
     }

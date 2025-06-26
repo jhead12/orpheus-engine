@@ -29,9 +29,13 @@ else
     echo "⚠️  Python not found (optional for AI features)"
 fi
 
-# Check npm packages
+# Check packages
 echo "📦 Installing dependencies..."
-npm install
+if command -v pnpm &> /dev/null; then
+    pnpm install
+else
+    npm install --no-save # Use --no-save to avoid modifying package.json
+fi
 
 # Check if MLFlow is available
 if command -v mlflow &> /dev/null; then

@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { readFileSync } from "fs";
-import { TrackType } from "../src/services/types/types";
-import { TRACK_FILE_UPLOAD } from "../src/services/electron/channels";
+import { TrackType } from "../workstation/frontend/OEW-main/src/services/types/types";
+import { TRACK_FILE_UPLOAD } from "../workstation/frontend/OEW-main/src/services/electron/channels";
  
 export default function buildHandlers(window: BrowserWindow) {
   ipcMain.handle(TRACK_FILE_UPLOAD, (_, type: TrackType) => handleTrackInsertFiles(window, type));
