@@ -26,6 +26,7 @@ Orpheus Engine is a comprehensive Digital Audio Workstation (DAW) ecosystem buil
 - **🎛️ Professional DAW Interface**: Modern workstation UI with timeline, track management, and mixer
 - **🎵 Audio Processing**: Real-time audio clip management and editing capabilities
 - **🖥️ Electron Desktop App**: Native desktop experience with system integration
+- **🔄 Hybrid Audio Engine**: Interchangeable audio backends (Web Audio, Electron, Python)
 - **⚡ Fast Development**: Vite-powered development with hot module replacement
 - **🧪 Comprehensive Testing**: Well-tested components with visual regression testing
 - **📊 Advanced UI Components**: Resizable panels, drag-and-drop, and professional controls
@@ -102,6 +103,7 @@ Comprehensive documentation is available in the [`docs/`](docs/) directory:
 
 - **[Setup & Installation](docs/README.md#setup--installation)** - Requirements, MLflow setup, macOS fixes
 - **[Architecture & Design](docs/README.md#architecture--design)** - System architecture and plugin development
+- **[Audio Engine Architecture](docs/AUDIO_ENGINE_ARCHITECTURE.md)** - Hybrid/interchangeable audio backend design
 - **[Audio Production](docs/README.md#audio-production)** - Professional audio setup and hardware compatibility
 - **[Competition Info](docs/JUDGES_README.md)** - Information for HP AI Studio competition judges
 
